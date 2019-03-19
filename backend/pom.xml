@@ -17,6 +17,10 @@
       <name>Dariusz Syncerek</name>
       <id>210328</id>
     </developer>
+	<developer>
+      <name>Adrian Fijalkowski</name>
+      <id>210171</id>
+	</developer>
   </developers>
 
   <properties>
