@@ -21,6 +21,10 @@
       <name>Adrian Fijalkowski</name>
       <id>210171</id>
 	</developer>
+    <developer>
+      <name>Michal Sobczyk</name>
+      <id>210320</id>
+    </developer>
   </developers>
 
   <properties>
