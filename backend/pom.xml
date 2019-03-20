@@ -33,6 +33,10 @@
       <name>Bartosz Kudra</name>
       <id>210239</id>
 	</developer>
+	<developer>
+      <name>Bartosz Goss</name>
+      <id>207230</id>
+	</developer>
   </developers>
 
   <properties>
