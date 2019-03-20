@@ -21,10 +21,13 @@
       <name>Adrian Fijalkowski</name>
       <id>210171</id>
 	</developer>
-    <developer>
       <name>Jakub Przybylski</name>
       <id>210300</id>
     </developer>
+  	<developer>
+      <name>Bartosz Kudra</name>
+      <id>210239</id>
+	</developer>
   </developers>
 
   <properties>
