@@ -25,6 +25,10 @@
       <name>Bartosz Kudra</name>
       <id>210239</id>
 	</developer>
+    <developer>
+      <name>Adam Troszczyński</name>
+      <id>210342</id>
+    </developer>
   </developers>
 
   <properties>
