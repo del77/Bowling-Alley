@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login page</title>
@@ -20,6 +21,17 @@
     </script>
 </head>
 <body>
-    <p class="display-2">You have reached the SSBD03 Application Server</p>
+    <div class="w-25 p-3 container mt-5 border bg-light">
+        <form class="form-group" action="j_security_check">
+            <label for="j_username">Login</label>
+            <input type="text" name="j_username" id="j_username" class="form-control" placeholder="Enter login"/>
+            <label for="j_password">Password</label>
+            <input type="password" name="j_password" id="j_password" class="form-control" placeholder="Enter password"/>
+            <small id="passswordHint" class="form-text text-muted">
+                Please remember to never share your password with other people.
+            </small>
+            <input class="btn btn-primary mt-2" type="submit" value="Login"/>
+        </form>
+    </div>
 </body>
 </html>
