@@ -51,11 +51,11 @@
     <web-resource-collection>
       <web-resource-name>Employee pages</web-resource-name>
       <description/>
-      <url-pattern>/empl/*</url-pattern>
+      <url-pattern>/employee/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
-      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
     </auth-constraint>
   </security-constraint>
 
