@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>pl.lodz.p.it.ssbd2019</groupId>
   <artifactId>ssbd03</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <packaging>war</packaging>
   <name>ssbd03</name>
 
