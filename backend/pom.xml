@@ -17,30 +17,30 @@
       <name>Dariusz Syncerek</name>
       <id>210328</id>
     </developer>
-	<developer>
+    <developer>
       <name>Adrian Fijalkowski</name>
       <id>210171</id>
-	</developer>
-	<developer>
+    </developer>
+    <developer>
       <name>Michal Sobczyk</name>
       <id>210320</id>
     </developer>
-  	<developer>
+    <developer>
       <name>Jakub Przybylski</name>
       <id>210300</id>
     </developer>
-  	<developer>
+    <developer>
       <name>Bartosz Kudra</name>
       <id>210239</id>
-	</developer>
+    </developer>
     <developer>
       <name>Adam Troszczyński</name>
       <id>210342</id>
     </developer>
-	<developer>
+    <developer>
       <name>Bartosz Goss</name>
       <id>207230</id>
-	</developer>
+    </developer>
   </developers>
 
   <properties>
@@ -53,6 +53,11 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.2.6.Final</version>
     </dependency>
   </dependencies>
 
