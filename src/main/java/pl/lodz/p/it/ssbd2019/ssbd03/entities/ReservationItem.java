@@ -1,10 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Entity
@@ -12,21 +11,30 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @IdClass(ReservationItemId.class)
 public class ReservationItem {
     @Id
     @ManyToOne
-    @JoinColumn(name = "reservation_id")
+    @JoinColumn(name = "reservation_id",
+            updatable = false,
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__reservation_items__reservation", value = ConstraintMode.CONSTRAINT))
     private Reservation reservation;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id",
+            updatable = false,
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__reservation_items__item", value = ConstraintMode.CONSTRAINT))
     private Item item;
 
+    @Min(0)
     @Column(name = "count", nullable = false)
     private int count;
 
+    @Min(0)
     @Column(name = "version", nullable = false)
     private int version;
 }

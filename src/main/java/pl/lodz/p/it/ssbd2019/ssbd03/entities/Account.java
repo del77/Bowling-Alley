@@ -1,10 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -12,15 +12,20 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "AccountSeqGen", sequenceName = "AccountSequence", initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccountSeqGen")
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    @EqualsAndHashCode.Exclude
     private int id;
 
-    @Column(name = "login", nullable = false, length = 16)
+    @NotEmpty
+    @Column(name = "login", nullable = false, length = 16, unique = true)
     private String login;
 
+    @NotEmpty
     @Column(name = "password", nullable = false, length = 64)
     private String password;
 
@@ -30,11 +35,9 @@ public class Account {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Min(0)
     @Column(name = "version", nullable = false)
     private int version;
-
-    @OneToMany(mappedBy = "account")
-    private List<AccountAccessLevel> accountAccessLevels;
 
     @OneToOne(mappedBy = "account")
     private User user;

@@ -2,10 +2,14 @@ package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", schema = "public", catalog = "ssbd03")
@@ -14,28 +18,35 @@ import java.sql.Date;
 @AllArgsConstructor
 public class User {
     @Id
+    @EqualsAndHashCode.Exclude
     private int id;
 
-    @Column(name = "first_name", nullable = false, length = 16)
+    @NotEmpty
+    @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 16)
+    @NotEmpty
+    @Column(name = "last_name", nullable = false, length = 32)
     private String lastName;
 
-    @Column(name = "phone", nullable = false, length = 16)
+    @Size(min = 9)
+    @Column(name = "phone", length = 16)
     private String phone;
 
-    @Column(name = "birth_date", nullable = false)
-    private Date birthDate;
-
+    @Min(0)
     @Column(name = "version", nullable = false)
     private int version;
 
-    @Column(name = "email", nullable = false, length = 25)
+    @Email
+    @Column(name = "email", nullable = false, length = 50, unique = true)
     private String email;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id",
+            unique = true,
+            updatable = false,
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__user__account", value = ConstraintMode.CONSTRAINT))
     @MapsId
     private Account account;
 }

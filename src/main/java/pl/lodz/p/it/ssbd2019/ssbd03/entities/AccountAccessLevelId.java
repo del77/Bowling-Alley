@@ -11,6 +11,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AccountAccessLevelId implements Serializable {
     private Account account;
-
     private AccessLevel accessLevel;
 }
