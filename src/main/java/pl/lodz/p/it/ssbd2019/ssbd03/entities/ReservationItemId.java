@@ -14,6 +14,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ReservationItemId implements Serializable {
     private Reservation reservation;
-
     private Item item;
 }
