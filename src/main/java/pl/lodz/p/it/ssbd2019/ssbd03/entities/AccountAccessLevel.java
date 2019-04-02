@@ -1,0 +1,42 @@
+package pl.lodz.p.it.ssbd2019.ssbd03.entities;
+
+import lombok.*;
+
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+
+@Entity
+@Table(name = "accounts_accesses", schema = "public", catalog = "ssbd03")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@IdClass(AccountAccessLevelId.class)
+public class AccountAccessLevel {
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "user_id",
+            unique = true,
+            updatable = false,
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__accounts_accesses__account",
+                    value = ConstraintMode.CONSTRAINT))
+    private Account account;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "access_level_id",
+            unique = true,
+            updatable = false,
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__accounts_accesses__access_level",
+                    value = ConstraintMode.CONSTRAINT))
+    private AccessLevel accessLevel;
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
+    @Min(0)
+    @Column(name = "version", nullable = false)
+    private int version;
+}
