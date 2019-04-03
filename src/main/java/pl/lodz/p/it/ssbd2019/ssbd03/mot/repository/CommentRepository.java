@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class CommentRepository extends AbstractCruRepository implements CommentRepositoryLocal {
+public class CommentRepository extends AbstractCruRepository<Comment, Integer> implements CommentRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;

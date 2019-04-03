@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class AlleyRepository extends AbstractCruRepository implements AlleyRepositoryLocal {
+public class AlleyRepository extends AbstractCruRepository<Alley, Integer> implements AlleyRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;

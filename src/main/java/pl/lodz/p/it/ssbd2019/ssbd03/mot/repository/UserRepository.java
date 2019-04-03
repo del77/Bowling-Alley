@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class UserRepository extends AbstractCruRepository implements UserRepositoryLocal {
+public class UserRepository extends AbstractCruRepository<User, Integer> implements UserRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;
