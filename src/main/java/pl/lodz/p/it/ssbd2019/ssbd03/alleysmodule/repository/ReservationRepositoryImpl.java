@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
+package pl.lodz.p.it.ssbd2019.ssbd03.alleysmodule.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.ejb.Stateless;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class ScoreRepository extends AbstractCruRepository<Score, Integer> implements ScoreRepositoryLocal {
+public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation, Integer> implements ReservationRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;
@@ -20,6 +20,6 @@ public class ScoreRepository extends AbstractCruRepository<Score, Integer> imple
 
     @Override
     protected Class getTypeParameterClass() {
-        return Score.class;
+        return Reservation.class;
     }
 }

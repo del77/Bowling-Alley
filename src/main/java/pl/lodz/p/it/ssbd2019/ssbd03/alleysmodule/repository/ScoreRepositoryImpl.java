@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
+package pl.lodz.p.it.ssbd2019.ssbd03.alleysmodule.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.ejb.Stateless;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class AlleyRepository extends AbstractCruRepository<Alley, Integer> implements AlleyRepositoryLocal {
+public class ScoreRepositoryImpl extends AbstractCruRepository<Score, Integer> implements ScoreRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;
@@ -20,6 +20,6 @@ public class AlleyRepository extends AbstractCruRepository<Alley, Integer> imple
 
     @Override
     protected Class getTypeParameterClass() {
-        return Alley.class;
+        return Score.class;
     }
 }

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
+package pl.lodz.p.it.ssbd2019.ssbd03.alleysmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;

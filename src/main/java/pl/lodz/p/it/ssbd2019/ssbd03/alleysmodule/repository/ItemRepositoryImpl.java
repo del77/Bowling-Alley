@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
+package pl.lodz.p.it.ssbd2019.ssbd03.alleysmodule.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Item;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.ejb.Stateless;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class CommentRepository extends AbstractCruRepository<Comment, Integer> implements CommentRepositoryLocal {
+public class ItemRepositoryImpl extends AbstractCruRepository<Item, Integer> implements ItemRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;
@@ -20,6 +20,6 @@ public class CommentRepository extends AbstractCruRepository<Comment, Integer> i
 
     @Override
     protected Class getTypeParameterClass() {
-        return Comment.class;
+        return Item.class;
     }
 }
