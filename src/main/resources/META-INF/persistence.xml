@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-  <persistence-unit name="ssbd03mokPU">
+  <persistence-unit name="ssbd03mokPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/ssbd03mokDS</jta-data-source>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
@@ -21,7 +21,7 @@
       <property name="hibernate.hbm2dll.auto" value="validate"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="ssbd03motPU">
+  <persistence-unit name="ssbd03motPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/ssbd03motDS</jta-data-source>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
