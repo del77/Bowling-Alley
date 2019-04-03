@@ -9,12 +9,7 @@ public abstract class AbstractCruRepository<T,ID> implements CruRepository<T, ID
 
     protected abstract EntityManager getEntityManager();
     protected abstract String getTableName();
-
-    private final Class<T> typeParameterClass;
-
-    public AbstractCruRepository(Class<T> typeParameterClass) {
-        this.typeParameterClass = typeParameterClass;
-    }
+    protected abstract Class<T> getTypeParameterClass();
 
     @Override
     public void create(T entity) {
@@ -28,10 +23,9 @@ public abstract class AbstractCruRepository<T,ID> implements CruRepository<T, ID
         getEntityManager().flush();
     }
 
-
     @Override
     public Optional<T> findById(ID id) {
-        T retrievedObject = getEntityManager().find(typeParameterClass, id);
+        T retrievedObject = getEntityManager().find(getTypeParameterClass(), id);
 
         if (retrievedObject == null){
             return Optional.empty();
