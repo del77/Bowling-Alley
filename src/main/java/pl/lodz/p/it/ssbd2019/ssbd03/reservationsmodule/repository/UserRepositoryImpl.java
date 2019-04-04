@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class UserRepositoryImpl extends AbstractCruRepository<User, Integer> implements UserRepositoryLocal {
 
-    @PersistenceContext(unitName = "ssbd03motPU")
+    @PersistenceContext(unitName = "ssbd03morPU")
     private EntityManager entityManager;
 
     @Override

@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class CommentRepositoryImpl extends AbstractCruRepository<Comment, Integer> implements CommentRepositoryLocal {
 
-    @PersistenceContext(unitName = "ssbd03motPU")
+    @PersistenceContext(unitName = "ssbd03morPU")
     private EntityManager entityManager;
 
     @Override

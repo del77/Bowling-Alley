@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class ReservationItemRepositoryImpl extends AbstractCruRepository<ReservationItem, Integer> implements ReservationItemRepositoryLocal {
 
-    @PersistenceContext(unitName = "ssbd03motPU")
+    @PersistenceContext(unitName = "ssbd03morPU")
     private EntityManager entityManager;
 
     @Override
