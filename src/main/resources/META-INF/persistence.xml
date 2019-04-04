@@ -2,7 +2,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
   <persistence-unit name="ssbd03mokPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <jta-data-source>jdbc/ssbd03mokDS</jta-data-source>
+    <jta-data-source>java:app/jdbc/ssbd03mokDS</jta-data-source>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Account</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley</class>
@@ -23,7 +23,28 @@
   </persistence-unit>
   <persistence-unit name="ssbd03motPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <jta-data-source>jdbc/ssbd03motDS</jta-data-source>
+    <jta-data-source>java:app/jdbc/ssbd03motDS</jta-data-source>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Account</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Item</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.User</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <properties>
+      <property name="hibernate.hbm2dll.auto" value="validate"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="ssbd03morPU" transaction-type="JTA">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <jta-data-source>java:app/jdbc/ssbd03motDS</jta-data-source>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Account</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley</class>
