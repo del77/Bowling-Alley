@@ -13,7 +13,10 @@ import javax.validation.constraints.Min;
 @Builder
 public class Score {
     @Id
-    @SequenceGenerator(name = "ScoreSeqGen", sequenceName = "ScoreSequence", initialValue = 1)
+    @SequenceGenerator(name = "ScoreSeqGen",
+            sequenceName = "ScoreSequence",
+            initialValue = 1,
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ScoreSeqGen")
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude

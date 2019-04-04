@@ -14,7 +14,10 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class ItemType {
     @Id
-    @SequenceGenerator(name = "ItemTypeSeqGen", sequenceName = "ItemTypeSequence", initialValue = 1)
+    @SequenceGenerator(name = "ItemTypeSeqGen",
+            sequenceName = "ItemTypeSequence",
+            initialValue = 1,
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ItemTypeSeqGen")
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude

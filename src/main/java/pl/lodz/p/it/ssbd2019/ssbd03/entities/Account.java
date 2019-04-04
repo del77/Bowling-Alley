@@ -15,7 +15,10 @@ import java.util.List;
 @Builder
 public class Account {
     @Id
-    @SequenceGenerator(name = "AccountSeqGen", sequenceName = "AccountSequence", initialValue = 1)
+    @SequenceGenerator(name = "AccountSeqGen",
+            sequenceName = "AccountSequence",
+            initialValue = 1,
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccountSeqGen")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude

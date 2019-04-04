@@ -15,7 +15,10 @@ import java.sql.Timestamp;
 @Builder
 public class Comment {
     @Id
-    @SequenceGenerator(name = "CommentSeqGen", sequenceName = "CommentSequence", initialValue = 1)
+    @SequenceGenerator(name = "CommentSeqGen",
+            sequenceName = "CommentSequence",
+            initialValue = 1,
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CommentSeqGen")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude

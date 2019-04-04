@@ -14,8 +14,11 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class AccessLevel {
     @Id
-    @SequenceGenerator(name = "AccessLevelSeqGen", sequenceName = "AccessLevelSequence", initialValue = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccessLevelSeqGen")
+    @SequenceGenerator(name = "AccessLevelSeqGen",
+            sequenceName = "AccessLevelSequence",
+            initialValue = 1,
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "AccessLevelSeqGen")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
     private int id;

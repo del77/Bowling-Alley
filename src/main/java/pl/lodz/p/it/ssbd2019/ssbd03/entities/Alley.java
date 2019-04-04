@@ -13,7 +13,10 @@ import javax.validation.constraints.Min;
 @Builder
 public class Alley {
     @Id
-    @SequenceGenerator(name = "AlleySeqGen", sequenceName = "AlleySequence", initialValue = 1)
+    @SequenceGenerator(name = "AlleySeqGen",
+            sequenceName = "AlleySequence",
+            initialValue = 1,
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AlleySeqGen")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
