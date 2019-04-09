@@ -15,15 +15,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceRequest {
+
     @Id
-    @SequenceGenerator(name = "ServiceRequestSeqGen",
-            sequenceName = "ServiceRequestSequence",
-            initialValue = 1,
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ServiceRequestSeqGen")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
 
     @Column(name = "content", nullable = false, length = 256)
     private String content;

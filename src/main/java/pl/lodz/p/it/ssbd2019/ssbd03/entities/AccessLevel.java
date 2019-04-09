@@ -13,15 +13,12 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @Builder
 public class AccessLevel {
+
     @Id
-    @SequenceGenerator(name = "AccessLevelSeqGen",
-            sequenceName = "AccessLevelSequence",
-            initialValue = 1,
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "AccessLevelSeqGen")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
 
     @NotEmpty
     @Column(name = "name", nullable = false, length = 16, unique = true)

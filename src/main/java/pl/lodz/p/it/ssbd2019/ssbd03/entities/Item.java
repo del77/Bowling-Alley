@@ -14,14 +14,10 @@ import java.util.List;
 @Builder
 public class Item {
     @Id
-    @SequenceGenerator(name = "ItemSeqGen",
-            sequenceName = "ItemSequence",
-            initialValue = 1,
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ItemSeqGen")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
 
     @Min(0)
     @Column(name = "size", nullable = false)

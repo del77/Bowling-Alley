@@ -15,14 +15,10 @@ import java.util.List;
 @Builder
 public class Reservation {
     @Id
-    @SequenceGenerator(name = "ReservationSeqGen",
-            sequenceName = "ReservationSequence",
-            initialValue = 1,
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ReservationSeqGen")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
 
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
