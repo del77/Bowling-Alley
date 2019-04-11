@@ -20,6 +20,12 @@ public class Reservation {
     @EqualsAndHashCode.Exclude
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_reservations_users", value = ConstraintMode.CONSTRAINT))
+    private User user;
+
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
 
@@ -32,6 +38,12 @@ public class Reservation {
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    @ManyToOne
+    @JoinColumn(name = "alley_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_reservations_alleys", value = ConstraintMode.CONSTRAINT))
+    private Alley alley;
 
     @Min(0)
     @Column(name = "version", nullable = false)
