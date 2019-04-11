@@ -23,7 +23,7 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "user_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_reservations_users", value = ConstraintMode.CONSTRAINT))
+            foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))
     private User user;
 
     @Column(name = "start_date", nullable = false)
@@ -42,7 +42,7 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "alley_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_reservations_alleys", value = ConstraintMode.CONSTRAINT))
+            foreignKey = @ForeignKey(name = "fk__reservations__alleys", value = ConstraintMode.CONSTRAINT))
     private Alley alley;
 
     @Min(0)
