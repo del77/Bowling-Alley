@@ -15,14 +15,16 @@ import java.util.List;
 @Builder
 public class Reservation {
     @Id
-    @SequenceGenerator(name = "ReservationSeqGen",
-            sequenceName = "ReservationSequence",
-            initialValue = 1,
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ReservationSeqGen")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))
+    private User user;
 
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
@@ -36,6 +38,12 @@ public class Reservation {
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    @ManyToOne
+    @JoinColumn(name = "alley_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk__reservations__alleys", value = ConstraintMode.CONSTRAINT))
+    private Alley alley;
 
     @Min(0)
     @Column(name = "version", nullable = false)

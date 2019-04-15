@@ -18,8 +18,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class User {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private int id;
+    private long id;
 
     @NotEmpty
     @Column(name = "first_name", nullable = false, length = 32)
