@@ -45,7 +45,8 @@ public class Reservation {
             foreignKey = @ForeignKey(name = "fk__reservations__alleys", value = ConstraintMode.CONSTRAINT))
     private Alley alley;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 }

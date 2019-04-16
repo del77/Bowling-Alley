@@ -36,7 +36,8 @@ public class Score {
     @Column(name = "score", nullable = false)
     private int score;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 }

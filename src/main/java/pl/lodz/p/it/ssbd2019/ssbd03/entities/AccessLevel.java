@@ -24,7 +24,8 @@ public class AccessLevel {
     @Column(name = "name", nullable = false, length = 16, unique = true)
     private String name;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 }

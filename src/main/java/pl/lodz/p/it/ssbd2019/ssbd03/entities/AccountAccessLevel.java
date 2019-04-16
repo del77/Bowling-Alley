@@ -44,7 +44,8 @@ public class AccountAccessLevel {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 }
