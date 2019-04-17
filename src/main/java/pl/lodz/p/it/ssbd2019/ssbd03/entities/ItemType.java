@@ -5,7 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-
+/**
+ * Klasa reprezentująca typy przedmiotów.
+ */
 @Entity
 @Table(name = "item_types", schema = "public", catalog = "ssbd03")
 @Data

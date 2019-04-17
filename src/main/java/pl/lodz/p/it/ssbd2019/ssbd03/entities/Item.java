@@ -4,8 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.util.List;
-
+/**
+ * Klasa reprezentująca przedmioty.
+ */
 @Entity
 @Table(name = "items", schema = "public", catalog = "ssbd03")
 @Data

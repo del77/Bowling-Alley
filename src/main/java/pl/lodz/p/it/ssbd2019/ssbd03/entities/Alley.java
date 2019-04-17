@@ -6,6 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+/**
+ * Klasa reprezentująca tory.
+ */
 @Entity
 @Table(name = "alleys", schema = "public", catalog = "ssbd03")
 @Data
@@ -29,7 +32,7 @@ public class Alley {
     @Column(name = "max_score", nullable = true)
     @Min(0)
     @Max(300)
-    private Integer max_score;
+    private Integer maxScore;
 
     @Version
     @Min(0)

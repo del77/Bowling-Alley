@@ -5,7 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
+/**
+ * Klasa reprezentująca wyniki.
+ */
 @Entity
 @Table(name = "scores", schema = "public", catalog = "ssbd03")
 @Data

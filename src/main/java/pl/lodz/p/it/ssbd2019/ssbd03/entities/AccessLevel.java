@@ -6,6 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * Klasa reprezentująca poziom dostępu.
+ */
 @Entity
 @Table(name = "access_levels", schema = "public", catalog = "ssbd03")
 @Data

@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 
+/**
+ * Klasa reprezentująca relację wiele do wielu pomiedzy kontem a poziomem dostępu.
+ */
 @Entity
 @Table(name = "accounts_accesses", schema = "public", catalog = "ssbd03")
 @Data

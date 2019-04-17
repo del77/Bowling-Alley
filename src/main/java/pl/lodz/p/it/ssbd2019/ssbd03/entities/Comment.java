@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
-
+/**
+ * Klasa reprezentująca komentarze do rezerwacji.
+ */
 @Entity
 @Table(name = "comments", schema = "public", catalog = "ssbd03")
 @Data
