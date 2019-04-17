@@ -25,9 +25,10 @@ public class ServiceRequest {
     @Column(name = "content", nullable = false, length = 256)
     private String content;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 
     @Column(name = "date", nullable = false, updatable = false)
     private Timestamp date;

@@ -35,9 +35,10 @@ public class User {
     @Column(name = "phone", length = 16)
     private String phone;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 
     @Email
     @Column(name = "email", nullable = false, length = 50, unique = true)

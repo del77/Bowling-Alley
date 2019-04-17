@@ -32,10 +32,11 @@ public class Comment {
     @Column(name = "content", nullable = false, length = 256)
     private String content;
 
-    @Min(0)
-    @Column(name = "version", nullable = false)
-    private int version;
-
     @Column(name = "date", nullable = false)
     private Timestamp date;
+
+    @Version
+    @Min(0)
+    @Column(name = "version", nullable = false)
+    private long version;
 }

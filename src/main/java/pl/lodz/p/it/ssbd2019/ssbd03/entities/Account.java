@@ -34,9 +34,10 @@ public class Account {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 
     @OneToOne(mappedBy = "account")
     private User user;

@@ -34,7 +34,8 @@ public class ReservationItem {
     @Column(name = "count", nullable = false)
     private int count;
 
+    @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private int version;
+    private long version;
 }
