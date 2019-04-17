@@ -4,8 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.util.List;
-
+/**
+ * Klasa reprezentująca relację wiele do wielu pomiedzy rezerwacją a przedmiotami.
+ */
 @Entity
 @Table(name = "reservation_items", schema = "public", catalog = "ssbd03")
 @Data

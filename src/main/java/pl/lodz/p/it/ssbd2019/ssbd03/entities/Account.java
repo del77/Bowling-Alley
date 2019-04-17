@@ -5,8 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
+/**
+ * Klasa reprezentująca konto użytkownika.
+ */
 @Entity
 @Table(name = "accounts", schema = "public", catalog = "ssbd03")
 @Data

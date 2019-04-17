@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 import java.util.List;
-
+/**
+ * Klasa reprezentująca rezerwacje.
+ */
 @Entity
 @Table(name = "reservations", schema = "public", catalog = "ssbd03")
 @Data

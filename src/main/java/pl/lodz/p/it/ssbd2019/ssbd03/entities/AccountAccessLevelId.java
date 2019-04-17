@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Klasa reprezentująca klucz dla relacji powiązania między użytkownikami a poziomami dostępu.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

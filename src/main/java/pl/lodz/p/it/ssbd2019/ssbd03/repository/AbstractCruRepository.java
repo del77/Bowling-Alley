@@ -7,23 +7,41 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Abstrakcyjna implementacja CruRepository, dostarczająca podstawowe metody dla bazy danych.
+ * @param <T> Typ encji
+ * @param <ID> Typ klucza głównego
+ */
 public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, ID> {
 
     protected abstract EntityManager getEntityManager();
     protected abstract Class<T> getTypeParameterClass();
 
+    /**
+     * Tworzy obiekt encji w bazie danych.
+     * @param entity Obiekt encji
+     */
     @Override
     public void create(T entity) {
         getEntityManager().persist(entity);
         getEntityManager().flush();
     }
 
+    /**
+     * Wykonuje merge na istniejącym obiekcie encji.
+     * @param entity Obiekt encji
+     */
     @Override
     public void edit(T entity) {
         getEntityManager().merge(entity);
         getEntityManager().flush();
     }
 
+    /**
+     * Znajduje obiekt encji na podstawie podanego identyfikatora.
+     * @param id Identyfikator encji
+     * @return Obiekt encji opakowany w obiekt klasy Optional
+     */
     @Override
     public Optional<T> findById(ID id) {
         T retrievedObject = getEntityManager().find(getTypeParameterClass(), id);
@@ -33,13 +51,21 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
         }
         return Optional.of(retrievedObject);
     }
-
+    /**
+     * Sprawdza czy obiekt istnieje w bazie danych.
+     * @param id Identyfikator encji
+     * @return true w przypadku, gdy obiekt istnieje w magazynie danych, w przeciwnym wypadku false
+            */
     @Override
     public boolean existsById(ID id) {
         Optional<T> retrieved = findById(id);
         return retrieved.isPresent();
     }
 
+    /**
+     * Zwraca listę wszystkich encji w bazie danych.
+     * @return Lista wszystkich encji
+     */
     @Override
     public List<T> findAll() {
         CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
@@ -47,22 +73,51 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
         return getEntityManager().createQuery(cq).getResultList();
     }
 
+    /**
+     * Tworzy TypedQuery dla zadanego NamedQuery. Metoda pomocnicza dla klas dziedziczących.
+     * @param queryName Nazwa NamedQuery dla encji
+     * @return TypedQuery, zapytanie dla podanej nazwy NamedQuery
+     */
     protected TypedQuery<T> createNamedQuery(String queryName) {
         return this.createNamedQuery(queryName, getTypeParameterClass());
     }
 
+    /**
+     * Tworzy TypedQuery na podstawie utworzonego NamedQuery.
+     * @param name Nazwa dla NamedQuery do utworzenia
+     * @param resultClass Typ klasy wyjściowej
+     * @return TypedQuery dla zadanych parametrów
+     */
     protected TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
         return getEntityManager().createNamedQuery(name, resultClass);
     }
 
+    /**
+     * Wykonuje zapytanie modyfikujące na bazie danych.
+	 * Metoda pomocnicza dla klas dziedziczących.
+     * @param query Zapytanie JPQL
+     * @return Wynik zapytania w postaci kodu wyniku
+     */
     protected int executeUpdateQuery(String query) {
         return getEntityManager().createQuery(query).executeUpdate();
     }
 
+    /**
+     * Wykonuje zapytanie modyfikujące na bazie danych wykorzystując istniejące NamedQuery.
+     * Metoda pomocnicza dla klas dziedziczących.
+     * @param name Nazwa NamedQuery dla encji
+     * @return Wynik zapytania w postaci kodu
+     */
     protected int executeUpdateNamedQuery(String name) {
         return getEntityManager().createNamedQuery(name).executeUpdate();
     }
 
+    /**
+     * Tworzy obiekt reprezentujący zapytanie. Tylko dla zapytań niemodyfikujących.
+     * Metoda pomocnicza dla klas dziedziczących.
+     * @param query Zapytanie w formie JPQL
+     * @return Obiekt query reprezentujący zapytanie
+     */
     protected Query createQuery(String query) {
         return getEntityManager().createQuery(query);
     }

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.sql.Timestamp;
-
+/**
+ * Klasa reprezentująca zapytania serwisowe.
+ */
 @Entity
 @Table(name = "service_requests", schema = "public", catalog = "ssbd03")
 @Data

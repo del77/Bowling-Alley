@@ -11,6 +11,19 @@ import java.util.List;
 
 @Local
 public interface AccountAccessLevelRepositoryLocal extends CruRepository<AccountAccessLevel, AccountAccessLevelId> {
+    /**
+     * Zwraca powiązania pomiędzy kontem użytkownika a poziomami dostępu.
+     * Metoda dla pozyskiwania poziomów dostępu dla konta.
+     * @param account Obiekt encji konta użytkownika
+     * @return Lista powiązań między kontami użytkowników, a poziomami dostępu.
+     */
     List<AccountAccessLevel> findAllForAccount(Account account);
+
+    /**
+     * Zwraca powiązania pomiędzy kontem użytkownika a poziomami dostępu.
+     * Metoda dla pozyskiwania konta użytkowników dla poziomu dostępu.
+     * @param accessLevel Obiekt encji poziomu dostępu
+     * @return Lista powiązań między kontami użytkowników, a poziomami dostępu.
+     */
     List<AccountAccessLevel> findAllForAccessLevel(AccessLevel accessLevel);
 }
