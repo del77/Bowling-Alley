@@ -20,7 +20,7 @@ public class Reservation {
     @EqualsAndHashCode.Exclude
     private long id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.REFRESH)
     @JoinColumn(name = "user_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))

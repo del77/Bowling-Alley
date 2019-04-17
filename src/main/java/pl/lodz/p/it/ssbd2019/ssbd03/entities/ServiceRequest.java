@@ -35,4 +35,12 @@ public class ServiceRequest {
 
     @Column(name = "resolved", nullable = false)
     private boolean resolved;
+
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false, cascade=CascadeType.REFRESH)
+    private User user;
+
+    @JoinColumn(name = "alley_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Alley alley;
 }

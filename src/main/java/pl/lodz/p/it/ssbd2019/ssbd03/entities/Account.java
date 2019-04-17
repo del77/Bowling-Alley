@@ -39,6 +39,6 @@ public class Account {
     @Column(name = "version", nullable = false)
     private long version;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private User user;
 }
