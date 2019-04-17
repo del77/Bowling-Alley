@@ -26,7 +26,7 @@ public class Alley {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @Column(name = "max_score", nullable = false)
+    @Column(name = "max_score", nullable = true)
     @Min(0)
     @Max(300)
     private int max_score;
