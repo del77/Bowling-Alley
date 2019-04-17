@@ -25,7 +25,7 @@ public class Score {
             foreignKey = @ForeignKey(name = "fk__score__reservation", value = ConstraintMode.CONSTRAINT))
     private Reservation reservation;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.REFRESH)
     @JoinColumn(name = "user_id",
             updatable = false,
             nullable = false,
