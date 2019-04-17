@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
@@ -32,8 +33,10 @@ public class Score {
             foreignKey = @ForeignKey(name = "fk__score__user", value = ConstraintMode.CONSTRAINT))
     private User user;
 
-    @Min(0)
+
     @Column(name = "score", nullable = false)
+    @Max(300)
+    @Min(0)
     private int score;
 
     @Version

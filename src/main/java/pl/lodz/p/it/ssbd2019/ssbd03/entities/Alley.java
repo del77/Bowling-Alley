@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
@@ -24,6 +25,11 @@ public class Alley {
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    @Column(name = "max_score", nullable = false)
+    @Min(0)
+    @Max(300)
+    private int max_score;
 
     @Version
     @Min(0)
