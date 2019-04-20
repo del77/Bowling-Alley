@@ -19,7 +19,7 @@ public class Score {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id",

@@ -15,13 +15,19 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        @NamedQuery(
+                name = "AccessLevel.findByName",
+                query = "select al from AccessLevel al where al.name = :name"
+        )
+)
 public class AccessLevel {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @NotEmpty
     @Column(name = "name", nullable = false, length = 16, unique = true)

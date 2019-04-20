@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Stateless
-public class UserRepositoryLocalImpl extends AbstractCruRepository<User, Integer> implements UserRepositoryLocal {
+@Stateless(name = "MOKUserRepository")
+public class UserRepositoryLocalImpl extends AbstractCruRepository<User, Long> implements UserRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")
     private EntityManager entityManager;
 

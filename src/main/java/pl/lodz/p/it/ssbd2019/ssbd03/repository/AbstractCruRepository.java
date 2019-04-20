@@ -22,9 +22,10 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * @param entity Obiekt encji
      */
     @Override
-    public void create(T entity) {
+    public T create(T entity) {
         getEntityManager().persist(entity);
         getEntityManager().flush();
+        return entity;
     }
 
     /**
@@ -32,9 +33,10 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * @param entity Obiekt encji
      */
     @Override
-    public void edit(T entity) {
+    public T edit(T entity) {
         getEntityManager().merge(entity);
         getEntityManager().flush();
+        return entity;
     }
 
     /**

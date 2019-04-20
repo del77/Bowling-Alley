@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless
+@Stateless(name = "MOKAccountAccessLevelRepository")
 public class AccountAccessLevelRepositoryLocalImpl extends AbstractCruRepository<AccountAccessLevel, AccountAccessLevelId> implements AccountAccessLevelRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")
     private EntityManager entityManager;

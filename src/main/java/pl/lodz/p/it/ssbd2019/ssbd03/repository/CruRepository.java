@@ -14,13 +14,13 @@ public interface CruRepository<T, ID> {
      * Dodawanie obiektu do magazynu danych.
      * @param entity Obiekt encji
      */
-    void create(T entity);
+    T create(T entity);
 
     /**
      * Edycja istniejącej encji.
      * @param entity Obiekt encji
      */
-    void edit(T entity);
+    T edit(T entity);
 
     /**
      * Zwraca z magazynu danych encję o zadanym identyfikatorze.

@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -18,12 +15,13 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @NotEmpty
     @Column(name = "first_name", nullable = false, length = 32)

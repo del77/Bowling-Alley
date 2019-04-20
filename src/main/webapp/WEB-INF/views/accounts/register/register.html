@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register a new account</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="w-75">
+        <form class="form-horizontal" role="form" method="post">
+            <h2>Registration</h2>
+            <div class="form-group">
+                <label for="login" class="col-sm-3 control-label">Login *</label>
+                <div class="col-sm-9">
+                    <input type="text" id="login" name="login" placeholder="Login" class="form-control" autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="firstName" class="col-sm-3 control-label">First Name</label>
+                <div class="col-sm-9">
+                    <input type="text" id="firstName" name="firstName" placeholder="First Name" class="form-control"
+                           autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName" class="col-sm-3 control-label">Last Name</label>
+                <div class="col-sm-9">
+                    <input type="text" id="lastName" name="lastName" placeholder="Last Name" class="form-control" autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-sm-3 control-label">Email *</label>
+                <div class="col-sm-9">
+                    <input type="email" id="email" placeholder="Email" class="form-control" name="email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-3 control-label">Password *</label>
+                <div class="col-sm-9">
+                    <input type="password" id="password" name="password" placeholder="Password" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-3 control-label">Confirm Password *</label>
+                <div class="col-sm-9">
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Password"
+                           class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber" class="col-sm-3 control-label">Phone number</label>
+                <div class="col-sm-9">
+                    <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="form-control">
+                    <span class="help-block">Your phone number won't be disclosed anywhere </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <span class="help-block">*Required fields</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

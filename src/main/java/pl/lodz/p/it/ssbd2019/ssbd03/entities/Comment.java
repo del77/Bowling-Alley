@@ -20,7 +20,7 @@ public class Comment {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id",
