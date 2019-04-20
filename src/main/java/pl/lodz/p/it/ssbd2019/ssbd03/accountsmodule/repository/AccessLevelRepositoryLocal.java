@@ -8,5 +8,11 @@ import java.util.Optional;
 
 @Local
 public interface AccessLevelRepositoryLocal extends CruRepository<AccessLevel, Long> {
+    /**
+     * Metoda służy do pozyskiwania ancji poziomu dostępu na podstawie jej nazwy w bazie danych.
+     * Przydatna przy tworzeniu użytkownika w procesie rejestracji.
+     * @param name Nazwa poziomu dostępu
+     * @return Poziom dostępu
+     */
     Optional<AccessLevel> findByName(String name);
 }

@@ -10,17 +10,14 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievelException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TextParsingException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.swing.text.html.parser.Entity;
+import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class RegistrationServiceImpl implements RegistrationService {
     @EJB(beanName = "MOKAccountRepository")

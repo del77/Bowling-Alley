@@ -7,10 +7,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * Główny controller. Klasa służy do mapowania view strony głownej bądź też
+ * widoków statycznych.
+ */
 @RequestScoped
 @Controller
 @Path("")
 public class MainController {
+    /**
+     * Punkt wyjścia odpowiedzialny za przkierowanie do widoku strony głównej.
+     * @return Widok, standardowo "index.html"
+     */
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String index() {

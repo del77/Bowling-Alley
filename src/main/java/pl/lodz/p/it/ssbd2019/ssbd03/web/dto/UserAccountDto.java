@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.ws.rs.FormParam;
 
+/**
+ * Klasa reprezentująca dane z formularza rejestracji.
+ */
 @Data
 public class UserAccountDto {
     @FormParam("login")
