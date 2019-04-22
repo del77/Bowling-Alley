@@ -34,7 +34,7 @@ public class RegistrationController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationForm() {
-        return "accounts/register/register.html";
+        return "accounts/register/register.hbs";
     }
 
     /**
@@ -46,11 +46,9 @@ public class RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam UserAccountDto userData)  {
-        boolean success = true;
         if(!userData.getPassword().equals(userData.getConfirmPassword())) {
-            models.put("message", "Passwords don't match.");
-            models.put("success", false);
-            return "accounts/register/after-register.html";
+            models.put("error", "Passwords don't match.");
+            return "accounts/register/register-failure.hbs";
         }
         Account account = Account
                 .builder()
@@ -69,10 +67,10 @@ public class RegistrationController {
         try {
             registrationService.registerAccount(account, user);
         } catch (Exception e) {
-            models.put("message", e.getLocalizedMessage() + "\n" + e.getCause());
-            success = false;
+            models.put("error", e.getLocalizedMessage() + "\n" + e.getCause());
+            return "accounts/register/register-failure.hbs";
         }
-        models.put("success", success);
-        return "accounts/register/after-register.html";
+        models.put("email", user.getEmail());
+        return "accounts/register/register-success.hbs";
     }
 }

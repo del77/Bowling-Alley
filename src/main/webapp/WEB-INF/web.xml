@@ -104,8 +104,8 @@
     <auth-method>FORM</auth-method>
     <realm-name>ssbd03realm</realm-name>
     <form-login-config>
-      <form-login-page>/WEB-INF/views/accounts/login/login.html</form-login-page>
-      <form-error-page>/WEB-INF/views/accounts/login/blad.html</form-error-page>
+      <form-login-page>/accounts/login/login.hbs</form-login-page>
+      <form-error-page>/accounts/login/blad.hbs</form-error-page>
     </form-login-config>
   </login-config>
 </web-app>

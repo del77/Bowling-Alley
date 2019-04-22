@@ -21,6 +21,6 @@ public class LoginController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String loginPage() {
-        return "accounts/login/login.html";
+        return "accounts/login/login.hbs";
     }
 }
