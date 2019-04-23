@@ -49,6 +49,7 @@ public class HandlebarsViewEngine implements ViewEngine {
     public void processView(ViewEngineContext context) throws ViewEngineException {
         Models models = context.getModels();
         String viewName = context.getView();
+        /*
         HttpServletRequest request = context.getRequest(HttpServletRequest.class);
 
         boolean isUserLogged = false, isUserAdmin = false;
@@ -61,7 +62,7 @@ public class HandlebarsViewEngine implements ViewEngine {
         if(isUserLogged) {
             models.put("userName", request.getUserPrincipal().getName());
         }
-
+*/
         if (!viewName.startsWith("/"))
             viewName = "/" + viewName;
 
