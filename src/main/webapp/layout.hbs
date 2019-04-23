@@ -55,7 +55,14 @@
             {{#if loggedIn}}
                 <div>
                     {{#if userName}}
-                        Welcome {{userName}}!
+                        Logged in as: {{userName}}!
+                        <span class="badge badge-success">Client</span>
+                        {{#if isAdmin}}
+                            <span class="badge badge-dark">Admin</span>
+                        {{/if}}
+                        {{#if isEmployee}}
+                            <span class="badge badge-info">Employee</span>
+                        {{/if}}
                     {{/if}}
                 </div>
             {{else}}

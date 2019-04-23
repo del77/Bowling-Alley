@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.*;
@@ -8,6 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
 
+/**
+ * Klasa odpowiedzialna za dodawanie informacji o użytkowniku w trakcie przechodzenia przez strony.
+ * Między innymi takich jak: czy użytkownik jest zalogowany, przynależność do poziomu dostępu czy nazwa (login).
+ * Aby filtr działał musi być wpisany w deskryptor web.xml.
+ */
 public class UserModelFilter implements Filter {
     @Inject
     private Models models;
