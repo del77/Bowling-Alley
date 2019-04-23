@@ -18,7 +18,7 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 /**
- * Implementjacja klasy ViewEngine odpowiedzialna za przetwarzanie widoku .hbs / .hadnlebars (szablony Hadnlebars)
+ * Implementacja klasy ViewEngine odpowiedzialna za przetwarzanie widoku .hbs / .handlebars (szablony Handlebars)
  */
 @ApplicationScoped
 @Slf4j

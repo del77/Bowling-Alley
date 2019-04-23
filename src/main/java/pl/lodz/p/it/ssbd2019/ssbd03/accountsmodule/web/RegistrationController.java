@@ -1,17 +1,20 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.web.accountsmodule;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
-import pl.lodz.p.it.ssbd2019.ssbd03.web.dto.UserAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserAccountDto;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Set;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -23,6 +26,9 @@ import javax.ws.rs.core.MediaType;
 public class RegistrationController {
     @EJB
     private RegistrationService registrationService;
+
+    @Inject
+    private Validator validator;
 
     @Inject
     private Models models;
@@ -46,10 +52,23 @@ public class RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam UserAccountDto userData)  {
+        Set<ConstraintViolation<UserAccountDto>> violations = validator.validate(userData);
+        models.put("data", userData);
+        String errorMessage = "";
+        for(ConstraintViolation<UserAccountDto> violation : violations) {
+            errorMessage += violation.getMessage() + "\n";
+        }
+
+        if(!errorMessage.equals("")) {
+            models.put("error", errorMessage);
+            return "accounts/register/register.hbs";
+        }
+
         if(!userData.getPassword().equals(userData.getConfirmPassword())) {
             models.put("error", "Passwords don't match.");
-            return "accounts/register/register-failure.hbs";
+            return "accounts/register/register.hbs";
         }
+
         Account account = Account
                 .builder()
                 .login(userData.getLogin())
@@ -64,12 +83,14 @@ public class RegistrationController {
                 .lastName(userData.getLastName())
                 .phone(userData.getPhoneNumber())
                 .build();
+
         try {
             registrationService.registerAccount(account, user);
         } catch (Exception e) {
             models.put("error", e.getLocalizedMessage() + "\n" + e.getCause());
-            return "accounts/register/register-failure.hbs";
+            return "accounts/register/register.hbs";
         }
+
         models.put("email", user.getEmail());
         return "accounts/register/register-success.hbs";
     }

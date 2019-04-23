@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.web.accountsmodule;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import javax.enterprise.context.RequestScoped;
 import javax.mvc.Controller;

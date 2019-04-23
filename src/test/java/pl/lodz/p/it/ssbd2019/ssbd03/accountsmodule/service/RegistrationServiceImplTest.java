@@ -12,9 +12,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryL
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievelException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import java.util.Optional;
@@ -72,7 +71,7 @@ public class RegistrationServiceImplTest {
     }
 
     @Test
-    public void shouldAssignIdForUserAndAccount() throws RegistrationProcessException, EntityRetrievelException {
+    public void shouldAssignIdForUserAndAccount() throws RegistrationProcessException, EntityRetrievalException {
         User user = new User();
         Account account = Account
                 .builder()
@@ -94,7 +93,7 @@ public class RegistrationServiceImplTest {
         Account account = Account.builder().password("text").build();
         User user = new User();
         Assertions.assertThrows(
-                EntityRetrievelException.class,
+                EntityRetrievalException.class,
                 () -> registrationService.registerAccount(account, user)
         );
     }
@@ -102,11 +101,11 @@ public class RegistrationServiceImplTest {
     @Test
     public void shouldThrowOnConfirmAccountWhenUserDoesNotExist() {
         when(accountRepositoryLocal.findById(any())).thenReturn(Optional.empty());
-        Assertions.assertThrows(EntityRetrievelException.class, () -> registrationService.confirmAccount(0));
+        Assertions.assertThrows(EntityRetrievalException.class, () -> registrationService.confirmAccount(0));
     }
 
     @Test
-    public void shouldSetFlagOnConfirmAccount() throws EntityRetrievelException {
+    public void shouldSetFlagOnConfirmAccount() throws EntityRetrievalException {
         Account account = Account
                 .builder()
                 .confirmed(false)

@@ -3,10 +3,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+
 /**
  * Klasa reprezentująca dane użytkowników.
  */
@@ -32,6 +30,7 @@ public class User {
     private String lastName;
 
     @Size(min = 9)
+    @NotNull
     @Column(name = "phone", length = 16)
     private String phone;
 

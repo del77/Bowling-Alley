@@ -8,7 +8,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievelException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
@@ -30,7 +30,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(Account account, User user) throws RegistrationProcessException, EntityRetrievelException {
+    public void registerAccount(Account account, User user) throws RegistrationProcessException, EntityRetrievalException {
         try {
             account.setPassword(
                     SHA256Provider.encode( account.getPassword() )
@@ -38,26 +38,32 @@ public class RegistrationServiceImpl implements RegistrationService {
         } catch (Exception e) {
             throw new RegistrationProcessException(e.getMessage());
         }
+
         Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName("CLIENT");
         AccessLevel accessLevel = accessLevelOptional
-                .orElseThrow( () -> new EntityRetrievelException("Could not retrieve access level for CLIENT."));
-        AccountAccessLevel accountAccessLevel = new AccountAccessLevel();
+                .orElseThrow( () -> new EntityRetrievalException("Could not retrieve access level for CLIENT."));
+
         Account persistedAccount = accountRepositoryLocal.create(account);
-        accountAccessLevel.setAccount(persistedAccount);
-        accountAccessLevel.setAccessLevel(accessLevel);
-        accountAccessLevel.setActive(true);
+
         user.setId(persistedAccount.getId());
         user.setAccount(persistedAccount);
         userRepositoryLocal.create(user);
+
+        AccountAccessLevel accountAccessLevel = AccountAccessLevel
+                .builder()
+                .accessLevel(accessLevel)
+                .account(persistedAccount)
+                .active(true)
+                .build();
         accountAccessLevelRepositoryLocal.create(accountAccessLevel);
     }
 
     @Override
-    public void confirmAccount(long accountId) throws EntityRetrievelException {
+    public void confirmAccount(long accountId) throws EntityRetrievalException {
         //TODO: Token generation for this to be useful
         Optional<Account> accountOptional = accountRepositoryLocal.findById(accountId);
         Account account = accountOptional
-                .orElseThrow( () -> new EntityRetrievelException("No Account with ID specified."));
+                .orElseThrow( () -> new EntityRetrievalException("No Account with ID specified."));
         account.setConfirmed(true);
         accountRepositoryLocal.edit(account);
     }
