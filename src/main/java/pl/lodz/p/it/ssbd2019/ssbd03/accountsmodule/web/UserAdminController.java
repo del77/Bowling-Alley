@@ -16,6 +16,10 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu User dla
+ * ściezek admina, tj. dla użytkowników o roli "ADMIN"
+ */
 @Controller
 @RequestScoped
 @Path("admin/users")
@@ -26,7 +30,11 @@ public class UserAdminController {
     @EJB
     private UserService userService;
 
-
+    /**
+     * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
+     * a użytkownik widzi błąd.
+     * @return Widok z listą wszystkich użytkowników.
+     */
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String allUsersList() {

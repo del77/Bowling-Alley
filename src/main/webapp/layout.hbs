@@ -55,7 +55,6 @@
             {{#if loggedIn}}
                 <div>
                     {{#if userName}}
-                        Logged in as: {{userName}}!
                         <span class="badge badge-success">Client</span>
                         {{#if isAdmin}}
                             <span class="badge badge-dark">Admin</span>
@@ -63,6 +62,27 @@
                         {{#if isEmployee}}
                             <span class="badge badge-info">Employee</span>
                         {{/if}}
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle border border-light rounded waves-effect"
+                                    type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                <i class="fas fa-user"></i>
+                                {{userName}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <button class="dropdown-item" type="button">
+                                    <a href="#">
+                                        Profile
+                                    </a>
+                                </button>
+                                <hr>
+                                <button class="dropdown-item" type="button">
+                                    <a href="{{webContextPath}}/logout">
+                                        Logout
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
                     {{/if}}
                 </div>
             {{else}}

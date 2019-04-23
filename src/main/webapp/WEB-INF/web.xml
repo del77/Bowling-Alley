@@ -101,7 +101,7 @@
     <!-- MODELS FILTER -->
     <filter>
         <filter-name>UserModelFilter</filter-name>
-        <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.UserModelFilter</filter-class>
+        <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters.UserModelFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>UserModelFilter</filter-name> <!-- mandatory -->
@@ -114,8 +114,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>ssbd03realm</realm-name>
         <form-login-config>
-            <form-login-page>/accounts/login/login.hbs</form-login-page>
-            <form-error-page>/accounts/login/blad.hbs</form-error-page>
+            <form-login-page>/login</form-login-page>
+            <form-error-page>/login/error/</form-error-page>
         </form-login-config>
     </login-config>
 </web-app>
