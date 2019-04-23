@@ -101,7 +101,7 @@
     <!-- MODELS FILTER -->
     <filter>
         <filter-name>UserModelFilter</filter-name>
-        <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.UserModelFilter</filter-class>
+        <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters.UserModelFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>UserModelFilter</filter-name> <!-- mandatory -->

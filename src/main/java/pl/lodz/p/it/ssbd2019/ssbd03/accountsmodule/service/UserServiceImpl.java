@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepositoryLocal.edit(user);
         } catch (Exception e) {
-            throw new EntityUpdateException("Could not update", e);
+            throw new EntityUpdateException("Could not update user", e);
         }
     }
 }
