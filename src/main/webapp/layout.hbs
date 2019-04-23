@@ -33,6 +33,13 @@
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
+                {{#if isAdmin}}
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="{{webContextPath}}\admin\users" target="_blank">
+                            Lista uzytkowników
+                        </a>
+                    </li>
+                {{/if}}
                 <li class="nav-item">
                     <a class="nav-link waves-effect" href="#" target="_blank">Stwórz rezerwację</a>
                 </li>
@@ -45,6 +52,13 @@
                 </li>
             </ul>
             <!-- Right -->
+            {{#if loggedIn}}
+                <div>
+                    {{#if userName}}
+                        Welcome {{userName}}!
+                    {{/if}}
+                </div>
+            {{else}}
             <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item">
                     <a class="nav-link waves-effect" href="{{webContextPath}}\login">
@@ -59,6 +73,7 @@
                     </a>
                 </li>
             </ul>
+            {{/if}}
         </div>
     </div>
 </nav>
