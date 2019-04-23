@@ -65,7 +65,7 @@ public class HandlebarsViewEngine implements ViewEngine {
             final TemplateLoader loader = new ServletContextTemplateLoader(servletContext);
             final Handlebars handlebars = new Handlebars(loader);
             final Template template = handlebars.compileInline(viewContent);
-            template.apply(models, writer);
+            template.apply(models.asMap(), writer);
 
         } catch (IOException e) {
             throw new ViewEngineException(e);

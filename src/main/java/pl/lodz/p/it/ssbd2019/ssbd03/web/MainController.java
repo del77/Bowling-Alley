@@ -29,12 +29,4 @@ public class MainController {
     public String index() {
         return "index.hbs";
     }
-
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    @Path("test")
-    public String test() {
-        models.put("error", "no error");
-        return "accounts/register/register-failure.hbs";
-    }
 }
