@@ -20,7 +20,7 @@ public class Account {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @NotEmpty
     @Column(name = "login", nullable = false, length = 16, unique = true)

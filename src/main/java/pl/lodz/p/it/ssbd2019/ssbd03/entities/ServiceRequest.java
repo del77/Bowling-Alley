@@ -22,7 +22,7 @@ public class ServiceRequest {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @Column(name = "content", nullable = false, length = 256)
     private String content;

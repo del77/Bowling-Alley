@@ -19,7 +19,7 @@ public class ItemType {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @NotEmpty
     @Column(name = "name", nullable = false, length = 25, unique = true)

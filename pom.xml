@@ -1,90 +1,155 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>pl.lodz.p.it.ssbd2019</groupId>
-  <artifactId>ssbd03</artifactId>
-  <version>0.0.5-PROJEKT_WSTEPNY</version>
-  <packaging>war</packaging>
-  <name>ssbd03</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pl.lodz.p.it.ssbd2019</groupId>
+    <artifactId>ssbd03</artifactId>
+    <version>0.0.5-PROJEKT_WSTEPNY</version>
+    <packaging>war</packaging>
+    <name>ssbd03</name>
 
-  <developers>
-    <developer>
-      <name>Dariusz Syncerek</name>
-      <id>210328</id>
-    </developer>
-    <developer>
-      <name>Adrian Fijalkowski</name>
-      <id>210171</id>
-    </developer>
-    <developer>
-      <name>Michal Sobczyk</name>
-      <id>210320</id>
-    </developer>
-    <developer>
-      <name>Jakub Przybylski</name>
-      <id>210300</id>
-    </developer>
-    <developer>
-      <name>Bartosz Kudra</name>
-      <id>210239</id>
-    </developer>
-    <developer>
-      <name>Adam Troszczyński</name>
-      <id>210342</id>
-    </developer>
-    <developer>
-      <name>Bartosz Goss</name>
-      <id>207230</id>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <name>Dariusz Syncerek</name>
+            <id>210328</id>
+        </developer>
+        <developer>
+            <name>Adrian Fijalkowski</name>
+            <id>210171</id>
+        </developer>
+        <developer>
+            <name>Michal Sobczyk</name>
+            <id>210320</id>
+        </developer>
+        <developer>
+            <name>Jakub Przybylski</name>
+            <id>210300</id>
+        </developer>
+        <developer>
+            <name>Bartosz Kudra</name>
+            <id>210239</id>
+        </developer>
+        <developer>
+            <name>Adam Troszczyński</name>
+            <id>210342</id>
+        </developer>
+        <developer>
+            <name>Bartosz Goss</name>
+            <id>207230</id>
+        </developer>
+    </developers>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <version>5.4.2.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>8.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.6</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.4.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- TEST SCOPE DEPENDENCIES -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.4.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.21.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- OZARK, MVC 1.0, HANDLEBARS -->
+        <dependency>
+            <groupId>javax.mvc</groupId>
+            <artifactId>javax.mvc-api</artifactId>
+            <version>1.0-pfd</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mvc-spec.ozark</groupId>
+            <artifactId>ozark-core</artifactId>
+            <version>1.0.0-m04</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jknack</groupId>
+            <artifactId>handlebars</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <!-- MISC -->
+        <!-- VALIDATION -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.0.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>6.0.2.Final</version>
+        </dependency>
+        <!-- EXPRESS LANGUAGE API -->
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>2.2.6</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <finalName>ssbd03</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-        <configuration>
-          <source>8</source>
-          <target>8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <finalName>ssbd03</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

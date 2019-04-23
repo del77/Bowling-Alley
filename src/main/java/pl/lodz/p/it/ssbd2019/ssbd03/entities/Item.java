@@ -18,7 +18,7 @@ public class Item {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @Min(0)
     @Column(name = "size", nullable = false)

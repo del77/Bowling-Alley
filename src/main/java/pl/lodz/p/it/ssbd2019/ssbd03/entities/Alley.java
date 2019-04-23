@@ -20,7 +20,7 @@ public class Alley {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
-    private long id;
+    private Long id;
 
     @Min(0)
     @Column(name = "number", nullable = false, unique = true)
