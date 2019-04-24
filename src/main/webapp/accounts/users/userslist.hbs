@@ -1,0 +1,44 @@
+
+{{#partial "content"}}
+    <h2>Users list:</h2>
+    {{#each users}}
+        <div class="question-card card mb-4">
+            <div class="card-header forum-card-img-30 d-flex justify-content-between">
+                <p class="pt-2 mb-0">
+                    <i class="fas fa-user mr-4 pr-3 rounded-circle"></i>
+                    <strong><a href="#" target="_blank">{{this.email}}</a></strong>
+                </p>
+                <div>
+                    <a href="#" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
+                        <span class="value">Edit</span>
+                        <i class="far fa-edit ml-1"></i>
+                    </a>
+                    <a href="#" type="button" class="btn btn-outline-info btn-sm px-2 waves-effect show_login">
+                        <span class="value">See details</span>
+                        <i class="far fa-edit ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            <!--Card content-->
+            <div class="card-body">
+                <h5>Short info:</h5>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">First name</h6>
+                        </div>
+                        <p class="mb-1">{{this.firstName}}</p>
+                    </li>
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Last name</h6>
+                        </div>
+                        <p class="mb-1">{{this.lastName}}</p>
+                    </li>
+                </ul>
+                <hr>
+            </div>
+        </div>
+    {{/each}}
+{{/partial}}
+{{> layout }}

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets;
 
 
 import javax.servlet.annotation.WebServlet;

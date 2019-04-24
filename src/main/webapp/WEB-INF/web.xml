@@ -1,111 +1,121 @@
 <web-app version="3.1"
-        xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-  <display-name>SSBD03 Application Server | Bowling Alleys</display-name>
-  <session-config>
-    <session-timeout>
-      15
-    </session-timeout>
-  </session-config>
-  <security-role>
-    <description/>
-    <role-name>ADMIN</role-name>
-  </security-role>
-  <security-role>
-    <description/>
-    <role-name>EMPLOYEE</role-name>
-  </security-role>
-  <security-role>
-    <description/>
-    <role-name>CLIENT</role-name>
-  </security-role>
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>All pages</web-resource-name>
-      <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <user-data-constraint>
-      <description/>
-      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-    </user-data-constraint>
-  </security-constraint>
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <display-name>SSBD03 Application Server | Bowling Alleys</display-name>
+    <session-config>
+        <session-timeout>
+            15
+        </session-timeout>
+    </session-config>
+    <security-role>
+        <description/>
+        <role-name>ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>EMPLOYEE</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>CLIENT</role-name>
+    </security-role>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>All pages</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <description/>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
 
-  <!-- Access control for Administrators -->
-  <security-constraint>
-    <display-name>AdminConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>Admin pages</web-resource-name>
-      <description/>
-      <url-pattern>/admin/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-    </auth-constraint>
-  </security-constraint>
+    <!-- Access control for Administrators -->
+    <security-constraint>
+        <display-name>AdminConstr</display-name>
+        <web-resource-collection>
+            <web-resource-name>Admin pages</web-resource-name>
+            <description/>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>ADMIN</role-name>
+        </auth-constraint>
+    </security-constraint>
 
-  <!-- access control for Employees -->
-  <security-constraint>
-    <display-name>EmployeeConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>Employee pages</web-resource-name>
-      <description/>
-      <url-pattern>/employee/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
+    <!-- access control for Employees -->
+    <security-constraint>
+        <display-name>EmployeeConstr</display-name>
+        <web-resource-collection>
+            <web-resource-name>Employee pages</web-resource-name>
+            <description/>
+            <url-pattern>/employee/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>EMPLOYEE</role-name>
+        </auth-constraint>
+    </security-constraint>
 
-  <!-- access control for Clients -->
-  <security-constraint>
-    <display-name>ClientConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>Client pages</web-resource-name>
-      <description/>
-      <url-pattern>/client/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
+    <!-- access control for Clients -->
+    <security-constraint>
+        <display-name>ClientConstr</display-name>
+        <web-resource-collection>
+            <web-resource-name>Client pages</web-resource-name>
+            <description/>
+            <url-pattern>/client/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>CLIENT</role-name>
+        </auth-constraint>
+    </security-constraint>
 
-  <!-- access control for  login pages -->
-  <security-constraint>
-    <display-name>LoginConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>Login pages</web-resource-name>
-      <description/>
-      <url-pattern>/login/*</url-pattern>
-    </web-resource-collection>
-  </security-constraint>
+    <!-- access control for  login pages -->
+    <security-constraint>
+        <display-name>LoginConstr</display-name>
+        <web-resource-collection>
+            <web-resource-name>Login pages</web-resource-name>
+            <description/>
+            <url-pattern>/login/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
 
-  <!-- access control for logout -->
-  <security-constraint>
-    <display-name>LogoutConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>Logout pages</web-resource-name>
-      <description/>
-      <url-pattern>/logout/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-      <role-name>ADMIN</role-name>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
+    <!-- access control for logout -->
+    <security-constraint>
+        <display-name>LogoutConstr</display-name>
+        <web-resource-collection>
+            <web-resource-name>Logout pages</web-resource-name>
+            <description/>
+            <url-pattern>/logout/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>CLIENT</role-name>
+            <role-name>ADMIN</role-name>
+            <role-name>EMPLOYEE</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <!-- MODELS FILTER -->
+    <filter>
+        <filter-name>UserModelFilter</filter-name>
+        <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters.UserModelFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UserModelFilter</filter-name> <!-- mandatory -->
+        <url-pattern>/*</url-pattern> <!-- either url-pattern or servlet-name is mandatory -->
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 
-  <!-- login method definition, references to login form and login error pages -->
-  <login-config>
-    <auth-method>FORM</auth-method>
-    <realm-name>ssbd03realm</realm-name>
-    <form-login-config>
-      <form-login-page>/accounts/login/login.hbs</form-login-page>
-      <form-error-page>/accounts/login/blad.hbs</form-error-page>
-    </form-login-config>
-  </login-config>
+    <!-- login method definition, references to login form and login error pages -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>ssbd03realm</realm-name>
+        <form-login-config>
+            <form-login-page>/login</form-login-page>
+            <form-error-page>/login/error/</form-error-page>
+        </form-login-config>
+    </login-config>
 </web-app>

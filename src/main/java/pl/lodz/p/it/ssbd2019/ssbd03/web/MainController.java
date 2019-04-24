@@ -17,9 +17,6 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path("")
 public class MainController {
-    @Inject
-    Models models;
-
     /**
      * Punkt wyjścia odpowiedzialny za przkierowanie do widoku strony głównej.
      * @return Widok, standardowo "index.html"

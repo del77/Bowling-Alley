@@ -23,4 +23,11 @@ public class LoginController {
     public String loginPage() {
         return "accounts/login/login.hbs";
     }
+
+    @GET
+    @Path("error")
+    @Produces(MediaType.TEXT_HTML)
+    public String errorPage() {
+        return "accounts/login/blad.hbs";
+    }
 }
