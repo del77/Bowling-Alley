@@ -3,7 +3,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Kręgielnia</title>
+    <title>Bowling Alley</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <!-- Bootstrap core CSS -->
@@ -18,7 +18,7 @@
 <!-- Navbar -->
 <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
     <div class="container">
-        <strong class="red-text mr-2">Kręgielnia</strong>
+        <strong class="red-text mr-2">Bowling Alley</strong>
         <!-- Collapse -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,26 +29,30 @@
             <!-- Left -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link waves-effect" href="#">Strona główna
+                    <a class="nav-link waves-effect" href="#">Home Page
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
                 {{#if isAdmin}}
                     <li class="nav-item">
-                        <a class="nav-link waves-effect" href="{{webContextPath}}\admin\users" target="_blank">
-                            Lista uzytkowników
+                        <a class="nav-link waves-effect" href="{{webContextPath}}\admin\users">
+                            User's list
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect" href="{{webContextPath}}\admin\register">
+                            Create an account
                         </a>
                     </li>
                 {{/if}}
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="#" target="_blank">Stwórz rezerwację</a>
+                    <a class="nav-link waves-effect" href="#" >Create a reservation</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="#"
-                       target="_blank">Link 2</a>
+                    <a class="nav-link waves-effect" href="#">Link 2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="#" target="_blank">Link 3</a>
+                    <a class="nav-link waves-effect" href="#">Link 3</a>
                 </li>
             </ul>
             <!-- Right -->
@@ -90,13 +94,12 @@
                 <li class="nav-item">
                     <a class="nav-link waves-effect" href="{{webContextPath}}\login">
                         <i class="fas fa-user"></i>
-                        <span class="clearfix d-none d-sm-inline-block"> Zaloguj się </span>
+                        <span class="clearfix d-none d-sm-inline-block"> Sign In </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{webContextPath}}\register" class="nav-link border border-light rounded waves-effect"
-                       target="_blank">
-                        <i class="fas fa-user"></i>Stwórz konto
+                    <a href="{{webContextPath}}\register" class="nav-link border border-light rounded waves-effect">
+                        <i class="fas fa-user"></i>Sign Up
                     </a>
                 </li>
             </ul>

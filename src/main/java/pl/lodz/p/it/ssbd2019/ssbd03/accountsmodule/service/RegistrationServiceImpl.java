@@ -27,18 +27,18 @@ public class RegistrationServiceImpl implements RegistrationService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(UserAccount userAccount) throws RegistrationProcessException, EntityRetrievalException {
+    public void registerAccount(UserAccount userAccount, String accessLevelName) throws RegistrationProcessException, EntityRetrievalException {
         try {
             userAccount.setPassword(
-                    SHA256Provider.encode( userAccount.getPassword() )
+                    SHA256Provider.encode(userAccount.getPassword())
             );
         } catch (Exception e) {
             throw new RegistrationProcessException(e.getMessage());
         }
 
-        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName("CLIENT");
+        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
         AccessLevel accessLevel = accessLevelOptional
-                .orElseThrow( () -> new EntityRetrievalException("Could not retrieve access level for CLIENT."));
+                .orElseThrow(() -> new EntityRetrievalException(String.format("Could not retrieve access level for %s.", accessLevelName)));
 
         userAccount = userAccountRepositoryLocal.create(userAccount);
 
@@ -53,7 +53,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException {
-        //TODO: Token generation for this to be useful
         Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
         UserAccount account = accountOptional
                 .orElseThrow( () -> new EntityRetrievalException("No Account with ID specified."));

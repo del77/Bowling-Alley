@@ -1,0 +1,55 @@
+{{#block "registerClientForm"}}
+    <h2>Registration</h2>
+    <div class="form-group">
+        <label for="login" class="col-sm-3 control-label">Login *</label>
+        <div class="col-sm-9">
+            <input type="text" value="{{#if data}} {{data.login}} {{/if}}" id="login" name="login"
+                   placeholder="Login" class="form-control" autofocus>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="firstName" class="col-sm-3 control-label">First Name *</label>
+        <div class="col-sm-9">
+            <input type="text" id="firstName" value="{{#if data}} {{data.firstName}} {{/if}}" name="firstName"
+                   placeholder="First Name" class="form-control"
+                   autofocus>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="lastName" class="col-sm-3 control-label">Last Name *</label>
+        <div class="col-sm-9">
+            <input type="text" id="lastName" name="lastName" value="{{#if data}} {{data.lastName}} {{/if}}"
+                   placeholder="Last Name" class="form-control" autofocus>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email" class="col-sm-3 control-label">Email *</label>
+        <div class="col-sm-9">
+            <input type="email" id="email" placeholder="Email" value="{{#if data}} {{data.email}} {{/if}}"
+                   class="form-control" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-3 control-label">Password *</label>
+        <div class="col-sm-9">
+            <input type="password" id="password" name="password" value="{{#if data}} {{data.password}} {{/if}}"
+                   placeholder="Password" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-3 control-label">Confirm Password *</label>
+        <div class="col-sm-9">
+            <input type="password" id="confirmPassword" value="{{#if data}} {{data.confirmPassword}} {{/if}}"
+                   name="confirmPassword" placeholder="Password"
+                   class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phoneNumber" class="col-sm-3 control-label">Phone number</label>
+        <div class="col-sm-9">
+            <input type="text" id="phoneNumber" value="{{#if data}} {{data.phoneNumber}} {{/if}}" name="phoneNumber"
+                   placeholder="Phone number" class="form-control">
+            <span class="help-block">Your phone number won't be disclosed anywhere </span>
+        </div>
+    </div>
+{{/block}}
