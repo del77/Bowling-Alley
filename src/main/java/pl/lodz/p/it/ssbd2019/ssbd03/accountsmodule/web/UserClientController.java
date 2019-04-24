@@ -1,8 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
@@ -15,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,6 +34,9 @@ public class UserClientController {
 
     @Inject
     private Validator validator;
+
+    @EJB(beanName = "MOKAccountRepository")
+    AccountRepositoryLocal accountRepositoryLocal;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła.
@@ -61,17 +68,31 @@ public class UserClientController {
             errorMessages.add(violation.getMessage());
         }
 
-        if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
-            errorMessages.add("Passwords don't match.");
-        }
-
         if (errorMessages.size() > 0) {
             models.put("errors", errorMessages);
             return "accounts/edit-password/form.hbs";
         }
 
-        // todo: sprawdź czy aktualne hasło jest dobre
-        // todo: zaktualizuj hasło na nowe
+        try {
+            Account account = accountRepositoryLocal.findById(4L).get(); // todo: currentUserId
+            String oldPasswordHash = SHA256Provider.encode(userData.getCurrentPassword());
+            String newPasswordHash = SHA256Provider.encode(userData.getNewPassword());
+
+            if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
+                throw new Exception("Passwords don't match.");
+            }
+
+            if (!oldPasswordHash.equals(account.getPassword())) {
+                throw new Exception("Current password is incorrect.");
+            }
+
+            account.setPassword(newPasswordHash);
+            accountRepositoryLocal.edit(account);
+        } catch (Exception e) {
+            errorMessages.add(e.getMessage());
+            models.put("errors", errorMessages);
+            return "accounts/edit-password/form.hbs";
+        }
 
         return "accounts/edit-password/success.hbs";
     }
