@@ -10,6 +10,7 @@ import javax.validation.constraints.*;
  */
 @Entity
 @Table(name = "users", schema = "public", catalog = "ssbd03")
+@SecondaryTable(name = "accounts", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"), schema = "public", catalog = "ssbd03")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,4 +52,8 @@ public class User {
             foreignKey = @ForeignKey(name = "fk__user__account", value = ConstraintMode.CONSTRAINT))
     @MapsId
     private Account account;
+
+    @NotEmpty
+    @Column(name = "login", nullable = false, length = 16, unique = true, table = "accounts")
+    private String login;
 }
