@@ -1,0 +1,28 @@
+
+{{#partial "content"}}
+    <h2>Edit user: {{this.login}}</h2>
+    <form class="form-horizontal" role="form" method="post">
+        <input type="hidden" name="id" value="{{userId}}">
+        <div class="form-group">
+            <div class="col-sm-9">
+                <label for="clientRole" class="control-label">klient:</label>
+                <input type="checkbox" id="client" name="clientRole" autofocus {{#if clientRole}} checked {{/if}}>
+            </div>
+        </div>
+        <div class="form-group">
+
+            <div class="col-sm-9">
+                <label for="clientRole" class="control-label">pracownik:</label>
+                <input type="checkbox" id="employee" name="employeeRole" autofocus {{#if employeeRole}} checked {{/if}}>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-9">
+                <label for="clientRole" class="control-label">admin:</label>
+                <input type="checkbox" id="admin" name="adminRole" autofocus {{#if adminRole}} checked {{/if}}>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Zapisz</button>
+    </form>
+{{/partial}}
+{{> layout }}
