@@ -56,7 +56,7 @@ public class UserAdminController {
         return "accounts/users/userslist.hbs";
     }
 
-        @GET
+    @GET
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@PathParam("id") Long id) {
@@ -119,6 +119,7 @@ public class UserAdminController {
         } catch (Exception e) {
 
         }
-        return "";
+        models.put("updated", true);
+        return editUser(editUser.getId());
     }
 }

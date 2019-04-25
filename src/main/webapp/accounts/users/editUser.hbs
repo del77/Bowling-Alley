@@ -1,27 +1,45 @@
 
 {{#partial "content"}}
-    <h2>Edit user: {{this.login}}</h2>
+    {{#if updated}}
+        <div class="alert alert-success" role="alert">
+            <p>Dane zostały zaktualizowane.</p>
+        </div>
+    {{/if}}
+    <h2>Edytuj użytkownika: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
-        <input type="hidden" name="id" value="{{userId}}">
-        <div class="form-group">
-            <div class="col-sm-9">
-                <label for="clientRole" class="control-label">klient:</label>
-                <input type="checkbox" id="client" name="clientRole" autofocus {{#if clientRole}} checked {{/if}}>
-            </div>
-        </div>
-        <div class="form-group">
+    <div class="container">
 
-            <div class="col-sm-9">
-                <label for="clientRole" class="control-label">pracownik:</label>
-                <input type="checkbox" id="employee" name="employeeRole" autofocus {{#if employeeRole}} checked {{/if}}>
+        <div class="row">
+
+            <div class="col-10">
+                <p>todo: zmiana innych danych uzytkownika</p>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-9">
-                <label for="clientRole" class="control-label">admin:</label>
-                <input type="checkbox" id="admin" name="adminRole" autofocus {{#if adminRole}} checked {{/if}}>
+            <div class="col-2 border">
+                <input type="hidden" name="id" value="{{userId}}">
+                <div class="form-group">
+                    <div>
+                        <label for="clientRole" class="control-label">klient:</label>
+                        <input type="checkbox" id="client" name="clientRole" value="true" autofocus {{#if clientRole}} checked {{/if}}>
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div>
+                        <label for="clientRole" class="control-label">pracownik:</label>
+                        <input type="checkbox" id="employee" name="employeeRole" value="true" autofocus {{#if employeeRole}} checked {{/if}}>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="clientRole" class="control-label">admin:</label>
+                        <input type="checkbox" id="admin" name="adminRole" value="true" autofocus {{#if adminRole}} checked {{/if}}>
+                    </div>
+                </div>
             </div>
+
         </div>
+
+    </div>
         <button type="submit" class="btn btn-primary btn-block">Zapisz</button>
     </form>
 {{/partial}}

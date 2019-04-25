@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -22,6 +24,9 @@ public class AccountAccessLevelServiceImpl implements AccountAccessLevelService 
 
     @EJB(beanName = "MOKAccountRepository")
     AccountRepositoryLocal accountRepositoryLocal;
+
+    @EJB(beanName = "MOKAccessLevelRepository")
+    AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
     public List<AccountAccessLevel> getAccountAccessLevelsByUserId(Long id) throws EntityRetrievalException {
@@ -45,6 +50,10 @@ public class AccountAccessLevelServiceImpl implements AccountAccessLevelService 
             }
             else {
                 if(accountAccessLevel.isActive()) {
+                    Account acc = accountRepositoryLocal.findById(accountAccessLevel.getAccount().getId()).get();
+                    AccessLevel al = accessLevelRepositoryLocal.findById(accountAccessLevel.getAccessLevel().getId()).get();
+                    accountAccessLevel.setAccount(acc);
+                    accountAccessLevel.setAccessLevel(al);
                     accountAccessLevelRepositoryLocal.create(accountAccessLevel);
                 }
             }

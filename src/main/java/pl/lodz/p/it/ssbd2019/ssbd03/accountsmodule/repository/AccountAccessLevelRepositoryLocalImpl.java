@@ -45,7 +45,7 @@ public class AccountAccessLevelRepositoryLocalImpl extends AbstractCruRepository
     public AccountAccessLevel findForAccountIdAndAccessLevelId(Account account, AccessLevel accessLevel) {
         TypedQuery<AccountAccessLevel> namedQuery = this.createNamedQuery("AccountAccessLevel.findForAccountIdAndAccessLevelId");
         namedQuery.setParameter("account", account);
-        namedQuery.setParameter("accessLevel", accessLevel);
+        namedQuery.setParameter("access", accessLevel);
         List<AccountAccessLevel> res = namedQuery.getResultList();
         if(res.isEmpty()) {
             return null;
