@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
@@ -35,8 +37,8 @@ public class UserClientController {
     @Inject
     private Validator validator;
 
-    @EJB(beanName = "MOKAccountRepository")
-    AccountRepositoryLocal accountRepositoryLocal;
+    @EJB
+    private AccountService accountService;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła.
@@ -68,26 +70,18 @@ public class UserClientController {
             errorMessages.add(violation.getMessage());
         }
 
+        if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
+            errorMessages.add("Passwords don't match.");
+        }
+
         if (errorMessages.size() > 0) {
             models.put("errors", errorMessages);
             return "accounts/edit-password/form.hbs";
         }
 
         try {
-            Account account = accountRepositoryLocal.findById(4L).get(); // todo: currentUserId
-            String oldPasswordHash = SHA256Provider.encode(userData.getCurrentPassword());
-            String newPasswordHash = SHA256Provider.encode(userData.getNewPassword());
-
-            if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
-                throw new Exception("Passwords don't match.");
-            }
-
-            if (!oldPasswordHash.equals(account.getPassword())) {
-                throw new Exception("Current password is incorrect.");
-            }
-
-            account.setPassword(newPasswordHash);
-            accountRepositoryLocal.edit(account);
+            String login = servletRequest.getUserPrincipal().getName();
+            accountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
