@@ -1,27 +1,19 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych
@@ -62,13 +54,12 @@ public class UserClientController {
     @POST
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam UserEditPasswordDto userData, @Context HttpServletRequest servletRequest) {
-        Set<ConstraintViolation<UserEditPasswordDto>> violations = validator.validate(userData);
-        List<String> errorMessages = new ArrayList<>();
-
-        for (ConstraintViolation<UserEditPasswordDto> violation : violations) {
-            errorMessages.add(violation.getMessage());
-        }
+    public String registerAccount(@BeanParam UserEditPasswordDto userData) {
+        List<String> errorMessages = validator
+                .validate(userData)
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toList());
 
         if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
             errorMessages.add("Passwords don't match.");
@@ -80,7 +71,7 @@ public class UserClientController {
         }
 
         try {
-            String login = servletRequest.getUserPrincipal().getName();
+            String login = (String) models.get("userName");
             accountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
