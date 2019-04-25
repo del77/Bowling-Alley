@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -16,6 +17,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @EJB(beanName = "MOKUserRepository")
     UserRepositoryLocal userRepositoryLocal;
+
+    @EJB
+    private AccountAccessLevelService accountAccessLevelService;
 
     @Override
     public List<User> getAllUsers() throws EntityRetrievalException {
@@ -47,9 +51,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) throws EntityUpdateException {
+    public User updateUser(User user, List<AccountAccessLevel> accountAccessLevels) throws EntityUpdateException {
         try {
-            return userRepositoryLocal.edit(user);
+            if(accountAccessLevels != null) {
+                for (AccountAccessLevel accountAccessLevel : accountAccessLevels) {
+                    accountAccessLevelService.updateAccountAccessLevels(accountAccessLevel);
+                }
+            }
+            return user;
+            //return userRepositoryLocal.edit(user);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update user", e);
         }
