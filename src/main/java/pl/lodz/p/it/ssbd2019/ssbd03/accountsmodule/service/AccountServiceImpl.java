@@ -19,7 +19,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
-            Account account = this.findByLogin(login);
+            Account account = this.getByLogin(login);
             String currentPasswordHash = SHA256Provider.encode(currentPassword);
             String newPasswordHash = SHA256Provider.encode(newPassword);
 
@@ -34,17 +34,12 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    /*@Override
-    public Account findByLogin(String login) {
-        return accountRepositoryLocal.findById(4L).get();
-    }*/
-
     @Override
-    public Account findByLogin(String login) throws EntityRetrievalException {
+    public Account getByLogin(String login) throws EntityRetrievalException {
         try {
             return accountRepositoryLocal.findByLogin(login).orElseThrow(
-                    () -> new EntityRetrievalException("No Account with login specified.") );
-        } catch(EntityRetrievalException e) {
+                    () -> new EntityRetrievalException("No Account with login specified."));
+        } catch (EntityRetrievalException e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
     }

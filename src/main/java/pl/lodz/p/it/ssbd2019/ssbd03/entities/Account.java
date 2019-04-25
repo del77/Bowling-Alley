@@ -15,9 +15,15 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        @NamedQuery(
+                name = "Account.findByLogin",
+                query = "select a from Account a where a.login = :login"
+        )
+)
 public class Account {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
     private Long id;

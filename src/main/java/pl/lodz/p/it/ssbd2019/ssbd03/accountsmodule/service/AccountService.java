@@ -25,5 +25,5 @@ public interface AccountService {
      * @param login login użytkownika
      * @return konto użytkownika o podanym loginie
      */
-    Account findByLogin(String login) throws EntityRetrievalException;
+    Account getByLogin(String login) throws EntityRetrievalException;
 }
