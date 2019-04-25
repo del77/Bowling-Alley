@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 
 /**
  * Klasa reprezentująca logikę biznesową dla operacji związanych z obiektami oraz encjami klasy Account.
@@ -24,5 +25,5 @@ public interface AccountService {
      * @param login login użytkownika
      * @return konto użytkownika o podanym loginie
      */
-    Account findByLogin(String login);
+    Account findByLogin(String login) throws EntityRetrievalException;
 }

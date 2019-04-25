@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
@@ -33,9 +34,18 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    @Override
+    /*@Override
     public Account findByLogin(String login) {
-        // todo
         return accountRepositoryLocal.findById(4L).get();
+    }*/
+
+    @Override
+    public Account findByLogin(String login) throws EntityRetrievalException {
+        try {
+            return accountRepositoryLocal.findByLogin(login).orElseThrow(
+                    () -> new EntityRetrievalException("No Account with login specified.") );
+        } catch(EntityRetrievalException e) {
+            throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
+        }
     }
 }
