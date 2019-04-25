@@ -23,13 +23,11 @@ public class AccountServiceImpl implements AccountService {
             String newPasswordHash = SHA256Provider.encode(newPassword);
 
             if (!currentPasswordHash.equals(account.getPassword())) {
-                throw new Exception("Current password is incorrect.");
+                throw new ChangePasswordException("Current password is incorrect.");
             }
 
             account.setPassword(newPasswordHash);
-            accountRepositoryLocal.edit(account);
-
-            return account;
+            return accountRepositoryLocal.edit(account);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
