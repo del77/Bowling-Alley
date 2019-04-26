@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountAccessLevelService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -59,16 +60,13 @@ public class UserAdminController {
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@PathParam("id") Long id) {
         User user = null;
-        List<AccountAccessLevel> accountAccessLevels = null;
         try {
             user = userService.getUserById(id);
+            models.put("userId", id);
             models.put("login", user.getAccount().getLogin());
             models.put("version", user.getVersion());
-            accountAccessLevels = accountAccessLevelService.getAccountAccessLevelsByUserId((id));
-        } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
-        }
-        for(AccountAccessLevel accountAccessLevel : accountAccessLevels) {
+
+        for(AccountAccessLevel accountAccessLevel : user.getAccount().getAccountAccessLevels()) {
             if(accountAccessLevel.getAccessLevel().getName().equals("CLIENT") && accountAccessLevel.isActive()) {
                 models.put("clientRole", true);
             }
@@ -79,7 +77,10 @@ public class UserAdminController {
                 models.put("adminRole", true);
             }
         }
-        models.put("userId", id);
+
+        } catch (EntityRetrievalException e) {
+            models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
+        }
         return "accounts/users/editUser.hbs";
     }
 
@@ -87,8 +88,21 @@ public class UserAdminController {
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam EditUserDto editUser) {
+        List<String> accountAccessLevels = new ArrayList<>();
+        if(editUser.isClientRole()) accountAccessLevels.add("CLIENT");
+        if(editUser.isEmployeeRole()) accountAccessLevels.add("EMPLOYEE");
+        if(editUser.isAdminRole()) accountAccessLevels.add("ADMIN");
+        accountAccessLevels.add(AccountAccessLevel.builder().)
+//        Account account = Account
+//                .builder()
+//                .accountAccessLevels()
+//                .build();
+//        User user = User
+//                .builder()
+//                .
+        xd
         try {
-            userService.updateUser(editUser);
+            userService.updateUser(editUser, );
             models.put("updated", true);
         } catch (EntityUpdateException e) {
             models.put("error", "Could not update user.\n" + e.getLocalizedMessage());

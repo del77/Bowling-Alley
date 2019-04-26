@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
@@ -34,9 +35,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) throws EntityRetrievalException {
         try {
-            return userRepositoryLocal.findById(id).orElseThrow(
-                    () -> new EntityRetrievalException("No such user with given id")
-            );
+            User user = userRepositoryLocal.findById(id).orElseThrow(
+                    () -> new EntityRetrievalException("No such user with given id"));
+            Hibernate.initialize(user.getAccount().getAccountAccessLevels());
+            return user;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user by id", e);
         }

@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Klasa reprezentująca konto użytkownika.
@@ -47,5 +48,5 @@ public class Account {
     private User user;
 
     @OneToMany(mappedBy = "account")
-    private Collection<AccountAccessLevel> accountAccessLevels = new ArrayList<>();
+    private List<AccountAccessLevel> accountAccessLevels = new ArrayList<>();
 }
