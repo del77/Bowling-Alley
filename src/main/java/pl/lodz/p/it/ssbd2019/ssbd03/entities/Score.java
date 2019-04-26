@@ -33,7 +33,7 @@ public class Score {
             updatable = false,
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__score__user", value = ConstraintMode.CONSTRAINT))
-    private User user;
+    private UserAccount userAccount;
 
 
     @Column(name = "score", nullable = false)

@@ -16,23 +16,27 @@
             </div>
             <div class="col-2 border">
                 <input type="hidden" name="id" value="{{userId}}">
+                <input type="hidden" name="version" value="{{version}}">
+                <input type="hidden" name="clientVersion" value="{{clientVersion}}">
+                <input type="hidden" name="employeeVersion" value="{{employeeVersion}}">
+                <input type="hidden" name="adminVersion" value="{{adminVersion}}">
                 <div class="form-group">
                     <div>
-                        <label for="clientRole" class="control-label">klient:</label>
-                        <input type="checkbox" id="client" name="clientRole" value="true" autofocus {{#if clientRole}} checked {{/if}}>
+                        <label for="clientRole" class="control-label">client:</label>
+                        <input type="checkbox" id="client" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
                     </div>
                 </div>
                 <div class="form-group">
 
                     <div>
-                        <label for="clientRole" class="control-label">pracownik:</label>
-                        <input type="checkbox" id="employee" name="employeeRole" value="true" autofocus {{#if employeeRole}} checked {{/if}}>
+                        <label for="clientRole" class="control-label">employee:</label>
+                        <input type="checkbox" id="employee" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
                     </div>
                 </div>
                 <div class="form-group">
                     <div>
                         <label for="clientRole" class="control-label">admin:</label>
-                        <input type="checkbox" id="admin" name="adminRole" value="true" autofocus {{#if adminRole}} checked {{/if}}>
+                        <input type="checkbox" id="admin" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
                     </div>
                 </div>
             </div>

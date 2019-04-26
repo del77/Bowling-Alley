@@ -34,7 +34,7 @@ public class AccountAccessLevel {
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__accounts_accesses__account",
                     value = ConstraintMode.CONSTRAINT))
-    private Account account;
+    private UserAccount account;
 
     @Id
     @ManyToOne

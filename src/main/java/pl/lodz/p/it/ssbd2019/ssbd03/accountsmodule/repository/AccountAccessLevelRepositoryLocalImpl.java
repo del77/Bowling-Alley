@@ -1,9 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevelId;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.ejb.Stateless;
@@ -28,7 +28,7 @@ public class AccountAccessLevelRepositoryLocalImpl extends AbstractCruRepository
     }
 
     @Override
-    public List<AccountAccessLevel> findAllForAccount(Account account) {
+    public List<AccountAccessLevel> findAllForAccount(UserAccount account) {
         TypedQuery<AccountAccessLevel> namedQuery = this.createNamedQuery("AccountAccessLevel.findForAccountId");
         namedQuery.setParameter("account", account);
         return namedQuery.getResultList();
@@ -41,15 +41,4 @@ public class AccountAccessLevelRepositoryLocalImpl extends AbstractCruRepository
         return namedQuery.getResultList();
     }
 
-    @Override
-    public AccountAccessLevel findForAccountIdAndAccessLevelId(Account account, AccessLevel accessLevel) {
-        TypedQuery<AccountAccessLevel> namedQuery = this.createNamedQuery("AccountAccessLevel.findForAccountIdAndAccessLevelId");
-        namedQuery.setParameter("account", account);
-        namedQuery.setParameter("access", accessLevel);
-        List<AccountAccessLevel> res = namedQuery.getResultList();
-        if(res.isEmpty()) {
-            return null;
-        }
-        return res.get(0);
-    }
 }

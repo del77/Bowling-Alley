@@ -8,14 +8,28 @@ public class EditUserDto extends UserAccountDto{
     @FormParam("id")
     Long id;
 
-    @FormParam("clientRole")
-    boolean clientRole;
+    @FormParam("clientVersion")
+    Long clientRoleVersion;
 
-    @FormParam("employeeRole")
-    boolean employeeRole;
+    @FormParam("clientSelected")
+    boolean clientRoleSelected;
 
-    @FormParam("adminRole")
-    boolean adminRole;
+
+
+    @FormParam("employeeVersion")
+    Long employeeRoleVersion;
+
+    @FormParam("employeeSelected")
+    boolean employeeRoleSelected;
+
+
+
+    @FormParam("adminVersion")
+    Long adminRoleVersion;
+
+    @FormParam("adminSelected")
+    boolean adminRoleSelected;
+
 
     @FormParam("version")
     long version;

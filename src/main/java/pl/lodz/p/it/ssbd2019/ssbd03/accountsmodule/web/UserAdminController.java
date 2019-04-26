@@ -1,11 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountAccessLevelService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccessVersionDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu User dla
+ * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
  * ściezek admina, tj. dla użytkowników o roli "ADMIN"
  */
 @Controller
@@ -31,11 +30,7 @@ public class UserAdminController {
     private Models models;
 
     @EJB
-    private UserService userService;
-
-    @EJB
-    private AccountAccessLevelService accountAccessLevelService;
-
+    private UserAccountService userAccountService;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -45,13 +40,13 @@ public class UserAdminController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String allUsersList() {
-        List<User> users = new ArrayList<>();
+        List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            users = userService.getAllUsers();
+            userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve list of users.\n" + e.getLocalizedMessage());
+            models.put("error", "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
         }
-        models.put("users", users);
+        models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
     }
 
@@ -59,25 +54,26 @@ public class UserAdminController {
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@PathParam("id") Long id) {
-        User user = null;
         try {
-            user = userService.getUserById(id);
+            UserAccount user = userAccountService.getUserById(id);
             models.put("userId", id);
-            models.put("login", user.getAccount().getLogin());
+            models.put("login", user.getLogin());
             models.put("version", user.getVersion());
 
-        for(AccountAccessLevel accountAccessLevel : user.getAccount().getAccountAccessLevels()) {
-            if(accountAccessLevel.getAccessLevel().getName().equals("CLIENT") && accountAccessLevel.isActive()) {
-                models.put("clientRole", true);
+        for(AccountAccessLevel accountAccessLevel : user.getAccountAccessLevels()) {
+            if(accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) {
+                models.put("clientVersion", accountAccessLevel.getVersion());
+                if(accountAccessLevel.isActive()) models.put("clientActive", true);
             }
-            else if(accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE") && accountAccessLevel.isActive()) {
-                models.put("employeeRole", true);
+            else if(accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) {
+                models.put("employeeVersion", accountAccessLevel.getVersion());
+                if(accountAccessLevel.isActive()) models.put("employeeActive", true);
             }
-            if(accountAccessLevel.getAccessLevel().getName().equals("ADMIN") && accountAccessLevel.isActive()) {
-                models.put("adminRole", true);
+            if(accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) {
+                models.put("adminVersion", accountAccessLevel.getVersion());
+                if(accountAccessLevel.isActive()) models.put("adminActive", true);
             }
         }
-
         } catch (EntityRetrievalException e) {
             models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
         }
@@ -88,25 +84,18 @@ public class UserAdminController {
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam EditUserDto editUser) {
-        List<String> accountAccessLevels = new ArrayList<>();
-        if(editUser.isClientRole()) accountAccessLevels.add("CLIENT");
-        if(editUser.isEmployeeRole()) accountAccessLevels.add("EMPLOYEE");
-        if(editUser.isAdminRole()) accountAccessLevels.add("ADMIN");
-        accountAccessLevels.add(AccountAccessLevel.builder().)
-//        Account account = Account
-//                .builder()
-//                .accountAccessLevels()
-//                .build();
-//        User user = User
-//                .builder()
-//                .
-        xd
         try {
-            userService.updateUser(editUser, );
+            UserAccount userAccount = UserAccount.builder().id(editUser.getId()).version(editUser.getVersion()).build();
+            List<AccessVersionDto> selectedAccessLevels = new ArrayList<>();
+            selectedAccessLevels.add(new AccessVersionDto("CLIENT", editUser.getClientRoleVersion(), editUser.isClientRoleSelected()));
+            selectedAccessLevels.add(new AccessVersionDto("EMPLOYEE", editUser.getEmployeeRoleVersion(), editUser.isEmployeeRoleSelected()));
+            selectedAccessLevels.add(new AccessVersionDto("ADMIN", editUser.getAdminRoleVersion(), editUser.isAdminRoleSelected()));
+            userAccountService.updateUser(userAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
             models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
         }
         return editUser(editUser.getId());
     }
+
 }
