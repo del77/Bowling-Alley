@@ -40,21 +40,26 @@ public class AccountAccessLevelServiceImpl implements AccountAccessLevelService 
     }
 
     @Override
-    public void updateAccountAccessLevels(AccountAccessLevel accountAccessLevel) throws EntityUpdateException {
+    public void updateAccountAccessLevels(long accountId, String accessLevelName, boolean active) throws EntityUpdateException {
         try {
-            AccountAccessLevel userAccountAccessLevel = accountAccessLevelRepositoryLocal.findForAccountIdAndAccessLevelId(accountAccessLevel.getAccount(), accountAccessLevel.getAccessLevel());
+            Account account = accountRepositoryLocal.findById(accountId).orElseThrow(
+                    () -> new EntityUpdateException("No such account with given id"));
+            AccessLevel al = accessLevelRepositoryLocal.findByName(accessLevelName).orElseThrow(
+                    () -> new EntityUpdateException("No such AccessLevel with given name"));
+            AccountAccessLevel userAccountAccessLevel = accountAccessLevelRepositoryLocal.findForAccountIdAndAccessLevelId(account, al);
 
             if(userAccountAccessLevel != null) {
-                userAccountAccessLevel.setActive(accountAccessLevel.isActive());
+                userAccountAccessLevel.setActive(active);
                 accountAccessLevelRepositoryLocal.edit(userAccountAccessLevel);
             }
             else {
-                if(accountAccessLevel.isActive()) {
-                    Account acc = accountRepositoryLocal.findById(accountAccessLevel.getAccount().getId()).get();
-                    AccessLevel al = accessLevelRepositoryLocal.findById(accountAccessLevel.getAccessLevel().getId()).get();
-                    accountAccessLevel.setAccount(acc);
-                    accountAccessLevel.setAccessLevel(al);
-                    accountAccessLevelRepositoryLocal.create(accountAccessLevel);
+                if(active) {
+                    AccountAccessLevel newAccountAccessLevel = AccountAccessLevel.builder()
+                            .accessLevel(al)
+                            .account(account)
+                            .active(true)
+                            .build();
+                    accountAccessLevelRepositoryLocal.create(newAccountAccessLevel);
                 }
             }
 

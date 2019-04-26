@@ -47,11 +47,11 @@ public class UserServiceImplTest {
         Assertions.assertThrows(EntityCreationException.class, () -> userService.addUser(mock(User.class)));
     }
 
-//    @Test
-//    public void shouldThrowEntityUpdateExceptionWhenUpdateUserCatchesException() {
-//        when(userRepositoryLocal.edit(any(User.class))).thenThrow(RuntimeException.class);
-//        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUser(mock(User.class), null));
-//    }
+    @Test
+    public void shouldThrowEntityUpdateExceptionWhenUpdateUserCatchesException() {
+        when(userRepositoryLocal.edit(any(User.class))).thenThrow(RuntimeException.class);
+        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUser(mock(User.class)));
+    }
 
     @Test
     public void shouldReturnAllUsersOnGetAllUsers() throws EntityRetrievalException {
@@ -82,15 +82,14 @@ public class UserServiceImplTest {
         Assertions.assertEquals( userService.addUser(user).getId(), 1L);
     }
 
-//    @Test
-//    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException {
-//        User user = new User();
-//        when(userRepositoryLocal.edit(any(User.class))).then((u) -> {
-//            User newUser = u.getArgument(0);
-//            newUser.setId(1L);
-//            return newUser;
-//        });
-//        Assertions.assertEquals( userService.updateUser(user, null).getId(), 1L);
-//    }
-
+    @Test
+    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException {
+        User user = new User();
+        when(userRepositoryLocal.edit(any(User.class))).then((u) -> {
+            User newUser = u.getArgument(0);
+            newUser.setId(1L);
+            return newUser;
+        });
+        Assertions.assertEquals( userService.updateUser(user).getId(), 1L);
+    }
 }

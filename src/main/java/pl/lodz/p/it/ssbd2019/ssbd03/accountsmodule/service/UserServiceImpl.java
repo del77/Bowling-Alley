@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
@@ -51,15 +52,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user, List<AccountAccessLevel> accountAccessLevels) throws EntityUpdateException {
+    public User updateUser(User user) throws EntityUpdateException {
         try {
-            if(accountAccessLevels != null) {
-                for (AccountAccessLevel accountAccessLevel : accountAccessLevels) {
-                    accountAccessLevelService.updateAccountAccessLevels(accountAccessLevel);
-                }
-            }
-            return user;
-            //return userRepositoryLocal.edit(user);
+            return userRepositoryLocal.edit(user);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not update user", e);
+        }
+    }
+
+    @Override
+    public User updateUser(EditUserDto user) throws EntityUpdateException {
+        try {
+            User existingUser = userRepositoryLocal.findById(user.getId()).orElseThrow(
+                    () -> new EntityRetrievalException("No such user with given id")
+            );
+            //
+            // update existing user here
+            //
+            accountAccessLevelService.updateAccountAccessLevels(existingUser.getId(), "CLIENT", user.isClientRole());
+            accountAccessLevelService.updateAccountAccessLevels(existingUser.getId(), "EMPLOYEE", user.isEmployeeRole());
+            accountAccessLevelService.updateAccountAccessLevels(existingUser.getId(), "ADMIN", user.isAdminRole());
+            return userRepositoryLocal.edit(existingUser);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update user", e);
         }

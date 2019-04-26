@@ -1,12 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccessLevelService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountAccessLevelService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -35,8 +35,6 @@ public class UserAdminController {
     @EJB
     private AccountAccessLevelService accountAccessLevelService;
 
-    @EJB
-    private AccessLevelService accessLevelService;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -65,8 +63,7 @@ public class UserAdminController {
         try {
             user = userService.getUserById(id);
             models.put("login", user.getAccount().getLogin());
-
-            //accountAccessLevels = accountAccessLevelService.getAccountAccessLevelsByUserId(Long.parseLong(id));
+            models.put("version", user.getVersion());
             accountAccessLevels = accountAccessLevelService.getAccountAccessLevelsByUserId((id));
         } catch (EntityRetrievalException e) {
             models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
@@ -83,8 +80,6 @@ public class UserAdminController {
             }
         }
         models.put("userId", id);
-        //if(accountAccessLevels)
-        //models.put("accountAccessLevels", accountAccessLevels);
         return "accounts/users/editUser.hbs";
     }
 
@@ -92,34 +87,12 @@ public class UserAdminController {
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam EditUserDto editUser) {
-        //todo uzupelnic usera
-        List<AccountAccessLevel> accountAccessLevels = new ArrayList<>();
-
         try {
-            User user = userService.getUserById(editUser.getId());
-            AccountAccessLevel clientAccessLevel = AccountAccessLevel.builder()
-                    .account(user.getAccount())
-                    .accessLevel(accessLevelService.getAccessLevelByName("CLIENT"))
-                    .active(editUser.isClientRole())
-                    .build();
-            AccountAccessLevel employeeAccessLevel = AccountAccessLevel.builder()
-                    .account(user.getAccount())
-                    .accessLevel(accessLevelService.getAccessLevelByName("EMPLOYEE"))
-                    .active(editUser.isEmployeeRole())
-                    .build();
-            AccountAccessLevel adminAccessLevel= AccountAccessLevel.builder()
-                    .account(user.getAccount())
-                    .accessLevel(accessLevelService.getAccessLevelByName("ADMIN"))
-                    .active(editUser.isAdminRole())
-                    .build();
-            accountAccessLevels.add(clientAccessLevel);
-            accountAccessLevels.add(employeeAccessLevel);
-            accountAccessLevels.add(adminAccessLevel);
-            userService.updateUser(user, accountAccessLevels);
-        } catch (Exception e) {
-
+            userService.updateUser(editUser);
+            models.put("updated", true);
+        } catch (EntityUpdateException e) {
+            models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
         }
-        models.put("updated", true);
         return editUser(editUser.getId());
     }
 }

@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
@@ -43,6 +44,7 @@ public interface UserService {
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    User updateUser(User user, List<AccountAccessLevel> accountAccessLevels) throws EntityUpdateException;
+    User updateUser(User user) throws EntityUpdateException;
 
+    User updateUser(EditUserDto user) throws EntityUpdateException;
 }

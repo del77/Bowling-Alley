@@ -2,10 +2,10 @@
 {{#partial "content"}}
     {{#if updated}}
         <div class="alert alert-success" role="alert">
-            <p>Dane zostały zaktualizowane.</p>
+            <p>User details has been updated.</p>
         </div>
     {{/if}}
-    <h2>Edytuj użytkownika: {{this.login}}</h2>
+    <h2>Edit User: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
 
@@ -40,7 +40,7 @@
         </div>
 
     </div>
-        <button type="submit" class="btn btn-primary btn-block">Zapisz</button>
+        <button type="submit" class="btn btn-primary btn-block">Save</button>
     </form>
 {{/partial}}
 {{> layout }}

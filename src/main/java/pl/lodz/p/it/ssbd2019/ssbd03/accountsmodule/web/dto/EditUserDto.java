@@ -16,4 +16,7 @@ public class EditUserDto extends UserAccountDto{
 
     @FormParam("adminRole")
     boolean adminRole;
+
+    @FormParam("version")
+    long version;
 }

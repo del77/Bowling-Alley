@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface AccountAccessLevelService {
     List<AccountAccessLevel> getAccountAccessLevelsByUserId(Long id) throws EntityRetrievalException;
-    void updateAccountAccessLevels(AccountAccessLevel accountAccessLevel) throws EntityUpdateException;
+    void updateAccountAccessLevels(long accountId, String accessLevelName, boolean active) throws EntityUpdateException;
 }
