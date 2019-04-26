@@ -1,9 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevelId;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
@@ -17,7 +17,7 @@ public interface AccountAccessLevelRepositoryLocal extends CruRepository<Account
      * @param account Obiekt encji konta użytkownika
      * @return Lista powiązań między kontami użytkowników, a poziomami dostępu.
      */
-    List<AccountAccessLevel> findAllForAccount(Account account);
+    List<AccountAccessLevel> findAllForAccount(UserAccount account);
 
     /**
      * Zwraca powiązania pomiędzy kontem użytkownika a poziomami dostępu.

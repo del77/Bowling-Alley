@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.ejb.Stateless;
@@ -9,8 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
-@Stateless(name = "MOKAccountRepository")
-public class AccountRepositoryLocalImpl extends AbstractCruRepository<Account, Long> implements AccountRepositoryLocal {
+@Stateless(name = "MOKUserRepository")
+public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")
     private EntityManager entityManager;
 
@@ -20,13 +20,13 @@ public class AccountRepositoryLocalImpl extends AbstractCruRepository<Account, L
     }
 
     @Override
-    protected Class<Account> getTypeParameterClass() {
-        return Account.class;
+    protected Class<UserAccount> getTypeParameterClass() {
+        return UserAccount.class;
     }
 
     @Override
-    public Optional<Account> findByLogin(String login) {
-        TypedQuery<Account> namedQuery = this.createNamedQuery("Account.findByLogin");
+    public Optional<UserAccount> findByLogin(String login) {
+        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);
         return Optional.of(namedQuery.getSingleResult());
     }

@@ -8,12 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import java.util.Optional;
@@ -26,10 +24,10 @@ import static org.mockito.Mockito.when;
 public class RegistrationServiceImplTest {
 
     @Mock
-    private AccountRepositoryLocal accountRepositoryLocal;
+    private UserAccountServiceImpl userAccountService;
 
     @Mock
-    private UserRepositoryLocal userRepositoryLocal;
+    private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
     @Mock
     private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
@@ -42,76 +40,46 @@ public class RegistrationServiceImplTest {
 
     @Test
     public void shouldThrowOnPasswordNull() {
-        User user = mock(User.class);
-        Account account = mock(Account.class);
+        UserAccount userAccount = mock(UserAccount.class);
         Assertions.assertThrows(
                 RegistrationProcessException.class,
-                () -> registrationService.registerAccount(account, user)
-        );
-    }
-
-    @Test
-    public void shouldThrowOnAccountNull() {
-        User user = mock(User.class);
-        Account account = null;
-        Assertions.assertThrows(
-                RegistrationProcessException.class,
-                () -> registrationService.registerAccount(account, user)
+                () -> registrationService.registerAccount(userAccount)
         );
     }
 
     @Test
     public void shouldThrowOnUserNull() {
-        User user = null;
-        Account account = mock(Account.class);
+        UserAccount userAccount = null;
         Assertions.assertThrows(
                 RegistrationProcessException.class,
-                () -> registrationService.registerAccount(account, user)
+                () -> registrationService.registerAccount( userAccount)
         );
-    }
-
-    @Test
-    public void shouldAssignIdForUserAndAccount() throws RegistrationProcessException, EntityRetrievalException {
-        User user = new User();
-        Account account = Account
-                .builder()
-                .id(11L)
-                .password("123")
-                .build();
-        when(accountRepositoryLocal.create(any(Account.class))).thenReturn(account);
-        when(userRepositoryLocal.create(any(User.class))).thenReturn(user);
-        when(accessLevelRepositoryLocal.findByName("CLIENT")).thenReturn(
-            Optional.of(new AccessLevel())
-        );
-        registrationService.registerAccount(account, user);
-        Assertions.assertEquals(account.getId(), user.getId());
     }
 
     @Test
     public void shouldThrowOnNoAccessLevel() {
         when(accessLevelRepositoryLocal.findByName("CLIENT")).thenReturn(Optional.empty());
-        Account account = Account.builder().password("text").build();
-        User user = new User();
+        UserAccount userAccount = UserAccount.builder().password("text").build();
         Assertions.assertThrows(
                 EntityRetrievalException.class,
-                () -> registrationService.registerAccount(account, user)
+                () -> registrationService.registerAccount(userAccount)
         );
     }
 
     @Test
     public void shouldThrowOnConfirmAccountWhenUserDoesNotExist() {
-        when(accountRepositoryLocal.findById(any())).thenReturn(Optional.empty());
+        when(userAccountRepositoryLocal.findById(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(EntityRetrievalException.class, () -> registrationService.confirmAccount(0));
     }
 
     @Test
-    public void shouldSetFlagOnConfirmAccount() throws EntityRetrievalException {
-        Account account = Account
+    public void shouldSetFlagOnConfirmAccount() throws EntityRetrievalException, EntityUpdateException {
+        UserAccount account = UserAccount
                 .builder()
-                .confirmed(false)
+                .accountConfirmed(false)
                 .build();
-        when(accountRepositoryLocal.findById(any())).thenReturn(Optional.of(account));
+        when(userAccountRepositoryLocal.findById(any())).thenReturn(Optional.of(account));
         registrationService.confirmAccount(0);
-        Assertions.assertTrue(account.isConfirmed());
+        Assertions.assertTrue(account.isAccountConfirmed());
     }
 }

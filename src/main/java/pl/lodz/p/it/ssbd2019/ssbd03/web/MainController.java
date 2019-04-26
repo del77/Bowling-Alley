@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.mvc.Controller;
-import javax.mvc.Models;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;

@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
@@ -8,16 +9,16 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import java.util.List;
 
 /**
- * Klasa reprezentująca logikę biznesową dla operacji związanych z obiektami oraz encjami klasy User.
+ * Klasa reprezentująca logikę biznesową dla operacji związanych z obiektami oraz encjami klasy UserAccount.
  */
-public interface UserService {
+public interface UserAccountService {
 
     /**
      * Metoda zwracajaca listę wszystkich uzytkowników w bazie danych.
      * @return Lista encji użytkownika.
      * @throws EntityRetrievalException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych.
      */
-    List<User> getAllUsers() throws EntityRetrievalException;
+    List<UserAccount> getAllUsers() throws EntityRetrievalException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym id.
@@ -26,22 +27,35 @@ public interface UserService {
      * @throws EntityRetrievalException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    User getUserById(Long id) throws EntityRetrievalException;
+    UserAccount getUserById(Long id) throws EntityRetrievalException;
 
     /**
      * Metoda dodaje uzytkownika do bazy danych oraz zwraca dodaną encję.
-     * @param user Obiekt typu User, którego dane mają być dodane do bazy danych.
+     * @param userAccount Obiekt typu UserAccount, którego dane mają być dodane do bazy danych.
      * @return Encja użytkowniak dodanego do bazy danych.
      * @throws EntityCreationException w wypadku gdy nie powiedzie się tworzenie encji.
      */
-    User addUser(User user) throws EntityCreationException;
+    UserAccount addUser(UserAccount userAccount) throws EntityCreationException;
 
     /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
-     * @param user Encja użytkownika do zaktualizowania.
+     * @param userAccount Encja użytkownika do zaktualizowania.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    User updateUser(User user) throws EntityUpdateException;
+    UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException;
 
+
+    UserAccount getByLogin(String login) throws EntityRetrievalException;
+
+    /**
+     * Zmienia hasło użytkownika o podanym loginie
+     *
+     * @param login           login użytkownika
+     * @param currentPassword aktualne hasło użytkownika
+     * @param newPassword     nowe hasło użytkownika
+     * @return konto z zaktualizowanym hasłem
+     * @throws ChangePasswordException wyjątek zmiany hasła
+     */
+    UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
 }

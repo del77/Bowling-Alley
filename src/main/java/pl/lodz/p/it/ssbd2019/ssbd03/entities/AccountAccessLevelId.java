@@ -13,6 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountAccessLevelId implements Serializable {
-    private Account account;
+    private UserAccount account;
     private AccessLevel accessLevel;
 }
