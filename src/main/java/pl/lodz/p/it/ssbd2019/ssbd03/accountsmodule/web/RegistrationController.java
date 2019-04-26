@@ -1,8 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserAccountDto;
 
 import javax.ejb.EJB;
@@ -69,15 +68,12 @@ public class RegistrationController {
             return "accounts/register/register.hbs";
         }
 
-        Account account = Account
+        UserAccount userAccount = UserAccount
                 .builder()
                 .login(userData.getLogin())
                 .password(userData.getPassword())
-                .confirmed(false)
-                .active(true)
-                .build();
-        User user = User
-                .builder()
+                .accountConfirmed(false)
+                .accountActive(true)
                 .email(userData.getEmail())
                 .firstName(userData.getFirstName())
                 .lastName(userData.getLastName())
@@ -85,13 +81,13 @@ public class RegistrationController {
                 .build();
 
         try {
-            registrationService.registerAccount(account, user);
+            registrationService.registerAccount(userAccount);
         } catch (Exception e) {
             models.put("error", e.getLocalizedMessage() + "\n" + e.getCause());
             return "accounts/register/register.hbs";
         }
 
-        models.put("email", user.getEmail());
+        models.put("email", userAccount.getEmail());
         return "accounts/register/register-success.hbs";
     }
 }

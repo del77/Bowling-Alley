@@ -2,13 +2,12 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Account;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
@@ -20,20 +19,18 @@ import java.util.Optional;
 @Stateless
 @Transactional
 public class RegistrationServiceImpl implements RegistrationService {
-    @EJB(beanName = "MOKAccountRepository")
-    AccountRepositoryLocal accountRepositoryLocal;
     @EJB(beanName = "MOKUserRepository")
-    UserRepositoryLocal userRepositoryLocal;
+    UserAccountRepositoryLocal userAccountRepositoryLocal;
     @EJB(beanName = "MOKAccountAccessLevelRepository")
     AccountAccessLevelRepositoryLocal accountAccessLevelRepositoryLocal;
     @EJB(beanName = "MOKAccessLevelRepository")
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(Account account, User user) throws RegistrationProcessException, EntityRetrievalException {
+    public void registerAccount(UserAccount userAccount) throws RegistrationProcessException, EntityRetrievalException {
         try {
-            account.setPassword(
-                    SHA256Provider.encode( account.getPassword() )
+            userAccount.setPassword(
+                    SHA256Provider.encode( userAccount.getPassword() )
             );
         } catch (Exception e) {
             throw new RegistrationProcessException(e.getMessage());
@@ -43,28 +40,28 @@ public class RegistrationServiceImpl implements RegistrationService {
         AccessLevel accessLevel = accessLevelOptional
                 .orElseThrow( () -> new EntityRetrievalException("Could not retrieve access level for CLIENT."));
 
-        Account persistedAccount = accountRepositoryLocal.create(account);
-
-        user.setId(persistedAccount.getId());
-        user.setAccount(persistedAccount);
-        userRepositoryLocal.create(user);
+        userAccount = userAccountRepositoryLocal.create(userAccount);
 
         AccountAccessLevel accountAccessLevel = AccountAccessLevel
                 .builder()
                 .accessLevel(accessLevel)
-                .account(persistedAccount)
+                .account(userAccount)
                 .active(true)
                 .build();
         accountAccessLevelRepositoryLocal.create(accountAccessLevel);
     }
 
     @Override
-    public void confirmAccount(long accountId) throws EntityRetrievalException {
+    public void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException {
         //TODO: Token generation for this to be useful
-        Optional<Account> accountOptional = accountRepositoryLocal.findById(accountId);
-        Account account = accountOptional
+        Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
+        UserAccount account = accountOptional
                 .orElseThrow( () -> new EntityRetrievalException("No Account with ID specified."));
-        account.setConfirmed(true);
-        accountRepositoryLocal.edit(account);
+        account.setAccountConfirmed(true);
+        try {
+            userAccountRepositoryLocal.edit(account);
+        } catch (final Exception e) {
+            throw new EntityUpdateException("Exception during update of user account (account confirmation)", e);
+        }
     }
 }

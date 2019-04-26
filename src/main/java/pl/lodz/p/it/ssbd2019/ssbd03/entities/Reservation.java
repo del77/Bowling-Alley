@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.sql.Timestamp;
-import java.util.List;
+
 /**
  * Klasa reprezentująca rezerwacje.
  */
@@ -26,7 +26,7 @@ public class Reservation {
     @JoinColumn(name = "user_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))
-    private User user;
+    private UserAccount userAccount;
 
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;

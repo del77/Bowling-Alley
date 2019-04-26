@@ -40,7 +40,7 @@ public class ServiceRequest {
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false, cascade=CascadeType.REFRESH)
-    private User user;
+    private UserAccount userAccount;
 
     @JoinColumn(name = "alley_id", referencedColumnName = "id")
     @ManyToOne(optional = false)

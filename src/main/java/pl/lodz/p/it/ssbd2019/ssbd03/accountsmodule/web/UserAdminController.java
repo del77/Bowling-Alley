@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserService;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.User;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 
 import javax.ejb.EJB;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu User dla
+ * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
  * ściezek admina, tj. dla użytkowników o roli "ADMIN"
  */
 @Controller
@@ -28,7 +28,7 @@ public class UserAdminController {
     private Models models;
 
     @EJB
-    private UserService userService;
+    private UserAccountService userAccountService;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -38,13 +38,13 @@ public class UserAdminController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String allUsersList() {
-        List<User> users = new ArrayList<>();
+        List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            users = userService.getAllUsers();
+            userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve list of users.\n" + e.getLocalizedMessage());
+            models.put("error", "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
         }
-        models.put("users", users);
+        models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
     }
 

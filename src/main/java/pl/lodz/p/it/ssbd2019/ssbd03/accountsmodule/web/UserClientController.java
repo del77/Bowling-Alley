@@ -1,7 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.AccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych
- * z encjami typu User dla ściezek klienta, tj. dla użytkowników o roli "CLIENT"
+ * z encjami typu UserAccount dla ściezek klienta, tj. dla użytkowników o roli "CLIENT"
  */
 @Controller
 @RequestScoped
@@ -30,7 +31,7 @@ public class UserClientController {
     private Validator validator;
 
     @EJB
-    private AccountService accountService;
+    private UserAccountService userAccountService;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła.
@@ -72,7 +73,7 @@ public class UserClientController {
 
         try {
             String login = (String) models.get("userName");
-            accountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
+            userAccountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
