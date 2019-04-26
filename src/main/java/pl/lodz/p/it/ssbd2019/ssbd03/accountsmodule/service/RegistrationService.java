@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 public interface RegistrationService {
@@ -14,9 +15,10 @@ public interface RegistrationService {
      * @param accessLevelName Obiekt klasy String, który definiuje poziom dostępu.
      * @throws RegistrationProcessException W przypadku niespodziewanego błędu w trakcie rejestracji.
      * @throws EntityRetrievalException     W przypadku, gdy nie jest w stanie pozyskać encji AccessLevel.
+     * @throws NotUniqueParameterException W przypadku, gdy login lub email nie jest unikalny.
      */
 
-    void registerAccount(UserAccount userAccount, String accessLevelName) throws RegistrationProcessException, EntityRetrievalException;
+    void registerAccount(UserAccount userAccount, String accessLevelName) throws RegistrationProcessException, EntityRetrievalException, NotUniqueParameterException;
 
     /**
      * Potwierdzenie konta użytkownika.

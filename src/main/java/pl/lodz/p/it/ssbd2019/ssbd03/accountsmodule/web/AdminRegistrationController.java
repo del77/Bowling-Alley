@@ -3,6 +3,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -53,13 +56,11 @@ public class AdminRegistrationController {
         String errorMessage = validator.validate(complexAccountDto, models);
 
         if (!errorMessage.equals("")) {
-            models.put(ERROR_PREFIX, errorMessage);
-            return REGISTER_VIEW_URL;
+            return handleException(errorMessage);
         }
 
         if (!complexAccountDto.getPassword().equals(complexAccountDto.getConfirmPassword())) {
-            models.put(ERROR_PREFIX, "Passwords don't match.");
-            return REGISTER_VIEW_URL;
+            return handleException("Passwords don't match.");
         }
 
         UserAccount userAccount = UserAccount
@@ -76,12 +77,22 @@ public class AdminRegistrationController {
 
         try {
             registrationService.registerAccount(userAccount, complexAccountDto.getAccessLevelValue());
+        } catch (NotUniqueParameterException e) {
+            return handleException("Your email or login is not unique.");
+        }
+        catch (RegistrationProcessException | EntityRetrievalException e) {
+            return handleException(e.getMessage());
         } catch (Exception e) {
             models.put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
             return REGISTER_VIEW_URL;
         }
 
         return "accounts/register/register-success.hbs";
+    }
+
+    private String handleException(String message) {
+        models.put(ERROR_PREFIX, message);
+        return REGISTER_VIEW_URL;
     }
 
 }
