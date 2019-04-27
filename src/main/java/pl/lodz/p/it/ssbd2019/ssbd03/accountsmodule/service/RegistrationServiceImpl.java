@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import org.hibernate.exception.ConstraintViolationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
@@ -8,10 +9,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -27,20 +30,20 @@ public class RegistrationServiceImpl implements RegistrationService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(UserAccount userAccount) throws RegistrationProcessException, EntityRetrievalException {
+    public void registerAccount(UserAccount userAccount, String accessLevelName) throws RegistrationProcessException, EntityRetrievalException, NotUniqueParameterException {
         try {
             userAccount.setPassword(
-                    SHA256Provider.encode( userAccount.getPassword() )
+                    SHA256Provider.encode(userAccount.getPassword())
             );
         } catch (Exception e) {
             throw new RegistrationProcessException(e.getMessage());
         }
 
-        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName("CLIENT");
+        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
         AccessLevel accessLevel = accessLevelOptional
-                .orElseThrow( () -> new EntityRetrievalException("Could not retrieve access level for CLIENT."));
+                .orElseThrow(() -> new EntityRetrievalException(String.format("Could not retrieve access level for %s.", accessLevelName)));
 
-        userAccount = userAccountRepositoryLocal.create(userAccount);
+        userAccount = createUser(userAccount);
 
         AccountAccessLevel accountAccessLevel = AccountAccessLevel
                 .builder()
@@ -53,7 +56,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException {
-        //TODO: Token generation for this to be useful
         Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
         UserAccount account = accountOptional
                 .orElseThrow( () -> new EntityRetrievalException("No Account with ID specified."));
@@ -63,5 +65,20 @@ public class RegistrationServiceImpl implements RegistrationService {
         } catch (final Exception e) {
             throw new EntityUpdateException("Exception during update of user account (account confirmation)", e);
         }
+    }
+
+    private UserAccount createUser(UserAccount userAccount) throws NotUniqueParameterException, RegistrationProcessException {
+        try {
+            return userAccountRepositoryLocal.create(userAccount);
+        } catch (EJBTransactionRolledbackException e) {
+            Throwable t = e.getCause();
+            while ((t != null) && !(t instanceof ConstraintViolationException)) {
+                t = t.getCause();
+            }
+            if (t instanceof ConstraintViolationException) {
+                throw new NotUniqueParameterException();
+            }
+        }
+        throw new RegistrationProcessException("Something went wrong during creation a user in database.");
     }
 }

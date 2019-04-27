@@ -33,6 +33,7 @@ public class UserAdminController {
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
      * a użytkownik widzi błąd.
+     *
      * @return Widok z listą wszystkich użytkowników.
      */
     @GET
@@ -47,5 +48,4 @@ public class UserAdminController {
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
     }
-
 }

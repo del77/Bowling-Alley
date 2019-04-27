@@ -1,0 +1,20 @@
+{{#partial "content"}}
+    <div class="container">
+        <div class="w-75">
+            {{> "accounts/register/alertDanger"}}
+            <form class="form-horizontal" role="form" method="post">
+                {{> "accounts/register/registerClientForm"}}
+                <div class="form-group">
+                    <label for="userRole" class="col-sm-3 control-label">User Role</label>
+                    <div class="col-sm-9">
+                        <label><input type="radio" name="accessLevel" value="CLIENT" checked> Client </label>
+                        <label><input type="radio" name="accessLevel" value="EMPLOYEE"> Employee </label>
+                        <label><input type="radio" name="accessLevel" value="ADMIN"> Admin </label>
+                    </div>
+                </div>
+                {{> "accounts/register/submitButton"}}
+            </form>
+        </div>
+    </div>
+{{/partial}}
+{{> layout }}

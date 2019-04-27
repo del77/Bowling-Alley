@@ -1,93 +1,84 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
+
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.Set;
 
-/**
- * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
- * takich jak rzeczywisty proces rejestracji oraz weryfikacji.
- */
-@RequestScoped
-@Controller
-@Path("register")
-public class RegistrationController {
-    @EJB
-    private RegistrationService registrationService;
+public abstract class RegistrationController {
 
-    @Inject
-    private Validator validator;
-
-    @Inject
-    private Models models;
+    private static final String ERROR_PREFIX = "error";
+    private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
 
     /**
-     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
-     * @return Widok z formularzem rejestracji użytkownika
+     * Metoda pomocnicza do uniknięcia duplikowania kodu
+     * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
+     * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
-        return "accounts/register/register.hbs";
-    }
+    protected String registerAccount(BasicAccountDto basicAccountDto) {
+        String errorMessage = getValidator().validate(basicAccountDto, getModels());
 
-    /**
-     * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
-     * @param userData DTO przechowujące dane formularza rejestracji.
-     * @see UserAccountDto
-     * @return Widok potwierdzające rejestrację bądź błąd rejestracji
-     */
-    @POST
-    @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam UserAccountDto userData)  {
-        Set<ConstraintViolation<UserAccountDto>> violations = validator.validate(userData);
-        models.put("data", userData);
-        String errorMessage = "";
-        for(ConstraintViolation<UserAccountDto> violation : violations) {
-            errorMessage += violation.getMessage() + "\n";
+        if (!errorMessage.equals("")) {
+            return handleException(errorMessage);
         }
 
-        if(!errorMessage.equals("")) {
-            models.put("error", errorMessage);
-            return "accounts/register/register.hbs";
-        }
-
-        if(!userData.getPassword().equals(userData.getConfirmPassword())) {
-            models.put("error", "Passwords don't match.");
-            return "accounts/register/register.hbs";
+        if (!basicAccountDto.getPassword().equals(basicAccountDto.getConfirmPassword())) {
+            return handleException("Passwords don't match.");
         }
 
         UserAccount userAccount = UserAccount
                 .builder()
-                .login(userData.getLogin())
-                .password(userData.getPassword())
+                .login(basicAccountDto.getLogin())
+                .password(basicAccountDto.getPassword())
                 .accountConfirmed(false)
                 .accountActive(true)
-                .email(userData.getEmail())
-                .firstName(userData.getFirstName())
-                .lastName(userData.getLastName())
-                .phone(userData.getPhoneNumber())
+                .email(basicAccountDto.getEmail())
+                .firstName(basicAccountDto.getFirstName())
+                .lastName(basicAccountDto.getLastName())
+                .phone(basicAccountDto.getPhoneNumber())
                 .build();
 
         try {
-            registrationService.registerAccount(userAccount);
+            getRegistrationService().registerAccount(userAccount, "CLIENT");
+        } catch (NotUniqueParameterException e) {
+            return handleException("Your email or login is not unique.");
+        }
+        catch (RegistrationProcessException | EntityRetrievalException e) {
+            return handleException(e.getMessage());
         } catch (Exception e) {
-            models.put("error", e.getLocalizedMessage() + "\n" + e.getCause());
-            return "accounts/register/register.hbs";
+            getModels().put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
+            return REGISTER_VIEW_URL;
         }
 
-        models.put("email", userAccount.getEmail());
         return "accounts/register/register-success.hbs";
     }
+
+    protected String handleException(String message) {
+        getModels().put(ERROR_PREFIX, message);
+        return REGISTER_VIEW_URL;
+    }
+
+
+    /**
+     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
+     * @return modele mvc
+     */
+    protected abstract Models getModels();
+
+    /**
+     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
+     * @return validator dto
+     */
+    protected abstract DtoValidator getValidator();
+
+    /**
+     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
+     * @return serwis RegistrationService
+     */
+    protected abstract RegistrationService getRegistrationService();
 }
