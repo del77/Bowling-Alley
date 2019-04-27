@@ -9,9 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,5 +45,25 @@ public class UserAdminController {
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
+    }
+    
+    /**
+     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
+     *
+     * @param id id konta, które należy odblokować
+     * @return true, jeśli odblokowanie konta się powiedzie
+     */
+    @PUT
+    @Path("unlock/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Boolean unlockAccount(@PathParam("id") Long id) {
+        try {
+            userAccountService.unlockAccountById(id);
+        } catch (Exception e) {
+            models.put("error", "Could not unlock user's account.\n" + e.getLocalizedMessage());
+            return false;
+        }
+        return true;
     }
 }

@@ -17,6 +17,11 @@
                         <span class="value">See details</span>
                         <i class="far fa-edit ml-1"></i>
                     </a>
+                    {{#unless this.accountActive}}
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="unlockUser({{this.id}}, '{{this.firstName}}'); this.disabled = true;"  >
+                            <span class="value">Unlock user</span>
+                        </button>
+                    {{/unless}}
                 </div>
             </div>
             <!--Card content-->
@@ -46,5 +51,21 @@
             </div>
         </div>
     {{/each}}
+    <script type="application/javascript">
+        function unlockUser(id, firstName) {
+            try {
+                const response = fetch('{{webContextPath}}/admin/users/unlock/' + id, {
+                    method: 'put'
+                });
+                if (response) {
+                    alert("Unlocked successfully for " + firstName);
+                } else {
+                    alert({{error}});
+                }
+            } catch(err) {
+                console.error(`Error: ${err}`);
+            }
+        }
+    </script>
 {{/partial}}
 {{> layout }}

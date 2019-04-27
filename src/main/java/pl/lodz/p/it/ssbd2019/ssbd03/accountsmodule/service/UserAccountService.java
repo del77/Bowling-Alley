@@ -58,4 +58,13 @@ public interface UserAccountService {
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
     UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
+    
+    /**
+     * Odblokowuje konto użytkownika z zadanym id
+     *
+     * @param id identyfikator użytkownika
+     * @return obiekt encji odblokowanego użytkownika
+     * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
+     */
+    UserAccount unlockAccountById(Long id) throws EntityUpdateException;
 }
