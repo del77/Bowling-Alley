@@ -2,10 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -22,9 +18,7 @@ import javax.ws.rs.core.MediaType;
 @RequestScoped
 @Controller
 @Path("register")
-public class ClientRegistrationController {
-
-    private static final String ERROR_PREFIX = "error";
+public class ClientRegistrationController extends RegistrationController {
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
 
     @EJB
@@ -57,46 +51,22 @@ public class ClientRegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
-        String errorMessage = validator.validate(basicAccountDto, models);
-
-        if (!errorMessage.equals("")) {
-            return handleException(errorMessage);
-        }
-
-        if (!basicAccountDto.getPassword().equals(basicAccountDto.getConfirmPassword())) {
-            return handleException("Passwords don't match.");
-        }
-
-        UserAccount userAccount = UserAccount
-                .builder()
-                .login(basicAccountDto.getLogin())
-                .password(basicAccountDto.getPassword())
-                .accountConfirmed(false)
-                .accountActive(true)
-                .email(basicAccountDto.getEmail())
-                .firstName(basicAccountDto.getFirstName())
-                .lastName(basicAccountDto.getLastName())
-                .phone(basicAccountDto.getPhoneNumber())
-                .build();
-
-        try {
-            registrationService.registerAccount(userAccount, "CLIENT");
-        } catch (NotUniqueParameterException e) {
-            return handleException("Your email or login is not unique.");
-        }
-        catch (RegistrationProcessException | EntityRetrievalException e) {
-            return handleException(e.getMessage());
-        } catch (Exception e) {
-            models.put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
-            return REGISTER_VIEW_URL;
-        }
-
-        return "accounts/register/register-success.hbs";
+        return super.registerAccount(basicAccountDto);
     }
 
-    private String handleException(String message) {
-        models.put(ERROR_PREFIX, message);
-        return REGISTER_VIEW_URL;
+    @Override
+    protected Models getModels() {
+        return models;
+    }
+
+    @Override
+    protected DtoValidator getValidator() {
+        return validator;
+    }
+
+    @Override
+    protected RegistrationService getRegistrationService() {
+        return registrationService;
     }
 
 }
