@@ -7,7 +7,7 @@ import javax.ws.rs.FormParam;
  * Klasa reprezentująca dane z formularza edytcji użytkownika.
  */
 @Data
-public class EditUserDto extends UserAccountDto{
+public class EditUserDto extends BasicAccountDto{
     @FormParam("id")
     Long id;
 

@@ -1,0 +1,12 @@
+{{#partial "content"}}
+    <div class="container">
+        <div class="w-75">
+            {{> "accounts/register/alertDanger"}}
+            <form class="form-horizontal" role="form" method="post">
+                {{> "accounts/register/registerClientForm"}}
+                {{> "accounts/register/submitButton"}}
+            </form>
+        </div>
+    </div>
+{{/partial}}
+{{> layout }}

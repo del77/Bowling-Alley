@@ -23,6 +23,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationServiceImplTest {
 
+    private static final String ACCESS_LEVEL_NAME = "CLIENT";
+
     @Mock
     private UserAccountServiceImpl userAccountService;
 
@@ -43,7 +45,7 @@ public class RegistrationServiceImplTest {
         UserAccount userAccount = mock(UserAccount.class);
         Assertions.assertThrows(
                 RegistrationProcessException.class,
-                () -> registrationService.registerAccount(userAccount)
+                () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)
         );
     }
 
@@ -52,7 +54,7 @@ public class RegistrationServiceImplTest {
         UserAccount userAccount = null;
         Assertions.assertThrows(
                 RegistrationProcessException.class,
-                () -> registrationService.registerAccount( userAccount)
+                () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)
         );
     }
 
@@ -62,7 +64,7 @@ public class RegistrationServiceImplTest {
         UserAccount userAccount = UserAccount.builder().password("text").build();
         Assertions.assertThrows(
                 EntityRetrievalException.class,
-                () -> registrationService.registerAccount(userAccount)
+                () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)
         );
     }
 
