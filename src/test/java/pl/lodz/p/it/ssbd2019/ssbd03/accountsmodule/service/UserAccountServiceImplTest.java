@@ -92,5 +92,27 @@ public class UserAccountServiceImplTest {
         });
         Assertions.assertEquals( userService.updateUser(userAccount).getId(), 1L);
     }
+    
+    @Test
+    void unlockLockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertTrue(userService.unlockAccountById(sut.getId()).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
+    
+    @Test
+    void unlockUnlockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertTrue(userService.unlockAccountById(sut.getId()).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
 
 }
