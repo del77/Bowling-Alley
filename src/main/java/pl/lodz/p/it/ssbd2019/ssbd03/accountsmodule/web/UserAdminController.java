@@ -50,6 +50,11 @@ public class UserAdminController {
         return "accounts/users/userslist.hbs";
     }
 
+
+    /**
+     * Zwraca widok z formularzem edycji użytkownika.
+     * @return Widok z formularzem edycji uzytkownika.
+     */
     @GET
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
@@ -80,6 +85,11 @@ public class UserAdminController {
         return "accounts/users/editUser.hbs";
     }
 
+
+    /**
+     * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
+     * @return Informacja o rezultacie edycji.
+     */
     @POST
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)

@@ -65,12 +65,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
             existingUser.setVersion(userAccount.getVersion());
             //todo: set remaining existingUser fields here...
-//            for(AccountAccessLevel aal : existingUser.getAccountAccessLevels()) {
-//                AccountAccessLevel
-//                if(aal.isActive() && selectedAccessLevels.contains(aal.getAccessLevel().getName()) == false) {
-//                    aal.setActive(false);
-//                }
-//            }
+
             for(AccessVersionDto accessLevel : selectedAccessLevels) {
                 AccessLevel al = accessLevelRepositoryLocal.findByName(accessLevel.getName()).orElseThrow(
                         () -> new EntityUpdateException("Assigned AccessLevel does not exist."));

@@ -41,13 +41,19 @@ public interface UserAccountService {
     /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
-     * @param selectedAccessLevels
+     * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
     UserAccount updateUser(UserAccount userAccount, List<AccessVersionDto> selectedAccessLevels) throws EntityUpdateException;
 
-
+    /**
+     * Metoda pobiera z bazy danych uzytkownika o podanym loginie.
+     * @param login Login uzytkownika, którego należy pobrać z bazy danych.
+     * @return Użytkownik o zadanym loginie.
+     * @throws EntityRetrievalException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
+     * bądź gdy nie znajdzie użytkownika.
+     */
     UserAccount getByLogin(String login) throws EntityRetrievalException;
 
     /**
