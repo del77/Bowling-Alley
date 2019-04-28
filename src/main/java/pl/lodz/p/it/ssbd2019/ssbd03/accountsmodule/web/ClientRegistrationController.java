@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 @Path("register")
 public class ClientRegistrationController extends RegistrationController {
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
+    private static final String CLIENT_ACCESS = "CLIENT";
 
     @EJB
     private RegistrationService registrationService;
@@ -51,7 +52,7 @@ public class ClientRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
-        return super.registerAccount(basicAccountDto);
+        return super.registerAccount(basicAccountDto, CLIENT_ACCESS);
     }
 
     @Override
