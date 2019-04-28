@@ -11,9 +11,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import java.util.*;
 
@@ -73,7 +75,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnRightEntityOnAddUser() throws  EntityCreationException {
+    public void shouldReturnRightEntityOnAddUser() throws EntityCreationException {
         UserAccount userAccount = new UserAccount();
         when(userAccountRepositoryLocal.create(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
@@ -125,7 +127,7 @@ public class UserAccountServiceImplTest {
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
     }
-    
+
     @Test
     public void unlockLockedAccountTestShouldNotThrow() {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
@@ -138,7 +140,7 @@ public class UserAccountServiceImplTest {
             Assertions.fail(e);
         }
     }
-    
+
     @Test
     public void unlockUnlockedAccountTestShouldNotThrow() {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
@@ -217,5 +219,53 @@ public class UserAccountServiceImplTest {
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
         Assertions.assertTrue(activeBefore == true && activeAfter == false);
+    }
+    @Test
+    public void changePasswordTestShouldNotThrow() {
+        String login = "login69";
+        String currentPassword = "test";
+        String newPassword = "N0W3H45L0";
+
+        try {
+            String currentPasswordHash = SHA256Provider.encode(currentPassword);
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+
+            UserAccount user = UserAccount
+                    .builder()
+                    .login(login)
+                    .password(currentPasswordHash)
+                    .build();
+
+            when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
+            userService.changePassword(login, currentPassword, newPassword);
+            Assertions.assertEquals(newPasswordHash, user.getPassword());
+        } catch (Exception e) {
+            Assertions.fail(e);
+        }
+    }
+
+    @Test
+    public void changePasswordTestShouldThrowChangePasswordException() {
+        String login = "login69";
+        String currentPassword = "test";
+        String wrongCurrentPassword = "T3ST";
+        String newPassword = "N0W3H45L0";
+
+        try {
+            String currentPasswordHash = SHA256Provider.encode(currentPassword);
+
+            UserAccount user = UserAccount
+                    .builder()
+                    .login(login)
+                    .password(currentPasswordHash)
+                    .build();
+
+            when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
+
+            Assertions.assertThrows(ChangePasswordException.class, () ->
+                    userService.changePassword(login, wrongCurrentPassword, newPassword));
+        } catch (Exception e) {
+            Assertions.fail(e);
+        }
     }
 }
