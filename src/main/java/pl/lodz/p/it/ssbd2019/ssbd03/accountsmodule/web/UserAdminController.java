@@ -134,12 +134,20 @@ public class UserAdminController implements Serializable {
 
             for(AccountAccessLevel accountAccessLevel : user.getAccountAccessLevels()) {
                 if(accountAccessLevel.isActive()) {
-                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) { models.put("clientActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) { models.put("employeeActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) { models.put("adminActive", true); }
+                    switch(accountAccessLevel.getAccessLevel().getName()){
+                        case "CLIENT":
+                            models.put("clientActive",true);
+                            break;
+                        case "EMPLOYEE":
+                            models.put("employeeActive",true);
+                            break;
+                        case "ADMIN":
+                            models.put("adminActive",true);
+                            break;
+                    }
                 }
             }
-        } catch (Exception e) {
+        } catch (EntityRetrievalException e) {
             models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
