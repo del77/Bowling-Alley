@@ -5,6 +5,11 @@
             <p>User details has been updated.</p>
         </div>
     {{/if}}
+    {{#if error}}
+        <div class="alert alert-danger" role="alert">
+            <p>{{error}}</p>
+        </div>
+    {{/if}}
     <h2>Edit User: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
@@ -15,11 +20,6 @@
                 <p>todo: zmiana innych danych uzytkownika</p>
             </div>
             <div class="col-2 border">
-                <input type="hidden" name="id" value="{{userId}}">
-                <input type="hidden" name="version" value="{{version}}">
-                <input type="hidden" name="clientVersion" value="{{clientVersion}}">
-                <input type="hidden" name="employeeVersion" value="{{employeeVersion}}">
-                <input type="hidden" name="adminVersion" value="{{adminVersion}}">
                 <div class="form-group">
                     <div>
                         <label for="clientRole" class="control-label">client:</label>

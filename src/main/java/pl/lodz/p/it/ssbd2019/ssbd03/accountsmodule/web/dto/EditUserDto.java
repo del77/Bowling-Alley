@@ -8,32 +8,13 @@ import javax.ws.rs.FormParam;
  */
 @Data
 public class EditUserDto extends BasicAccountDto{
-    @FormParam("id")
-    Long id;
-
-    @FormParam("clientVersion")
-    Long clientRoleVersion;
 
     @FormParam("clientSelected")
     boolean clientRoleSelected;
 
-
-
-    @FormParam("employeeVersion")
-    Long employeeRoleVersion;
-
     @FormParam("employeeSelected")
     boolean employeeRoleSelected;
 
-
-
-    @FormParam("adminVersion")
-    Long adminRoleVersion;
-
     @FormParam("adminSelected")
     boolean adminRoleSelected;
-
-
-    @FormParam("version")
-    long version;
 }

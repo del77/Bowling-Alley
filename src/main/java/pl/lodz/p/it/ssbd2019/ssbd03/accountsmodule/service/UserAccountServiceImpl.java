@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccessVersionDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -58,33 +57,23 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount updateUser(UserAccount userAccount, List<AccessVersionDto> selectedAccessLevels) throws EntityUpdateException {
+    public UserAccount updateUser(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
-            UserAccount existingUser = userAccountRepositoryLocal.findById(userAccount.getId()).orElseThrow(
-                    () -> new EntityUpdateException("Updated user does not exist."));
 
-            existingUser.setVersion(userAccount.getVersion());
-            //todo: set remaining existingUser fields here...
-
-            for(AccessVersionDto accessLevel : selectedAccessLevels) {
-                AccessLevel al = accessLevelRepositoryLocal.findByName(accessLevel.getName()).orElseThrow(
-                        () -> new EntityUpdateException("Assigned AccessLevel does not exist."));
-                AccountAccessLevel aal = existingUser.getAccountAccessLevels().stream()
-                        .filter((accountAccessLevel) -> accountAccessLevel.getAccessLevel().equals(al))
-                        .findFirst()
-                        .orElse(null);
-                if(aal == null) {
-                    if(accessLevel.isSelected()) {
-                        existingUser.getAccountAccessLevels().add(AccountAccessLevel.builder()
-                                .account(existingUser).accessLevel(al).active(true).build());
-                    }
-                }
-                else {
-                    aal.setActive(accessLevel.isSelected());
-                    aal.setVersion(accessLevel.getVersion());
-                }
+            for (AccountAccessLevel aal : userAccount.getAccountAccessLevels()) {
+                if (selectedAccessLevels.contains(aal.getAccessLevel().getName())) {
+                    aal.setActive(true);
+                    selectedAccessLevels.remove(aal.getAccessLevel().getName());
+                } else aal.setActive(false);
             }
-            return userAccountRepositoryLocal.edit(existingUser);
+            for (String selectedAccessLevel : selectedAccessLevels) {
+                AccessLevel al = accessLevelRepositoryLocal.findByName(selectedAccessLevel).orElseThrow(
+                        () -> new EntityUpdateException("Assigned AccessLevel does not exist."));
+                userAccount.getAccountAccessLevels().add(AccountAccessLevel.builder()
+                        .account(userAccount).accessLevel(al).active(true).build());
+            }
+
+            return userAccountRepositoryLocal.edit(userAccount);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }

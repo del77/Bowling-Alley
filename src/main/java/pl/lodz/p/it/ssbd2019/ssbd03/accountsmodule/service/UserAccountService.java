@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccessVersionDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
@@ -45,7 +44,7 @@ public interface UserAccountService {
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUser(UserAccount userAccount, List<AccessVersionDto> selectedAccessLevels) throws EntityUpdateException;
+    UserAccount updateUser(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.

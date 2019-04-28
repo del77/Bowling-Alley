@@ -27,7 +27,7 @@ import javax.validation.constraints.Min;
 )
 public class AccountAccessLevel {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",
             unique = true,
             updatable = false,
