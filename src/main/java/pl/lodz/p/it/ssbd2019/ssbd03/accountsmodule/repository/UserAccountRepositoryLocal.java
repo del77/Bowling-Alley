@@ -11,7 +11,7 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
 
     /**
      * Metoda służy do pozyskiwania ancji konta użytkownika na podstawie jego loginu.
-     * @param login Login użytkonwnika
+     * @param login Login użytkownika
      * @return Encja reprezentująca konto użytkownika.
      */
     Optional<UserAccount> findByLogin(String login);

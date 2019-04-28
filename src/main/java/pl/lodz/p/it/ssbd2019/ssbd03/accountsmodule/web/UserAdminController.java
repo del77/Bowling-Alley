@@ -67,9 +67,9 @@ public class UserAdminController implements Serializable {
 
             for(AccountAccessLevel accountAccessLevel : editedAccount.getAccountAccessLevels()) {
                 if(accountAccessLevel.isActive()) {
-                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) models.put("clientActive", true);
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) models.put("employeeActive", true);
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) models.put("adminActive", true);
+                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) { models.put("clientActive", true); }
+                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) { models.put("employeeActive", true); }
+                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) { models.put("adminActive", true); }
                 }
             }
         } catch (Exception e) {
@@ -89,9 +89,9 @@ public class UserAdminController implements Serializable {
     public String editUser(@BeanParam EditUserDto editUser) {
         try {
             List<String> selectedAccessLevels = new ArrayList<>();
-            if(editUser.isClientRoleSelected()) selectedAccessLevels.add("CLIENT");
-            if(editUser.isEmployeeRoleSelected()) selectedAccessLevels.add("EMPLOYEE");
-            if(editUser.isAdminRoleSelected()) selectedAccessLevels.add("ADMIN");
+            if(editUser.isClientRoleSelected()) { selectedAccessLevels.add("CLIENT"); }
+            if(editUser.isEmployeeRoleSelected()) { selectedAccessLevels.add("EMPLOYEE"); }
+            if(editUser.isAdminRoleSelected()) { selectedAccessLevels.add("ADMIN"); }
 
             userAccountService.updateUser(editedAccount, selectedAccessLevels);
             models.put("updated", true);

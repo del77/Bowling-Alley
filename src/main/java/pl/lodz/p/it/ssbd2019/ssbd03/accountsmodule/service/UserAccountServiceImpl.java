@@ -64,7 +64,9 @@ public class UserAccountServiceImpl implements UserAccountService {
                 if (selectedAccessLevels.contains(aal.getAccessLevel().getName())) {
                     aal.setActive(true);
                     selectedAccessLevels.remove(aal.getAccessLevel().getName());
-                } else aal.setActive(false);
+                } else {
+                    aal.setActive(false);
+                }
             }
             for (String selectedAccessLevel : selectedAccessLevels) {
                 AccessLevel al = accessLevelRepositoryLocal.findByName(selectedAccessLevel).orElseThrow(
