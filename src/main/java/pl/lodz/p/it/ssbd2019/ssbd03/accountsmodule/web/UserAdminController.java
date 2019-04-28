@@ -65,20 +65,13 @@ public class UserAdminController implements Serializable {
             editedAccount = userAccountService.getUserById(id);
             models.put("login", editedAccount.getLogin());
 
-        for(AccountAccessLevel accountAccessLevel : editedAccount.getAccountAccessLevels()) {
-            if(accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) {
-                models.put("clientVersion", accountAccessLevel.getVersion());
-                if(accountAccessLevel.isActive()) models.put("clientActive", true);
+            for(AccountAccessLevel accountAccessLevel : editedAccount.getAccountAccessLevels()) {
+                if(accountAccessLevel.isActive()) {
+                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) models.put("clientActive", true);
+                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) models.put("employeeActive", true);
+                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) models.put("adminActive", true);
+                }
             }
-            else if(accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) {
-                models.put("employeeVersion", accountAccessLevel.getVersion());
-                if(accountAccessLevel.isActive()) models.put("employeeActive", true);
-            }
-            if(accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) {
-                models.put("adminVersion", accountAccessLevel.getVersion());
-                if(accountAccessLevel.isActive()) models.put("adminActive", true);
-            }
-        }
         } catch (Exception e) {
             models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
         }
@@ -103,7 +96,7 @@ public class UserAdminController implements Serializable {
             userAccountService.updateUser(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
-            models.put("error", "There wsa a problem during user update.\n" + e.getLocalizedMessage());
+            models.put("error", "There was a problem during user update.\n" + e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
     }
