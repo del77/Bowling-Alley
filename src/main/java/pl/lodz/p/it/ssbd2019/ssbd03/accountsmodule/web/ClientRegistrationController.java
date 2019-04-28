@@ -70,4 +70,8 @@ public class ClientRegistrationController extends RegistrationController {
         return registrationService;
     }
 
+    @Override
+    protected String getRegisterViewUrl() {
+        return REGISTER_VIEW_URL;
+    }
 }

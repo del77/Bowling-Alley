@@ -13,7 +13,6 @@ import javax.mvc.Models;
 public abstract class RegistrationController {
 
     private static final String ERROR_PREFIX = "error";
-    private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
 
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
@@ -53,17 +52,11 @@ public abstract class RegistrationController {
             return handleException(e.getMessage());
         } catch (Exception e) {
             getModels().put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
-            return REGISTER_VIEW_URL;
+            return getRegisterViewUrl();
         }
 
         return "accounts/register/register-success.hbs";
     }
-
-    protected String handleException(String message) {
-        getModels().put(ERROR_PREFIX, message);
-        return REGISTER_VIEW_URL;
-    }
-
 
     /**
      * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
@@ -82,4 +75,15 @@ public abstract class RegistrationController {
      * @return serwis RegistrationService
      */
     protected abstract RegistrationService getRegistrationService();
+
+    /**
+     * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * @return String url
+     */
+    protected abstract String getRegisterViewUrl();
+
+    private String handleException(String message) {
+        getModels().put(ERROR_PREFIX, message);
+        return getRegisterViewUrl();
+    }
 }
