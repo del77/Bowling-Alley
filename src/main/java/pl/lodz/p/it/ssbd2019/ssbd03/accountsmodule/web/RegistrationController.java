@@ -18,9 +18,10 @@ public abstract class RegistrationController {
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
      * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
+     * @param accessLevelName poziom dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    protected String registerAccount(BasicAccountDto basicAccountDto) {
+    String registerAccount(BasicAccountDto basicAccountDto, String accessLevelName) {
         String errorMessage = getValidator().validate(basicAccountDto, getModels());
 
         if (!errorMessage.equals("")) {
@@ -44,7 +45,7 @@ public abstract class RegistrationController {
                 .build();
 
         try {
-            getRegistrationService().registerAccount(userAccount, "CLIENT");
+            getRegistrationService().registerAccount(userAccount, accessLevelName);
         } catch (NotUniqueParameterException e) {
             return handleException("Your email or login is not unique.");
         }

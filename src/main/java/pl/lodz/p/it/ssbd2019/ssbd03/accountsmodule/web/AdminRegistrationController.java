@@ -52,7 +52,7 @@ public class AdminRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
-        return super.registerAccount(complexAccountDto);
+        return super.registerAccount(complexAccountDto, complexAccountDto.getAccessLevelValue());
     }
 
     @Override
