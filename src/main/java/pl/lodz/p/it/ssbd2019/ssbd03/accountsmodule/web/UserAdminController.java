@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.EditUserDtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -88,11 +89,7 @@ public class UserAdminController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam EditUserDto editUser) {
         try {
-            List<String> selectedAccessLevels = new ArrayList<>();
-            if(editUser.isClientRoleSelected()) { selectedAccessLevels.add("CLIENT"); }
-            if(editUser.isEmployeeRoleSelected()) { selectedAccessLevels.add("EMPLOYEE"); }
-            if(editUser.isAdminRoleSelected()) { selectedAccessLevels.add("ADMIN"); }
-
+            List<String> selectedAccessLevels = EditUserDtoMapper.editUserDtoToListOfAccessLevels(editUser);
             userAccountService.updateUser(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {

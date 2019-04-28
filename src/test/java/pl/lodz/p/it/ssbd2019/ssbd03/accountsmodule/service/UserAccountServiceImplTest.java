@@ -104,15 +104,20 @@ public class UserAccountServiceImplTest {
 
     @Test
     public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException {
-        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
+        UserAccount userAccount = UserAccount.builder()
+                .id(1L)
+                .accountAccessLevels(new ArrayList<>())
+                .build();
         int accessLevelsBefore = userAccount.getAccountAccessLevels().size();
 
         when(accessLevelRepositoryLocal.findByName(anyString())).then((u) -> Optional.of(new AccessLevel()));
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> aals = asList(AccountAccessLevel.builder().active(true).build());
-            newUserAccount.setAccountAccessLevels(aals);
+            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+                    .active(true)
+                    .build());
+            newUserAccount.setAccountAccessLevels(accountAccessLevels);
             return newUserAccount;
         });
 
@@ -150,17 +155,27 @@ public class UserAccountServiceImplTest {
 
     @Test
     public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException {
-        AccessLevel al = AccessLevel.builder().name("CLIENT").build();
-        AccountAccessLevel existingAAL = AccountAccessLevel.builder().active(false).accessLevel(al).build();
-        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(asList(existingAAL)).build();
+        AccessLevel accessLevel = AccessLevel.builder()
+                .name("CLIENT")
+                .build();
+        AccountAccessLevel existingAccountAccessLevel = AccountAccessLevel.builder()
+                .active(false)
+                .accessLevel(accessLevel)
+                .build();
+        UserAccount userAccount = UserAccount.builder()
+                .id(1L)
+                .accountAccessLevels(asList(existingAccountAccessLevel))
+                .build();
         int accessLevelsBefore = userAccount.getAccountAccessLevels().size();
         boolean activeBefore = userAccount.getAccountAccessLevels().get(0).isActive();
 
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> aals = asList(AccountAccessLevel.builder().active(true).build());
-            newUserAccount.setAccountAccessLevels(aals);
+            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+                    .active(true)
+                    .build());
+            newUserAccount.setAccountAccessLevels(accountAccessLevels);
             return newUserAccount;
         });
 
@@ -173,21 +188,31 @@ public class UserAccountServiceImplTest {
 
     @Test
     public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException {
-        AccessLevel al = AccessLevel.builder().name("CLIENT").build();
-        AccountAccessLevel existingAAL = AccountAccessLevel.builder().active(true).accessLevel(al).build();
-        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(asList(existingAAL)).build();
+        AccessLevel accessLevel = AccessLevel.builder()
+                .name("CLIENT")
+                .build();
+        AccountAccessLevel existingAccountAccessLevel = AccountAccessLevel.builder()
+                .active(true)
+                .accessLevel(accessLevel)
+                .build();
+        UserAccount userAccount = UserAccount.builder()
+                .id(1L)
+                .accountAccessLevels(asList(existingAccountAccessLevel))
+                .build();
         int accessLevelsBefore = userAccount.getAccountAccessLevels().size();
         boolean activeBefore = userAccount.getAccountAccessLevels().get(0).isActive();
 
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> aals = asList(AccountAccessLevel.builder().active(false).build());
-            newUserAccount.setAccountAccessLevels(aals);
+            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+                    .active(false)
+                    .build());
+            newUserAccount.setAccountAccessLevels(accountAccessLevels);
             return newUserAccount;
         });
 
-        userAccount = userService.updateUser(userAccount, new LinkedList<String>(asList("CLIENT")));
+        userAccount = userService.updateUser(userAccount, new ArrayList<>());
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);

@@ -56,28 +56,51 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
+
     @Override
     public UserAccount updateUser(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
-
-            for (AccountAccessLevel aal : userAccount.getAccountAccessLevels()) {
-                if (selectedAccessLevels.contains(aal.getAccessLevel().getName())) {
-                    aal.setActive(true);
-                    selectedAccessLevels.remove(aal.getAccessLevel().getName());
-                } else {
-                    aal.setActive(false);
-                }
-            }
-            for (String selectedAccessLevel : selectedAccessLevels) {
-                AccessLevel al = accessLevelRepositoryLocal.findByName(selectedAccessLevel).orElseThrow(
-                        () -> new EntityUpdateException("Assigned AccessLevel does not exist."));
-                userAccount.getAccountAccessLevels().add(AccountAccessLevel.builder()
-                        .account(userAccount).accessLevel(al).active(true).build());
-            }
+            setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
+            addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
 
             return userAccountRepositoryLocal.edit(userAccount);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
+        }
+    }
+
+    /**
+     * Ustawia prawidłowy stan dla flagi active
+     * w istniejących dla użytkownika poziomach dostępu.
+     */
+    private void setActiveFieldForExistingAccountAccessLevelsOfEditedUser(List<AccountAccessLevel> accountAccessLevels,
+                                                                          List<String> selectedAccessLevels) {
+        for (AccountAccessLevel accountAccessLevel : accountAccessLevels) {
+            if (selectedAccessLevels.contains(accountAccessLevel.getAccessLevel().getName())) {
+                accountAccessLevel.setActive(true);
+                selectedAccessLevels.remove(accountAccessLevel.getAccessLevel().getName());
+            } else {
+                accountAccessLevel.setActive(false);
+            }
+        }
+    }
+
+    /**
+     * Dodaje dla użytkownika poziomy dostępu, które nie były dla niego wcześniej przydzielone.
+     * @param userAccount Obiekt typu UserAccount, który jest edytowany.
+     * @param selectedAccessLevels Obiekt typu List<String>, który reprezentuje zaznaczone przy edycji poziomy dostępu
+     * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
+     */
+    private void addNewAccountAccessLevelsForEditedUser(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException{
+        for (String selectedAccessLevel : selectedAccessLevels) {
+            AccessLevel accessLevel = accessLevelRepositoryLocal.findByName(selectedAccessLevel).orElseThrow(
+                    () -> new EntityUpdateException("Assigned AccessLevel does not exist."));
+            userAccount.getAccountAccessLevels().add(AccountAccessLevel.builder()
+                    .account(userAccount)
+                    .accessLevel(accessLevel)
+                    .active(true)
+                    .build()
+            );
         }
     }
 
