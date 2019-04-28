@@ -1,7 +1,8 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -17,10 +18,10 @@ import javax.ws.rs.core.MediaType;
  */
 @RequestScoped
 @Controller
-@Path("register")
-public class ClientRegistrationController extends RegistrationController {
-    private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
-    private static final String CLIENT_ACCESS = "CLIENT";
+@Path("admin/register")
+public class AdminRegistrationController extends RegistrationController {
+
+    private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
 
     @EJB
     private RegistrationService registrationService;
@@ -45,14 +46,14 @@ public class ClientRegistrationController extends RegistrationController {
     /**
      * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
      *
-     * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
+     * @param complexAccountDto DTO przechowujące dane formularza rejestracji.
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
-     * @see BasicAccountDto
+     * @see ComplexAccountDto
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
-        return super.registerAccount(basicAccountDto, CLIENT_ACCESS);
+    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
+        return super.registerAccount(complexAccountDto, DtoMapper.getListOfAccessLevels(complexAccountDto));
     }
 
     @Override

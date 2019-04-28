@@ -3,21 +3,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.ws.rs.FormParam;
-
 /**
  * Klasa reprezentująca dane z formularza edytcji użytkownika.
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class EditUserDto extends BasicAccountDto{
+@EqualsAndHashCode(callSuper = true)
+public class EditUserDto extends ComplexAccountDto {
 
-    @FormParam("clientSelected")
-    boolean clientRoleSelected;
-
-    @FormParam("employeeSelected")
-    boolean employeeRoleSelected;
-
-    @FormParam("adminSelected")
-    boolean adminRoleSelected;
 }

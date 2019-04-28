@@ -1,7 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -10,6 +10,7 @@ import javax.mvc.Controller;
 import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -17,10 +18,10 @@ import javax.ws.rs.core.MediaType;
  */
 @RequestScoped
 @Controller
-@Path("admin/register")
-public class AdminRegistrationController extends RegistrationController {
+@Path("register")
+public class ClientRegistrationController extends RegistrationController {
 
-    private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
+    private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
 
     @EJB
     private RegistrationService registrationService;
@@ -45,14 +46,14 @@ public class AdminRegistrationController extends RegistrationController {
     /**
      * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
      *
-     * @param complexAccountDto DTO przechowujące dane formularza rejestracji.
+     * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
-     * @see ComplexAccountDto
+     * @see BasicAccountDto
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
-        return super.registerAccount(complexAccountDto, complexAccountDto.getAccessLevelValue());
+    public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
+        return super.registerAccount(basicAccountDto, Collections.singletonList("CLIENT"));
     }
 
     @Override

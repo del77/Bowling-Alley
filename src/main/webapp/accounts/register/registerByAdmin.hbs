@@ -5,11 +5,22 @@
             <form class="form-horizontal" role="form" method="post">
                 {{> "accounts/register/registerClientForm"}}
                 <div class="form-group">
-                    <label for="userRole" class="col-sm-3 control-label">User Role</label>
-                    <div class="col-sm-9">
-                        <label><input type="radio" name="accessLevel" value="CLIENT" checked> Client </label>
-                        <label><input type="radio" name="accessLevel" value="EMPLOYEE"> Employee </label>
-                        <label><input type="radio" name="accessLevel" value="ADMIN"> Admin </label>
+                    <div>
+                        <label for="clientRole" class="control-label">client:</label>
+                        <input type="checkbox" name="clientSelected" value="true">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div>
+                        <label for="clientRole" class="control-label">employee:</label>
+                        <input type="checkbox" name="employeeSelected" value="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="clientRole" class="control-label">admin:</label>
+                        <input type="checkbox" id="admin" name="adminSelected" value="true">
                     </div>
                 </div>
                 {{> "accounts/register/submitButton"}}

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.mvc.Models;
+import java.util.List;
 
 public abstract class RegistrationController {
 
@@ -17,11 +18,11 @@ public abstract class RegistrationController {
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
      * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
-     * @param accessLevelName poziom dostepu konta
+     * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    String registerAccount(BasicAccountDto basicAccountDto, String accessLevelName) {
-        String errorMessage = getValidator().validate(basicAccountDto, getModels());
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+        String errorMessage = getValidator().validate(basicAccountDto, getModels(), accessLevelNames);
 
         if (!errorMessage.equals("")) {
             return handleException(errorMessage);
@@ -44,7 +45,7 @@ public abstract class RegistrationController {
                 .build();
 
         try {
-            getRegistrationService().registerAccount(userAccount, accessLevelName);
+            getRegistrationService().registerAccount(userAccount, accessLevelNames);
         } catch (NotUniqueParameterException e) {
             return handleException("Your email or login is not unique.");
         }

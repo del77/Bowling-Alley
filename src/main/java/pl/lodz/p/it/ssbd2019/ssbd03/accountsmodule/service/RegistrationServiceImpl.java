@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -30,40 +31,31 @@ public class RegistrationServiceImpl implements RegistrationService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(UserAccount userAccount, String accessLevelName) throws RegistrationProcessException, EntityRetrievalException, NotUniqueParameterException {
-        try {
-            userAccount.setPassword(
-                    SHA256Provider.encode(userAccount.getPassword())
-            );
-        } catch (Exception e) {
-            throw new RegistrationProcessException(e.getMessage());
-        }
-
-        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
-        AccessLevel accessLevel = accessLevelOptional
-                .orElseThrow(() -> new EntityRetrievalException(String.format("Could not retrieve access level for %s.", accessLevelName)));
-
+    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueParameterException {
+        userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount = createUser(userAccount);
-
-        AccountAccessLevel accountAccessLevel = AccountAccessLevel
-                .builder()
-                .accessLevel(accessLevel)
-                .account(userAccount)
-                .active(true)
-                .build();
-        accountAccessLevelRepositoryLocal.create(accountAccessLevel);
+        createAccessLevels(userAccount, accessLevelNames);
     }
 
     @Override
     public void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException {
         Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
         UserAccount account = accountOptional
-                .orElseThrow( () -> new EntityRetrievalException("No Account with ID specified."));
+                .orElseThrow(() -> new EntityRetrievalException("No Account with ID specified."));
         account.setAccountConfirmed(true);
+
         try {
             userAccountRepositoryLocal.edit(account);
         } catch (final Exception e) {
             throw new EntityUpdateException("Exception during update of user account (account confirmation)", e);
+        }
+    }
+
+    private String encodePassword(String password) throws RegistrationProcessException {
+        try {
+            return SHA256Provider.encode(password);
+        } catch (Exception e) {
+            throw new RegistrationProcessException(e.getMessage());
         }
     }
 
@@ -80,5 +72,25 @@ public class RegistrationServiceImpl implements RegistrationService {
             }
         }
         throw new RegistrationProcessException("Something went wrong during creation a user in database.");
+    }
+
+    private void createAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
+        for (String accessLevelName : accessLevelNames) {
+            createAccessLevel(userAccount, accessLevelName);
+        }
+    }
+
+    private void createAccessLevel(UserAccount userAccount, String accessLevelName) throws EntityRetrievalException {
+        Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
+
+        AccessLevel accessLevel = accessLevelOptional
+                .orElseThrow(() -> new EntityRetrievalException(String.format("Could not retrieve access level for %s.", accessLevelName)));
+        AccountAccessLevel accountAccessLevel = AccountAccessLevel
+                .builder()
+                .accessLevel(accessLevel)
+                .account(userAccount)
+                .active(true)
+                .build();
+        accountAccessLevelRepositoryLocal.create(accountAccessLevel);
     }
 }
