@@ -9,7 +9,7 @@ import javax.ws.rs.FormParam;
  * Klasa reprezentująca dane z formularza edytcji użytkownika.
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=true)
 public class EditUserDto extends BasicAccountDto{
 
     @FormParam("clientSelected")
