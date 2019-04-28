@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Klasa reprezentująca dane użytkowników.
@@ -58,6 +60,9 @@ public class UserAccount {
 
     @Column(name = "active", nullable = false)
     private boolean accountActive;
+
+    @OneToMany(mappedBy = "account", cascade={CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<AccountAccessLevel> accountAccessLevels;
 
     @Version
     @Min(0)

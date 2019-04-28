@@ -1,0 +1,50 @@
+
+{{#partial "content"}}
+    {{#if updated}}
+        <div class="alert alert-success" role="alert">
+            <p>User details has been updated.</p>
+        </div>
+    {{/if}}
+    {{#if error}}
+        <div class="alert alert-danger" role="alert">
+            <p>{{error}}</p>
+        </div>
+    {{/if}}
+    <h2>Edit User: {{this.login}}</h2>
+    <form class="form-horizontal" role="form" method="post">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-10">
+                <p>todo: zmiana innych danych uzytkownika</p>
+            </div>
+            <div class="col-2 border">
+                <div class="form-group">
+                    <div>
+                        <label for="clientRole" class="control-label">client:</label>
+                        <input type="checkbox" id="client" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div>
+                        <label for="clientRole" class="control-label">employee:</label>
+                        <input type="checkbox" id="employee" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="clientRole" class="control-label">admin:</label>
+                        <input type="checkbox" id="admin" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+        <button type="submit" class="btn btn-primary btn-block">Save</button>
+    </form>
+{{/partial}}
+{{> layout }}

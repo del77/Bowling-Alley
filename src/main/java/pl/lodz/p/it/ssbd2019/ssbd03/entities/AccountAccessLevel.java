@@ -20,12 +20,14 @@ import javax.validation.constraints.Min;
                 @NamedQuery(name = "AccountAccessLevel.findForAccountId",
                         query = "select a from AccountAccessLevel a where a.account = :account"),
                 @NamedQuery(name = "AccountAccessLevel.findForAccessLevelId",
-                        query = "select a from AccountAccessLevel a where a.accessLevel = :access")
+                        query = "select a from AccountAccessLevel a where a.accessLevel = :access"),
+                @NamedQuery(name = "AccountAccessLevel.findForAccountIdAndAccessLevelId",
+                        query = "select a from AccountAccessLevel a where a.accessLevel = :access AND a.account = :account")
         }
 )
 public class AccountAccessLevel {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",
             unique = true,
             updatable = false,

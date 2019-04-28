@@ -8,5 +8,11 @@ import java.util.Optional;
 
 @Local
 public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, Long> {
+
+    /**
+     * Metoda służy do pozyskiwania ancji konta użytkownika na podstawie jego loginu.
+     * @param login Login użytkownika
+     * @return Encja reprezentująca konto użytkownika.
+     */
     Optional<UserAccount> findByLogin(String login);
 }

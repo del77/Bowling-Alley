@@ -26,4 +26,5 @@ public interface AccountAccessLevelRepositoryLocal extends CruRepository<Account
      * @return Lista powiązań między kontami użytkowników, a poziomami dostępu.
      */
     List<AccountAccessLevel> findAllForAccessLevel(AccessLevel accessLevel);
+
 }

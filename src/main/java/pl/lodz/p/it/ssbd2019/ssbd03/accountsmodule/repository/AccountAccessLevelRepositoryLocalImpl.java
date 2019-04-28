@@ -40,4 +40,5 @@ public class AccountAccessLevelRepositoryLocalImpl extends AbstractCruRepository
         namedQuery.setParameter("access", accessLevel);
         return namedQuery.getResultList();
     }
+
 }
