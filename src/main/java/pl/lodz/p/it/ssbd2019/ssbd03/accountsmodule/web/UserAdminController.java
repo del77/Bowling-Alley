@@ -108,4 +108,24 @@ public class UserAdminController implements Serializable {
         return editUser(editedAccount.getId());
     }
 
+
+    /**
+     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
+     *
+     * @param id id konta, które należy odblokować
+     * @return true, jeśli odblokowanie konta się powiedzie
+     */
+    @PUT
+    @Path("unlock/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Boolean unlockAccount(@PathParam("id") Long id) {
+        try {
+            userAccountService.unlockAccountById(id);
+        } catch (Exception e) {
+            models.put("error", "Could not unlock user's account.\n" + e.getLocalizedMessage());
+            return false;
+        }
+        return true;
+    }
 }

@@ -120,6 +120,32 @@ public class UserAccountServiceImplTest {
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
     }
+    
+    @Test
+    public void unlockLockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
+        Optional<UserAccount> optionalAccount = Optional.of(sut);
+        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertTrue(userService.unlockAccountById(18L).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
+    
+    @Test
+    public void unlockUnlockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
+        Optional<UserAccount> optionalAccount = Optional.of(sut);
+        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertTrue(userService.unlockAccountById(18L).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
 
 
     @Test

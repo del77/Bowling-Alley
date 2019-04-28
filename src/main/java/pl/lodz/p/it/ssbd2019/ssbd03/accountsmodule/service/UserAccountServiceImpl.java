@@ -106,4 +106,15 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw new ChangePasswordException(e.getMessage());
         }
     }
+    
+    @Override
+    public UserAccount unlockAccountById(Long id) throws EntityUpdateException {
+        try {
+            UserAccount account = getUserById(id);
+            account.setAccountActive(true);
+            return userAccountRepositoryLocal.edit(account);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not unlock user", e);
+        }
+    }
 }
