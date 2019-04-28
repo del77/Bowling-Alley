@@ -94,7 +94,7 @@ public class UserAccountServiceImplTest {
         });
         Assertions.assertEquals( userService.updateUser(userAccount).getId(), 1L);
     }
-    
+
     @Test
     public void unlockLockedAccountTestShouldNotThrow() {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
@@ -107,7 +107,7 @@ public class UserAccountServiceImplTest {
             Assertions.fail(e);
         }
     }
-    
+
     @Test
     public void unlockUnlockedAccountTestShouldNotThrow() {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
@@ -162,9 +162,9 @@ public class UserAccountServiceImplTest {
                     .build();
 
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
-            userService.changePassword(login, wrongCurrentPassword, newPassword);
-        } catch (ChangePasswordException e) {
-            // dobrze
+
+            Assertions.assertThrows(ChangePasswordException.class, () ->
+                    userService.changePassword(login, wrongCurrentPassword, newPassword));
         } catch (Exception e) {
             Assertions.fail(e);
         }
