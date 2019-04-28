@@ -88,7 +88,7 @@ public class UserAccountServiceImplTest {
         UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
         when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
 
-        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUser(userAccount, asList("CLIENT")));
+        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserWithAccessLevels(userAccount, asList("CLIENT")));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class UserAccountServiceImplTest {
             newUserAccount.setId(1L);
             return newUserAccount;
         });
-        Assertions.assertEquals( userService.updateUser(userAccount, new ArrayList<>()).getId(), 1L);
+        Assertions.assertEquals( userService.updateUserWithAccessLevels(userAccount, new ArrayList<>()).getId(), 1L);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUser(userAccount, asList("CLIENT"));
+        userAccount = userService.updateUserWithAccessLevels(userAccount, asList("CLIENT"));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
     }
@@ -179,7 +179,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUser(userAccount, new LinkedList<String>(asList("CLIENT")));
+        userAccount = userService.updateUserWithAccessLevels(userAccount, new LinkedList<String>(asList("CLIENT")));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
@@ -212,7 +212,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUser(userAccount, new ArrayList<>());
+        userAccount = userService.updateUserWithAccessLevels(userAccount, new ArrayList<>());
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);

@@ -90,7 +90,7 @@ public class UserAdminController implements Serializable {
     public String editUser(@BeanParam EditUserDto editUser) {
         try {
             List<String> selectedAccessLevels = EditUserDtoMapper.editUserDtoToListOfAccessLevels(editUser);
-            userAccountService.updateUser(editedAccount, selectedAccessLevels);
+            userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
             models.put("error", "There was a problem during user update.\n" + e.getLocalizedMessage());
