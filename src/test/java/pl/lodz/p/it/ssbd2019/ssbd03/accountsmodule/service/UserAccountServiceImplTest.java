@@ -75,6 +75,23 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
+    public void shouldReturnRightUserOnGetByLogin() throws EntityRetrievalException {
+        UserAccount userAccount = new UserAccount();
+        when(userAccountRepositoryLocal.findByLogin("login")).then((u) -> {
+            String login = u.getArgument(0);
+            userAccount.setLogin(login);
+            return Optional.of(userAccount);
+        });
+        Assertions.assertEquals( userService.getByLogin("login"), userAccount);
+    }
+
+    @Test
+    public void shouldThrowEntityRetrievalExceptionWhenGetByLoginCatchesException() {
+        when(userAccountRepositoryLocal.findByLogin(any())).thenThrow(RuntimeException.class);
+        Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
+    }
+
+    @Test
     public void shouldReturnRightEntityOnAddUser() throws EntityCreationException {
         UserAccount userAccount = new UserAccount();
         when(userAccountRepositoryLocal.create(any(UserAccount.class))).then((u) -> {

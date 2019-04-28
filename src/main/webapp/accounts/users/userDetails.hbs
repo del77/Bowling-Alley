@@ -1,0 +1,66 @@
+
+{{#partial "content"}}
+    <h2>User details: {{this.user.login}}</h2>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-10">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">First name</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.firstName}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Last name</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.lastName}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">E-mail</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.email}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Confirmed</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.accountConfirmed}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Active</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.accountActive}}</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-2 border">
+                    <div class="form-group">
+                        <div>
+                            <label for="clientRole" class="control-label">client:</label>
+                            <input type="checkbox" id="client" name="clientSelected" value="true" {{#if clientActive}} checked {{/if}} onclick="return false;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <div>
+                            <label for="clientRole" class="control-label">employee:</label>
+                            <input type="checkbox" id="employee" name="employeeSelected" value="true" {{#if employeeActive}} checked {{/if}} onclick="return false;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <label for="clientRole" class="control-label">admin:</label>
+                            <input type="checkbox" id="admin" name="adminSelected" value="true" {{#if adminActive}} checked {{/if}} onclick="return false;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/partial}}
+{{> layout }}

@@ -74,7 +74,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         try {
             return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new EntityRetrievalException("No account with login specified."));
-        } catch (EntityRetrievalException e) {
+        } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
     }
