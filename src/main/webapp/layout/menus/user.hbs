@@ -1,0 +1,50 @@
+{{#block "user"}}
+  {{#if loggedIn}}
+    <div class="dropdown">
+      <button
+        class="btn btn-secondary dropdown-toggle" type="button" id="user-dropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false"
+      >
+        {{userName}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="user-dropdown">
+        <div class="dropdown-item-text">
+          {{#if isClient}}
+            <span class="badge badge-info">
+              Client
+            </span>
+          {{/if}}
+          {{#if isEmployee}}
+            <span class="badge badge-warning">
+              Employee
+            </span>
+          {{/if}}
+          {{#if isAdmin}}
+            <span class="badge badge-danger">
+              Admin
+            </span>
+          {{/if}}
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">
+          My profile
+        </a>
+        <a class="dropdown-item" href="#">
+          Change password
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{{webContextPath}}/logout">
+          Logout
+        </a>
+      </div>
+    </div>
+  {{else}}
+    <a href="{{webContextPath}}/login" class="btn btn-secondary mr-1">
+      Login
+    </a>
+    <a href="{{webContextPath}}/register" class="btn btn-secondary">
+      <i class="fas fa-user-plus"></i>
+      Register
+    </a>
+  {{/if}}
+{{/block}}

@@ -1,19 +1,31 @@
 {{#partial "content"}}
-    <div class="w-25 p-3 container mt-5 border bg-light">
-        <form class="form-group" action="j_security_check">
-            <label for="j_username">Login *</label>
-            <input type="text" name="j_username" id="j_username" class="form-control" placeholder="Enter login" required/>
-            <label for="j_password">Password *</label>
-            <input type="password" name="j_password" id="j_password" class="form-control" placeholder="Enter password" required/>
-            <small id="passwordHint" class="form-text text-muted">
-                Please remember to never share your password with other people.
-            </small>
-            <small id="asteriskHint" class="form-text text-muted">
-                * indicates necessary field
-            </small>
-            <input class="btn btn-primary mt-2" type="submit" value="Login"/>
-        </form>
-    </div>
+  <div class="w-75 mx-auto">
+    <form class="form-horizontal" action="j_security_check">
+      <h2 class="mb-3">
+        Login
+      </h2>
+      <div class="form-group">
+        <label for="j_username">
+          Login *
+        </label>
+        <input type="text" name="j_username" id="j_username" class="form-control" autofocus required />
+      </div>
+      <div class="form-group">
+        <label for="j_password">
+          Password *
+        </label>
+        <input type="password" name="j_password" id="j_password" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <span class="form-text text-muted">
+          * Required fields
+        </span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        Login
+      </button>
+    </form>
+  </div>
 {{/partial}}
-{{> layout }}
 
+{{> layout }}

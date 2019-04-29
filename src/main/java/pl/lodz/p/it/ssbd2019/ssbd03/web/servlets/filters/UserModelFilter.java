@@ -22,15 +22,17 @@ public class UserModelFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest)request;
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         Principal userPrincipal = httpServletRequest.getUserPrincipal();
         boolean isLoggedIn = userPrincipal != null;
         boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
         boolean isEmployee = httpServletRequest.isUserInRole("EMPLOYEE");
+        boolean isClient = httpServletRequest.isUserInRole("CLIENT");
         models.put("isAdmin", isAdmin);
         models.put("loggedIn", isLoggedIn);
         models.put("isEmployee", isEmployee);
-        if(isLoggedIn) {
+        models.put("isClient", isClient);
+        if (isLoggedIn) {
             models.put("userName", userPrincipal.getName());
         }
         chain.doFilter(request, response);
