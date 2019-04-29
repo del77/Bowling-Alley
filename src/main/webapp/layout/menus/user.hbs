@@ -9,9 +9,11 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="user-dropdown">
         <div class="dropdown-item-text">
-          <span class="badge badge-info">
-            Client
-          </span>
+          {{#if isClient}}
+            <span class="badge badge-info">
+              Client
+            </span>
+          {{/if}}
           {{#if isEmployee}}
             <span class="badge badge-warning">
               Employee
