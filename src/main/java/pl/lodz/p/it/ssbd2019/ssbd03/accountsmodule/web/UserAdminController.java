@@ -65,14 +65,7 @@ public class UserAdminController implements Serializable {
         try {
             editedAccount = userAccountService.getUserById(id);
             models.put("login", editedAccount.getLogin());
-
-            for(AccountAccessLevel accountAccessLevel : editedAccount.getAccountAccessLevels()) {
-                if(accountAccessLevel.isActive()) {
-                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) { models.put("clientActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) { models.put("employeeActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) { models.put("adminActive", true); }
-                }
-            }
+            putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
             models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
         }
@@ -117,5 +110,42 @@ public class UserAdminController implements Serializable {
             return false;
         }
         return true;
+    }
+    /**
+     * Zwraca widok z danymi użytkownika o podanym ID.
+     *
+     * @param id id konta, którego dane mają zostać wyświetlone
+     * @return widok z danymi użytkownika o podanym ID.
+     */
+    @GET
+    @Path("/{id}/details")
+    @Produces(MediaType.TEXT_HTML)
+    public String displayUserDetails(@PathParam("id") Long id) {
+        try {
+            UserAccount user = userAccountService.getUserById(id);
+            models.put("user", user);
+            putAccessLevelsIntoModel(user);
+        } catch (EntityRetrievalException e) {
+            models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
+        }
+        return "accounts/users/userDetails.hbs";
+    }
+
+    private void putAccessLevelsIntoModel(UserAccount userAccount){
+        for(AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
+            if(accountAccessLevel.isActive()) {
+                switch(accountAccessLevel.getAccessLevel().getName()){
+                    case "CLIENT":
+                        models.put("clientActive",true);
+                        break;
+                    case "EMPLOYEE":
+                        models.put("employeeActive",true);
+                        break;
+                    case "ADMIN":
+                        models.put("adminActive",true);
+                        break;
+                }
+            }
+        }
     }
 }
