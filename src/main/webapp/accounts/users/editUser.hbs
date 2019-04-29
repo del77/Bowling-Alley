@@ -2,7 +2,7 @@
 {{#partial "content"}}
     {{#if updated}}
         <div class="alert alert-success" role="alert">
-            <p>User details has been updated.</p>
+            <p>User details have been updated.</p>
         </div>
     {{/if}}
     {{#if error}}
@@ -10,41 +10,85 @@
             <p>{{error}}</p>
         </div>
     {{/if}}
-    <h2>Edit User: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
-
         <div class="row">
-
-            <div class="col-10">
-                <p>todo: zmiana innych danych uzytkownika</p>
+            <div class="col-9">
+                <h2>Edit User: {{this.editedAccount.login}}</h2>
+                <h5>({{this.editedAccount.email}})</h5>
             </div>
-            <div class="col-2 border">
-                <div class="form-group">
-                    <div>
-                        <label for="clientRole" class="control-label">client:</label>
-                        <input type="checkbox" id="client" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div>
-                        <label for="clientRole" class="control-label">employee:</label>
-                        <input type="checkbox" id="employee" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div>
-                        <label for="clientRole" class="control-label">admin:</label>
-                        <input type="checkbox" id="admin" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
-                    </div>
-                </div>
+            <div class="col-3">
+                <a href="#" class="btn btn-danger" role="button">Change password</a>
             </div>
-
         </div>
-
+        <div class="row">
+            <div class="col-8">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Login: </span>
+                    </div>
+                    <input class="form-control" type="text" aria-label="Login input" aria-describedby="basic-addon1" name="login" autofocus value="{{this.editedAccount.login}}">
+                </div>
+                <div class="input-group mb-3 mx-0">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">First name: </span>
+                    </div>
+                    <input class="form-control" type="text" aria-label="First name input" aria-describedby="basic-addon1" name="firstName" autofocus value="{{this.editedAccount.firstName}}">
+                </div>
+                <div class="input-group mb-3 mx-0">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Last name: </span>
+                    </div>
+                    <input class="form-control" type="text" aria-label="Last name input" aria-describedby="basic-addon1" name="lastName" autofocus value="{{this.editedAccount.lastName}}">
+                </div>
+                <div class="input-group mb-3 mx-0">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Email: </span>
+                    </div>
+                    <input class="form-control" type="email" aria-label="Email input" aria-describedby="basic-addon1" name="email" autofocus value="{{this.editedAccount.email}}">
+                </div>
+                <div class="input-group mb-3 mx-0">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Phone: </span>
+                    </div>
+                    <input class="form-control" type="text" aria-label="Email input" aria-describedby="basic-addon1" name="phone" autofocus value="{{this.editedAccount.phone}}">
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-3 border">
+                <h3>Roles: </h3>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" aria-label="Checkbox for following text input" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="CLIENT" disabled>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" aria-label="Checkbox for following text input" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="EMPLOYEE" disabled>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" aria-label="Checkbox for following text input" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="ADMIN" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+            </div>
+        </div>
     </div>
-        <button type="submit" class="btn btn-primary btn-block">Save</button>
     </form>
 {{/partial}}
 {{> layout }}

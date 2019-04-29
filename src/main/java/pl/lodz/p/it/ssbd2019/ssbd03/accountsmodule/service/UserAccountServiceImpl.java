@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -105,6 +106,25 @@ public class UserAccountServiceImpl implements UserAccountService {
             return userAccountRepositoryLocal.edit(account);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
+        }
+    }
+    
+    @Override
+    public UserAccount updateUserAccountDetails(AccountDetailsDto dto, List<String> selectedAccessLevels) throws EntityUpdateException {
+        try {
+            UserAccount userAccount = userAccountRepositoryLocal
+                    .findById(dto.getId())
+                    .orElseThrow(EntityRetrievalException::new);
+    
+            userAccount.setLogin(dto.getLogin());
+            userAccount.setFirstName(dto.getFirstName());
+            userAccount.setLastName(dto.getLastName());
+            userAccount.setEmail(dto.getEmail());
+            userAccount.setPhone(dto.getPhone());
+
+            return updateUserWithAccessLevels(userAccount, selectedAccessLevels);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not update user", e);
         }
     }
 

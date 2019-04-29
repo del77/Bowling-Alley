@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
@@ -39,7 +40,7 @@ public interface UserAccountService {
 
     /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
-     * @param userAccount Encja użytkownika do zaktualizowania.
+     * @param userAccount encja użytkownika do zaktualizowania.
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
@@ -74,4 +75,14 @@ public interface UserAccountService {
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
     UserAccount unlockAccountById(Long id) throws EntityUpdateException;
+    
+    /**
+     * Edytuje dane konta użytkownika
+     *
+     * @param dto dto z edytowanymi danymi
+     * @param selectedAccessLevels nowe poziomy dostępu do konta
+     * @return zedytowana encja
+     * @throws EntityUpdateException w wypadku, gdu nie uda się aktualizacja
+     */
+    UserAccount updateUserAccountDetails(AccountDetailsDto dto, List<String> selectedAccessLevels) throws EntityUpdateException;
 }

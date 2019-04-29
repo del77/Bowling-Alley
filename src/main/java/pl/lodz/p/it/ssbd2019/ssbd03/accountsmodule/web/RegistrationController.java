@@ -59,7 +59,7 @@ public abstract class RegistrationController {
         return "accounts/register/register-success.hbs";
     }
 
-    protected String handleException(String message) {
+    private String handleException(String message) {
         getModels().put(ERROR_PREFIX, message);
         return REGISTER_VIEW_URL;
     }

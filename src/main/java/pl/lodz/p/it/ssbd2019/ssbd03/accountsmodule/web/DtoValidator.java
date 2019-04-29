@@ -1,7 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Models;
@@ -14,14 +12,14 @@ class DtoValidator {
 
     @Inject
     private Validator validator;
-
-    String validate(BasicAccountDto basicAccountDto, Models models) {
-        Set<ConstraintViolation<BasicAccountDto>> violations = validator.validate(basicAccountDto);
-        models.put("data", basicAccountDto);
-        String errorMessage = "";
-        for (ConstraintViolation<BasicAccountDto> violation : violations) {
-            errorMessage += violation.getMessage() + "\n";
+    
+    <T> String validate(T dto, Models models) {
+        Set<ConstraintViolation<T>> violations = validator.validate(dto);
+        models.put("data", dto);
+        StringBuilder errorMessage = new StringBuilder();
+        for (ConstraintViolation<T> violation : violations) {
+            errorMessage.append(violation.getMessage()).append("\n");
         }
-        return errorMessage;
+        return errorMessage.toString();
     }
 }

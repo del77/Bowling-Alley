@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.EditUserDtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -27,13 +27,16 @@ import java.util.List;
 @SessionScoped
 @Path("admin/users")
 public class UserAdminController implements Serializable {
+    private static final String ERROR = "error";
+    
     @Inject
     private Models models;
 
     @EJB
     private UserAccountService userAccountService;
-
-    UserAccount editedAccount;
+    
+    @Inject
+    private DtoValidator validator;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -47,7 +50,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
+            models.put(ERROR, "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -61,20 +64,29 @@ public class UserAdminController implements Serializable {
     @GET
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@PathParam("id") Long id) {
+    public String editUserPage(@PathParam("id") Long id) {
         try {
-            editedAccount = userAccountService.getUserById(id);
-            models.put("login", editedAccount.getLogin());
-
+            UserAccount editedAccount = userAccountService.getUserById(id);
+            models.put("editedAccount", editedAccount);
             for(AccountAccessLevel accountAccessLevel : editedAccount.getAccountAccessLevels()) {
                 if(accountAccessLevel.isActive()) {
-                    if (accountAccessLevel.getAccessLevel().getName().equals("CLIENT")) { models.put("clientActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("EMPLOYEE")) { models.put("employeeActive", true); }
-                    else if (accountAccessLevel.getAccessLevel().getName().equals("ADMIN")) { models.put("adminActive", true); }
+                    switch (accountAccessLevel.getAccessLevel().getName()) {
+                        case "CLIENT":
+                            models.put("clientActive", true);
+                            break;
+                        case "EMPLOYEE":
+                            models.put("employeeActive", true);
+                            break;
+                        case "ADMIN":
+                            models.put("adminActive", true);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         } catch (Exception e) {
-            models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
+            models.put(ERROR, "Could not update user.\n" + e.getLocalizedMessage());
         }
         return "accounts/users/editUser.hbs";
     }
@@ -87,15 +99,25 @@ public class UserAdminController implements Serializable {
     @POST
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam EditUserDto editUser) {
+    public String editUserPage(@BeanParam AccountDetailsDto editUser, @PathParam("id") Long id) {
+        editUser.setId(id);
+        String errorMessage = validator.validate(editUser, models);
+    
+        if (!errorMessage.isEmpty()) {
+            models.put(ERROR, errorMessage);
+            return editUserPage(id);
+        }
+        
         try {
             List<String> selectedAccessLevels = EditUserDtoMapper.editUserDtoToListOfAccessLevels(editUser);
-            userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
+            userAccountService.updateUserAccountDetails(editUser, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
-            models.put("error", "There was a problem during user update.\n" + e.getLocalizedMessage());
+            models.put(ERROR, "There was a problem during user update.\n" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            models.put(ERROR, e.getMessage());
         }
-        return editUser(editedAccount.getId());
+        return editUserPage(id);
     }
 
 
@@ -107,15 +129,14 @@ public class UserAdminController implements Serializable {
      */
     @PUT
     @Path("unlock/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Boolean unlockAccount(@PathParam("id") Long id) {
+    @Produces(MediaType.TEXT_HTML)
+    public String unlockAccount(@PathParam("id") Long id) {
         try {
             userAccountService.unlockAccountById(id);
         } catch (Exception e) {
-            models.put("error", "Could not unlock user's account.\n" + e.getLocalizedMessage());
-            return false;
+            models.put(ERROR, "Could not unlock user's account.\n" + e.getLocalizedMessage());
+            return allUsersList();
         }
-        return true;
+        return allUsersList();
     }
 }
