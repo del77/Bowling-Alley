@@ -9,11 +9,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.mvc.Models;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class RegistrationController {
 
-    private static final String ERROR_PREFIX = "error";
+    private static final String ERROR_PREFIX = "errors";
 
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
@@ -54,7 +55,7 @@ public abstract class RegistrationController {
         catch (RegistrationProcessException | EntityRetrievalException e) {
             return handleException(e.getMessage());
         } catch (Exception e) {
-            getModels().put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
+            getModels().put(ERROR_PREFIX, Collections.singletonList(e.getLocalizedMessage() + "\n" + e.getCause()));
             return getRegisterViewUrl();
         }
 
@@ -86,7 +87,7 @@ public abstract class RegistrationController {
     protected abstract String getRegisterViewUrl();
 
     private String handleException(String message) {
-        getModels().put(ERROR_PREFIX, message);
+        getModels().put(ERROR_PREFIX, Collections.singletonList(message));
         return getRegisterViewUrl();
     }
 }

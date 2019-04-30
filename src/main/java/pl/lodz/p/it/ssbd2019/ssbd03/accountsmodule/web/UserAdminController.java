@@ -17,6 +17,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 @Path("admin/users")
 public class UserAdminController implements Serializable {
 
-    private static final String ERROR = "error";
+    private static final String ERROR = "errors";
 
     @Inject
     private Models models;
@@ -50,7 +51,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            models.put(ERROR, "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
+            displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -70,7 +71,7 @@ public class UserAdminController implements Serializable {
             models.put("login", editedAccount.getLogin());
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
-            models.put(ERROR, "Could not update user.\n" + e.getLocalizedMessage());
+            displayError("Could not update user.\n", e.getLocalizedMessage());
         }
         return "accounts/users/editUser.hbs";
     }
@@ -89,7 +90,7 @@ public class UserAdminController implements Serializable {
             userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
-            models.put(ERROR, "There was a problem during user update.\n" + e.getLocalizedMessage());
+            displayError("There was a problem during user update.\n", e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
     }
@@ -109,11 +110,12 @@ public class UserAdminController implements Serializable {
         try {
             userAccountService.unlockAccountById(id);
         } catch (Exception e) {
-            models.put(ERROR, "Could not unlock user's account.\n" + e.getLocalizedMessage());
+            displayError("Could not unlock user's account.\n", e.getLocalizedMessage());
             return false;
         }
         return true;
     }
+
     /**
      * Zwraca widok z danymi użytkownika o podanym ID.
      *
@@ -129,7 +131,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
+            displayError("Could not retrieve user.\n", e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -151,4 +153,9 @@ public class UserAdminController implements Serializable {
             }
         }
     }
+
+    private void displayError(String s, String localizedMessage) {
+        models.put(ERROR, Collections.singletonList(s + localizedMessage));
+    }
+
 }
