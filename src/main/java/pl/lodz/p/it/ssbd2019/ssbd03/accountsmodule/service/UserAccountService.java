@@ -61,10 +61,9 @@ public interface UserAccountService {
      * @param login           login użytkownika
      * @param currentPassword aktualne hasło użytkownika
      * @param newPassword     nowe hasło użytkownika
-     * @return konto z zaktualizowanym hasłem
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
-    UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
+    void changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
     
     /**
      * Odblokowuje konto użytkownika z zadanym id
@@ -75,5 +74,12 @@ public interface UserAccountService {
      */
     UserAccount unlockAccountById(Long id) throws EntityUpdateException;
 
+    /**
+     * Zmienia hasło użytkownika o podanym loginie
+     *
+     * @param id           identyfikator użytkownika
+     * @param newPassword     nowe hasło użytkownika
+     * @throws ChangePasswordException wyjątek zmiany hasła
+     */
     void changePasswordByAdmin(long id, String newPassword) throws ChangePasswordException;
 }
