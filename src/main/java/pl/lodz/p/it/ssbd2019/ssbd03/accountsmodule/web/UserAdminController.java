@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -36,6 +36,9 @@ public class UserAdminController implements Serializable {
 
     @EJB
     private UserAccountService userAccountService;
+
+    @EJB
+    private DtoMapper dtoMapper;
 
     UserAccount editedAccount;
 
@@ -84,9 +87,9 @@ public class UserAdminController implements Serializable {
     @POST
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam EditUserDto editUser) {
+    public String editUser(@BeanParam ComplexAccountDto editUser) {
         try {
-            List<String> selectedAccessLevels = DtoMapper.getListOfAccessLevels(editUser);
+            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
             userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {

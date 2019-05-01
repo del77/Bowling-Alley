@@ -34,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueParameterException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount = createUser(userAccount);
-        createAccessLevels(userAccount, accessLevelNames);
+        createAccountAccessLevels(userAccount, accessLevelNames);
     }
 
     @Override
@@ -74,13 +74,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         throw new RegistrationProcessException("Something went wrong during creation a user in database.");
     }
 
-    private void createAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
+    private void createAccountAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
         for (String accessLevelName : accessLevelNames) {
-            createAccessLevel(userAccount, accessLevelName);
+            createAccountAccessLevel(userAccount, accessLevelName);
         }
     }
 
-    private void createAccessLevel(UserAccount userAccount, String accessLevelName) throws EntityRetrievalException {
+    private void createAccountAccessLevel(UserAccount userAccount, String accessLevelName) throws EntityRetrievalException {
         Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
 
         AccessLevel accessLevel = accessLevelOptional

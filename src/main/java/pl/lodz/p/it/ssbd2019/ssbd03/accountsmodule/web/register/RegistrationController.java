@@ -23,7 +23,8 @@ public abstract class RegistrationController {
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
-        String errorMessage = getValidator().validate(basicAccountDto, getModels(), accessLevelNames);
+        getModels().put("data", basicAccountDto);
+        String errorMessage = getValidator().validate(basicAccountDto, accessLevelNames);
 
         if (!errorMessage.equals("")) {
             return handleException(errorMessage);

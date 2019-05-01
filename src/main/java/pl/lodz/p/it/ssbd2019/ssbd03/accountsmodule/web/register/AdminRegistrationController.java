@@ -30,6 +30,9 @@ public class AdminRegistrationController extends RegistrationController {
     private DtoValidator validator;
 
     @Inject
+    private DtoMapper dtoMapper;
+
+    @Inject
     private Models models;
 
     /**
@@ -53,7 +56,7 @@ public class AdminRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
-        return super.registerAccount(complexAccountDto, DtoMapper.getListOfAccessLevels(complexAccountDto));
+        return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
     }
 
     @Override

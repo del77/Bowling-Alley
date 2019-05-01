@@ -2,23 +2,21 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.mvc.Models;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
 
-@RequestScoped
+@ApplicationScoped
 class DtoValidator {
 
     @Inject
     private Validator validator;
 
-    String validate(BasicAccountDto basicAccountDto, Models models, List<String> accessLevels) {
+    String validate(BasicAccountDto basicAccountDto, List<String> accessLevels) {
         Set<ConstraintViolation<BasicAccountDto>> violations = validator.validate(basicAccountDto);
-        models.put("data", basicAccountDto);
 
         String errorMessage = "";
         for (ConstraintViolation<BasicAccountDto> violation : violations) {
