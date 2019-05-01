@@ -2,19 +2,15 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych
@@ -28,7 +24,7 @@ public class UserClientController {
     private Models models;
 
     @Inject
-    private Validator validator;
+    private DtoValidator validator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -42,7 +38,7 @@ public class UserClientController {
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationForm() {
-        return "accounts/edit-password/form.hbs";
+        return "accounts/edit-password/editByUser.hbs";
     }
 
     /**
@@ -56,19 +52,12 @@ public class UserClientController {
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam UserEditPasswordDto userData) {
-        List<String> errorMessages = validator
-                .validate(userData)
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toList());
-
-        if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
-            errorMessages.add("Passwords don't match.");
-        }
+        List<String> errorMessages = validator.validate(userData);
+        errorMessages.addAll(validator.validatePasswordEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (errorMessages.size() > 0) {
             models.put("errors", errorMessages);
-            return "accounts/edit-password/form.hbs";
+            return "accounts/edit-password/editByUser.hbs";
         }
 
         try {
@@ -77,7 +66,7 @@ public class UserClientController {
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
-            return "accounts/edit-password/form.hbs";
+            return "accounts/edit-password/editByUser.hbs";
         }
 
         return "accounts/edit-password/success.hbs";

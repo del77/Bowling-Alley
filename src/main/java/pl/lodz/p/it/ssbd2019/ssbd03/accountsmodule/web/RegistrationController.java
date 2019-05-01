@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.mvc.Models;
+import java.util.List;
 
 public abstract class RegistrationController {
 
@@ -22,14 +23,12 @@ public abstract class RegistrationController {
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
     String registerAccount(BasicAccountDto basicAccountDto, String accessLevelName) {
-        String errorMessage = getValidator().validate(basicAccountDto, getModels());
+        //String errorMessage = getValidator().validate(basicAccountDto, getModels());
+        List<String> errorMessages = getValidator().validate(basicAccountDto);
+        errorMessages.addAll(getValidator().validatePasswordEquality(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
-        if (!errorMessage.equals("")) {
-            return handleException(errorMessage);
-        }
-
-        if (!basicAccountDto.getPassword().equals(basicAccountDto.getConfirmPassword())) {
-            return handleException("Passwords don't match.");
+        if (errorMessages.size() > 0) {
+            return handleException(errorMessages);
         }
 
         UserAccount userAccount = UserAccount
@@ -47,20 +46,22 @@ public abstract class RegistrationController {
         try {
             getRegistrationService().registerAccount(userAccount, accessLevelName);
         } catch (NotUniqueParameterException e) {
-            return handleException("Your email or login is not unique.");
-        }
-        catch (RegistrationProcessException | EntityRetrievalException e) {
-            return handleException(e.getMessage());
+            errorMessages.add("Your email or login is not unique.");
+        } catch (RegistrationProcessException | EntityRetrievalException e) {
+            errorMessages.add(e.getMessage());
         } catch (Exception e) {
-            getModels().put(ERROR_PREFIX, e.getLocalizedMessage() + "\n" + e.getCause());
-            return REGISTER_VIEW_URL;
+            errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
+        }
+
+        if (errorMessages.size() > 0) {
+            return handleException(errorMessages);
         }
 
         return "accounts/register/register-success.hbs";
     }
 
-    protected String handleException(String message) {
-        getModels().put(ERROR_PREFIX, message);
+    protected String handleException(List<String> errors) {
+        getModels().put(ERROR_PREFIX, errors);
         return REGISTER_VIEW_URL;
     }
 

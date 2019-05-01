@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AdminEditPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.EditUserDtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -13,11 +15,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -29,6 +34,9 @@ import java.util.List;
 public class UserAdminController implements Serializable {
     @Inject
     private Models models;
+
+    @Inject
+    private DtoValidator validator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -129,6 +137,49 @@ public class UserAdminController implements Serializable {
             models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła dla użytkownika.
+     *
+     * @return Widok z formularzem zmiany hasła dla użytkownika
+     */
+    @GET
+    @Path("/{id}/edit/password")
+    @Produces(MediaType.TEXT_HTML)
+    public String editUserSPassword() {
+        return "accounts/edit-password/editByAdmin.hbs";
+    }
+
+
+    /**
+     * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
+     *
+     * @param userData DTO przechowujące dane formularza edycji hasła.
+     * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
+     * @see UserEditPasswordDto
+     */
+    @POST
+    @Path("/{id}/edit/password")
+    @Produces(MediaType.TEXT_HTML)
+    public String editUserSPassword(@BeanParam AdminEditPasswordDto userData, @PathParam("id") Long id) {
+        List<String> errorMessages = validator.validate(userData);
+        errorMessages.addAll(validator.validatePasswordEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+
+        if (errorMessages.size() > 0) {
+            models.put("errors", errorMessages);
+            return "accounts/edit-password/editByAdmin.hbs";
+        }
+
+        try {
+            userAccountService.changePasswordByAdmin(id, userData.getNewPassword());
+        } catch (Exception e) {
+            errorMessages.add(e.getMessage());
+            models.put("errors", errorMessages);
+            return "accounts/edit-password/editByUser.hbs";
+        }
+
+        return "accounts/edit-password/success.hbs";
     }
 
     private void putAccessLevelsIntoModel(UserAccount userAccount){

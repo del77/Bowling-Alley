@@ -108,6 +108,18 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
+    @Override
+    public void changePasswordByAdmin(long id, String newPassword) throws ChangePasswordException {
+        try {
+            UserAccount account = this.getUserById(id);
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+
+            account.setPassword(newPasswordHash);
+        } catch (Exception e) {
+            throw new ChangePasswordException(e.getMessage());
+        }
+    }
+
     /**
      * Ustawia prawidłowy stan dla flagi active
      * w istniejących dla użytkownika poziomach dostępu.

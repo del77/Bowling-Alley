@@ -74,4 +74,6 @@ public interface UserAccountService {
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
     UserAccount unlockAccountById(Long id) throws EntityUpdateException;
+
+    void changePasswordByAdmin(long id, String newPassword) throws ChangePasswordException;
 }
