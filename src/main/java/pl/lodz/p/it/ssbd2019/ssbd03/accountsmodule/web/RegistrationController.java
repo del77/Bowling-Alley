@@ -23,11 +23,11 @@ public abstract class RegistrationController {
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
     String registerAccount(BasicAccountDto basicAccountDto, String accessLevelName) {
-        //String errorMessage = getValidator().validate(basicAccountDto, getModels());
+        getModels().put("data", basicAccountDto);
         List<String> errorMessages = getValidator().validate(basicAccountDto);
-        errorMessages.addAll(getValidator().validatePasswordEquality(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
+        errorMessages.addAll(getValidator().validatePasswordsEquality(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
-        if (errorMessages.size() > 0) {
+        if (!errorMessages.isEmpty()) {
             return handleException(errorMessages);
         }
 
@@ -41,6 +41,8 @@ public abstract class RegistrationController {
                 .firstName(basicAccountDto.getFirstName())
                 .lastName(basicAccountDto.getLastName())
                 .phone(basicAccountDto.getPhoneNumber())
+                .version(0L) // TODO It's workaround for the bug.
+                .accountsVersion(0L)
                 .build();
 
         try {
@@ -53,7 +55,7 @@ public abstract class RegistrationController {
             errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
         }
 
-        if (errorMessages.size() > 0) {
+        if (!errorMessages.isEmpty()) {
             return handleException(errorMessages);
         }
 

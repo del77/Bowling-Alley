@@ -15,14 +15,11 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -41,7 +38,7 @@ public class UserAdminController implements Serializable {
     @EJB
     private UserAccountService userAccountService;
 
-    UserAccount editedAccount;
+    private UserAccount editedAccount;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -72,6 +69,7 @@ public class UserAdminController implements Serializable {
     public String editUser(@PathParam("id") Long id) {
         try {
             editedAccount = userAccountService.getUserById(id);
+            models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
@@ -164,9 +162,9 @@ public class UserAdminController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String editUserSPassword(@BeanParam AdminEditPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(validator.validatePasswordEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
-        if (errorMessages.size() > 0) {
+        if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);
             return "accounts/edit-password/editByAdmin.hbs";
         }

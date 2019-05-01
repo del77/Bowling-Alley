@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -285,4 +286,30 @@ public class UserAccountServiceImplTest {
             Assertions.fail(e);
         }
     }
+
+    @Test
+    public void shouldChangeUserSPassword() {
+        String newPassword = "password2";
+        try {
+            String currentPasswordHash = SHA256Provider.encode("password");
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+
+        UserAccount userAccount = UserAccount.builder()
+                .password(currentPasswordHash)
+                .build();
+        when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
+            Long id = u.getArgument(0);
+            userAccount.setId(id);
+            return Optional.of(userAccount);
+        });
+
+        userService.changePasswordByAdmin(1L, newPassword);
+        Assertions.assertEquals(userAccount.getPassword(), newPasswordHash);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+
+
+    }
+
 }

@@ -53,9 +53,9 @@ public class UserClientController {
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam UserEditPasswordDto userData) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(validator.validatePasswordEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
-        if (errorMessages.size() > 0) {
+        if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);
             return "accounts/edit-password/editByUser.hbs";
         }
