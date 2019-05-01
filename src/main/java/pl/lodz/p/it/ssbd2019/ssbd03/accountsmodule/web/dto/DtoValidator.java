@@ -1,6 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
-
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,23 +8,23 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
-class DtoValidator {
+public class DtoValidator {
 
     @Inject
     private Validator validator;
 
-    String validate(BasicAccountDto basicAccountDto, List<String> accessLevels) {
+    public String validate(BasicAccountDto basicAccountDto, List<String> accessLevels) {
         Set<ConstraintViolation<BasicAccountDto>> violations = validator.validate(basicAccountDto);
 
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         for (ConstraintViolation<BasicAccountDto> violation : violations) {
-            errorMessage += violation.getMessage() + "\n";
+            errorMessage.append(violation.getMessage()).append("\n");
         }
 
         if (accessLevels.isEmpty()) {
-            errorMessage += "Please choose any access level.";
+            errorMessage.append("Please choose any access level.");
         }
 
-        return errorMessage;
+        return errorMessage.toString();
     }
 }
