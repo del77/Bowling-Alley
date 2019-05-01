@@ -5,7 +5,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueParameterException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
 import javax.mvc.Models;
@@ -50,10 +51,11 @@ public abstract class RegistrationController {
 
         try {
             getRegistrationService().registerAccount(userAccount, accessLevelNames);
-        } catch (NotUniqueParameterException e) {
-            return handleException("Your email or login is not unique.");
-        }
-        catch (RegistrationProcessException | EntityRetrievalException e) {
+        } catch (NotUniqueLoginException e) {
+            return handleException("Your login is not unique.");
+        } catch (NotUniqueEmailException e) {
+            return handleException("Your email is not unique.");
+        } catch (RegistrationProcessException | EntityRetrievalException e) {
             return handleException(e.getMessage());
         } catch (Exception e) {
             getModels().put(ERROR_PREFIX, Collections.singletonList(e.getLocalizedMessage() + "\n" + e.getCause()));
