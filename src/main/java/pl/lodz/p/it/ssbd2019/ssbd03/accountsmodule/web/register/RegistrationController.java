@@ -26,7 +26,7 @@ public abstract class RegistrationController {
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         getModels().put("data", basicAccountDto);
-        String errorMessage = getValidator().validate(basicAccountDto, accessLevelNames);
+        String errorMessage = getValidator().validate(basicAccountDto);
 
         if (!errorMessage.equals("")) {
             return handleException(errorMessage);
