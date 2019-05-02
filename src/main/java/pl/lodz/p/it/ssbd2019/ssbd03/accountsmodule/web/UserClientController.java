@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -24,6 +23,9 @@ import java.util.stream.Collectors;
 @RequestScoped
 @Path("client/users")
 public class UserClientController {
+
+    private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/form.hbs";
+
     @Inject
     private Models models;
 
@@ -42,7 +44,7 @@ public class UserClientController {
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationForm() {
-        return "accounts/edit-password/form.hbs";
+        return EDIT_PASSWORD_FORM_HBS;
     }
 
     /**
@@ -68,7 +70,7 @@ public class UserClientController {
 
         if (errorMessages.size() > 0) {
             models.put("errors", errorMessages);
-            return "accounts/edit-password/form.hbs";
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
         try {
@@ -77,7 +79,7 @@ public class UserClientController {
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
-            return "accounts/edit-password/form.hbs";
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
         return "accounts/edit-password/success.hbs";
