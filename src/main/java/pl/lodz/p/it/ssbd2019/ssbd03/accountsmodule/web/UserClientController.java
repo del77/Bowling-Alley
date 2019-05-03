@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
 
 import javax.ejb.EJB;
@@ -20,6 +21,9 @@ import java.util.List;
 @RequestScoped
 @Path("client/users")
 public class UserClientController {
+
+    private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
+
     @Inject
     private Models models;
 
@@ -38,7 +42,7 @@ public class UserClientController {
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationForm() {
-        return "accounts/edit-password/editByUser.hbs";
+        return EDIT_PASSWORD_FORM_HBS;
     }
 
     /**
@@ -57,16 +61,16 @@ public class UserClientController {
 
         if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);
-            return "accounts/edit-password/editByUser.hbs";
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
         try {
             String login = (String) models.get("userName");
-            userAccountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
+            userAccountService.changePasswordByUser(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
-            return "accounts/edit-password/editByUser.hbs";
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
         return "accounts/edit-password/success.hbs";

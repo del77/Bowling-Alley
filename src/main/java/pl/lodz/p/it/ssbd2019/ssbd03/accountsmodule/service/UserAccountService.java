@@ -63,7 +63,7 @@ public interface UserAccountService {
      * @param newPassword     nowe hasło użytkownika
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
-    void changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
+    void changePasswordByUser(String login, String currentPassword, String newPassword) throws ChangePasswordException;
     
     /**
      * Odblokowuje konto użytkownika z zadanym id

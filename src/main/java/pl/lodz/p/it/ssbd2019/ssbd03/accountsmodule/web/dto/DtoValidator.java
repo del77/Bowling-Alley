@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
-class DtoValidator {
+public class DtoValidator {
 
     @Inject
     private Validator validator;
-
-
 
     public List<String> validatePasswordsEquality(String password, String confirmPassword) {
         List<String> errors = new ArrayList<>();

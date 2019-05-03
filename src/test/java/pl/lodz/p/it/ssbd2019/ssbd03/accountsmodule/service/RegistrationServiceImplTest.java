@@ -14,6 +14,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationServiceImplTest {
 
-    private static final String ACCESS_LEVEL_NAME = "CLIENT";
+    private static final List<String> ACCESS_LEVEL_NAME = Collections.singletonList("CLIENT");
 
     @Mock
     private UserAccountServiceImpl userAccountService;
@@ -43,15 +45,6 @@ public class RegistrationServiceImplTest {
     @Test
     public void shouldThrowOnPasswordNull() {
         UserAccount userAccount = mock(UserAccount.class);
-        Assertions.assertThrows(
-                RegistrationProcessException.class,
-                () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)
-        );
-    }
-
-    @Test
-    public void shouldThrowOnUserNull() {
-        UserAccount userAccount = null;
         Assertions.assertThrows(
                 RegistrationProcessException.class,
                 () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
 
 /**
@@ -14,6 +15,7 @@ public class AdminEditPasswordDto {
 
     @NotNull(message = "New password cannot be null.")
     @NotBlank(message = "New password cannot be blank.")
+    @Size(max = 64, message = "Password cannot be longer than 64 characters.")
     @FormParam("newPassword")
     String newPassword;
 

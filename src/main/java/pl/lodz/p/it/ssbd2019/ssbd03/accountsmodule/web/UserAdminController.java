@@ -2,9 +2,10 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AdminEditPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EditUserDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.EditUserDtoMapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -19,6 +20,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,6 +31,9 @@ import java.util.List;
 @SessionScoped
 @Path("admin/users")
 public class UserAdminController implements Serializable {
+
+    private static final String ERROR = "errors";
+
     @Inject
     private Models models;
 
@@ -37,6 +42,9 @@ public class UserAdminController implements Serializable {
 
     @EJB
     private UserAccountService userAccountService;
+
+    @Inject
+    private DtoMapper dtoMapper;
 
     private UserAccount editedAccount;
 
@@ -52,7 +60,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve list of userAccounts.\n" + e.getLocalizedMessage());
+            displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -73,7 +81,7 @@ public class UserAdminController implements Serializable {
             models.put("login", editedAccount.getLogin());
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
-            models.put("error", "Could not update user.\n" + e.getLocalizedMessage());
+            displayError("Could not update user.\n", e.getLocalizedMessage());
         }
         return "accounts/users/editUser.hbs";
     }
@@ -86,13 +94,13 @@ public class UserAdminController implements Serializable {
     @POST
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam EditUserDto editUser) {
+    public String editUser(@BeanParam ComplexAccountDto editUser) {
         try {
-            List<String> selectedAccessLevels = EditUserDtoMapper.editUserDtoToListOfAccessLevels(editUser);
+            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
             userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
-            models.put("error", "There was a problem during user update.\n" + e.getLocalizedMessage());
+            displayError("There was a problem during user update.\n", e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
     }
@@ -112,11 +120,12 @@ public class UserAdminController implements Serializable {
         try {
             userAccountService.unlockAccountById(id);
         } catch (Exception e) {
-            models.put("error", "Could not unlock user's account.\n" + e.getLocalizedMessage());
+            displayError("Could not unlock user's account.\n", e.getLocalizedMessage());
             return false;
         }
         return true;
     }
+
     /**
      * Zwraca widok z danymi użytkownika o podanym ID.
      *
@@ -132,7 +141,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            models.put("error", "Could not retrieve user.\n" + e.getLocalizedMessage());
+            displayError("Could not retrieve user.\n", e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -165,7 +174,7 @@ public class UserAdminController implements Serializable {
         errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            models.put("errors", errorMessages);
+            models.put(ERROR, errorMessages);
             return "accounts/edit-password/editByAdmin.hbs";
         }
 
@@ -173,7 +182,7 @@ public class UserAdminController implements Serializable {
             userAccountService.changePasswordByAdmin(id, userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
-            models.put("errors", errorMessages);
+            models.put(ERROR, errorMessages);
             return "accounts/edit-password/editByUser.hbs";
         }
 
@@ -197,4 +206,9 @@ public class UserAdminController implements Serializable {
             }
         }
     }
+
+    private void displayError(String s, String localizedMessage) {
+        models.put(ERROR, Collections.singletonList(s + localizedMessage));
+    }
+
 }

@@ -70,6 +70,11 @@
             <version>1.18.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
+        </dependency>
         <!-- TEST SCOPE DEPENDENCIES -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
