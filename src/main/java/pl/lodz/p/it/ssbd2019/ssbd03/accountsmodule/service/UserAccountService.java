@@ -56,7 +56,7 @@ public interface UserAccountService {
     UserAccount getByLogin(String login) throws EntityRetrievalException;
 
     /**
-     * Zmienia hasło użytkownika o podanym loginie
+     * Metoda pozwalająca użytkownikowi zmienić swoje hasło.
      *
      * @param login           login użytkownika
      * @param currentPassword aktualne hasło użytkownika
@@ -75,7 +75,7 @@ public interface UserAccountService {
     UserAccount unlockAccountById(Long id) throws EntityUpdateException;
 
     /**
-     * Zmienia hasło użytkownika o podanym loginie
+     * Metoda pozwalająca adminowi ustawić hasło dla użytkownika o podanym id.
      *
      * @param id           identyfikator użytkownika
      * @param newPassword     nowe hasło użytkownika
