@@ -65,7 +65,7 @@ public abstract class RegistrationController {
         return "accounts/register/register-success.hbs";
     }
 
-    protected String handleException(List<String> errors) {
+    private String handleException(List<String> errors) {
         getModels().put(ERROR_PREFIX, errors);
         return getRegisterViewUrl();
     }

@@ -154,7 +154,7 @@ public class UserAdminController implements Serializable {
     @GET
     @Path("/{id}/edit/password")
     @Produces(MediaType.TEXT_HTML)
-    public String editUserSPassword() {
+    public String editUserPassword() {
         return "accounts/edit-password/editByAdmin.hbs";
     }
 
@@ -169,7 +169,7 @@ public class UserAdminController implements Serializable {
     @POST
     @Path("/{id}/edit/password")
     @Produces(MediaType.TEXT_HTML)
-    public String editUserSPassword(@BeanParam AdminEditPasswordDto userData, @PathParam("id") Long id) {
+    public String editUserPassword(@BeanParam AdminEditPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 

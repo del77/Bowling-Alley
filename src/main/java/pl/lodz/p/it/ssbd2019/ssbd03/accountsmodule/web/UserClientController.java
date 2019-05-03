@@ -41,7 +41,7 @@ public class UserClientController {
     @GET
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
+    public String viewEditPasswordForm() {
         return EDIT_PASSWORD_FORM_HBS;
     }
 
@@ -55,7 +55,7 @@ public class UserClientController {
     @POST
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam UserEditPasswordDto userData) {
+    public String editPassword(@BeanParam UserEditPasswordDto userData) {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
