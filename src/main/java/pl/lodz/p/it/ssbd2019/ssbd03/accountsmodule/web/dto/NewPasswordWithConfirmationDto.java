@@ -12,7 +12,7 @@ import javax.ws.rs.FormParam;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserEditPasswordDto extends AdminEditPasswordDto {
+public class NewPasswordWithConfirmationDto extends NewPasswordDto {
     @NotNull(message = "Current password cannot be null.")
     @NotBlank(message = "Current password cannot be blank.")
     @FormParam("currentPassword")

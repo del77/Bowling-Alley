@@ -2,7 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +30,8 @@ public class ClientRegistrationController extends RegistrationController {
 
     @Inject
     private DtoValidator validator;
+    @Inject
+    private PasswordDtoValidator passwordValidator;
 
     @Inject
     private Models models;
@@ -66,6 +69,9 @@ public class ClientRegistrationController extends RegistrationController {
     protected DtoValidator getValidator() {
         return validator;
     }
+
+    @Override
+    protected PasswordDtoValidator getPasswordValidator() { return passwordValidator; }
 
     @Override
     protected RegistrationService getRegistrationService() {

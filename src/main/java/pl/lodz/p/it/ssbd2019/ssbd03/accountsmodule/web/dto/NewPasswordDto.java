@@ -11,7 +11,7 @@ import javax.ws.rs.FormParam;
  * Klasa reprezentująca dane z formularza edytcji hasła przez administratora.
  */
 @Data
-public class AdminEditPasswordDto {
+public class NewPasswordDto {
 
     @NotNull(message = "New password cannot be null.")
     @NotBlank(message = "New password cannot be blank.")

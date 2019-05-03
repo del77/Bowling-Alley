@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,14 +14,6 @@ public class DtoValidator {
     @Inject
     private Validator validator;
 
-    public List<String> validatePasswordsEquality(String password, String confirmPassword) {
-        List<String> errors = new ArrayList<>();
-        if (!password.equals(confirmPassword)) {
-            errors.add("Passwords don't match.");
-        }
-
-        return errors;
-    }
     public <T> List<String> validate(T dto) {
         List<String> errors = new ArrayList<>();
         Set<ConstraintViolation<T>> violations = validator.validate(dto);

@@ -80,7 +80,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void changePasswordByUser(String login, String currentPassword, String newPassword) throws ChangePasswordException {
+    public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getByLogin(login);
             String currentPasswordHash = SHA256Provider.encode(currentPassword);
@@ -96,7 +96,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void changePasswordByAdmin(long id, String newPassword) throws ChangePasswordException {
+    public void changePasswordById(long id, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getUserById(id);
             setNewPassword(account, newPassword);

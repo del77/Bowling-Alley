@@ -1,10 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AdminEditPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -39,6 +40,8 @@ public class UserAdminController implements Serializable {
 
     @Inject
     private DtoValidator validator;
+    @Inject
+    private PasswordDtoValidator passwordDtoValidator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -164,14 +167,14 @@ public class UserAdminController implements Serializable {
      *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
-     * @see UserEditPasswordDto
+     * @see NewPasswordWithConfirmationDto
      */
     @POST
     @Path("/{id}/edit/password")
     @Produces(MediaType.TEXT_HTML)
-    public String editUserPassword(@BeanParam AdminEditPasswordDto userData, @PathParam("id") Long id) {
+    public String editUserPassword(@BeanParam NewPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);
@@ -179,7 +182,7 @@ public class UserAdminController implements Serializable {
         }
 
         try {
-            userAccountService.changePasswordByAdmin(id, userData.getNewPassword());
+            userAccountService.changePasswordById(id, userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put(ERROR, errorMessages);

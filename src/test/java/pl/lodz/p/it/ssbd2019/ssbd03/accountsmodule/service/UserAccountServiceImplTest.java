@@ -254,7 +254,7 @@ public class UserAccountServiceImplTest {
                     .build();
 
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
-            userService.changePasswordByUser(login, currentPassword, newPassword);
+            userService.changePasswordByLogin(login, currentPassword, newPassword);
             Assertions.assertEquals(newPasswordHash, user.getPassword());
         } catch (Exception e) {
             Assertions.fail(e);
@@ -280,7 +280,7 @@ public class UserAccountServiceImplTest {
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
 
             Assertions.assertThrows(ChangePasswordException.class, () ->
-                    userService.changePasswordByUser(login, wrongCurrentPassword, newPassword));
+                    userService.changePasswordByLogin(login, wrongCurrentPassword, newPassword));
         } catch (Exception e) {
             Assertions.fail(e);
         }
@@ -302,7 +302,7 @@ public class UserAccountServiceImplTest {
             return Optional.of(userAccount);
         });
 
-        userService.changePasswordByAdmin(1L, newPassword);
+        userService.changePasswordById(1L, newPassword);
         Assertions.assertEquals(userAccount.getPassword(), newPasswordHash);
         } catch (Exception e) {
             Assertions.fail();

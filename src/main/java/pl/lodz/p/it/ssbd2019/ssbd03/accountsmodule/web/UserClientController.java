@@ -1,8 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +30,8 @@ public class UserClientController {
 
     @Inject
     private DtoValidator validator;
+    @Inject
+    private PasswordDtoValidator passwordDtoValidator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -50,14 +53,14 @@ public class UserClientController {
      *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
-     * @see UserEditPasswordDto
+     * @see NewPasswordWithConfirmationDto
      */
     @POST
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String editPassword(@BeanParam UserEditPasswordDto userData) {
+    public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(validator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);
@@ -66,7 +69,7 @@ public class UserClientController {
 
         try {
             String login = (String) models.get("userName");
-            userAccountService.changePasswordByUser(login, userData.getCurrentPassword(), userData.getNewPassword());
+            userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);
