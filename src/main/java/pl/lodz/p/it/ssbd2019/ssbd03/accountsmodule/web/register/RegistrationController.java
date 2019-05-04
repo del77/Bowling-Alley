@@ -11,10 +11,24 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.mvc.Models;
 import java.util.List;
 
 public abstract class RegistrationController {
+
+    @Inject
+    private PasswordDtoValidator passwordValidator;
+
+    @Inject
+    private DtoValidator validator;
+
+    @Inject
+    private Models models;
+
+    @EJB
+    private RegistrationService registrationService;
 
     private static final String ERROR_PREFIX = "errors";
 
@@ -25,9 +39,9 @@ public abstract class RegistrationController {
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
-        getModels().put("data", basicAccountDto);
-        List<String> errorMessages = getValidator().validate(basicAccountDto);
-        errorMessages.addAll(getPasswordValidator().validatePasswordsEquality(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
+        models.put("data", basicAccountDto);
+        List<String> errorMessages = validator.validate(basicAccountDto);
+        errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
         if (!errorMessages.isEmpty()) {
             return handleException(errorMessages);
@@ -48,7 +62,7 @@ public abstract class RegistrationController {
                 .build();
 
         try {
-            getRegistrationService().registerAccount(userAccount, accessLevelNames);
+            registrationService.registerAccount(userAccount, accessLevelNames);
         } catch (NotUniqueLoginException e) {
             errorMessages.add("Your login is not unique.");
         } catch (NotUniqueEmailException e) {
@@ -66,33 +80,6 @@ public abstract class RegistrationController {
         return "accounts/register/register-success.hbs";
     }
 
-
-
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return modele mvc
-     */
-    protected abstract Models getModels();
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return validator dto
-     */
-    protected abstract DtoValidator getValidator();
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return password validator dto
-     */
-    protected abstract PasswordDtoValidator getPasswordValidator();
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return serwis RegistrationService
-     */
-    protected abstract RegistrationService getRegistrationService();
-
     /**
      * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
      * @return String url
@@ -105,7 +92,7 @@ public abstract class RegistrationController {
      * @return String url
      */
     private String handleException(List<String> errors) {
-        getModels().put(ERROR_PREFIX, errors);
+        models.put(ERROR_PREFIX, errors);
         return getRegisterViewUrl();
     }
 }

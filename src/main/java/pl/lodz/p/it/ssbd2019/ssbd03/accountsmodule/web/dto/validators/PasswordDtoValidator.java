@@ -7,12 +7,16 @@ import java.util.List;
 @ApplicationScoped
 public class PasswordDtoValidator {
 
-    public List<String> validatePasswordsEquality(String password, String confirmPassword) {
+    public List<String> validatePassword(String password, String confirmPassword) {
         List<String> errors = new ArrayList<>();
-        if (!password.equals(confirmPassword)) {
-            errors.add("Passwords don't match.");
-        }
+
+        if (!areEqual(password, confirmPassword)) { errors.add("Passwords don't match."); }
+        // ...
 
         return errors;
+    }
+
+    private boolean areEqual(String password, String confirmPassword) {
+        return password.equals(confirmPassword);
     }
 }

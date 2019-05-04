@@ -60,7 +60,7 @@ public class UserClientController {
     @Produces(MediaType.TEXT_HTML)
     public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(passwordDtoValidator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);

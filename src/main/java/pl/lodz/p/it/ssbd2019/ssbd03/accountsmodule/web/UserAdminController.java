@@ -174,7 +174,7 @@ public class UserAdminController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword(@BeanParam NewPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
-        errorMessages.addAll(passwordDtoValidator.validatePasswordsEquality(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);
