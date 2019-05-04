@@ -56,7 +56,7 @@ public interface UserAccountService {
     UserAccount getByLogin(String login) throws EntityRetrievalException;
 
     /**
-     * Metoda pozwalająca zmienić hasło użytkownika.
+     * Metoda pozwalająca zmienić hasło użytkownika o podanym loginie.
      * Wymagane jest podanie obecnego hasła.
      *
      * @param login           login użytkownika
