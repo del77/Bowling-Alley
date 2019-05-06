@@ -1,19 +1,18 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.UserEditPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych
@@ -24,13 +23,15 @@ import java.util.stream.Collectors;
 @Path("client/users")
 public class UserClientController {
 
-    private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/form.hbs";
+    private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
 
     @Inject
     private Models models;
 
     @Inject
-    private Validator validator;
+    private DtoValidator validator;
+    @Inject
+    private PasswordDtoValidator passwordDtoValidator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -43,7 +44,7 @@ public class UserClientController {
     @GET
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
+    public String viewEditPasswordForm() {
         return EDIT_PASSWORD_FORM_HBS;
     }
 
@@ -52,30 +53,23 @@ public class UserClientController {
      *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
-     * @see UserEditPasswordDto
+     * @see NewPasswordWithConfirmationDto
      */
     @POST
     @Path("edit-password")
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam UserEditPasswordDto userData) {
-        List<String> errorMessages = validator
-                .validate(userData)
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toList());
+    public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
+        List<String> errorMessages = validator.validate(userData);
+        errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
-        if (!userData.getNewPassword().equals(userData.getConfirmNewPassword())) {
-            errorMessages.add("Passwords don't match.");
-        }
-
-        if (errorMessages.size() > 0) {
+        if (!errorMessages.isEmpty()) {
             models.put("errors", errorMessages);
             return EDIT_PASSWORD_FORM_HBS;
         }
 
         try {
             String login = (String) models.get("userName");
-            userAccountService.changePassword(login, userData.getCurrentPassword(), userData.getNewPassword());
+            userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             errorMessages.add(e.getMessage());
             models.put("errors", errorMessages);

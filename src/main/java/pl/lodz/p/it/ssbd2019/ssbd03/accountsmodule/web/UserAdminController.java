@@ -1,7 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -34,13 +38,18 @@ public class UserAdminController implements Serializable {
     @Inject
     private Models models;
 
+    @Inject
+    private DtoValidator validator;
+    @Inject
+    private PasswordDtoValidator passwordDtoValidator;
+
     @EJB
     private UserAccountService userAccountService;
 
-    @EJB
+    @Inject
     private DtoMapper dtoMapper;
 
-    UserAccount editedAccount;
+    private UserAccount editedAccount;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -71,6 +80,7 @@ public class UserAdminController implements Serializable {
     public String editUser(@PathParam("id") Long id) {
         try {
             editedAccount = userAccountService.getUserById(id);
+            models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
@@ -137,6 +147,49 @@ public class UserAdminController implements Serializable {
             displayError("Could not retrieve user.\n", e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła dla użytkownika.
+     *
+     * @return Widok z formularzem zmiany hasła dla użytkownika
+     */
+    @GET
+    @Path("/{id}/edit/password")
+    @Produces(MediaType.TEXT_HTML)
+    public String editUserPassword() {
+        return "accounts/edit-password/editByAdmin.hbs";
+    }
+
+
+    /**
+     * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
+     *
+     * @param userData DTO przechowujące dane formularza edycji hasła.
+     * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
+     * @see NewPasswordWithConfirmationDto
+     */
+    @POST
+    @Path("/{id}/edit/password")
+    @Produces(MediaType.TEXT_HTML)
+    public String editUserPassword(@BeanParam NewPasswordDto userData, @PathParam("id") Long id) {
+        List<String> errorMessages = validator.validate(userData);
+        errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
+
+        if (!errorMessages.isEmpty()) {
+            models.put(ERROR, errorMessages);
+            return "accounts/edit-password/editByAdmin.hbs";
+        }
+
+        try {
+            userAccountService.changePasswordById(id, userData.getNewPassword());
+        } catch (Exception e) {
+            errorMessages.add(e.getMessage());
+            models.put(ERROR, errorMessages);
+            return "accounts/edit-password/editByUser.hbs";
+        }
+
+        return "accounts/edit-password/success.hbs";
     }
 
     private void putAccessLevelsIntoModel(UserAccount userAccount){

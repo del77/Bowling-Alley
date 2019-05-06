@@ -254,7 +254,7 @@ public class UserAccountServiceImplTest {
                     .build();
 
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
-            userService.changePassword(login, currentPassword, newPassword);
+            userService.changePasswordByLogin(login, currentPassword, newPassword);
             Assertions.assertEquals(newPasswordHash, user.getPassword());
         } catch (Exception e) {
             Assertions.fail(e);
@@ -280,9 +280,35 @@ public class UserAccountServiceImplTest {
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
 
             Assertions.assertThrows(ChangePasswordException.class, () ->
-                    userService.changePassword(login, wrongCurrentPassword, newPassword));
+                    userService.changePasswordByLogin(login, wrongCurrentPassword, newPassword));
         } catch (Exception e) {
             Assertions.fail(e);
         }
     }
+
+    @Test
+    public void shouldChangeUserSPassword() {
+        String newPassword = "password2";
+        try {
+            String currentPasswordHash = SHA256Provider.encode("password");
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+
+        UserAccount userAccount = UserAccount.builder()
+                .password(currentPasswordHash)
+                .build();
+        when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
+            Long id = u.getArgument(0);
+            userAccount.setId(id);
+            return Optional.of(userAccount);
+        });
+
+        userService.changePasswordById(1L, newPassword);
+        Assertions.assertEquals(userAccount.getPassword(), newPasswordHash);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+
+
+    }
+
 }

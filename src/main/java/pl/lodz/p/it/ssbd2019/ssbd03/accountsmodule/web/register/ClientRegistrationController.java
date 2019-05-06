@@ -1,14 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.mvc.Controller;
-import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
@@ -23,15 +18,6 @@ import java.util.Collections;
 public class ClientRegistrationController extends RegistrationController {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
-
-    @EJB
-    private RegistrationService registrationService;
-
-    @Inject
-    private DtoValidator validator;
-
-    @Inject
-    private Models models;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -57,20 +43,6 @@ public class ClientRegistrationController extends RegistrationController {
         return super.registerAccount(basicAccountDto, Collections.singletonList("CLIENT"));
     }
 
-    @Override
-    protected Models getModels() {
-        return models;
-    }
-
-    @Override
-    protected DtoValidator getValidator() {
-        return validator;
-    }
-
-    @Override
-    protected RegistrationService getRegistrationService() {
-        return registrationService;
-    }
 
     @Override
     protected String getRegisterViewUrl() {

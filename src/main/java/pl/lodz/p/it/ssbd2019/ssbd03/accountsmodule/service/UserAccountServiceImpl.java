@@ -80,18 +80,26 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException {
+    public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getByLogin(login);
             String currentPasswordHash = SHA256Provider.encode(currentPassword);
-            String newPasswordHash = SHA256Provider.encode(newPassword);
 
             if (!currentPasswordHash.equals(account.getPassword())) {
                 throw new ChangePasswordException("Current password is incorrect.");
             }
 
-            account.setPassword(newPasswordHash);
-            return userAccountRepositoryLocal.edit(account);
+            setNewPassword(account, newPassword);
+        } catch (Exception e) {
+            throw new ChangePasswordException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void changePasswordById(long id, String newPassword) throws ChangePasswordException {
+        try {
+            UserAccount account = this.getUserById(id);
+            setNewPassword(account, newPassword);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
@@ -140,6 +148,21 @@ public class UserAccountServiceImpl implements UserAccountService {
                     .active(true)
                     .build()
             );
+        }
+    }
+
+    /**
+     * Zmienia hasło dla konta.
+     * @param userAccount Obiekt typu UserAccount, który jest edytowany.
+     * @param newPassword Nowe hasło dla konta.
+     * @throws ChangePasswordException w wypadku, gdy nie uda się zmienić hasła.
+     */
+    private void setNewPassword(UserAccount userAccount, String newPassword) throws ChangePasswordException {
+        try {
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+            userAccount.setPassword(newPasswordHash);
+        } catch (Exception e) {
+            throw new ChangePasswordException(e.getMessage());
         }
     }
 }

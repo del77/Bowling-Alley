@@ -3,18 +3,32 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.mvc.Models;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class RegistrationController {
+
+    @Inject
+    private PasswordDtoValidator passwordValidator;
+
+    @Inject
+    private DtoValidator validator;
+
+    @Inject
+    private Models models;
+
+    @EJB
+    private RegistrationService registrationService;
 
     private static final String ERROR_PREFIX = "errors";
 
@@ -25,15 +39,12 @@ public abstract class RegistrationController {
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
-        getModels().put("data", basicAccountDto);
-        String errorMessage = getValidator().validate(basicAccountDto);
+        models.put("data", basicAccountDto);
+        List<String> errorMessages = validator.validate(basicAccountDto);
+        errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
-        if (!errorMessage.equals("")) {
-            return handleException(errorMessage);
-        }
-
-        if (!basicAccountDto.getPassword().equals(basicAccountDto.getConfirmPassword())) {
-            return handleException("Passwords don't match.");
+        if (!errorMessages.isEmpty()) {
+            return handleException(errorMessages);
         }
 
         UserAccount userAccount = UserAccount
@@ -51,38 +62,23 @@ public abstract class RegistrationController {
                 .build();
 
         try {
-            getRegistrationService().registerAccount(userAccount, accessLevelNames);
+            registrationService.registerAccount(userAccount, accessLevelNames);
         } catch (NotUniqueLoginException e) {
-            return handleException("Your login is not unique.");
+            errorMessages.add("Your login is not unique.");
         } catch (NotUniqueEmailException e) {
-            return handleException("Your email is not unique.");
+            errorMessages.add("Your email is not unique.");
         } catch (RegistrationProcessException | EntityRetrievalException e) {
-            return handleException(e.getMessage());
+            errorMessages.add(e.getMessage());
         } catch (Exception e) {
-            getModels().put(ERROR_PREFIX, Collections.singletonList(e.getLocalizedMessage() + "\n" + e.getCause()));
-            return getRegisterViewUrl();
+            errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
+        }
+
+        if (!errorMessages.isEmpty()) {
+            return handleException(errorMessages);
         }
 
         return "accounts/register/register-success.hbs";
     }
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return modele mvc
-     */
-    protected abstract Models getModels();
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return validator dto
-     */
-    protected abstract DtoValidator getValidator();
-
-    /**
-     * funkcja pomocnicza pozwalająca uzyskać dostęp do wstrzykniętych obiektów klasie bazowej
-     * @return serwis RegistrationService
-     */
-    protected abstract RegistrationService getRegistrationService();
 
     /**
      * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
@@ -90,8 +86,13 @@ public abstract class RegistrationController {
      */
     protected abstract String getRegisterViewUrl();
 
-    private String handleException(String message) {
-        getModels().put(ERROR_PREFIX, Collections.singletonList(message));
+    /**
+     * funkcja pomocnicza umieszczająca w widoku dane na temat błędów
+     * oraz pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * @return String url
+     */
+    private String handleException(List<String> errors) {
+        models.put(ERROR_PREFIX, errors);
         return getRegisterViewUrl();
     }
 }
