@@ -1,5 +1,15 @@
 
 {{#partial "content"}}
+    {{#if unlocked}}
+        <div class="alert alert-success" role="alert">
+            <p>Account has been unlocked</p>
+        </div>
+    {{/if}}
+    {{#if error}}
+        <div class="alert alert-danger" role="alert">
+            <p>{{error}}</p>
+        </div>
+    {{/if}}
     <h2>Users list:</h2>
     {{#each userAccounts}}
         <div class="question-card card mb-4">
@@ -18,8 +28,10 @@
                         <i class="far fa-edit ml-1"></i>
                     </a>
                     {{#unless this.accountActive}}
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="unlockUser({{this.id}}, '{{this.firstName}}'); this.disabled = true;"  >
-                            <span class="value">Unlock user</span>
+                        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect" data-button-confirm
+                                onclick="unlockUser({{this.id}}); this.disabled = true;"  >
+                            <span class="value">Unlock</span>
+                            <i class="fa fa-unlock"></i>
                         </button>
                     {{/unless}}
                 </div>
@@ -51,17 +63,14 @@
             </div>
         </div>
     {{/each}}
-    <script type="application/javascript">
-        function unlockUser(id, firstName) {
+    <script>
+        function unlockUser(id) {
             try {
-                const response = fetch('{{webContextPath}}/admin/users/unlock/' + id, {
-                    method: 'put'
+                fetch('{{webContextPath}}/admin/users/unlock/' + id, {
+                    method: 'POST'
+                }).then(() => {
+                    location.reload();
                 });
-                if (response) {
-                    alert("Unlocked successfully for " + firstName);
-                } else {
-                    alert({{error}});
-                }
             } catch(err) {
                 console.error(`Error: ${err}`);
             }

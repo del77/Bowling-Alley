@@ -22,7 +22,9 @@ import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -61,7 +63,11 @@ public class UserAdminController implements Serializable {
     public String allUsersList() {
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            userAccounts = userAccountService.getAllUsers();
+            userAccounts = userAccountService
+                    .getAllUsers()
+                    .stream()
+                    .sorted(Comparator.comparing(UserAccount::getId))
+                    .collect(Collectors.toList());
         } catch (EntityRetrievalException e) {
             displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
         }
@@ -115,18 +121,18 @@ public class UserAdminController implements Serializable {
      * @param id id konta, które należy odblokować
      * @return true, jeśli odblokowanie konta się powiedzie
      */
-    @PUT
+    @POST
     @Path("unlock/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Boolean unlockAccount(@PathParam("id") Long id) {
+    @Produces(MediaType.TEXT_HTML)
+    public String unlockAccount(@PathParam("id") Long id) {
         try {
             userAccountService.unlockAccountById(id);
         } catch (Exception e) {
             displayError("Could not unlock user's account.\n", e.getLocalizedMessage());
-            return false;
+            return allUsersList();
         }
-        return true;
+        models.put("unlocked", true);
+        return allUsersList();
     }
 
     /**
