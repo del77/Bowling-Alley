@@ -28,11 +28,12 @@
                         <i class="far fa-edit ml-1"></i>
                     </a>
                     {{#unless this.accountActive}}
-                        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect" data-button-confirm
-                                onclick="unlockUser({{this.id}}); this.disabled = true;"  >
+                        <a type="button" class="btn btn-outline-secondary btn-sm waves-effect" data-button-confirm
+                                href="{{webContextPath}}/admin/users/unlock/{{this.id}}"
+                                onclick="this.disabled = true;">
                             <span class="value">Unlock</span>
                             <i class="fa fa-unlock"></i>
-                        </button>
+                        </a>
                     {{/unless}}
                 </div>
             </div>
@@ -63,18 +64,5 @@
             </div>
         </div>
     {{/each}}
-    <script>
-        function unlockUser(id) {
-            try {
-                fetch('{{webContextPath}}/admin/users/unlock/' + id, {
-                    method: 'POST'
-                }).then(() => {
-                    location.reload();
-                });
-            } catch(err) {
-                console.error(`Error: ${err}`);
-            }
-        }
-    </script>
 {{/partial}}
 {{> layout }}

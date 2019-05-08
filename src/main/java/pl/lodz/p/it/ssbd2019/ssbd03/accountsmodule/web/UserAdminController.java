@@ -74,6 +74,25 @@ public class UserAdminController implements Serializable {
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
     }
+    
+    /**
+     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
+     *
+     * @param id id konta, które należy odblokować
+     * @return true, jeśli odblokowanie konta się powiedzie
+     */
+    @GET
+    @Path("unlock/{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public String unlockAccount(@PathParam("id") Long id) {
+        try {
+            userAccountService.unlockAccountById(id);
+            models.put("unlocked", true);
+        } catch (Exception e) {
+            displayError("Could not unlock user", e.getLocalizedMessage());
+        }
+        return allUsersList();
+    }
 
 
     /**
@@ -112,27 +131,6 @@ public class UserAdminController implements Serializable {
             displayError("There was a problem during user update.\n", e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
-    }
-
-
-    /**
-     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
-     *
-     * @param id id konta, które należy odblokować
-     * @return true, jeśli odblokowanie konta się powiedzie
-     */
-    @POST
-    @Path("unlock/{id}")
-    @Produces(MediaType.TEXT_HTML)
-    public String unlockAccount(@PathParam("id") Long id) {
-        try {
-            userAccountService.unlockAccountById(id);
-        } catch (Exception e) {
-            displayError("Could not unlock user's account.\n", e.getLocalizedMessage());
-            return allUsersList();
-        }
-        models.put("unlocked", true);
-        return allUsersList();
     }
 
     /**
