@@ -1,15 +1,6 @@
 
 {{#partial "content"}}
-    {{#if unlocked}}
-        <div class="alert alert-success" role="alert">
-            <p>Account has been unlocked</p>
-        </div>
-    {{/if}}
-    {{#if error}}
-        <div class="alert alert-danger" role="alert">
-            <p>{{error}}</p>
-        </div>
-    {{/if}}
+    <alerts></alerts>
     <h2>Users list:</h2>
     {{#each userAccounts}}
         <div class="question-card card mb-4">

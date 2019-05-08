@@ -87,7 +87,7 @@ public class UserAdminController implements Serializable {
     public String unlockAccount(@PathParam("id") Long id) {
         try {
             userAccountService.unlockAccountById(id);
-            models.put("unlocked", true);
+            models.put("infos", Collections.singletonList("Successfully unlocked user."));
         } catch (Exception e) {
             displayError("Could not unlock user", e.getLocalizedMessage());
         }
