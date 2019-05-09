@@ -34,6 +34,8 @@ import java.util.List;
 public class UserAdminController implements Serializable {
 
     private static final String ERROR = "errors";
+    private static final String INFO = "infos";
+    private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByAdmin.hbs";
 
     @Inject
     private Models models;
@@ -54,6 +56,7 @@ public class UserAdminController implements Serializable {
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
      * a użytkownik widzi błąd.
+     *
      * @return Widok z listą wszystkich użytkowników.
      */
     @GET
@@ -72,6 +75,7 @@ public class UserAdminController implements Serializable {
 
     /**
      * Zwraca widok z formularzem edycji użytkownika.
+     *
      * @return Widok z formularzem edycji uzytkownika.
      */
     @GET
@@ -92,6 +96,7 @@ public class UserAdminController implements Serializable {
 
     /**
      * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
+     *
      * @return Informacja o rezultacie edycji.
      */
     @POST
@@ -178,32 +183,32 @@ public class UserAdminController implements Serializable {
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);
-            return "accounts/edit-password/editByAdmin.hbs";
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
         try {
             userAccountService.changePasswordById(id, userData.getNewPassword());
         } catch (Exception e) {
-            errorMessages.add(e.getMessage());
-            models.put(ERROR, errorMessages);
-            return "accounts/edit-password/editByUser.hbs";
+            models.put(ERROR, Collections.singletonList(e.getMessage()));
+            return EDIT_PASSWORD_FORM_HBS;
         }
 
-        return "accounts/edit-password/success.hbs";
+        models.put(INFO, Collections.singletonList("Password has been changed."));
+        return EDIT_PASSWORD_FORM_HBS;
     }
 
-    private void putAccessLevelsIntoModel(UserAccount userAccount){
-        for(AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
-            if(accountAccessLevel.isActive()) {
-                switch(accountAccessLevel.getAccessLevel().getName()){
+    private void putAccessLevelsIntoModel(UserAccount userAccount) {
+        for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
+            if (accountAccessLevel.isActive()) {
+                switch (accountAccessLevel.getAccessLevel().getName()) {
                     case "CLIENT":
-                        models.put("clientActive",true);
+                        models.put("clientActive", true);
                         break;
                     case "EMPLOYEE":
-                        models.put("employeeActive",true);
+                        models.put("employeeActive", true);
                         break;
                     case "ADMIN":
-                        models.put("adminActive",true);
+                        models.put("adminActive", true);
                         break;
                 }
             }
