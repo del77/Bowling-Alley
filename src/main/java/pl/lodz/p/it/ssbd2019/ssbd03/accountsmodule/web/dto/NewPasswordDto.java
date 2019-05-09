@@ -16,6 +16,7 @@ public class NewPasswordDto {
     @NotNull(message = "New password cannot be null.")
     @NotBlank(message = "New password cannot be blank.")
     @Size(max = 64, message = "Password cannot be longer than 64 characters.")
+    @Size(min = 8, message = "Password cannot be shorter than 8 characters.")
     @FormParam("newPassword")
     String newPassword;
 
