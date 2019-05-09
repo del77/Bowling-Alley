@@ -5,27 +5,38 @@
     {{#each userAccounts}}
         <div class="question-card card mb-4">
             <div class="card-header forum-card-img-30 d-flex justify-content-between">
-                <p class="pt-2 mb-0">
-                    <i class="fas fa-user mr-4 pr-3 rounded-circle"></i>
-                    <strong><a href="#" target="_blank">{{this.email}}</a></strong>
-                </p>
-                <div>
-                    <a href="{{webContextPath}}/admin/users/{{id}}/edit" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
-                        <span class="value">Edit</span>
-                        <i class="far fa-edit ml-1"></i>
-                    </a>
-                    <a href="{{webContextPath}}/admin/users/{{id}}/details" type="button" class="btn btn-outline-info btn-sm px-2 waves-effect show_login">
-                        <span class="value">See details</span>
-                        <i class="far fa-edit ml-1"></i>
-                    </a>
-                    {{#unless this.accountActive}}
-                        <a type="button" class="btn btn-outline-secondary btn-sm waves-effect" data-button-confirm
-                                href="{{webContextPath}}/admin/users/unlock/{{this.id}}"
-                                onclick="this.disabled = true;">
-                            <span class="value">Unlock</span>
-                            <i class="fa fa-unlock"></i>
-                        </a>
-                    {{/unless}}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-7">
+                            <p class="pt-2 mb-0">
+                                <i class="fas fa-user mr-4 pr-3 rounded-circle"></i>
+                                <strong><a href="#" target="_blank">{{this.email}}</a></strong>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <a href="{{webContextPath}}/admin/users/{{id}}/edit" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
+                                <span class="value">Edit</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                            <a href="{{webContextPath}}/admin/users/{{id}}/details" type="button" class="btn btn-outline-info btn-sm px-2 waves-effect show_login">
+                                <span class="value">See details</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                        </div>
+                        <div class="col-2">
+                            <form class="form-inline" role="form" method="post">
+                                <div class="form-group">
+                                    <input class="form-control" type="checkbox" data-toggle="toggle" data-offstyle="danger" data-onstyle="success" aria-label="toggle-lock"
+                                           data-on="<i class='fa fa-unlock'></i>" data-off="<i class='fa fa-lock'></i>" data-size="mini"
+                                           name="activeToggle" id="activeToggle" data-width="42" {{#if this.accountActive}} checked {{/if}}/>
+                                    <input type="hidden" id="accountId" name="accountId" readonly value="{{this.id}}" aria-label="id">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-sm btn-warning">Apply changes</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--Card content-->

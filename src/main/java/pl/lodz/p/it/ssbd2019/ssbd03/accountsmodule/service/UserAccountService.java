@@ -73,7 +73,7 @@ public interface UserAccountService {
      * @return obiekt encji odblokowanego użytkownika
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount unlockAccountById(Long id) throws EntityUpdateException;
+    UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym id.

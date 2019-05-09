@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -22,9 +23,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -51,7 +50,7 @@ public class UserAdminController implements Serializable {
     @Inject
     private DtoMapper dtoMapper;
 
-    private UserAccount editedAccount;
+    private transient UserAccount editedAccount;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -63,11 +62,7 @@ public class UserAdminController implements Serializable {
     public String allUsersList() {
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            userAccounts = userAccountService
-                    .getAllUsers()
-                    .stream()
-                    .sorted(Comparator.comparing(UserAccount::getId))
-                    .collect(Collectors.toList());
+            userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
             displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
         }
@@ -76,20 +71,25 @@ public class UserAdminController implements Serializable {
     }
     
     /**
-     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
+     * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
      *
-     * @param id id konta, które należy odblokować
-     * @return true, jeśli odblokowanie konta się powiedzie
+     * @param dto dto z id konta, któremu należy zmienić flagę aktywności
+     * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
      */
-    @GET
-    @Path("unlock/{id}")
+    @POST
     @Produces(MediaType.TEXT_HTML)
-    public String unlockAccount(@PathParam("id") Long id) {
+    public String updateLockStatusOnAccount(@BeanParam AccountActivationDto dto) {
+        boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
         try {
-            userAccountService.unlockAccountById(id);
-            models.put("infos", Collections.singletonList("Successfully unlocked user."));
+            UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
+            if(account.isAccountActive() == active) {
+                models.put("infos", Collections.singletonList(
+                        String.format("Successfully changed %s's lock state.", account.getLogin())));
+            } else {
+                displayError(String.format("Could not change %s's lock state", account.getLogin()), "");
+            }
         } catch (Exception e) {
-            displayError("Could not unlock user", e.getLocalizedMessage());
+            displayError("Could not change user's lock state", e.getLocalizedMessage());
         }
         return allUsersList();
     }
@@ -208,6 +208,8 @@ public class UserAdminController implements Serializable {
                         break;
                     case "ADMIN":
                         models.put("adminActive",true);
+                        break;
+                    default:
                         break;
                 }
             }

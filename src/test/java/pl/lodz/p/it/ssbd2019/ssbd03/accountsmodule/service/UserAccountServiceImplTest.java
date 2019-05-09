@@ -107,7 +107,7 @@ public class UserAccountServiceImplTest {
         UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
         when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
 
-        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserWithAccessLevels(userAccount, asList("CLIENT")));
+        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserWithAccessLevels(userAccount, Collections.singletonList("CLIENT")));
     }
 
     @Test
@@ -133,14 +133,14 @@ public class UserAccountServiceImplTest {
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+            List<AccountAccessLevel> accountAccessLevels = Collections.singletonList(AccountAccessLevel.builder()
                     .active(true)
                     .build());
             newUserAccount.setAccountAccessLevels(accountAccessLevels);
             return newUserAccount;
         });
 
-        userAccount = userService.updateUserWithAccessLevels(userAccount, asList("CLIENT"));
+        userAccount = userService.updateUserWithAccessLevels(userAccount, Collections.singletonList("CLIENT"));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
     }
@@ -152,7 +152,7 @@ public class UserAccountServiceImplTest {
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
         try {
-            Assertions.assertTrue(userService.unlockAccountById(18L).isAccountActive());
+            Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
         } catch (EntityUpdateException e) {
             Assertions.fail(e);
         }
@@ -165,7 +165,33 @@ public class UserAccountServiceImplTest {
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
         try {
-            Assertions.assertTrue(userService.unlockAccountById(18L).isAccountActive());
+            Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
+    
+    @Test
+    public void lockLockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
+        Optional<UserAccount> optionalAccount = Optional.of(sut);
+        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
+        } catch (EntityUpdateException e) {
+            Assertions.fail(e);
+        }
+    }
+    
+    @Test
+    public void lockUnlockedAccountTestShouldNotThrow() {
+        UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
+        Optional<UserAccount> optionalAccount = Optional.of(sut);
+        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        try {
+            Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
         } catch (EntityUpdateException e) {
             Assertions.fail(e);
         }
@@ -183,7 +209,7 @@ public class UserAccountServiceImplTest {
                 .build();
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
-                .accountAccessLevels(asList(existingAccountAccessLevel))
+                .accountAccessLevels(Collections.singletonList(existingAccountAccessLevel))
                 .build();
         int accessLevelsBefore = userAccount.getAccountAccessLevels().size();
         boolean activeBefore = userAccount.getAccountAccessLevels().get(0).isActive();
@@ -191,18 +217,18 @@ public class UserAccountServiceImplTest {
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+            List<AccountAccessLevel> accountAccessLevels = Collections.singletonList(AccountAccessLevel.builder()
                     .active(true)
                     .build());
             newUserAccount.setAccountAccessLevels(accountAccessLevels);
             return newUserAccount;
         });
 
-        userAccount = userService.updateUserWithAccessLevels(userAccount, new LinkedList<String>(asList("CLIENT")));
+        userAccount = userService.updateUserWithAccessLevels(userAccount, new LinkedList<>(Collections.singletonList("CLIENT")));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
-        Assertions.assertTrue(activeBefore == false && activeAfter == true);
+        Assertions.assertTrue(!activeBefore && activeAfter);
     }
 
     @Test
@@ -216,7 +242,7 @@ public class UserAccountServiceImplTest {
                 .build();
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
-                .accountAccessLevels(asList(existingAccountAccessLevel))
+                .accountAccessLevels(Collections.singletonList(existingAccountAccessLevel))
                 .build();
         int accessLevelsBefore = userAccount.getAccountAccessLevels().size();
         boolean activeBefore = userAccount.getAccountAccessLevels().get(0).isActive();
@@ -224,7 +250,7 @@ public class UserAccountServiceImplTest {
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
-            List<AccountAccessLevel> accountAccessLevels = asList(AccountAccessLevel.builder()
+            List<AccountAccessLevel> accountAccessLevels = Collections.singletonList(AccountAccessLevel.builder()
                     .active(false)
                     .build());
             newUserAccount.setAccountAccessLevels(accountAccessLevels);
@@ -235,7 +261,7 @@ public class UserAccountServiceImplTest {
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
-        Assertions.assertTrue(activeBefore == true && activeAfter == false);
+        Assertions.assertTrue(activeBefore && !activeAfter);
     }
     @Test
     public void changePasswordTestShouldNotThrow() {
