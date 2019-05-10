@@ -8,13 +8,13 @@
                     <ul class="list-group">
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">First name</h6>
+                                <h6 class="mb-1">{{lang.firstName}}</h6>
                             </div>
                             <p class="mb-1">{{this.user.firstName}}</p>
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Last name</h6>
+                                <h6 class="mb-1">{{lang.lastName}}</h6>
                             </div>
                             <p class="mb-1">{{this.user.lastName}}</p>
                         </li>
@@ -26,35 +26,35 @@
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Phone number</h6>
+                                <h6 class="mb-1">{{lang.phoneNumber}}</h6>
                             </div>
                             <p class="mb-1">{{this.user.phone}}</p>
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Confirmed</h6>
+                                <h6 class="mb-1">{{lang.userConfirmed}}</h6>
                             </div>
                             <p class="mb-1">{{this.user.accountConfirmed}}</p>
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Active</h6>
+                                <h6 class="mb-1">{{lang.userActive}}</h6>
                             </div>
                             <p class="mb-1">{{this.user.accountActive}}</p>
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Roles</h6>
+                                <h6 class="mb-1">{{lang.roles}}</h6>
                             </div>
                             <div class="mb-1">
                                 {{#if clientActive}}
-                                    <span class="badge badge-info">Client</span>
+                                    <span class="badge badge-info">{{lang.client}}</span>
                                 {{/if}}
                                 {{#if employeeActive}}
-                                    <span class="badge badge-warning">Employee</span>
+                                    <span class="badge badge-warning">{{lang.employee}}</span>
                                 {{/if}}
                                 {{#if adminActive}}
-                                    <span class="badge badge-danger">Admin</span>
+                                    <span class="badge badge-danger">{{lang.admin}}</span>
                                 {{/if}}
                             </div>
                         </li>

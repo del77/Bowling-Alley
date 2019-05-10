@@ -1,6 +1,6 @@
 
 {{#partial "content"}}
-    <h2>Users list:</h2>
+    <h2>{{lang.usersList}}:</h2>
     {{#each userAccounts}}
         <div class="question-card card mb-4">
             <div class="card-header forum-card-img-30 d-flex justify-content-between">
@@ -10,33 +10,33 @@
                 </p>
                 <div>
                     <a href="{{webContextPath}}/admin/users/{{id}}/edit" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
-                        <span class="value">Edit</span>
+                        <span class="value">{{lang.edit}}</span>
                         <i class="far fa-edit ml-1"></i>
                     </a>
                     <a href="{{webContextPath}}/admin/users/{{id}}/details" type="button" class="btn btn-outline-info btn-sm px-2 waves-effect show_login">
-                        <span class="value">See details</span>
+                        <span class="value">{{lang.seeDetails}}</span>
                         <i class="far fa-edit ml-1"></i>
                     </a>
                     {{#unless this.accountActive}}
                         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="unlockUser({{this.id}}, '{{this.firstName}}'); this.disabled = true;"  >
-                            <span class="value">Unlock user</span>
+                            <span class="value">{{lang.unlockUser}}</span>
                         </button>
                     {{/unless}}
                 </div>
             </div>
             <!--Card content-->
             <div class="card-body">
-                <h5>Short info:</h5>
+                <h5>{{lang.shortInfo}}</h5>
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">First name</h6>
+                            <h6 class="mb-1">{{lang.firstName}}</h6>
                         </div>
                         <p class="mb-1">{{this.firstName}}</p>
                     </li>
                     <li class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">Last name</h6>
+                            <h6 class="mb-1">{{lang.lastName}}</h6>
                         </div>
                         <p class="mb-1">{{this.lastName}}</p>
                     </li>
@@ -58,7 +58,7 @@
                     method: 'put'
                 });
                 if (response) {
-                    alert("Unlocked successfully for " + firstName);
+                    alert({{lang.unlockedSuccessFullyFor}} + " " + firstName);
                 } else {
                     alert({{error}});
                 }

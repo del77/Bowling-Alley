@@ -17,6 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "UserAccount.findByLogin",
+                        query = "select a from UserAccount a where a.login = :login"),
+        }
+)
 public class UserAccount {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -40,7 +46,7 @@ public class UserAccount {
     @Version
     @Min(0)
     @Column(name = "version", nullable = false, table = "users")
-    private Long version;
+    private long version;
 
     @Email
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
@@ -66,5 +72,5 @@ public class UserAccount {
     @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private Long accountsVersion;
+    private long accountsVersion;
 }

@@ -53,7 +53,7 @@ public class UserClientController {
 
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
-     *
+     *      *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
      * @see NewPasswordWithConfirmationDto

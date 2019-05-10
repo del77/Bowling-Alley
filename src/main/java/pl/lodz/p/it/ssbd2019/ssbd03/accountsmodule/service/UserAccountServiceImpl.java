@@ -70,6 +70,15 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    public UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException {
+        try {
+            return userAccountRepositoryLocal.edit(userAccount);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not update userAccount", e);
+        }
+    }
+
+    @Override
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
             return userAccountRepositoryLocal.findByLogin(login).orElseThrow(

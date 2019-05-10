@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.*;
 import lombok.extern.slf4j.Slf4j;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.I18nManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,6 +16,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +28,13 @@ import java.util.stream.Collectors;
 public class HandlebarsViewEngine implements ViewEngine {
     @Inject
     private ServletContext servletContext;
+
+    /**
+     * Klasa odpowiadająca za stan wybranego w aplikacji języka.
+     * (Sesyjna).
+     */
+    @Inject
+    private I18nManager i18nManager;
 
     /**
      * Metoda zwraca czy podany plik może być przetwarzany dla tego silnika.
@@ -55,9 +65,13 @@ public class HandlebarsViewEngine implements ViewEngine {
 
         try (PrintWriter writer = context.getResponse(HttpServletResponse.class).getWriter();
              InputStream resourceAsStream = servletContext.getResourceAsStream(viewName);
-             InputStreamReader in = new InputStreamReader(resourceAsStream, "UTF-8");
+             InputStreamReader in = new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(in)) {
 
+            HttpServletResponse httpServletResponse = context.getResponse(HttpServletResponse.class);
+            if (httpServletResponse != null) {
+                httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
+            }
             models.put("webContextPath", context.getRequest(HttpServletRequest.class).getContextPath());
             models.put("page", context.getRequest(HttpServletRequest.class).getRequestURI());
             models.put("viewName", viewName);
