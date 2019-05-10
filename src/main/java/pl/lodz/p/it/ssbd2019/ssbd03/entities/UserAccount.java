@@ -17,6 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "UserAccount.findByLogin",
+                        query = "select a from UserAccount a where a.login = :login"),
+        }
+)
 public class UserAccount {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
