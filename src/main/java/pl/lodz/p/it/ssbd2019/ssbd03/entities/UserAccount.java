@@ -33,8 +33,7 @@ public class UserAccount {
     private String lastName;
 
     @Size(min = 9)
-    @NotNull
-    @Column(name = "phone", length = 16, table = "users")
+    @Column(name = "phone", nullable = false, length = 16, table = "users")
     private String phone;
 
     @Version

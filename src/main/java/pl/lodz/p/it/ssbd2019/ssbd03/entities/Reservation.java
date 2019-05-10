@@ -1,8 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.entityvalidators.ValidReservationDates;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 
@@ -15,6 +18,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ValidReservationDates
 public class Reservation {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,9 +33,11 @@ public class Reservation {
     private UserAccount userAccount;
 
     @Column(name = "start_date", nullable = false)
+    @FutureOrPresent
     private Timestamp startDate;
 
     @Column(name = "end_date", nullable = false)
+    @Future
     private Timestamp endDate;
 
     @Min(1)
