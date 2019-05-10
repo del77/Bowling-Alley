@@ -1,26 +1,26 @@
 {{#partial "content"}}
     <div class="container">
         <div class="w-75">
-            <form class="form-horizontal" role="form" method="post">
+            <form class="form-horizontal" role="form" method="post" data-form-confirm>
                 {{> "accounts/register/registerClientForm"}}
                 <label class="col-sm-3 control-label">Access Levels</label>
                 <div class="form-group">
                     <div>
-                        <label for="clientRole" class="control-label">client:</label>
-                        <input type="checkbox" name="clientSelected" value="true">
+                        <label for="clientSelected" class="control-label">client:</label>
+                        <input type="checkbox" id="clientSelected" name="clientSelected" value="true">
                     </div>
                 </div>
                 <div class="form-group">
 
                     <div>
-                        <label for="clientRole" class="control-label">employee:</label>
-                        <input type="checkbox" name="employeeSelected" value="true">
+                        <label for="employeeSelected" class="control-label">employee:</label>
+                        <input type="checkbox" id="employeeSelected" name="employeeSelected" value="true">
                     </div>
                 </div>
                 <div class="form-group">
                     <div>
-                        <label for="clientRole" class="control-label">admin:</label>
-                        <input type="checkbox" id="admin" name="adminSelected" value="true">
+                        <label for="adminSelected" class="control-label">admin:</label>
+                        <input type="checkbox" id="adminSelected" name="adminSelected" value="true">
                     </div>
                 </div>
                 {{> "accounts/register/submitButton"}}
