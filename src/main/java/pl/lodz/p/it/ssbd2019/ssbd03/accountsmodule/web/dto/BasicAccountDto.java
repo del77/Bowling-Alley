@@ -41,6 +41,7 @@ public class BasicAccountDto {
 
     @NotNull(message = "Password cannot be null.")
     @NotBlank(message = "Password cannot be blank.")
+    @Size(min = 8, message = "Password must contain at least 8 characters.")
     @Size(max = 64, message = "Password cannot be longer than 64 characters.")
     @FormParam("password")
     protected String password;

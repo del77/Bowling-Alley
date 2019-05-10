@@ -12,6 +12,7 @@ import javax.mvc.Controller;
 import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,6 +24,8 @@ import java.util.List;
 @Path("client/users")
 public class UserClientController {
 
+    private static final String ERROR = "errors";
+    private static final String INFO = "infos";
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
 
     @Inject
@@ -63,7 +66,7 @@ public class UserClientController {
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            models.put("errors", errorMessages);
+            models.put(ERROR, errorMessages);
             return EDIT_PASSWORD_FORM_HBS;
         }
 
@@ -71,11 +74,11 @@ public class UserClientController {
             String login = (String) models.get("userName");
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
-            errorMessages.add(e.getMessage());
-            models.put("errors", errorMessages);
+            models.put(ERROR, Collections.singletonList(e.getMessage()));
             return EDIT_PASSWORD_FORM_HBS;
         }
 
-        return "accounts/edit-password/success.hbs";
+        models.put(INFO, Collections.singletonList("Password has been changed."));
+        return EDIT_PASSWORD_FORM_HBS;
     }
 }
