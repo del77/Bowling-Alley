@@ -37,11 +37,6 @@ public class UserAccount {
     @Column(name = "phone", length = 16, table = "users")
     private String phone;
 
-    @Version
-    @Min(0)
-    @Column(name = "version", nullable = false, table = "users")
-    private Long version;
-
     @Email
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
     private String email;
@@ -66,5 +61,5 @@ public class UserAccount {
     @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private Long accountsVersion;
+    private Long version;
 }
