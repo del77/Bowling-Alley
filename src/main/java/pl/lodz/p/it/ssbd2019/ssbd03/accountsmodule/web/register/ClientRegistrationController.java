@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
@@ -14,6 +15,7 @@ import java.util.Collections;
  */
 @RequestScoped
 @Controller
+@PermitAll
 @Path("register")
 public class ClientRegistrationController extends RegistrationController {
 

@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidat
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -21,8 +22,8 @@ import java.util.List;
  */
 @Controller
 @RequestScoped
-@Path("client/users")
-public class UserClientController {
+@Path("account")
+public class AccountController {
 
     private static final String ERROR = "errors";
     private static final String INFO = "infos";
@@ -46,6 +47,7 @@ public class UserClientController {
      */
     @GET
     @Path("edit-password")
+    @RolesAllowed("ChangeOwnPassword")
     @Produces(MediaType.TEXT_HTML)
     public String viewEditPasswordForm() {
         return EDIT_PASSWORD_FORM_HBS;
@@ -60,6 +62,7 @@ public class UserClientController {
      */
     @POST
     @Path("edit-password")
+    @RolesAllowed("ChangeOwnPassword")
     @Produces(MediaType.TEXT_HTML)
     public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);

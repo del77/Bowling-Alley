@@ -12,6 +12,7 @@
     </session-timeout>
   </session-config>
 
+  <!-- MOK -->
   <security-role>
     <description/>
     <role-name>ADMIN</role-name>
@@ -27,6 +28,182 @@
     <role-name>CLIENT</role-name>
   </security-role>
 
+  <security-role>
+    <description/>
+    <role-name>CreateAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>LockUnlockAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeAccessLevel</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeOwnPassword</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeUserPassword</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditOwnAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditUserAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>Logout</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAllUsersList</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetUserDetails</role-name>
+  </security-role>
+
+  <!-- MOT -->
+
+  <security-role>
+    <description/>
+    <role-name>AddAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EnableDisableAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAlleyGamesHistory</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>AddServiceRequest</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditServiceRequest</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetServiceRequests</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EnterGameResult</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetBestScoreForAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditBallsCount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditShoesCount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ShowUserScoreHistory</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAlleysList</role-name>
+  </security-role>
+
+  <!-- MOR -->
+
+  <security-role>
+    <description/>
+    <role-name>CreateReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CreateReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CancelReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CancelReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationsForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationsForAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationDetails</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>AddCommentForReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditCommentForReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>DisableComment</role-name>
+  </security-role>
+
+
+  <!--Constraints-->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All pages</web-resource-name>
@@ -76,6 +253,22 @@
     </web-resource-collection>
     <auth-constraint>
       <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- access control for Accounts -->
+  <security-constraint>
+    <display-name>AccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>Account pages</web-resource-name>
+      <description/>
+      <url-pattern>/account/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
       <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>

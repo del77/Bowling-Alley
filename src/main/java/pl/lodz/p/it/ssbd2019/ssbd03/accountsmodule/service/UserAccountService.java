@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 
@@ -28,14 +27,6 @@ public interface UserAccountService {
      * bądź gdy nie znajdzie użytkownika.
      */
     UserAccount getUserById(Long id) throws EntityRetrievalException;
-
-    /**
-     * Metoda dodaje uzytkownika do bazy danych oraz zwraca dodaną encję.
-     * @param userAccount Obiekt typu UserAccount, którego dane mają być dodane do bazy danych.
-     * @return Encja użytkowniak dodanego do bazy danych.
-     * @throws EntityCreationException w wypadku gdy nie powiedzie się tworzenie encji.
-     */
-    UserAccount addUser(UserAccount userAccount) throws EntityCreationException;
 
     /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).

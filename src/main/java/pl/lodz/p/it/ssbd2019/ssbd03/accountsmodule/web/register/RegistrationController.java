@@ -38,7 +38,7 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+    protected String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
         List<String> errorMessages = validator.validate(basicAccountDto);
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));

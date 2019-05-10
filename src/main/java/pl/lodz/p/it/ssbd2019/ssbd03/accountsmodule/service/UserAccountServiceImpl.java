@@ -7,11 +7,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -27,6 +27,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
+    @RolesAllowed("GetAllUsersList")
     public List<UserAccount> getAllUsers() throws EntityRetrievalException {
         try {
             return userAccountRepositoryLocal.findAll();
@@ -36,6 +37,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed("GetUserDetails")
     public UserAccount getUserById(Long id) throws EntityRetrievalException {
         try {
             UserAccount user = userAccountRepositoryLocal.findById(id).orElseThrow(
@@ -47,17 +49,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
-    @Override
-    public UserAccount addUser(UserAccount userAccount) throws EntityCreationException {
-        try {
-            return userAccountRepositoryLocal.create(userAccount);
-        } catch (Exception e) {
-            throw new EntityCreationException("Could not add userAccount", e);
-        }
-    }
-
 
     @Override
+    @RolesAllowed({"ChangeAccessLevel", "EditUserAccount"})
     public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
@@ -70,6 +64,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed("ChangeOwnPassword")
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
             return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
@@ -80,6 +75,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed("ChangeOwnPassword")
     public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getByLogin(login);
@@ -96,6 +92,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed("ChangeUserPassword")
     public void changePasswordById(long id, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getUserById(id);
@@ -106,6 +103,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
     
     @Override
+    @RolesAllowed("LockUnlockAccount")
     public UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException {
         try {
             UserAccount account = getUserById(id);

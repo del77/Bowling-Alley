@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ public class LoginController {
      * @return Widok strony logowania
      */
     @GET
+    @PermitAll
     @Produces(MediaType.TEXT_HTML)
     public String loginPage() {
         return "accounts/login/login.hbs";
@@ -26,6 +28,7 @@ public class LoginController {
 
     @GET
     @Path("error")
+    @PermitAll
     @Produces(MediaType.TEXT_HTML)
     public String errorPage() {
         return "accounts/login/blad.hbs";

@@ -48,12 +48,6 @@ public class UserAccountServiceImplTest {
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getUserById(1L));
     }
 
-    @Test
-    public void shouldThrowEntityCreationExceptionWhenAddUserCatchesException() {
-        when(userAccountRepositoryLocal.create(any(UserAccount.class))).thenThrow(RuntimeException.class);
-        Assertions.assertThrows(EntityCreationException.class, () -> userService.addUser(mock(UserAccount.class)));
-    }
-
 
 
     @Test
@@ -91,16 +85,6 @@ public class UserAccountServiceImplTest {
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
     }
 
-    @Test
-    public void shouldReturnRightEntityOnAddUser() throws EntityCreationException {
-        UserAccount userAccount = new UserAccount();
-        when(userAccountRepositoryLocal.create(any(UserAccount.class))).then((u) -> {
-            UserAccount newUserAccount = u.getArgument(0);
-            newUserAccount.setId(1L);
-            return newUserAccount;
-        });
-        Assertions.assertEquals( userService.addUser(userAccount).getId(), 1L);
-    }
 
     @Test
     public void shouldThrowEntityUpdateExceptionWhenUpdateUserCatchesException() {

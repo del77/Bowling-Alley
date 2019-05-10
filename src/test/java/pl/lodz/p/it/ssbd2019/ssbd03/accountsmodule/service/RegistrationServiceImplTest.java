@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -35,9 +34,6 @@ public class RegistrationServiceImplTest {
 
     @Mock
     private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
-
-    @Mock
-    private AccountAccessLevelRepositoryLocal accountAccessLevelRepositoryLocal;
 
     @InjectMocks
     private RegistrationServiceImpl registrationService;

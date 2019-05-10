@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.MediaType;
  */
 @RequestScoped
 @Controller
+@RolesAllowed("CreateAccount")
 @Path("admin/register")
 public class AdminRegistrationController extends RegistrationController {
 

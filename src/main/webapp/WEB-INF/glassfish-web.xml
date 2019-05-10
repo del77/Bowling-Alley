@@ -14,6 +14,196 @@
         <group-name>CLIENT</group-name>
     </security-role-mapping>
 
+    <!-- MOK -->
+    <security-role-mapping>
+        <role-name>CreateAccount</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>LockUnlockAccount</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>ChangeAccessLevel</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>ChangeOwnPassword</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>ChangeUserPassword</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditOwnAccount</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditUserAccount</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>Logout</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetAllUsersList</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetUserDetails</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+
+
+    <!-- MOT -->
+    <security-role-mapping>
+        <role-name>AddAlley</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EnableDisableAlley</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetAlleyGamesHistory</role-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>AddServiceRequest</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditServiceRequest</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetServiceRequests</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EnterGameResult</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetBestScoreForAlley</role-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditBallsCount</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditShoesCount</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>ShowUserScoreHistory</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetAlleysList</role-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <!-- MOR -->
+    <security-role-mapping>
+        <role-name>CreateReservation</role-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>CreateReservationForUser</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditReservation</role-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditReservationForUser</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>CancelReservation</role-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>CancelReservationForUser</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetReservationsForUser</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetReservationsForAlley</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetReservationDetails</role-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>AddCommentForReservation</role-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditCommentForReservation</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>DisableComment</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
     <class-loader delegate="true"/>
     
 </glassfish-web-app>
