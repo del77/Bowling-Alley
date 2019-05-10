@@ -5,14 +5,11 @@ import lombok.*;
 import javax.ws.rs.FormParam;
 
 @NoArgsConstructor
-@ToString
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class AccountActivationDto {
     @FormParam("accountId")
     private Long id;
     
     @FormParam("activeToggle")
-    private String active;
+    private Boolean active;
 }
