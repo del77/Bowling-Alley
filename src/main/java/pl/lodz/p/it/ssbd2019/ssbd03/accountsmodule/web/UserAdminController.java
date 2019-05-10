@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -51,7 +52,7 @@ public class UserAdminController implements Serializable {
     @Inject
     private DtoMapper dtoMapper;
 
-    private UserAccount editedAccount;
+    private transient UserAccount editedAccount;
 
     /**
      * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
@@ -70,6 +71,30 @@ public class UserAdminController implements Serializable {
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
+    }
+    
+    /**
+     * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
+     *
+     * @param dto dto z id konta, któremu należy zmienić flagę aktywności
+     * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
+     */
+    @POST
+    @Produces(MediaType.TEXT_HTML)
+    public String updateLockStatusOnAccount(@BeanParam AccountActivationDto dto) {
+        boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
+        try {
+            UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
+            if(account.isAccountActive() == active) {
+                models.put("infos", Collections.singletonList(
+                        String.format("Successfully changed %s's lock state.", account.getLogin())));
+            } else {
+                displayError(String.format("Could not change %s's lock state", account.getLogin()), "");
+            }
+        } catch (Exception e) {
+            displayError("Could not change user's lock state", e.getLocalizedMessage());
+        }
+        return allUsersList();
     }
 
 
@@ -111,27 +136,6 @@ public class UserAdminController implements Serializable {
             displayError("There was a problem during user update.\n", e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
-    }
-
-
-    /**
-     * Odblokowuje konto użytkownika z podanym identyfikatorem i zwraca true, jeśli operacja się powiedzie
-     *
-     * @param id id konta, które należy odblokować
-     * @return true, jeśli odblokowanie konta się powiedzie
-     */
-    @PUT
-    @Path("unlock/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Boolean unlockAccount(@PathParam("id") Long id) {
-        try {
-            userAccountService.unlockAccountById(id);
-        } catch (Exception e) {
-            displayError("Could not unlock user's account.\n", e.getLocalizedMessage());
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -209,6 +213,8 @@ public class UserAdminController implements Serializable {
                         break;
                     case "ADMIN":
                         models.put("adminActive", true);
+                        break;
+                    default:
                         break;
                 }
             }
