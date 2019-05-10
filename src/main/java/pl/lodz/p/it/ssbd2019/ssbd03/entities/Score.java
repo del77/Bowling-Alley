@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Klasa reprezentująca wyniki.
  */
@@ -16,12 +18,14 @@ import javax.validation.constraints.Min;
 @Builder
 public class Score {
     @Id
+    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "reservation_id",
             updatable = false,
             nullable = false,
@@ -29,6 +33,7 @@ public class Score {
     private Reservation reservation;
 
     @ManyToOne(cascade=CascadeType.REFRESH)
+    @NotNull
     @JoinColumn(name = "user_id",
             updatable = false,
             nullable = false,
@@ -37,12 +42,14 @@ public class Score {
 
 
     @Column(name = "score", nullable = false)
+    @NotNull
     @Max(300)
     @Min(0)
     private int score;
 
     @Version
     @Min(0)
+    @NotNull
     @Column(name = "version", nullable = false)
     private long version;
 }

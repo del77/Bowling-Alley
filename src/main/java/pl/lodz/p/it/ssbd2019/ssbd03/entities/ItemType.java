@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * Klasa reprezentująca typy przedmiotów.
  */
@@ -16,16 +18,19 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class ItemType {
     @Id
+    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
 
     @NotEmpty
+    @NotNull
     @Column(name = "name", nullable = false, length = 25, unique = true)
     private String name;
 
     @Version
+    @NotNull
     @Min(0)
     @Column(name = "version", nullable = false)
     private long version;

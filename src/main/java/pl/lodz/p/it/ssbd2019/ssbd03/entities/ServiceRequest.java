@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 /**
  * Klasa reprezentująca zapytania serwisowe.
@@ -19,29 +21,37 @@ import java.sql.Timestamp;
 public class ServiceRequest {
 
     @Id
+    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
-
+    
+    @NotNull
+    @NotEmpty
     @Column(name = "content", nullable = false, length = 256)
     private String content;
 
     @Version
     @Min(0)
+    @NotNull
     @Column(name = "version", nullable = false)
     private long version;
-
+    
+    @NotNull
     @Column(name = "date", nullable = false, updatable = false)
     private Timestamp date;
-
+    
+    @NotNull
     @Column(name = "resolved", nullable = false)
     private boolean resolved;
-
+    
+    @NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false, cascade=CascadeType.REFRESH)
     private UserAccount userAccount;
-
+    
+    @NotNull
     @JoinColumn(name = "alley_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Alley alley;

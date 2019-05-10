@@ -86,7 +86,7 @@ public class UserAdminController implements Serializable {
         try {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
             if(account.isAccountActive() == active) {
-                models.put("infos", Collections.singletonList(
+                models.put(INFO, Collections.singletonList(
                         String.format("Successfully changed %s's lock state.", account.getLogin())));
             } else {
                 displayError(String.format("Could not change %s's lock state", account.getLogin()), "");
@@ -167,7 +167,7 @@ public class UserAdminController implements Serializable {
     @Path("/{id}/edit/password")
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword() {
-        return "accounts/edit-password/editByAdmin.hbs";
+        return EDIT_PASSWORD_FORM_HBS;
     }
 
 
