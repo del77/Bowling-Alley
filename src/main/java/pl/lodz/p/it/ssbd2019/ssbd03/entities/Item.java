@@ -17,7 +17,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class Item {
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude

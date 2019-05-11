@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class Alley {
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude

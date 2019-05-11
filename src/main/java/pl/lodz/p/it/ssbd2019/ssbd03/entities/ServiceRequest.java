@@ -21,7 +21,6 @@ import java.sql.Timestamp;
 public class ServiceRequest {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude

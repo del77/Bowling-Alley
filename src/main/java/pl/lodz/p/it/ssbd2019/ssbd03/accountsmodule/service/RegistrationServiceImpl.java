@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueLoginException, NotUniqueEmailException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount = createUser(userAccount);
-        createAccountAccessLevels(userAccount, accessLevelNames);
+        userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
     }
 
     @Override
@@ -69,7 +70,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         Throwable t = e.getCause();
         while ((t != null) && !(t instanceof PSQLException)) {
             t = t.getCause();
-            if (t.getMessage().contains("login")){
+            if (t == null || t.getMessage() == null) {
+                throw new RegistrationProcessException(e.getMessage(), e);
+            } else if (t.getMessage().contains("login")){
                 throw new NotUniqueLoginException();
             } else if (t.getMessage().contains("email")) {
                 throw new NotUniqueEmailException();
@@ -78,13 +81,15 @@ public class RegistrationServiceImpl implements RegistrationService {
         throw new RegistrationProcessException(e.getMessage());
     }
 
-    private void createAccountAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
+    private List<AccountAccessLevel> createAccountAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
+        List<AccountAccessLevel> accessLevels = new ArrayList<>();
         for (String accessLevelName : accessLevelNames) {
-            createAccountAccessLevel(userAccount, accessLevelName);
+            accessLevels.add(createAccountAccessLevel(userAccount, accessLevelName));
         }
+        return accessLevels;
     }
 
-    private void createAccountAccessLevel(UserAccount userAccount, String accessLevelName) throws EntityRetrievalException {
+    private AccountAccessLevel createAccountAccessLevel(UserAccount userAccount, String accessLevelName) throws EntityRetrievalException {
         Optional<AccessLevel> accessLevelOptional = accessLevelRepositoryLocal.findByName(accessLevelName);
 
         AccessLevel accessLevel = accessLevelOptional
@@ -94,7 +99,8 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .accessLevel(accessLevel)
                 .account(userAccount)
                 .active(true)
+                .version(0L)
                 .build();
-        accountAccessLevelRepositoryLocal.create(accountAccessLevel);
+        return accountAccessLevelRepositoryLocal.create(accountAccessLevel);
     }
 }

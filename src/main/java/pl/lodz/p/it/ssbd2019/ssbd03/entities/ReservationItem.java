@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 @IdClass(ReservationItemId.class)
 public class ReservationItem {
     @Id
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "reservation_id",
             updatable = false,

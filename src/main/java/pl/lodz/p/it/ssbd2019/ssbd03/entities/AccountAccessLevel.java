@@ -29,7 +29,7 @@ import javax.validation.constraints.NotNull;
 public class AccountAccessLevel {
     @Id
     @ManyToOne(fetch=FetchType.LAZY)
-    @NotNull
+    @EqualsAndHashCode.Exclude
     @JoinColumn(name = "user_id",
             unique = true,
             updatable = false,

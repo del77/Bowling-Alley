@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
 
 import lombok.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.ValidPhoneNumber;
 
 import javax.validation.constraints.*;
 import javax.ws.rs.FormParam;
@@ -12,7 +13,8 @@ import javax.ws.rs.FormParam;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class BasicAccountDto {
+@ValidPhoneNumber
+public class BasicAccountDto implements PhoneNumberDto {
 
     @NotNull(message = "Login cannot be null.")
     @NotBlank(message = "Login cannot be blank.")

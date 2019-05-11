@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 @Builder
 public class Comment {
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude

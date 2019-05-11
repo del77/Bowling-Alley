@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.entityvalidators.ValidPhoneNumber;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ValidPhoneNumber
 @NamedQueries(
         value = {
                 @NamedQuery(name = "UserAccount.findByLogin",
@@ -25,7 +27,6 @@ import java.util.List;
 )
 public class UserAccount {
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
@@ -69,7 +70,11 @@ public class UserAccount {
     @Column(name = "active", nullable = false)
     private boolean accountActive;
     
-    @NotNull
+    /**
+     * Ta lista tworzy rekurencyjną relację - w przypadku odczytywaniu z bazy nie ma problemu,
+     * ale adnotacja @NotNull nie pozwala utworzyć AccountAccessLevels bez UserAccount i odwrotnie,
+     * co skutecznie uniemożliwia tworzenie nowych encji.
+     */
     @OneToMany(mappedBy = "account", cascade={CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     private List<AccountAccessLevel> accountAccessLevels;
 

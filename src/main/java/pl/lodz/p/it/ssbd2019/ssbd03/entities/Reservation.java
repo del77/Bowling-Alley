@@ -22,7 +22,6 @@ import java.sql.Timestamp;
 @ValidReservationDates
 public class Reservation {
     @Id
-    @NotNull
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
