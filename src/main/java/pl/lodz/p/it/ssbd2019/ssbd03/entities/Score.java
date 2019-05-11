@@ -29,6 +29,7 @@ public class Score {
             updatable = false,
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__score__reservation", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private Reservation reservation;
 
     @ManyToOne(cascade=CascadeType.REFRESH)
@@ -37,6 +38,7 @@ public class Score {
             updatable = false,
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__score__user", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private UserAccount userAccount;
 
 
@@ -44,6 +46,7 @@ public class Score {
     @NotNull
     @Max(300)
     @Min(0)
+    @ToString.Exclude
     private int score;
 
     @Version

@@ -37,6 +37,7 @@ public class ReservationItem {
     @Min(1)
     @NotNull
     @Column(name = "count", nullable = false)
+    @ToString.Exclude
     private int count;
 
     @Version
