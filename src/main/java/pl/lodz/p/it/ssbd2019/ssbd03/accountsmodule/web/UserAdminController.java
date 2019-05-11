@@ -137,8 +137,13 @@ public class UserAdminController implements Serializable {
         }
 
         try {
+            editedAccount.setLogin(dto.getLogin());
+            editedAccount.setFirstName(dto.getFirstName());
+            editedAccount.setLastName(dto.getLastName());
+            editedAccount.setEmail(dto.getEmail());
+            editedAccount.setPhone(dto.getPhone());
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
-            editedAccount = userAccountService.updateUserAccountDetails(editedAccount, dto, selectedAccessLevels);
+            editedAccount = userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put(INFO, Collections.singletonList(
                     String.format("Successfully updated %s", editedAccount.getLogin())));
         } catch (EntityUpdateException e) {

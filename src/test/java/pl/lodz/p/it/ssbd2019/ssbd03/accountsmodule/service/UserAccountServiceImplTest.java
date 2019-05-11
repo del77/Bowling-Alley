@@ -151,7 +151,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void unlockLockedAccountTestShouldNotThrow() {
+    public void unlockLockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
@@ -164,7 +164,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void unlockUnlockedAccountTestShouldNotThrow() {
+    public void unlockUnlockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
@@ -177,7 +177,7 @@ public class UserAccountServiceImplTest {
     }
     
     @Test
-    public void lockLockedAccountTestShouldNotThrow() {
+    public void lockLockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
@@ -190,7 +190,7 @@ public class UserAccountServiceImplTest {
     }
     
     @Test
-    public void lockUnlockedAccountTestShouldNotThrow() {
+    public void lockUnlockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
@@ -343,7 +343,7 @@ public class UserAccountServiceImplTest {
     }
     
     @Test
-    public void updateUserAccountDetailsTest() {
+    public void updateUserAccountDetailsTest() throws EntityUpdateException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -353,7 +353,7 @@ public class UserAccountServiceImplTest {
                 .build();
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
-                .login("new login")
+                .login("login")
                 .accountAccessLevels(new ArrayList<>(Collections.singletonList(existingAccountAccessLevel)))
                 .build();
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
@@ -361,11 +361,9 @@ public class UserAccountServiceImplTest {
             edited.setLogin(String.format("new %s", edited.getLogin()));
             return edited;
         });
-        AccountDetailsDto dto = new AccountDetailsDto();
-        dto.setLogin("login");
         try {
             Assertions.assertEquals("new login",
-                    userService.updateUserAccountDetails(userAccount, dto, Stream.of("CLIENT").collect(Collectors.toList())).getLogin());
+                    userService.updateUserWithAccessLevels(userAccount, Stream.of("CLIENT").collect(Collectors.toList())).getLogin());
         } catch (EntityUpdateException e) {
             Assertions.fail(e);
         }

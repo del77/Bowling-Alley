@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -14,7 +13,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.*;
-import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -66,8 +64,8 @@ public class UserAccountServiceImpl implements UserAccountService {
             addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
 
             return userAccountRepositoryLocal.edit(userAccount);
-        } catch (EJBTransactionRolledbackException e) {
-            throw new OptimisticLockException("Data is not up-to-date", e);
+        } catch (EntityUpdateException e) {
+            throw new EntityUpdateException("Data is not up-to-date", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }
@@ -117,27 +115,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             return userAccountRepositoryLocal.edit(account);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
-        }
-    }
-    
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public UserAccount updateUserAccountDetails(
-            UserAccount userAccount,
-            AccountDetailsDto dto,
-            List<String> selectedAccessLevels) throws EntityUpdateException {
-        try {
-            userAccount.setLogin(dto.getLogin());
-            userAccount.setFirstName(dto.getFirstName());
-            userAccount.setLastName(dto.getLastName());
-            userAccount.setEmail(dto.getEmail());
-            userAccount.setPhone(dto.getPhone());
-    
-            return this.updateUserWithAccessLevels(userAccount, selectedAccessLevels);
-        } catch (OptimisticLockException e) {
-            throw new EntityUpdateException("Data is not up-to-date", e);
-        } catch (Exception e) {
-            throw new EntityUpdateException("Could not update user", e);
         }
     }
 

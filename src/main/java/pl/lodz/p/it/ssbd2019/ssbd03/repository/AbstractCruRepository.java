@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,10 +36,14 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * @param entity Obiekt encji
      */
     @Override
-    public T edit(T entity) {
-        getEntityManager().merge(entity);
-        getEntityManager().flush();
-        return entity;
+    public T edit(T entity) throws EntityUpdateException {
+        try {
+            getEntityManager().merge(entity);
+            getEntityManager().flush();
+            return entity;
+        } catch(OptimisticLockException e) {
+            throw new EntityUpdateException("Entity has been updated before these changes were made", e);
+        }
     }
 
     /**

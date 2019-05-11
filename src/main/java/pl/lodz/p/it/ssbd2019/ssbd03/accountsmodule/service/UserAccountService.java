@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
@@ -85,14 +84,4 @@ public interface UserAccountService {
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
     void changePasswordById(long id, String newPassword) throws ChangePasswordException;
-    
-    /**
-     * Edytuje dane konta użytkownika
-     *
-     * @param userAccount encja do edycji
-     * @param dto dto z edytowanymi danymi
-     * @return zedytowana encja
-     * @throws EntityUpdateException w wypadku, gdu nie uda się aktualizacja
-     */
-    UserAccount updateUserAccountDetails(UserAccount userAccount, AccountDetailsDto dto, List<String> accessLevels) throws EntityUpdateException;
 }
