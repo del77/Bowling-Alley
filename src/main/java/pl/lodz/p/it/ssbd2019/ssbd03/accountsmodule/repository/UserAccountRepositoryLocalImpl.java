@@ -10,6 +10,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,16 +56,18 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed("GetAllUsersList")
-    public List<UserAccount> findAll() {
-        return super.findAll();
-    }
-
-    @Override
     @PermitAll
     public UserAccount edit(UserAccount userAccount) {
         return super.edit(userAccount);
     }
 
-
+    @Override
+    @RolesAllowed("GetAllUsersList")
+    public List<UserAccount> findAll() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserAccount> query = builder.createQuery(UserAccount.class);
+        Root<UserAccount> root = query.from(UserAccount.class);
+        query.orderBy(builder.asc(root.get("login")));
+        return entityManager.createQuery(query).getResultList();
+    }
 }
