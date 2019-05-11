@@ -8,6 +8,8 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.ServletContext;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.security.Principal;
  * Między innymi takich jak: czy użytkownik jest zalogowany, przynależność do poziomu dostępu czy nazwa (login).
  * Aby filtr działał musi być wpisany w deskryptor web.xml.
  */
+@WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.FORWARD})
 public class UserModelFilter extends HttpFilter {
     @Inject
     private Models models;
