@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @NamedQueries(
         value = {
                 @NamedQuery(name = "UserAccount.findByLogin",

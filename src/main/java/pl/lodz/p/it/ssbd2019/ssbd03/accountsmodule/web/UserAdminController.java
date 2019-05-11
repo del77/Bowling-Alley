@@ -1,10 +1,13 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
@@ -181,7 +184,6 @@ public class UserAdminController implements Serializable {
 
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
-     *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
      * @see NewPasswordWithConfirmationDto
@@ -197,14 +199,14 @@ public class UserAdminController implements Serializable {
             models.put(ERROR, errorMessages);
             return EDIT_PASSWORD_FORM_HBS;
         }
-
+    
         try {
             userAccountService.changePasswordById(id, userData.getNewPassword());
         } catch (Exception e) {
             models.put(ERROR, Collections.singletonList(e.getMessage()));
             return EDIT_PASSWORD_FORM_HBS;
         }
-
+    
         models.put(INFO, Collections.singletonList("Password has been changed."));
         return EDIT_PASSWORD_FORM_HBS;
     }

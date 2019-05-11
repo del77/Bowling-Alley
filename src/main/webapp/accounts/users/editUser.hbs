@@ -1,10 +1,10 @@
 
 {{#partial "content"}}
-    <h2>{{this.str1}}</h2>
-    <h2>{{this.str2}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
+
         <div class="row">
+
             <div class="col-10">
                 <h2>Edit User: {{this.editedAccount.login}}</h2>
                 <h5>({{this.editedAccount.email}})</h5>
@@ -74,16 +74,16 @@
                                 <div class="input-group-text">
                                     <input type="checkbox" aria-label="Checkbox for following text input" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="EMPLOYEE" disabled>
                             </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="EMPLOYEE" disabled>
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <input type="checkbox" aria-label="Checkbox for following text input" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="ADMIN" disabled>
                             </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="ADMIN" disabled>
                         </div>
                     </div>
                 </div>
