@@ -13,21 +13,24 @@ import javax.ws.rs.FormParam;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ToString
-public class AccountDetailsDto {
+public class AccountDetailsDto implements AccessLevelsDto {
     protected Long id;
     
     @NotNull(message = "Login cannot be null.")
     @NotBlank(message = "Login cannot be blank.")
+    @Size(max = 16, message = "Login cannot be longer than 16 characters.")
     @FormParam("login")
     protected String login;
     
     @NotNull(message = "First name cannot be null.")
     @NotBlank(message = "First name cannot be blank.")
+    @Size(max = 32, message = "First name cannot be longer than 32 characters")
     @FormParam("firstName")
     protected String firstName;
     
     @NotNull(message = "Last name cannot be null.")
     @NotBlank(message = "Last name cannot be blank.")
+    @Size(max = 32, message = "Last name cannot be longer than 32 characters")
     @FormParam("lastName")
     protected String lastName;
     
@@ -35,11 +38,13 @@ public class AccountDetailsDto {
     @NotBlank(message = "E-mail cannot be blank.")
     @Email(message = "E-mail should be valid.")
     @FormParam("email")
+    @Size(max = 50)
     protected String email;
     
     @NotNull(message = "Phone number cannot be null.")
     @NotBlank(message = "Phone number cannot be blank.")
     @Size(min = 9, message = "Phone needs to be at least 9 characters long.")
+    @Size(max = 16, message = "Phone cannot be longer than 16 characters.")
     @FormParam("phone")
     protected String phone;
     

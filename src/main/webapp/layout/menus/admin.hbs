@@ -1,0 +1,20 @@
+{{#block "admin"}}
+  {{#if isAdmin}}
+    <li class="nav-item dropdown">
+      <a
+        class="nav-link dropdown-toggle" href="#" id="admin-nav-dropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false"
+      >
+        Admin
+      </a>
+      <div class="dropdown-menu" aria-labelledby="admin-nav-dropdown">
+        <a class="dropdown-item" href="{{webContextPath}}/admin/users">
+          User's list
+        </a>
+        <a class="dropdown-item" href="{{webContextPath}}/admin/register">
+          Create an account
+        </a>
+      </div>
+    </li>
+  {{/if}}
+{{/block}}

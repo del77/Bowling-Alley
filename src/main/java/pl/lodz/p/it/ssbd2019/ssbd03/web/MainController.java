@@ -17,11 +17,12 @@ import javax.ws.rs.core.MediaType;
 public class MainController {
     /**
      * Punkt wyjścia odpowiedzialny za przkierowanie do widoku strony głównej.
+     *
      * @return Widok, standardowo "index.html"
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String index() {
-        return "index.hbs";
+        return "pages/index.hbs";
     }
 }

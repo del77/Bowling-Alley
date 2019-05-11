@@ -5,17 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @NoArgsConstructor
-public class ComplexAccountDto extends BasicAccountDto {
+public class ComplexAccountDto extends BasicAccountDto implements AccessLevelsDto {
 
-    @NotNull
-    @FormParam("accessLevel")
-    private String accessLevelValue;
+    @FormParam("clientSelected")
+    boolean clientRoleSelected;
+
+    @FormParam("employeeSelected")
+    boolean employeeRoleSelected;
+
+    @FormParam("adminSelected")
+    boolean adminRoleSelected;
 
 }

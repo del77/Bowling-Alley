@@ -1,0 +1,67 @@
+
+{{#partial "content"}}
+    <h2>User details: {{this.user.login}}</h2>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-10">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">First name</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.firstName}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Last name</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.lastName}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">E-mail</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.email}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Phone number</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.phone}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Confirmed</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.accountConfirmed}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Active</h6>
+                            </div>
+                            <p class="mb-1">{{this.user.accountActive}}</p>
+                        </li>
+                        <li class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Roles</h6>
+                            </div>
+                            <div class="mb-1">
+                                {{#if clientActive}}
+                                    <span class="badge badge-info">Client</span>
+                                {{/if}}
+                                {{#if employeeActive}}
+                                    <span class="badge badge-warning">Employee</span>
+                                {{/if}}
+                                {{#if adminActive}}
+                                    <span class="badge badge-danger">Admin</span>
+                                {{/if}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/partial}}
+{{> layout }}

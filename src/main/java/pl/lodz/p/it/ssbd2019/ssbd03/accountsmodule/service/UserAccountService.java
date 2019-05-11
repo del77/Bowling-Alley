@@ -57,32 +57,42 @@ public interface UserAccountService {
     UserAccount getByLogin(String login) throws EntityRetrievalException;
 
     /**
-     * Zmienia hasło użytkownika o podanym loginie
+     * Metoda pozwalająca zmienić hasło użytkownika o podanym loginie.
+     * Wymagane jest podanie obecnego hasła.
      *
      * @param login           login użytkownika
      * @param currentPassword aktualne hasło użytkownika
      * @param newPassword     nowe hasło użytkownika
-     * @return konto z zaktualizowanym hasłem
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
-    UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException;
+    void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException;
     
     /**
-     * Odblokowuje konto użytkownika z zadanym id
+     * Zmienia flagę zablokowania konta użytkownika z podanym id
      *
      * @param id identyfikator użytkownika
+     * @param isActive nowa wartość flagi zablokowania
      * @return obiekt encji odblokowanego użytkownika
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount unlockAccountById(Long id) throws EntityUpdateException;
+    UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException;
+
+    /**
+     * Metoda pozwalająca zmienić hasło użytkownika o podanym id.
+     *
+     * @param id           identyfikator użytkownika
+     * @param newPassword     nowe hasło użytkownika
+     * @throws ChangePasswordException wyjątek zmiany hasła
+     */
+    void changePasswordById(long id, String newPassword) throws ChangePasswordException;
     
     /**
      * Edytuje dane konta użytkownika
      *
+     * @param userAccount encja do edycji
      * @param dto dto z edytowanymi danymi
-     * @param selectedAccessLevels nowe poziomy dostępu do konta
      * @return zedytowana encja
      * @throws EntityUpdateException w wypadku, gdu nie uda się aktualizacja
      */
-    UserAccount updateUserAccountDetails(AccountDetailsDto dto, List<String> selectedAccessLevels) throws EntityUpdateException;
+    UserAccount updateUserAccountDetails(UserAccount userAccount, AccountDetailsDto dto, List<String> accessLevels) throws EntityUpdateException;
 }

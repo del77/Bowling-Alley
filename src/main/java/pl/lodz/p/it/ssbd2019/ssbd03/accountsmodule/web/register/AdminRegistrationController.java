@@ -1,13 +1,11 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
-import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -22,14 +20,9 @@ public class AdminRegistrationController extends RegistrationController {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
 
-    @EJB
-    private RegistrationService registrationService;
-
     @Inject
-    private DtoValidator validator;
+    private DtoMapper dtoMapper;
 
-    @Inject
-    private Models models;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -52,22 +45,12 @@ public class AdminRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
-        return super.registerAccount(complexAccountDto, complexAccountDto.getAccessLevelValue());
+        return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
     }
+
 
     @Override
-    protected Models getModels() {
-        return models;
+    protected String getRegisterViewUrl() {
+        return REGISTER_VIEW_URL;
     }
-
-    @Override
-    protected DtoValidator getValidator() {
-        return validator;
-    }
-
-    @Override
-    protected RegistrationService getRegistrationService() {
-        return registrationService;
-    }
-
 }

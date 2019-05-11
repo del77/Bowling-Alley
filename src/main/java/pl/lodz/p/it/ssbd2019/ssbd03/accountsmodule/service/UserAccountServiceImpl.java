@@ -13,8 +13,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.*;
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -59,12 +59,15 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
             addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
 
             return userAccountRepositoryLocal.edit(userAccount);
+        } catch (EJBTransactionRolledbackException e) {
+            throw new OptimisticLockException("Data is not up-to-date", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }
@@ -75,34 +78,42 @@ public class UserAccountServiceImpl implements UserAccountService {
         try {
             return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new EntityRetrievalException("No account with login specified."));
-        } catch (EntityRetrievalException e) {
+        } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
     }
 
     @Override
-    public UserAccount changePassword(String login, String currentPassword, String newPassword) throws ChangePasswordException {
+    public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getByLogin(login);
             String currentPasswordHash = SHA256Provider.encode(currentPassword);
-            String newPasswordHash = SHA256Provider.encode(newPassword);
 
             if (!currentPasswordHash.equals(account.getPassword())) {
                 throw new ChangePasswordException("Current password is incorrect.");
             }
 
-            account.setPassword(newPasswordHash);
-            return userAccountRepositoryLocal.edit(account);
+            setNewPassword(account, newPassword);
+        } catch (Exception e) {
+            throw new ChangePasswordException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void changePasswordById(long id, String newPassword) throws ChangePasswordException {
+        try {
+            UserAccount account = this.getUserById(id);
+            setNewPassword(account, newPassword);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
     }
     
     @Override
-    public UserAccount unlockAccountById(Long id) throws EntityUpdateException {
+    public UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException {
         try {
             UserAccount account = getUserById(id);
-            account.setAccountActive(true);
+            account.setAccountActive(isActive);
             return userAccountRepositoryLocal.edit(account);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
@@ -110,19 +121,21 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
     
     @Override
-    public UserAccount updateUserAccountDetails(AccountDetailsDto dto, List<String> selectedAccessLevels) throws EntityUpdateException {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public UserAccount updateUserAccountDetails(
+            UserAccount userAccount,
+            AccountDetailsDto dto,
+            List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
-            UserAccount userAccount = userAccountRepositoryLocal
-                    .findById(dto.getId())
-                    .orElseThrow(EntityRetrievalException::new);
-    
             userAccount.setLogin(dto.getLogin());
             userAccount.setFirstName(dto.getFirstName());
             userAccount.setLastName(dto.getLastName());
             userAccount.setEmail(dto.getEmail());
             userAccount.setPhone(dto.getPhone());
-
-            return updateUserWithAccessLevels(userAccount, selectedAccessLevels);
+    
+            return this.updateUserWithAccessLevels(userAccount, selectedAccessLevels);
+        } catch (OptimisticLockException e) {
+            throw new EntityUpdateException("Data is not up-to-date", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update user", e);
         }
@@ -160,6 +173,21 @@ public class UserAccountServiceImpl implements UserAccountService {
                     .active(true)
                     .build()
             );
+        }
+    }
+
+    /**
+     * Zmienia hasło dla konta.
+     * @param userAccount Obiekt typu UserAccount, który jest edytowany.
+     * @param newPassword Nowe hasło dla konta.
+     * @throws ChangePasswordException w wypadku, gdy nie uda się zmienić hasła.
+     */
+    private void setNewPassword(UserAccount userAccount, String newPassword) throws ChangePasswordException {
+        try {
+            String newPasswordHash = SHA256Provider.encode(newPassword);
+            userAccount.setPassword(newPasswordHash);
+        } catch (Exception e) {
+            throw new ChangePasswordException(e.getMessage());
         }
     }
 }

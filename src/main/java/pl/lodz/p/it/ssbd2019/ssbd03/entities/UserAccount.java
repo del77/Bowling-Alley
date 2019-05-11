@@ -17,6 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "UserAccount.findByLogin",
+                        query = "select a from UserAccount a where a.login = :login"),
+        }
+)
 public class UserAccount {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -36,11 +43,6 @@ public class UserAccount {
     @NotNull
     @Column(name = "phone", length = 16, table = "users")
     private String phone;
-
-    @Version
-    @Min(0)
-    @Column(name = "version", nullable = false, table = "users")
-    private long version;
 
     @Email
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
@@ -66,5 +68,5 @@ public class UserAccount {
     @Version
     @Min(0)
     @Column(name = "version", nullable = false)
-    private long accountsVersion;
+    private Long version;
 }

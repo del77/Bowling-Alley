@@ -1,0 +1,25 @@
+{{#block "alerts"}}
+  <aside class="my-3">
+    <div class="container">
+      {{#if errors}}
+        <div class="alert alert-danger font-weight-bold" role="alert">
+          {{#each errors}}
+            <div>
+              {{this}}
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if infos}}
+        <div class="alert alert-success font-weight-bold" role="alert">
+          {{#each infos}}
+            <div>
+              {{this}}
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+  </aside>
+{{/block}}

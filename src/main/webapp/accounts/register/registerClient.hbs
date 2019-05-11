@@ -1,8 +1,7 @@
 {{#partial "content"}}
     <div class="container">
         <div class="w-75">
-            {{> "accounts/register/alertDanger"}}
-            <form class="form-horizontal" role="form" method="post">
+            <form class="form-horizontal" role="form" method="post" data-form-confirm>
                 {{> "accounts/register/registerClientForm"}}
                 {{> "accounts/register/submitButton"}}
             </form>

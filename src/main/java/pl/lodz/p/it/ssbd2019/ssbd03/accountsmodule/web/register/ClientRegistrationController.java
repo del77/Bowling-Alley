@@ -1,15 +1,12 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.mvc.Controller;
-import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -19,17 +16,8 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path("register")
 public class ClientRegistrationController extends RegistrationController {
+
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
-    private static final String CLIENT_ACCESS = "CLIENT";
-
-    @EJB
-    private RegistrationService registrationService;
-
-    @Inject
-    private DtoValidator validator;
-
-    @Inject
-    private Models models;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -52,22 +40,12 @@ public class ClientRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
-        return super.registerAccount(basicAccountDto, CLIENT_ACCESS);
+        return super.registerAccount(basicAccountDto, Collections.singletonList("CLIENT"));
     }
+
 
     @Override
-    protected Models getModels() {
-        return models;
+    protected String getRegisterViewUrl() {
+        return REGISTER_VIEW_URL;
     }
-
-    @Override
-    protected DtoValidator getValidator() {
-        return validator;
-    }
-
-    @Override
-    protected RegistrationService getRegistrationService() {
-        return registrationService;
-    }
-
 }

@@ -1,84 +1,95 @@
 
 {{#partial "content"}}
-    {{#if updated}}
-        <div class="alert alert-success" role="alert">
-            <p>User details have been updated.</p>
-        </div>
-    {{/if}}
-    {{#if error}}
-        <div class="alert alert-danger" role="alert">
-            <p>{{error}}</p>
-        </div>
-    {{/if}}
+    <h2>{{this.str1}}</h2>
+    <h2>{{this.str2}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
         <div class="row">
-            <div class="col-9">
+            <div class="col-10">
                 <h2>Edit User: {{this.editedAccount.login}}</h2>
                 <h5>({{this.editedAccount.email}})</h5>
             </div>
-            <div class="col-3">
-                <a href="#" class="btn btn-danger" role="button">Change password</a>
+            <div class="col-2">
+                <div>
+                    <a href="{{webContextPath}}/admin/users/{{id}}/edit/password" type="button" class="btn btn-outline-danger btn-sm px-2 waves-effect show_login">
+                        <span class="value">Change password</span>
+                        <i class="far fa-edit ml-1"></i>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-8">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Login: </span>
+                        <span class="input-group-text">Login *: </span>
                     </div>
-                    <input class="form-control" type="text" aria-label="Login input" aria-describedby="basic-addon1" name="login" autofocus value="{{this.editedAccount.login}}">
+                    <input class="form-control" type="text" aria-label="Login input" aria-describedby="basic-addon1" name="login"
+                           required autofocus maxlength="16" value="{{this.editedAccount.login}}">
                 </div>
                 <div class="input-group mb-3 mx-0">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">First name: </span>
+                        <span class="input-group-text">First name *: </span>
                     </div>
-                    <input class="form-control" type="text" aria-label="First name input" aria-describedby="basic-addon1" name="firstName" autofocus value="{{this.editedAccount.firstName}}">
+                    <input class="form-control" type="text" aria-label="First name input" aria-describedby="basic-addon1" name="firstName"
+                           required autofocus maxlength="32" value="{{this.editedAccount.firstName}}">
                 </div>
                 <div class="input-group mb-3 mx-0">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Last name: </span>
+                        <span class="input-group-text">Last name *: </span>
                     </div>
-                    <input class="form-control" type="text" aria-label="Last name input" aria-describedby="basic-addon1" name="lastName" autofocus value="{{this.editedAccount.lastName}}">
+                    <input class="form-control" type="text" aria-label="Last name input" aria-describedby="basic-addon1" name="lastName"
+                           required autofocus maxlength="32" value="{{this.editedAccount.lastName}}">
                 </div>
                 <div class="input-group mb-3 mx-0">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Email: </span>
+                        <span class="input-group-text">Email *: </span>
                     </div>
-                    <input class="form-control" type="email" aria-label="Email input" aria-describedby="basic-addon1" name="email" autofocus value="{{this.editedAccount.email}}">
+                    <input class="form-control" type="email" aria-label="Email input" aria-describedby="basic-addon1" name="email"
+                           required autofocus maxlength="50" value="{{this.editedAccount.email}}">
                 </div>
                 <div class="input-group mb-3 mx-0">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Phone: </span>
+                        <span class="input-group-text">Phone *: </span>
                     </div>
-                    <input class="form-control" type="text" aria-label="Email input" aria-describedby="basic-addon1" name="phone" autofocus value="{{this.editedAccount.phone}}">
+                    <input class="form-control" type="text" aria-label="Phone input" aria-describedby="basic-addon1" name="phone"
+                    required autofocus minlength="9" maxlength="16" value="{{this.editedAccount.phone}}">
                 </div>
             </div>
             <div class="col-1"></div>
-            <div class="col-3 border">
-                <h3>Roles: </h3>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+            <div class="col-3">
+                <div class="row form-group">
+                    <div class="col-12 border">
+                        <h3>Roles: </h3>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" aria-label="Checkbox for following text input" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="CLIENT" disabled>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" aria-label="Checkbox for following text input" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="EMPLOYEE" disabled>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" aria-label="Checkbox for following text input" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="ADMIN" disabled>
+                            </div>
                         </div>
                     </div>
-                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="CLIENT" disabled>
                 </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="EMPLOYEE" disabled>
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="ADMIN" disabled>
+                <div class="row">
+                    <div class="col-12">
+
                     </div>
                 </div>
             </div>
