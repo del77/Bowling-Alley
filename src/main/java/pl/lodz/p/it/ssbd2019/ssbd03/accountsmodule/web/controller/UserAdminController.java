@@ -9,14 +9,13 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfir
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UserRolesRetriever;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -142,7 +141,7 @@ public class UserAdminController implements Serializable {
             editedAccount = userAccountService.getUserById(id);
             models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
-            putAccessLevelsIntoModel(editedAccount);
+            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
         } catch (Exception e) {
             displayError(localization.get("userDetailsNotUpdated"));
         }
@@ -164,7 +163,7 @@ public class UserAdminController implements Serializable {
         try {
             UserAccount user = userAccountService.getUserById(id);
             models.put("user", user);
-            putAccessLevelsIntoModel(user);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (EntityRetrievalException e) {
             displayError(localization.get("userCouldntRetrieve"));
         }
@@ -246,26 +245,6 @@ public class UserAdminController implements Serializable {
 
     private String redirectSuccessPath() {
         return String.format("redirect:%s/success", BASE_PATH);
-    }
-
-    private void putAccessLevelsIntoModel(UserAccount userAccount) {
-        for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
-            if (accountAccessLevel.isActive()) {
-                switch (accountAccessLevel.getAccessLevel().getName()) {
-                    case AppRoles.CLIENT:
-                        models.put("clientActive", true);
-                        break;
-                    case AppRoles.EMPLOYEE:
-                        models.put("employeeActive", true);
-                        break;
-                    case AppRoles.ADMIN:
-                        models.put("adminActive", true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
     }
 
     private void displayError(String s) {

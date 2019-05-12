@@ -7,7 +7,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidat
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UserRolesRetriever;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -32,10 +34,10 @@ public class AccountController {
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_URL = "account";
+    private static final String DISPLAY_DETAILS = "accounts/users/userDetails.hbs";
 
     @Inject
     private Models models;
-
     @Inject
     private DtoValidator validator;
     @Inject
@@ -47,6 +49,23 @@ public class AccountController {
 
     @EJB
     private UserAccountService userAccountService;
+
+    @GET
+    @Path("details")
+    @Produces(MediaType.TEXT_HTML)
+    public String displayUserDetails() {
+        try {
+            String login = (String) models.get("userName");
+            UserAccount user = userAccountService.getByLogin(login);
+            models.put("user", user);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
+        } catch (EntityRetrievalException e) {
+            models.put(ERROR, Collections.singletonList("Could not retrieve user. " + e.getLocalizedMessage()));
+        }
+        return DISPLAY_DETAILS;
+    }
+
+
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła.
@@ -108,4 +127,6 @@ public class AccountController {
     private String redirectSuccessPath() {
         return String.format("redirect:%s/success", BASE_URL);
     }
+
 }
+
