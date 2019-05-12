@@ -39,8 +39,8 @@ public class BasicAccountDto {
     @FormParam("email")
     protected String email;
 
-    @NotNull(message = "Password cannot be null.")
-    @NotBlank(message = "Password cannot be blank.")
+    @NotNull(message = "{validate.passwordNotNull}")
+    @NotBlank(message = "{validate.passwordNotBlank}")
     @Size(min = 8, message = "Password must contain at least 8 characters.")
     @Size(max = 64, message = "Password cannot be longer than 64 characters.")
     @FormParam("password")

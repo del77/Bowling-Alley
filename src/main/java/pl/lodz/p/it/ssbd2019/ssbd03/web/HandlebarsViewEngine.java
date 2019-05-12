@@ -4,7 +4,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.*;
 import lombok.extern.slf4j.Slf4j;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.I18nManager;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.I18nManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,7 +16,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 

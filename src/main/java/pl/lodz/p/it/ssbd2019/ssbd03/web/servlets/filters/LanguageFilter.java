@@ -1,14 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.I18nManager;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.I18nManager;
 
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpFilter;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

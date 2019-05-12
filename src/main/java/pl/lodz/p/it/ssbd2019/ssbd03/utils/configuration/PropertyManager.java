@@ -16,7 +16,7 @@ public class PropertyManager {
             .currentThread()
             .getContextClassLoader();
 
-    Properties loadProperties(Path filePath) throws PropertiesLoadException {
+    public Properties loadProperties(Path filePath) throws PropertiesLoadException {
         if (!Files.exists(filePath)) {
             throw new PropertiesLoadException(filePath + " doesn't exist.");
         }
