@@ -61,7 +61,7 @@ public class AccountController {
             UserAccount user = userAccountService.getByLogin(login);
             models.put("user", user);
             userRolesRetriever.putAccessLevelsIntoModel(user,models);
-        } catch (EntityRetrievalException e) {
+       } catch (EntityRetrievalException e) {
             models.put(ERROR, Collections.singletonList("Could not retrieve user. " + e.getLocalizedMessage()));
         }
         return DISPLAY_DETAILS;
