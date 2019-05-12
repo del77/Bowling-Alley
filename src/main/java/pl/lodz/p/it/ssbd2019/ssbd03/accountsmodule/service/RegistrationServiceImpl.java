@@ -7,24 +7,26 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.TrackerInterceptor;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Stateless
+
 @PermitAll
+@Stateful
 @Transactional
 @Interceptors(TrackerInterceptor.class)
-public class RegistrationServiceImpl implements RegistrationService {
+public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
     @EJB(beanName = "MOKAccessLevelRepository")
