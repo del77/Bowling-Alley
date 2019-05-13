@@ -1,0 +1,25 @@
+{{#partial "content"}}
+  <div class="w-75 mx-auto">
+    <form class="form-horizontal" method="post" data-form-confirm>
+      <h2 class="mb-3">
+        Request password change
+      </h2>
+      <div class="form-group">
+        <label for="email">
+          Email *
+        </label>
+        <input type="email" id="email" name="email" class="form-control" autofocus required>
+      </div>
+      <div class="form-group">
+        <span class="form-text text-muted">
+          * Required fields
+        </span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        Send
+      </button>
+    </form>
+  </div>
+{{/partial}}
+
+{{> layout }}

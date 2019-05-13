@@ -1,0 +1,31 @@
+{{#partial "content"}}
+  <div class="w-75 mx-auto">
+    <form class="form-horizontal" method="post" data-form-confirm>
+      <h2 class="mb-3">
+        Change your password
+      </h2>
+      <div class="form-group">
+        <label for="new-password">
+          New password *
+        </label>
+        <input type="password" id="new-password" name="newPassword" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm-new-password">
+          Confirm new password *
+        </label>
+        <input type="password" id="confirm-new-password" name="confirmNewPassword" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <span class="form-text text-muted">
+          * Required fields
+        </span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        Edit
+      </button>
+    </form>
+  </div>
+{{/partial}}
+
+{{> layout }}

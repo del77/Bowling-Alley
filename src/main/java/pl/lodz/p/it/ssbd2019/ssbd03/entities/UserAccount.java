@@ -19,13 +19,13 @@ import java.util.List;
 @Builder
 @NamedQueries(
         value = {
-                @NamedQuery(name = "UserAccount.findByLogin",
-                        query = "select a from UserAccount a where a.login = :login"),
+                @NamedQuery(name = "UserAccount.findByLogin", query = "select a from UserAccount a where a.login = :login"),
+                @NamedQuery(name = "UserAccount.findByEmail", query = "select a from UserAccount a where a.email = :email"),
         }
 )
 public class UserAccount {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
     private Long id;
@@ -61,7 +61,7 @@ public class UserAccount {
     @Column(name = "active", nullable = false)
     private boolean accountActive;
 
-    @OneToMany(mappedBy = "account", cascade={CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     private List<AccountAccessLevel> accountAccessLevels;
 
     @Version

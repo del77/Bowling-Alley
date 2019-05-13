@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import java.util.*;
+
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
@@ -33,7 +34,14 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
         namedQuery.setParameter("login", login);
         return Optional.of(namedQuery.getSingleResult());
     }
-    
+
+    @Override
+    public Optional<UserAccount> findByEmail(String email) {
+        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByEmail");
+        namedQuery.setParameter("email", email);
+        return Optional.of(namedQuery.getSingleResult());
+    }
+
     @Override
     public List<UserAccount> findAll() {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
