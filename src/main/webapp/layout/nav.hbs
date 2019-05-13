@@ -20,14 +20,18 @@
                     {{> "layout/menus/admin"}}
                 </ul>
                 <div class="mr-2">
-                    {{#if lang.PL}}
-                        <img src="{{webContextPath}}/static/img/united-kingdom.png"
-                             aria-label="English" alt="English" onclick="changeLang('English')" width="30px" height="20px">
-                    {{/if}}
-                    {{#if lang.ENG}}
-                        <img src="{{webContextPath}}/static/img/poland.png"
-                             aria-label="Polish" alt="Polski" onclick="changeLang('Polski')" width="30px" height="20px">
-                    {{/if}}
+                    <a href="{{page}}">
+                        {{#if lang.PL}}
+                            <img src="{{webContextPath}}/static/img/united-kingdom.png"
+                                 aria-label="English" alt="English" onclick="changeLang('en')" width="30px"
+                                 height="20px">
+                        {{/if}}
+                        {{#if lang.ENG}}
+                            <img src="{{webContextPath}}/static/img/poland.png"
+                                 aria-label="Polish" alt="Polski" onclick="changeLang('pl')" width="30px"
+                                 height="20px">
+                        {{/if}}
+                    </a>
                 </div>
                 {{> "layout/menus/user"}}
                 <script>

@@ -4,7 +4,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.*;
 import lombok.extern.slf4j.Slf4j;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.I18nManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,7 +32,7 @@ public class HandlebarsViewEngine implements ViewEngine {
      * (Sesyjna).
      */
     @Inject
-    private I18nManager i18nManager;
+    private Serializable i18nManager;
 
     /**
      * Metoda zwraca czy podany plik może być przetwarzany dla tego silnika.
