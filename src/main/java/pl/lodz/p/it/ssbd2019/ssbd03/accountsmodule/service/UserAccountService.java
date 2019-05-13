@@ -75,13 +75,14 @@ public interface UserAccountService {
     void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException;
 
     /**
-     * Odblokowuje konto użytkownika z zadanym id
+     * Zmienia flagę zablokowania konta użytkownika z podanym id
      *
      * @param id identyfikator użytkownika
+     * @param isActive nowa wartość flagi zablokowania
      * @return obiekt encji odblokowanego użytkownika
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount unlockAccountById(Long id) throws EntityUpdateException;
+    UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym id.

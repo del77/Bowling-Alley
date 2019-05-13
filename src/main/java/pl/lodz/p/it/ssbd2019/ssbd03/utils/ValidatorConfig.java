@@ -27,9 +27,7 @@ public class ValidatorConfig {
                     .usingContext()
                     .messageInterpolator(messageInterpolator)
                     .getValidator();
-            return this.validator;
-        } else {
-            return this.validator;
         }
+        return this.validator;
     }
 }

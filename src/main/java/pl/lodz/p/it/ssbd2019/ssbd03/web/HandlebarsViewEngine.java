@@ -28,13 +28,6 @@ public class HandlebarsViewEngine implements ViewEngine {
     private ServletContext servletContext;
 
     /**
-     * Klasa odpowiadająca za stan wybranego w aplikacji języka.
-     * (Sesyjna).
-     */
-    @Inject
-    private Serializable i18nManager;
-
-    /**
      * Metoda zwraca czy podany plik może być przetwarzany dla tego silnika.
      * Wspierane formaty: .hbs, .handlebars. Jeśli istnieje konieczność można w tym miejscu
      * sprecyzowac dowolny format pliku.

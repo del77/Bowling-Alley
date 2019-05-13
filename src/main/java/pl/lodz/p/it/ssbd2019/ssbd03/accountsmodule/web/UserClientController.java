@@ -53,7 +53,7 @@ public class UserClientController {
 
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
-     *      *
+     *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
      * @see NewPasswordWithConfirmationDto
@@ -64,6 +64,7 @@ public class UserClientController {
     public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validateCurrentAndNewPassword(userData.getCurrentPassword(), userData.getNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);

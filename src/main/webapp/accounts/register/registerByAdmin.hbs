@@ -1,7 +1,7 @@
 {{#partial "content"}}
     <div class="container">
         <div class="w-75">
-            <form class="form-horizontal" role="form" method="post">
+            <form class="form-horizontal" role="form" method="post" data-form-confirm>
                 {{> "accounts/register/registerClientForm"}}
                 <label class="col-sm-3 control-label">
                     {{lang.accessLevels}}
@@ -15,6 +15,7 @@
                     </div>
                 </div>
                 <div class="form-group">
+
                     <div>
                         <label for="employeeSelected" class="control-label">
                             {{lang.employee}}:
@@ -27,7 +28,7 @@
                         <label for="adminSelected" class="control-label">
                             {{lang.admin}}:
                         </label>
-                        <input type="checkbox" id="admin" name="adminSelected" aria-invalid="adminSelected" value="true">
+                        <input type="checkbox" id="adminSelected" name="adminSelected" value="true">
                     </div>
                 </div>
                 {{> "accounts/register/submitButton"}}
