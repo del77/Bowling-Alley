@@ -16,24 +16,24 @@ import javax.ws.rs.FormParam;
 @Builder
 public class UserEditProfileDto {
 
-    @NotNull(message = "First name cannot be null.")
-    @NotBlank(message = "First name cannot be blank.")
+    @NotNull(message = "{validate.firstNameNotNull}")
+    @NotBlank(message = "{validate.firstNameNotBlank}")
     @FormParam("firstName")
     String firstName;
 
-    @NotNull(message = "Last name cannot be null.")
-    @NotBlank(message = "Last name cannot be blank.")
+    @NotNull(message = "{validate.lastNameNotNull}")
+    @NotBlank(message = "{validate.lastNameNotBlank}")
     @FormParam("lastName")
     String lastName;
 
-    @NotNull(message = "Email cannot be null.")
-    @NotBlank(message = "Email cannot be blank.")
-    @Email(message = "Invalid e-mail.")
+    @NotNull(message = "{validate.emailNotNull}")
+    @NotBlank(message = "{validate.emailNotBlank}")
+    @Email(message = "{validate.emailValid}")
     @FormParam("eMail")
     String email;
 
-    @NotNull(message = "Phone number cannot be null.")
-    @NotBlank(message = "Phone number cannot be blank.")
+    @NotNull(message = "{validate.phoneNumberNotNull}")
+    @NotBlank(message = "{validate.phoneNumberNotBlank}")
     @FormParam("phoneNumber")
     String phoneNumber;
 }

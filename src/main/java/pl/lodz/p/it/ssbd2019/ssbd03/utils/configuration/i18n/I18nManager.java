@@ -27,7 +27,7 @@ public class I18nManager implements Serializable {
     @Inject
     private ServletContext servletContext;
 
-    private Map<Locale, String> knownLanguages = new Hashtable<Locale, String>() {
+    private final Map<Locale, String> knownLanguages = new Hashtable<Locale, String>() {
         {
             put(POLISH_LOCALE, POLISH_PROPERTIES_FILE);
             put(ENGLISH_LOCALE, ENGLISH_PROPERTIES_FILE);

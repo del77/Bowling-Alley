@@ -14,47 +14,47 @@ import javax.ws.rs.FormParam;
 @NoArgsConstructor
 public class BasicAccountDto {
 
-    @NotNull(message = "Login cannot be null.")
-    @NotBlank(message = "Login cannot be blank.")
-    @Size(max = 16, message = "Login cannot be longer than 16 characters.")
+    @NotNull(message = "{validate.loginNotNull}")
+    @NotBlank(message = "{validate.loginNotBlank}")
+    @Size(max = 16, message = "{validate.loginShorterThanSixteen}")
     @FormParam("login")
     protected String login;
 
-    @NotNull(message = "First name cannot be null.")
-    @NotBlank(message = "First name cannot be blank.")
-    @Size(max = 32, message = "First name cannot be longer than 32 characters.")
+    @NotNull(message = "{validate.firstNameNotNull}")
+    @NotBlank(message = "{validate.firstNameNotBlank}")
+    @Size(max = 32, message = "{validate.firstNameShorterThanThirtyTwo}")
     @FormParam("firstName")
     protected String firstName;
 
-    @NotNull(message = "Last name cannot be null.")
-    @NotBlank(message = "Last name cannot be blank.")
-    @Size(max = 32, message = "Last name cannot be longer than 32 characters.")
+    @NotNull(message = "{validate.lastNameNotNull}")
+    @NotBlank(message = "{validate.lastNameNotBlank}")
+    @Size(max = 32, message = "{validate.lastNameShorterThanThirtyTwo}")
     @FormParam("lastName")
     protected String lastName;
 
-    @NotNull(message = "E-mail cannot be null.")
-    @NotBlank(message = "E-mail cannot be blank.")
-    @Email(message = "E-mail should be valid.")
-    @Size(max = 50, message = "Email cannot be longer than 50 characters.")
+    @NotNull(message = "{validate.emailNotNull}")
+    @NotBlank(message = "{validate.emailNotBlank}")
+    @Email(message = "{validate.emailValid}")
+    @Size(max = 50, message = "{validate.emailShorterThanFifty}")
     @FormParam("email")
     protected String email;
 
     @NotNull(message = "{validate.passwordNotNull}")
     @NotBlank(message = "{validate.passwordNotBlank}")
-    @Size(min = 8, message = "Password must contain at least 8 characters.")
-    @Size(max = 64, message = "Password cannot be longer than 64 characters.")
+    @Size(min = 8, message = "{validate.passwordAtLeastEight}")
+    @Size(max = 64, message = "{validate.passwordShorterThanSixtyFour}")
     @FormParam("password")
     protected String password;
 
-    @NotNull(message = "Password confirmation cannot be null.")
-    @NotBlank(message = "Password confirmation cannot be blank.")
+    @NotNull(message = "{validate.passwordConfirmNotNull}")
+    @NotBlank(message = "{validate.passwordConfirmNotBlank}")
     @FormParam("confirmPassword")
     protected String confirmPassword;
 
-    @NotNull(message = "Phone number cannot be null.")
-    @NotBlank(message = "Phone number cannot be blank.")
-    @Size(min = 9, message = "Phone needs to be at least 9 characters long.")
-    @Size(max = 16, message = "Phone cannot be longer than 16 characters.")
+    @NotNull(message = "{validate.phoneNumberNotNull}")
+    @NotBlank(message = "{validate.phoneNumberNotBlank}")
+    @Size(min = 9, message = "{validate.phoneNumberAtLeastNine}")
+    @Size(max = 16, message = "{validate.phoneNumberShorterThanSixteen}")
     @FormParam("phoneNumber")
     protected String phoneNumber;
 
