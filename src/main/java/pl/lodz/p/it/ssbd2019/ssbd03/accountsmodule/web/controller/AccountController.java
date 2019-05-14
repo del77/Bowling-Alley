@@ -1,9 +1,10 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,9 +27,10 @@ import java.util.List;
 @Path("account")
 public class AccountController {
 
-    private static final String ERROR = "errors";
     private static final String INFO = "infos";
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
+    private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
+    private static final String BASE_URL = "account";
 
     @Inject
     private Models models;
@@ -37,6 +39,8 @@ public class AccountController {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+    @Inject
+    private RedirectUtil redirectUtil;
 
     @EJB
     private UserAccountService userAccountService;
@@ -50,8 +54,21 @@ public class AccountController {
     @Path("edit-password")
     @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
-    public String viewEditPasswordForm() {
+    public String viewEditPasswordForm(@QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         return EDIT_PASSWORD_FORM_HBS;
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z informacją o udanej zmianie hasła.
+     *
+     * @return Widoku z informacją o udanej zmianie hasła
+     */
+    @GET
+    @Path("edit-password/success")
+    @Produces(MediaType.TEXT_HTML)
+    public String viewSuccess() {
+        return EDIT_SUCCESS_VIEW;
     }
 
     /**
@@ -71,19 +88,21 @@ public class AccountController {
         errorMessages.addAll(passwordDtoValidator.validateCurrentAndNewPassword(userData.getCurrentPassword(), userData.getNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            models.put(ERROR, errorMessages);
-            return EDIT_PASSWORD_FORM_HBS;
+            return redirectUtil.redirectError(BASE_URL, null, errorMessages);
         }
 
         try {
             String login = (String) models.get("userName");
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getMessage()));
-            return EDIT_PASSWORD_FORM_HBS;
+            return redirectUtil.redirectError(BASE_URL, null, Collections.singletonList(e.getMessage()));
         }
 
         models.put(INFO, Collections.singletonList("Password has been changed."));
-        return EDIT_PASSWORD_FORM_HBS;
+        return redirectSuccessPath();
+    }
+
+    private String redirectSuccessPath() {
+        return String.format("redirect:%s/success", BASE_URL);
     }
 }

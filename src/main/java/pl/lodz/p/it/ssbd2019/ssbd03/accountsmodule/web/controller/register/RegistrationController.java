@@ -1,7 +1,10 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.CacheFormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
@@ -20,19 +23,22 @@ import java.util.Optional;
 public abstract class RegistrationController {
 
     @Inject
+    protected CacheFormData cacheFormData;
+
+    @Inject
+    protected Models models;
+
+    @Inject
     private PasswordDtoValidator passwordValidator;
 
     @Inject
     private DtoValidator validator;
 
-    @Inject
-    protected Models models;
-
     @EJB
     private RegistrationService registrationService;
 
     @Inject
-    protected CacheDto cacheDto;
+    private RedirectUtil redirectUtil;
 
     private static final String ERROR_PREFIX = "errors";
     static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
@@ -49,7 +55,7 @@ public abstract class RegistrationController {
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
         if (!errorMessages.isEmpty()) {
-            return handleException(basicAccountDto, errorMessages);
+            return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);
         }
 
         UserAccount userAccount = UserAccount
@@ -78,7 +84,7 @@ public abstract class RegistrationController {
         }
 
         if (!errorMessages.isEmpty()) {
-            return handleException(basicAccountDto, errorMessages);
+            return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);
         }
 
         return String.format("redirect:%s/success", getRegisterEndpointUrl());
@@ -91,24 +97,12 @@ public abstract class RegistrationController {
     protected abstract String getRegisterEndpointUrl();
 
     void fillModels(Long id) {
-        Optional<FormData> formData = cacheDto.get(id);
+        Optional<FormData> formData = cacheFormData.get(id);
 
         if (formData.isPresent()) {
-            models.put("data", formData.get().getBasicAccountDto());
+            models.put("data", formData.get().getData());
             models.put(ERROR_PREFIX, formData.get().getErrors());
         }
-    }
-
-    /**
-     * funkcja pomocnicza umieszczająca w widoku dane na temat błędów
-     * oraz pozwalająca uzyskać url do zwracanego widoku rejestracji
-     * @return String url
-     */
-    private String handleException(BasicAccountDto basicAccountDto, List<String> errors) {
-        Long id = System.currentTimeMillis();
-        FormData formData = new FormData(basicAccountDto, errors);
-        cacheDto.save(id, formData);
-        return String.format("redirect:%s?id=%d", getRegisterEndpointUrl(), id);
     }
 
 }

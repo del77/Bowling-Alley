@@ -1,15 +1,14 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -17,15 +16,12 @@ import javax.ws.rs.core.MediaType;
  */
 @RequestScoped
 @Controller
-@RolesAllowed(MokRoles.CREATE_ACCOUNT)
-@Path("admin/register")
-public class AdminRegistrationController extends RegistrationController {
+@PermitAll
+@Path("register")
+public class ClientRegistrationController extends RegistrationController {
 
-    private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
-    private static final String REGISTER_ENDPOINT_URL = "admin/register";
-
-    @Inject
-    private DtoMapper dtoMapper;
+    private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
+    private static final String REGISTER_ENDPOINT_URL = "register";
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -34,7 +30,7 @@ public class AdminRegistrationController extends RegistrationController {
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationFormWithFailure(@QueryParam("id") Long id) {
+    public String viewRegistrationForm(@QueryParam("idCache") Long id) {
         if (id != null) {
             fillModels(id);
         }
@@ -56,15 +52,15 @@ public class AdminRegistrationController extends RegistrationController {
     /**
      * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
      *
-     * @param complexAccountDto DTO przechowujące dane formularza rejestracji.
+     * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
-     * @see ComplexAccountDto
+     * @see BasicAccountDto
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto,
-                                  @QueryParam("id") Long id) {
-        return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
+    public String registerAccount(@BeanParam BasicAccountDto basicAccountDto,
+                                  @QueryParam("idCache") Long id) {
+        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT));
     }
 
     @Override

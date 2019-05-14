@@ -1,11 +1,11 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Optional;
 
 @ApplicationScoped
-class CacheDto {
+public class CacheFormData {
     private HashMap<Long, FormData> cache = new HashMap<>();
 
     void save(Long key, FormData element) {
@@ -14,7 +14,7 @@ class CacheDto {
         }
     }
 
-    Optional<FormData> get(Long key) {
+    public Optional<FormData> get(Long key) {
         synchronized (this) {
             return Optional.of(cache.get(key));
         }
