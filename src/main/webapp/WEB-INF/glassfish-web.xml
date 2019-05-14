@@ -73,6 +73,13 @@
         <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
+    <security-role-mapping>
+        <role-name>GetOwnAccountDetails</role-name>
+        <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
 
 
     <!-- MOT -->
@@ -151,7 +158,7 @@
     </security-role-mapping>
 
     <security-role-mapping>
-        <role-name>EditReservation</role-name>
+        <role-name>EditOwnReservation</role-name>
         <group-name>CLIENT</group-name>
     </security-role-mapping>
 
@@ -161,7 +168,7 @@
     </security-role-mapping>
 
     <security-role-mapping>
-        <role-name>CancelReservation</role-name>
+        <role-name>CancelOwnReservation</role-name>
         <group-name>CLIENT</group-name>
     </security-role-mapping>
 
@@ -181,8 +188,17 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>GetOwnReservations</role-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>GetReservationDetails</role-name>
         <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>GetOwnReservationDetails</role-name>
         <group-name>CLIENT</group-name>
     </security-role-mapping>
 
@@ -195,6 +211,10 @@
         <role-name>EditCommentForReservation</role-name>
         <group-name>ADMIN</group-name>
         <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>EditCommentForOwnReservation</role-name>
         <group-name>CLIENT</group-name>
     </security-role-mapping>
 
