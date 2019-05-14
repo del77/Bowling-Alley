@@ -2,7 +2,7 @@
 {{#partial "content"}}
     {{#if updated}}
         <div class="alert alert-success" role="alert">
-            <p>User details has been updated.</p>
+            <p>{{lang.userDetailsUpdated}}.</p>
         </div>
     {{/if}}
     {{#if error}}
@@ -10,7 +10,7 @@
             <p>{{error}}</p>
         </div>
     {{/if}}
-    <h2>Edit User: {{this.login}}</h2>
+    <h2>{{lang.editUser}}: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
 
@@ -22,27 +22,27 @@
             <div class="col-2">
                 <div>
                     <a href="{{webContextPath}}/admin/users/{{id}}/edit/password" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
-                        <span class="value">Change password</span>
+                        <span class="value">{{lang.changePassword}}</span>
                         <i class="far fa-edit ml-1"></i>
                     </a>
                 </div>
                 <div class="border">
                     <div class="form-group">
                         <div>
-                            <label for="clientRole" class="control-label">client:</label>
+                            <label for="clientRole" class="control-label">{{lang.client}}:</label>
                             <input type="checkbox" id="client" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
                         </div>
                     </div>
                     <div class="form-group">
 
                         <div>
-                            <label for="clientRole" class="control-label">employee:</label>
+                            <label for="clientRole" class="control-label">{{lang.employee}}:</label>
                             <input type="checkbox" id="employee" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
                         </div>
                     </div>
                     <div class="form-group">
                         <div>
-                            <label for="clientRole" class="control-label">admin:</label>
+                            <label for="clientRole" class="control-label">{{lang.admin}}:</label>
                             <input type="checkbox" id="admin" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
         </div>
 
     </div>
-        <button type="submit" class="btn btn-primary btn-block">Save</button>
+        <button type="submit" class="btn btn-primary btn-block">{{lang.save}}</button>
     </form>
 {{/partial}}
 {{> layout }}
