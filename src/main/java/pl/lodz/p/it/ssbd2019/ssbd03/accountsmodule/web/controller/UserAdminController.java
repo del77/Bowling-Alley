@@ -143,28 +143,6 @@ public class UserAdminController implements Serializable {
         return "accounts/users/editUser.hbs";
     }
 
-
-    /**
-     * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
-     *
-     * @return Informacja o rezultacie edycji.
-     */
-    @POST
-    @Path("/{id}/edit")
-    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
-    @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam ComplexAccountDto editUser, @QueryParam("idCache") Long idCache) {
-        try {
-            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
-            userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
-            models.put("updated", true);
-        } catch (EntityUpdateException e) {
-            return redirectUtil.redirectError(BASE_PATH + "/{id}/edit", null, Collections.singletonList("There was a problem during user update.\n" + e.getLocalizedMessage()));
-
-        }
-        return redirectSuccessPath();
-    }
-
     /**
      * Zwraca widok z danymi użytkownika o podanym ID.
      *
@@ -199,6 +177,26 @@ public class UserAdminController implements Serializable {
     public String editUserPassword(@QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         return EDIT_PASSWORD_FORM_HBS;
+    }
+
+    /**
+     * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
+     *
+     * @return Informacja o rezultacie edycji.
+     */
+    @POST
+    @Path("/{id}/edit")
+    @Produces(MediaType.TEXT_HTML)
+    public String editUser(@BeanParam ComplexAccountDto editUser, @QueryParam("idCache") Long idCache) {
+        try {
+            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
+            userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
+            models.put("updated", true);
+        } catch (EntityUpdateException e) {
+            return redirectUtil.redirectError(BASE_PATH + "/{id}/edit", null, Collections.singletonList("There was a problem during user update.\n" + e.getLocalizedMessage()));
+
+        }
+        return redirectSuccessPath();
     }
 
 
