@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -26,8 +27,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public void requestResetPassword(String email) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
-            String token = generateRandomToken();
-            Timestamp validity = computeTokenValidity();
+            String token = TokenUtils.generate();
+            Timestamp validity = TokenUtils.getValidity(24);
 
             ResetPasswordToken resetPasswordToken = ResetPasswordToken
                     .builder()
@@ -50,7 +51,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             UserAccount userAccount = resetPasswordToken.getUserAccount();
             String newPasswordHash = SHA256Provider.encode(newPassword);
 
-            if (!isTokenValid(resetPasswordToken)) {
+            if (!TokenUtils.isValid(resetPasswordToken.getValidity())) {
                 throw new ResetPasswordException("Invalid token.");
             }
 
@@ -60,16 +61,6 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         } catch (Exception e) {
             throw new ResetPasswordException(e.getMessage());
         }
-    }
-
-    private String generateRandomToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    private Timestamp computeTokenValidity() {
-        long currentTimeMillis = System.currentTimeMillis();
-        int oneDayMillis = 1000 * 60 * 60 * 24;
-        return new Timestamp(currentTimeMillis + oneDayMillis);
     }
 
     /**
@@ -100,19 +91,6 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         } catch (Exception e) {
             throw new ResetPasswordException("Invalid token.");
         }
-    }
-
-    /**
-     * Sprawdza czy token jest ważny
-     *
-     * @param resetPasswordToken encja z tokenem
-     * @return true jeśli token jest ważny
-     */
-    private boolean isTokenValid(ResetPasswordToken resetPasswordToken) {
-        long validity = resetPasswordToken.getValidity().getTime();
-        long current = new Timestamp(System.currentTimeMillis()).getTime();
-
-        return validity > current;
     }
 
     /**
