@@ -52,6 +52,12 @@ public class AccountController {
     @EJB
     private UserAccountService userAccountService;
 
+
+    /**
+     * Zwraca widok z danymi zalogowanego użytkownika.
+     *
+     * @return widok z danymi użytkownika.
+     */
     @GET
     @Path("details")
     @Produces(MediaType.TEXT_HTML)
