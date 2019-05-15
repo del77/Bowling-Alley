@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 /**
  * Servlet odpowiedzialny za wyświetlanie strony błędów HTTP
  */
+@WebServlet(name = "ErrorServlet", urlPatterns = {"/ErrorServlet"})
 public class ErrorServlet extends HttpServlet {
     @Inject
     private Models models;

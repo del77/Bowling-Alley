@@ -794,15 +794,6 @@
     </form-login-config>
   </login-config>
 
-  <servlet>
-    <servlet-name>ErrorServlet</servlet-name>
-    <servlet-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.ErrorServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ErrorServlet</servlet-name>
-    <url-pattern>/ErrorServlet</url-pattern>
-  </servlet-mapping>
 
   <error-page>
     <location>/ErrorServlet</location>
