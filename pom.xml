@@ -142,6 +142,12 @@
             <artifactId>javax.el</artifactId>
             <version>2.2.6</version>
         </dependency>
+        <!-- MAIL -->
+        <dependency>
+            <groupId>org.simplejavamail</groupId>
+            <artifactId>simple-java-mail</artifactId>
+            <version>5.1.6</version>
+        </dependency>
     </dependencies>
 
     <build>
