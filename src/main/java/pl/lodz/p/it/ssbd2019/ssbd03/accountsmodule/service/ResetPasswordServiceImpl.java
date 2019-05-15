@@ -12,7 +12,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @Stateless
 @TransactionAttribute
