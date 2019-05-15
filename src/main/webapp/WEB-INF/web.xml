@@ -784,18 +784,6 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- MODELS FILTER -->
-  <filter>
-    <filter-name>UserModelFilter</filter-name>
-    <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters.UserModelFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>UserModelFilter</filter-name> <!-- mandatory -->
-    <url-pattern>/*</url-pattern> <!-- either url-pattern or servlet-name is mandatory -->
-    <dispatcher>REQUEST</dispatcher>
-  </filter-mapping>
-
   <!-- login method definition, references to login form and login error pages -->
   <login-config>
     <auth-method>FORM</auth-method>

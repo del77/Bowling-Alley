@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
@@ -49,6 +50,15 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
+    @Override
+    public UserAccount addUser(UserAccount userAccount) throws EntityCreationException {
+        try {
+            return userAccountRepositoryLocal.create(userAccount);
+        } catch (Exception e) {
+            throw new EntityCreationException("Could not add userAccount", e);
+        }
+    }
+
 
     @Override
     @RolesAllowed({"ChangeAccessLevel", "EditUserAccount", "EditOwnAccount"})
@@ -57,6 +67,15 @@ public class UserAccountServiceImpl implements UserAccountService {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
             addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
 
+            return userAccountRepositoryLocal.edit(userAccount);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not update userAccount", e);
+        }
+    }
+
+    @Override
+    public UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException {
+        try {
             return userAccountRepositoryLocal.edit(userAccount);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);

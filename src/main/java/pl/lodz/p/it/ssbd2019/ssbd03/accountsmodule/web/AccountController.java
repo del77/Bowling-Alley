@@ -67,6 +67,7 @@ public class AccountController {
     public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
+        errorMessages.addAll(passwordDtoValidator.validateCurrentAndNewPassword(userData.getCurrentPassword(), userData.getNewPassword()));
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);
