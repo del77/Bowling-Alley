@@ -12,11 +12,11 @@ public interface ResetPasswordService {
     void requestResetPassword(String email) throws ResetPasswordException;
 
     /**
-     * Metoda obsługująca żądanie resetowania hasła przez użytkownika.
+     * Metoda obsługująca resetowanie hasła przez użytkownika.
      *
      * @param token    Unikalny token pozwalający zmienić hasło
-     * @param password Nowe hasło użytkownika
+     * @param newPassword Nowe hasło użytkownika
      * @throws ResetPasswordException Wyjątek
      */
-    void resetPassword(String token, String password) throws ResetPasswordException;
+    void resetPassword(String token, String newPassword) throws ResetPasswordException;
 }

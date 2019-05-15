@@ -10,7 +10,7 @@ import java.util.Optional;
 @Local
 public interface ResetPasswordTokenRepositoryLocal extends CruRepository<ResetPasswordToken, Long> {
     /**
-     * Metoda służy do pozyskiwania ancji tokenu na podstawie tokenu
+     * Metoda służy do pozyskiwania encji tokenu na podstawie tokenu
      *
      * @param token Token
      * @return Encja reprezentująca token.

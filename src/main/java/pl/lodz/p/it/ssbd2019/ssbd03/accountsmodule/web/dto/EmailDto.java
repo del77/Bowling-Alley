@@ -10,10 +10,10 @@ import javax.ws.rs.FormParam;
 
 @Data
 public class EmailDto {
-    @NotNull(message = "E-mail cannot be null.")
-    @NotBlank(message = "E-mail cannot be blank.")
-    @Email(message = "E-mail should be valid.")
-    @Size(max = 50, message = "Email cannot be longer than 50 characters.")
+    @NotNull(message = "{validate.emailNotNull}")
+    @NotBlank(message = "{validate.emailNotBlank}")
+    @Email(message = "{validate.emailValid}")
+    @Size(max = 50, message = "{validate.emailShorterThanFifty}")
     @FormParam("email")
     protected String email;
 }

@@ -9,12 +9,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
+import javax.ejb.TransactionAttribute;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Stateless
-@Transactional
+@TransactionAttribute
 public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
@@ -46,11 +46,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     }
 
     @Override
-    public void resetPassword(String token, String password) throws ResetPasswordException {
+    public void resetPassword(String token, String newPassword) throws ResetPasswordException {
         try {
             ResetPasswordToken resetPasswordToken = getToken(token);
             UserAccount userAccount = resetPasswordToken.getUserAccount();
-            String newPasswordHash = SHA256Provider.encode(password);
+            String newPasswordHash = SHA256Provider.encode(newPassword);
 
             if (!isTokenValid(resetPasswordToken)) {
                 throw new ResetPasswordException("Invalid token.");
