@@ -9,8 +9,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.UserRolesRetriever;
 import javax.annotation.security.RolesAllowed;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ public class AccountController {
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_URL = "account";
-    private static final String DISPLAY_DETAILS = "accounts/users/userDetails.hbs";
+    private static final String DISPLAY_DETAILS = "accounts/users/userOwnDetails.hbs";
 
     @Inject
     private Models models;
@@ -46,6 +46,8 @@ public class AccountController {
     private RedirectUtil redirectUtil;
     @Inject
     private LocalizedMessageRetriever localization;
+    @Inject
+    private UserRolesRetriever userRolesRetriever;
 
     @EJB
     private UserAccountService userAccountService;
@@ -58,7 +60,7 @@ public class AccountController {
             String login = (String) models.get("userName");
             UserAccount user = userAccountService.getByLogin(login);
             models.put("user", user);
-            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
+            userRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (EntityRetrievalException e) {
             models.put(ERROR, Collections.singletonList("Could not retrieve user. " + e.getLocalizedMessage()));
         }

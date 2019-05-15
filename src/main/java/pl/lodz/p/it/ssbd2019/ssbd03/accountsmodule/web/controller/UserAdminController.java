@@ -15,7 +15,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.UserRolesRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -43,6 +43,7 @@ public class UserAdminController implements Serializable {
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByAdmin.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_PATH = "accounts";
+    private static final String DISPLAY_DETAILS = "accounts/users/userDetailsForAdmin.hbs";
 
     @Inject
     private Models models;
@@ -50,6 +51,8 @@ public class UserAdminController implements Serializable {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+    @Inject
+    private UserRolesRetriever userRolesRetriever;
     @EJB
     private UserAccountService userAccountService;
     @Inject
@@ -141,7 +144,7 @@ public class UserAdminController implements Serializable {
             editedAccount = userAccountService.getUserById(id);
             models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
-            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
+            userRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
         } catch (Exception e) {
             displayError(localization.get("userDetailsNotUpdated"));
         }
@@ -163,11 +166,11 @@ public class UserAdminController implements Serializable {
         try {
             UserAccount user = userAccountService.getUserById(id);
             models.put("user", user);
-            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
+            userRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (EntityRetrievalException e) {
             displayError(localization.get("userCouldntRetrieve"));
         }
-        return "accounts/users/userDetails.hbs";
+        return DISPLAY_DETAILS;
     }
 
     /**
