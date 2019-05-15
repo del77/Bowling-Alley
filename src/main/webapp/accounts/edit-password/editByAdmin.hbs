@@ -2,29 +2,29 @@
     <div class="w-75 mx-auto">
         <form class="form-horizontal" method="post" data-form-confirm>
             <h2 class="mb-3">
-                Edit user's password
+                {{lang.helloMessage}}
             </h2>
             <div class="form-group">
                 <label for="new-password">
-                    New password *
+                    {{lang.newPassword}} *
                 </label>
                 <input type="password" id="new-password" name="newPassword" class="form-control"
                        minlength="8" maxlength="64" required>
             </div>
             <div class="form-group">
                 <label for="confirm-new-password">
-                    Confirm new password *
+                    {{lang.confirmNewPassword}} *
                 </label>
                 <input type="password" id="confirm-new-password" name="confirmNewPassword" class="form-control"
                        minlength="8" maxlength="64" required>
             </div>
             <div class="form-group">
         <span class="form-text text-muted">
-          * Required fields
+          * {{lang.requiredFields}}
         </span>
             </div>
             <button type="submit" class="btn btn-primary btn-block btn-lg">
-                Edit
+                {{lang.edit}}
             </button>
         </form>
     </div>

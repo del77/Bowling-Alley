@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
@@ -55,9 +56,13 @@ public class HandlebarsViewEngine implements ViewEngine {
 
         try (PrintWriter writer = context.getResponse(HttpServletResponse.class).getWriter();
              InputStream resourceAsStream = servletContext.getResourceAsStream(viewName);
-             InputStreamReader in = new InputStreamReader(resourceAsStream, "UTF-8");
+             InputStreamReader in = new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(in)) {
 
+            HttpServletResponse httpServletResponse = context.getResponse(HttpServletResponse.class);
+            if (httpServletResponse != null) {
+                httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
+            }
             models.put("webContextPath", context.getRequest(HttpServletRequest.class).getContextPath());
             models.put("page", context.getRequest(HttpServletRequest.class).getRequestURI());
             models.put("viewName", viewName);
