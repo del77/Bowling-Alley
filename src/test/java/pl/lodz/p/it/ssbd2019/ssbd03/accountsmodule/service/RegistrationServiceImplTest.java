@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationServiceImplTest {
 
-    private static final List<String> ACCESS_LEVEL_NAME = Collections.singletonList("CLIENT");
+    private static final List<String> ACCESS_LEVEL_NAME = Collections.singletonList(AppRoles.CLIENT);
 
     @Mock
     private UserAccountServiceImpl userAccountService;

@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -27,7 +28,7 @@ public class CommentRepositoryImpl extends AbstractCruRepository<Comment, Long> 
     }
 
     @Override
-    @RolesAllowed({"EditCommentForReservation", "DisableComment"})
+    @RolesAllowed({MorRoles.EDIT_COMMENT_FOR_RESERVATION, MorRoles.DISABLE_COMMENT})
     public Comment edit(Comment comment)
     {
         return super.edit(comment);

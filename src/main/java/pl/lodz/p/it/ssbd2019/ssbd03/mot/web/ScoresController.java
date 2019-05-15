@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
+
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.mvc.Controller;
@@ -17,7 +19,7 @@ public class ScoresController {
      */
     @GET
     @Path("account/{id}/history")
-    @RolesAllowed("ShowUserScoreHistory")
+    @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
     @Produces(MediaType.TEXT_HTML)
     public String showUserScoreHistory(@PathParam("id") int id) {
         throw new UnsupportedOperationException();

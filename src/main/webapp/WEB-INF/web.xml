@@ -78,6 +78,11 @@
     <role-name>GetUserDetails</role-name>
   </security-role>
 
+  <security-role>
+    <description/>
+    <role-name>GetOwnAccountDetails</role-name>
+  </security-role>
+
   <!-- MOT -->
 
   <security-role>
@@ -205,11 +210,6 @@
   <security-role>
     <description/>
     <role-name>DisableComment</role-name>
-  </security-role>
-
-  <security-role>
-    <description/>
-    <role-name>GetOwnAccountDetails</role-name>
   </security-role>
 
   <security-role>

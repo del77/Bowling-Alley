@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  */
 @RequestScoped
 @Controller
-@RolesAllowed("CreateAccount")
+@RolesAllowed(MokRoles.CREATE_ACCOUNT)
 @Path("admin/register")
 public class AdminRegistrationController extends RegistrationController {
 

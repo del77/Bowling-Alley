@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -29,25 +30,25 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
     }
 
     @Override
-    @RolesAllowed("GetAlleysList")
+    @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     public List<Alley> findAll() {
         return super.findAll();
     }
 
     @Override
-    @RolesAllowed("EnableDisableAlley")
+    @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
     public Alley edit(Alley alley) {
         return super.edit(alley);
     }
 
     @Override
-    @RolesAllowed({"GetAlleyGamesHistory", "GetBestScoreForAlley"})
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY})
     public Optional<Alley> findById(Long id) {
         return super.findById(id);
     }
 
     @Override
-    @RolesAllowed("AddAlley")
+    @RolesAllowed(MotRoles.ADD_ALLEY)
     public Alley create(Alley alley) {
         return super.create(alley);
     }

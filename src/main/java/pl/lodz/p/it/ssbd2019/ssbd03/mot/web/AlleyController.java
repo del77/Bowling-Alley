@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -19,7 +20,7 @@ public class AlleyController {
      */
     @GET
     @Path("new")
-    @RolesAllowed("AddAlley")
+    @RolesAllowed(MotRoles.ADD_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String addAlley() {
         throw new UnsupportedOperationException();
@@ -32,7 +33,7 @@ public class AlleyController {
      */
     @POST
     @Path("new")
-    @RolesAllowed("AddAlley")
+    @RolesAllowed(MotRoles.ADD_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String addAlley(@BeanParam Alley alley) {
         throw new UnsupportedOperationException();
@@ -44,7 +45,7 @@ public class AlleyController {
      * @return Widok z listą torow oraz ich statusem zablokowania
      */
     @GET
-    @RolesAllowed("EnableDisableAlley")
+    @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
     @Path("state")
     @Produces(MediaType.TEXT_HTML)
     public String updateLockStatusOnAlley() {
@@ -57,7 +58,7 @@ public class AlleyController {
      * @return Widok z listą torow oraz komunikatem o powodzeniu lub błędzie
      */
     @POST
-    @RolesAllowed("EnableDisableAlley")
+    @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
     @Path("state")
     @Produces(MediaType.TEXT_HTML)
     public String updateLockStatusOnAlley(@BeanParam Long id, boolean state) {
@@ -70,7 +71,7 @@ public class AlleyController {
      * @return Widok z hustorią rozgrywek dla toru.
      */
     @GET
-    @RolesAllowed("GetAlleyGamesHistory")
+    @RolesAllowed(MotRoles.GET_ALLEY_GAMES_HISTORY)
     @Path("{id}/history")
     @Produces(MediaType.TEXT_HTML)
     public String showGamesHistoryForAlley() {
@@ -83,7 +84,7 @@ public class AlleyController {
      * @return Widok z najlepszym wynikiem dla toru
      */
     @GET
-    @RolesAllowed("GetBestScoreForAlley")
+    @RolesAllowed(MotRoles.GET_BEST_SCORE_FOR_ALLEY)
     @Path("{id}/best-score")
     @Produces(MediaType.TEXT_HTML)
     public String getBestScoreForAlley(@PathParam("id") Long id) {
@@ -95,9 +96,9 @@ public class AlleyController {
      * @return Widok ze wszystkimi torami
      */
     @GET
-    @RolesAllowed("GetAlleysList")
+    @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String GetAllAlleys() {
+    public String getAllAlleys() {
         throw new UnsupportedOperationException();
     }
 }

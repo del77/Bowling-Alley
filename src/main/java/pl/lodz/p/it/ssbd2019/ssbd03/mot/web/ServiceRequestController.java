@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -18,7 +19,7 @@ public class ServiceRequestController {
      */
     @GET
     @Path("new")
-    @RolesAllowed("AddServiceRequest")
+    @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
     public String addServiceRequest() {
         throw new UnsupportedOperationException();
@@ -30,7 +31,7 @@ public class ServiceRequestController {
      */
     @POST
     @Path("new")
-    @RolesAllowed("AddServiceRequest")
+    @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
     public String addServiceRequest(@BeanParam ServiceRequest serviceRequest) {
         throw new UnsupportedOperationException();
@@ -43,7 +44,7 @@ public class ServiceRequestController {
      */
     @GET
     @Path("{id}/edit")
-    @RolesAllowed("EditServiceRequest")
+    @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
     public String editServiceRequest(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -55,7 +56,7 @@ public class ServiceRequestController {
      */
     @POST
     @Path("edit")
-    @RolesAllowed("EditServiceRequest")
+    @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
     public String editServiceRequest(@BeanParam ServiceRequest serviceRequest) {
         throw new UnsupportedOperationException();
@@ -66,7 +67,7 @@ public class ServiceRequestController {
      * @return Widok ze zgłoszeniami serwisowymi
      */
     @GET
-    @RolesAllowed("GetServiceRequests")
+    @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     @Produces(MediaType.TEXT_HTML)
     public String getServiceRequests() {
         throw new UnsupportedOperationException();

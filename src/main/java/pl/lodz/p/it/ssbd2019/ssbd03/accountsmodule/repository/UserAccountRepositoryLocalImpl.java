@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -34,7 +35,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed("ChangeOwnPassword")
+    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);
@@ -62,7 +63,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed("GetAllUsersList")
+    @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     public List<UserAccount> findAll() {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserAccount> query = builder.createQuery(UserAccount.class);

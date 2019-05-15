@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -47,7 +48,7 @@ public class AccountController {
      */
     @GET
     @Path("edit-password")
-    @RolesAllowed("ChangeOwnPassword")
+    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String viewEditPasswordForm() {
         return EDIT_PASSWORD_FORM_HBS;
@@ -62,7 +63,7 @@ public class AccountController {
      */
     @POST
     @Path("edit-password")
-    @RolesAllowed("ChangeOwnPassword")
+    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String editPassword(@BeanParam NewPasswordWithConfirmationDto userData) {
         List<String> errorMessages = validator.validate(userData);

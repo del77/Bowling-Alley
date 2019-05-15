@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -20,7 +21,7 @@ public class ItemsController {
      */
     @GET
     @Path("balls")
-    @RolesAllowed("EditBallsCount")
+    @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editBallsCount() {
         throw new UnsupportedOperationException();
@@ -31,7 +32,7 @@ public class ItemsController {
      */
     @POST
     @Path("balls")
-    @RolesAllowed("EditBallsCount")
+    @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editBallsCount(@BeanParam List<ItemType> balls) {
         throw new UnsupportedOperationException();
@@ -43,7 +44,7 @@ public class ItemsController {
      */
     @GET
     @Path("shoes")
-    @RolesAllowed("EditShoesCount")
+    @RolesAllowed(MotRoles.EDIT_SHOES_COUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editShoesCount() {
         throw new UnsupportedOperationException();
@@ -54,7 +55,7 @@ public class ItemsController {
      */
     @POST
     @Path("shoes")
-    @RolesAllowed("EditShoesCount")
+    @RolesAllowed(MotRoles.EDIT_SHOES_COUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editShoesCount(@BeanParam List<ItemType> shoes) {
         throw new UnsupportedOperationException();

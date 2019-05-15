@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -18,7 +19,7 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("new")
-    @RolesAllowed("CreateReservationForUser")
+    @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String createReservation() {
         throw new UnsupportedOperationException();
@@ -31,7 +32,7 @@ public class EmployeeReservationController {
      */
     @POST
     @Path("new")
-    @RolesAllowed("CreateReservationForUser")
+    @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String createReservation(Reservation reservation) {
         throw new UnsupportedOperationException();
@@ -44,7 +45,7 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("{id}/edit")
-    @RolesAllowed("EditReservationForUser")
+    @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -56,7 +57,7 @@ public class EmployeeReservationController {
      * @return rezulat operacji
      */
     @POST
-    @RolesAllowed("CancelReservationForUser")
+    @RolesAllowed(MorRoles.CANCEL_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String cancelReservation(Long id) {
         throw new UnsupportedOperationException();
@@ -69,7 +70,7 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("user/{id}")
-    @RolesAllowed("GetReservationsForUser")
+    @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -82,7 +83,7 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("alleys/{id}")
-    @RolesAllowed("GetReservationsForAlley")
+    @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -95,7 +96,7 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("reservations/{id}/details")
-    @RolesAllowed("GetOwnReservationDetails")
+    @RolesAllowed(MorRoles.GET_OWN_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String getOwnReservationDetails(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -109,7 +110,7 @@ public class EmployeeReservationController {
      */
     @POST
     @Path("{id}/edit")
-    @RolesAllowed("EditReservationForUser")
+    @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(Reservation reservation) {
         throw new UnsupportedOperationException();
@@ -122,7 +123,7 @@ public class EmployeeReservationController {
      */
     @POST
     @Path("{id}/details")
-    @RolesAllowed("DisableComment")
+    @RolesAllowed(MorRoles.DISABLE_COMMENT)
     @Produces(MediaType.TEXT_HTML)
     public String editCommentForReservation(Long id) {
         throw new UnsupportedOperationException();

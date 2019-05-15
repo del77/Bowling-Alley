@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -29,7 +30,7 @@ public class UserAccountRepositoryImpl extends AbstractCruRepository<UserAccount
     }
 
     @Override
-    @RolesAllowed("GetReservationsForUser")
+    @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);

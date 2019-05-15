@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -28,19 +29,19 @@ public class ServiceRequestRepositoryImpl extends AbstractCruRepository<ServiceR
     }
 
     @Override
-    @RolesAllowed("AddServiceRequest")
+    @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     public ServiceRequest create(ServiceRequest serviceRequest) {
         return super.create(serviceRequest);
     }
 
     @Override
-    @RolesAllowed("EditServiceRequest")
+    @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     public ServiceRequest edit(ServiceRequest serviceRequest) {
         return super.edit(serviceRequest);
     }
 
     @Override
-    @RolesAllowed("GetServiceRequests")
+    @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     public List<ServiceRequest> findAll() {
         return super.findAll();
     }

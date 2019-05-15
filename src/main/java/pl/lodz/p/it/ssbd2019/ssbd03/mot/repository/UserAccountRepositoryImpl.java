@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -21,7 +22,7 @@ public class UserAccountRepositoryImpl extends AbstractCruRepository<UserAccount
     }
 
     @Override
-    @RolesAllowed("ShowUserScoreHistory")
+    @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
     public Optional<UserAccount> findById(Long id) {
         return super.findById(id);
     }
