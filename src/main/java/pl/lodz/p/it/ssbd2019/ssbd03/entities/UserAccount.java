@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.entityvalidators.ValidPhoneNumber;
+import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidPhoneNumberFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ValidPhoneNumber
 @NamedQueries(
         value = {
                 @NamedQuery(name = "UserAccount.findByLogin",
@@ -34,31 +33,37 @@ public class UserAccount {
 
     @NotEmpty
     @NotNull
+    @Size(max = 32)
     @Column(name = "first_name", nullable = false, length = 32, table = "users")
     private String firstName;
 
     @NotEmpty
     @NotNull
+    @Size(max = 32)
     @Column(name = "last_name", nullable = false, length = 32, table = "users")
     private String lastName;
 
-    @Size(min = 9)
+    @Size(min = 9, max = 16)
     @NotNull
+    @ValidPhoneNumberFormat
     @Column(name = "phone", nullable = false, length = 16, table = "users")
     private String phone;
 
     @Email
     @NotNull
+    @Size(max = 50)
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
     private String email;
 
     @NotEmpty
     @NotNull
+    @Size(max = 16)
     @Column(name = "login", nullable = false, length = 16, unique = true)
     private String login;
 
     @NotEmpty
     @NotNull
+    @Size(min = 64, max = 64)
     @Column(name = "password", nullable = false, length = 64)
     private String password;
     

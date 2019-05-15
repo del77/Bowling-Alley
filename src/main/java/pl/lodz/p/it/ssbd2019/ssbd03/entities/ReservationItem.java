@@ -34,7 +34,7 @@ public class ReservationItem {
             foreignKey = @ForeignKey(name = "fk__reservation_items__item", value = ConstraintMode.CONSTRAINT))
     private Item item;
 
-    @Min(0)
+    @Min(1)
     @NotNull
     @Column(name = "count", nullable = false)
     private int count;

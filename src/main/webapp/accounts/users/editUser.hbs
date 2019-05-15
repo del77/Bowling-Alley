@@ -26,27 +26,7 @@
                         <i class="far fa-edit ml-1"></i>
                     </a>
                 </div>
-                <div class="border">
-                    <div class="form-group">
-                        <div>
-                            <label for="clientRole" class="control-label">{{lang.client}}:</label>
-                            <input type="checkbox" id="client" name="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
-                        </div>
-                    </div>
-                    <div class="form-group">
-
-                        <div>
-                            <label for="clientRole" class="control-label">{{lang.employee}}:</label>
-                            <input type="checkbox" id="employee" name="employeeSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <label for="clientRole" class="control-label">{{lang.admin}}:</label>
-                            <input type="checkbox" id="admin" name="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
-                        </div>
-                    </div>
-                </div>
+                {{> accounts/forms/rolesSelector}}
             </div>
 
         </div>

@@ -1,10 +1,10 @@
 {{#block "registerClientForm"}}
-    <h2>Registration</h2>
+    <h2>{{lang.register}}</h2>
     {{> accounts/forms/loginInput login=data.login }}
     {{> accounts/forms/firstNameInput firstName=data.firstName}}
     {{> accounts/forms/lastNameInput lastName=data.lastName}}
     {{> accounts/forms/emailInput email=data.email}}
-    {{> accounts/forms/passwordInput label="Password" value=data.password id="password" name="password"}}
-    {{> accounts/forms/passwordInput label="Confirm password" value=data.password id="confirmPassword" name="confirmPassword"}}
+    {{> accounts/forms/passwordInput value=data.password id="password" name="password" label=lang.password}}
+    {{> accounts/forms/passwordInput value=data.password id="confirmPassword" name="confirmPassword" label=lang.confirmPassword}}
     {{> accounts/forms/phoneInput email=data.phoneNumber}}
 {{/block}}

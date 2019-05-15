@@ -70,7 +70,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         Throwable t = e.getCause();
         while ((t != null) && !(t instanceof PSQLException)) {
             t = t.getCause();
-            if (t == null || t.getMessage() == null) {
+            if (t.getMessage() == null) {
                 throw new RegistrationProcessException(e.getMessage(), e);
             } else if (t.getMessage().contains("login")){
                 throw new NotUniqueLoginException();

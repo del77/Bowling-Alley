@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.entityvalidators;
+package pl.lodz.p.it.ssbd2019.ssbd03.validators;
 
 import java.lang.annotation.Target;
 import javax.validation.Constraint;

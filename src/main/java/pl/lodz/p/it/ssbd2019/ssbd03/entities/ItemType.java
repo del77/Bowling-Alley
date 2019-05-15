@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Klasa reprezentująca typy przedmiotów.
@@ -25,6 +26,7 @@ public class ItemType {
 
     @NotEmpty
     @NotNull
+    @Size(max = 25)
     @Column(name = "name", nullable = false, length = 25, unique = true)
     private String name;
 

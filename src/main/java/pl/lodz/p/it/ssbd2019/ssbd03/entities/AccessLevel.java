@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Klasa reprezentująca poziom dostępu.
@@ -32,6 +33,7 @@ public class AccessLevel {
 
     @NotEmpty
     @NotNull
+    @Size(max = 16)
     @Column(name = "name", nullable = false, length = 16, unique = true)
     private String name;
 

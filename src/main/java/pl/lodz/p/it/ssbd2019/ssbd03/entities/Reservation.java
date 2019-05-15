@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.entityvalidators.ValidReservationDates;
+import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidReservationDates;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;

@@ -2,12 +2,12 @@
     <aside class="my-3">
         <div class="input-group mb-3 mx-0">
             <div class="input-group-prepend">
-                <span class="input-group-text">Phone *: </span>
+                <span class="input-group-text">{{lang.phoneNumber}} *: </span>
             </div>
             <input class="form-control" type="text" aria-label="Phone input" aria-describedby="basic-addon1"
-                   id="phoneNumber" name="phoneNumber" placeholder="Phone number" pattern="^[0-9]*$"
+                   id="phoneNumber" name="phoneNumber" placeholder="{{lang.phoneNumber}}" pattern="^[0-9]*$"
                    required autofocus minlength="9" maxlength="16" value="{{phone}}">
         </div>
-        <span class="help-block">Your phone number won't be disclosed anywhere </span>
+        <span class="help-block">{{lang.phoneNumberNonDisclosure}}</span>
     </aside>
 {{/block}}

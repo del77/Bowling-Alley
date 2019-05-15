@@ -1,6 +1,6 @@
 {{#block "rolesSelector"}}
     <aside class="my-3">
-        <h3>Roles: </h3>
+        <h3>{{lang.roles}}: </h3>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -8,7 +8,7 @@
                            id="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
                 </div>
             </div>
-            <span class="input-group-text">Client</span>
+            <span class="input-group-text">{{lang.client}}</span>
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -17,7 +17,7 @@
                            id="adminSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
                 </div>
             </div>
-            <span class="input-group-text">Employee</span>
+            <span class="input-group-text">{{lang.employee}}</span>
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -26,7 +26,7 @@
                            id="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
                 </div>
             </div>
-            <span class="input-group-text">Admin</span>
+            <span class="input-group-text">{{lang.admin}}</span>
         </div>
     </aside>
 {{/block}}

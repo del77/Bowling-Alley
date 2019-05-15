@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 /**
  * Klasa reprezentująca zapytania serwisowe.
@@ -28,6 +29,7 @@ public class ServiceRequest {
     
     @NotNull
     @NotEmpty
+    @Size(max = 256)
     @Column(name = "content", nullable = false, length = 256)
     private String content;
 
