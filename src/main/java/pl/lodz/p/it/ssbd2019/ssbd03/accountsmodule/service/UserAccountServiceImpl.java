@@ -50,15 +50,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
-    @Override
-    public UserAccount addUser(UserAccount userAccount) throws EntityCreationException {
-        try {
-            return userAccountRepositoryLocal.create(userAccount);
-        } catch (Exception e) {
-            throw new EntityCreationException("Could not add userAccount", e);
-        }
-    }
-
 
     @Override
     @RolesAllowed({"ChangeAccessLevel", "EditUserAccount", "EditOwnAccount"})
@@ -67,15 +58,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
             addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
 
-            return userAccountRepositoryLocal.edit(userAccount);
-        } catch (Exception e) {
-            throw new EntityUpdateException("Could not update userAccount", e);
-        }
-    }
-
-    @Override
-    public UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException {
-        try {
             return userAccountRepositoryLocal.edit(userAccount);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
