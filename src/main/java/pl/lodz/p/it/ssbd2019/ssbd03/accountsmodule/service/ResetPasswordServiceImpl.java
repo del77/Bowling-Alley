@@ -26,10 +26,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public void requestResetPassword(String email) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
-            String token = UUID.randomUUID().toString();
-            long currentTimeMillis = System.currentTimeMillis();
-            int oneDayMillis = 1000 * 60 * 60 * 24;
-            Timestamp validity = new Timestamp(currentTimeMillis + oneDayMillis);
+            String token = generateRandomToken();
+            Timestamp validity = computeTokenValidity();
 
             ResetPasswordToken resetPasswordToken = ResetPasswordToken
                     .builder()
@@ -62,6 +60,16 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         } catch (Exception e) {
             throw new ResetPasswordException(e.getMessage());
         }
+    }
+
+    private String generateRandomToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    private Timestamp computeTokenValidity() {
+        long currentTimeMillis = System.currentTimeMillis();
+        int oneDayMillis = 1000 * 60 * 60 * 24;
+        return new Timestamp(currentTimeMillis + oneDayMillis);
     }
 
     /**
