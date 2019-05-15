@@ -60,6 +60,7 @@ public class AccountController {
      */
     @GET
     @Path("details")
+    @RolesAllowed(MokRoles.GET_OWN_ACCOUNT_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String displayUserDetails() {
         try {
