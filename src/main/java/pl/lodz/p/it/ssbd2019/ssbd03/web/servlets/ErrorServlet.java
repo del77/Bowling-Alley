@@ -8,11 +8,13 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.ServletContext;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -43,7 +45,12 @@ public class ErrorServlet extends HttpServlet {
 
         TemplateLoader loader = new ServletContextTemplateLoader(servletContext);
         Handlebars handlebars = new Handlebars(loader);
-        String viewContent = String.join("", Files.readAllLines(Paths.get(getServletContext().getRealPath("/"), viewName)));
+        String viewContent = String.join("",
+                Files.readAllLines(
+                        Paths.get(getServletContext().getRealPath("/"), viewName),
+                        StandardCharsets.UTF_8
+                )
+        );
         Template template = handlebars.compileInline(viewContent);
         template.apply(models.asMap(), response.getWriter());
     }
