@@ -1,4 +1,4 @@
-﻿package pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.annotations;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.annotations;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * Adnotacja pomocnicza wykorzystywana przy wstrzykiwaniu obiektów dziedziczących po interfejsie Messenger.
+ *
  * @see pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger
  */
 @Qualifier

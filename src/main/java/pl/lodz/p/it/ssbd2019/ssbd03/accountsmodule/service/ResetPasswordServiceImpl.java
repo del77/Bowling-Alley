@@ -4,13 +4,18 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.ResetPasswordToken
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.MessageNotSentException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.mail.EmailMessenger;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.inject.Inject;
 import java.sql.Timestamp;
 
 @Stateless
@@ -22,7 +27,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKResetPasswordTokenRepository")
     ResetPasswordTokenRepositoryLocal resetPasswordTokenRepositoryLocal;
 
+    @Inject
+    EmailMessenger emailMessenger;
+
     @Override
+    @PermitAll
     public void requestResetPassword(String email) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
@@ -44,6 +53,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     }
 
     @Override
+    @PermitAll
     public void resetPassword(String token, String newPassword) throws ResetPasswordException {
         try {
             ResetPasswordToken resetPasswordToken = getToken(token);
@@ -98,7 +108,15 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @param email Adres email użytkownika
      * @param token Token
      */
-    private void sendEmailWithToken(String email, String token) {
-        // todo
+    private void sendEmailWithToken(String email, String token) throws MessageNotSentException {
+        ClassicMessage message = ClassicMessage
+                .builder()
+                .from("ssbd201903@gmail.com")
+                .to(email)
+                .subject("Kregielnia - przypomnienie hasla")
+                .body(token)
+                .build();
+
+        emailMessenger.sendMessage(message);
     }
 }

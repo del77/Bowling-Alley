@@ -46,6 +46,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
 
     @Override
+    @PermitAll
     public Optional<UserAccount> findByEmail(String email) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByEmail");
         namedQuery.setParameter("email", email);
@@ -54,15 +55,13 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @PermitAll
-    public Optional<UserAccount> findById(Long id)
-    {
+    public Optional<UserAccount> findById(Long id) {
         return super.findById(id);
     }
 
     @Override
     @PermitAll
-    public UserAccount create(UserAccount userAccount)
-    {
+    public UserAccount create(UserAccount userAccount) {
         return super.create(userAccount);
     }
 

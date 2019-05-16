@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -45,6 +46,7 @@ public class ResetPasswordController {
      * @return Formularz żądania resetowania hasła
      */
     @GET
+    @PermitAll
     @Produces(MediaType.TEXT_HTML)
     public String requestPasswordResetForm() {
         return REQUEST_FORM_HBS;
@@ -57,6 +59,7 @@ public class ResetPasswordController {
      * @return Komunikat potwierdzający żądanie lub błąd
      */
     @POST
+    @PermitAll
     @Produces(MediaType.TEXT_HTML)
     public String requestPasswordReset(@BeanParam EmailDto userData) {
         List<String> errorMessages = validator.validate(userData);
@@ -81,6 +84,7 @@ public class ResetPasswordController {
      * @return Formularz resetowania hasła
      */
     @GET
+    @PermitAll
     @Path("/{token}")
     @Produces(MediaType.TEXT_HTML)
     public String resetPasswordForm(@PathParam("token") String token) {
@@ -91,10 +95,11 @@ public class ResetPasswordController {
      * Punkt wyjścia odpowiedzialny za obsłużenie resetowania hasła przez użytkownika.
      *
      * @param userData DTO przechowujące dane z formularza.
-     * @param token Unikalny token pozwalający zresetować hasło
+     * @param token    Unikalny token pozwalający zresetować hasło
      * @return Komunikat potwierdzający żądanie lub błąd
      */
     @POST
+    @PermitAll
     @Path("/{token}")
     @Produces(MediaType.TEXT_HTML)
     public String resetPassword(@BeanParam NewPasswordDto userData, @PathParam("token") String token) {

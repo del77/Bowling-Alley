@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +27,7 @@ public class ResetPasswordTokenRepositoryLocalImpl extends AbstractCruRepository
     }
 
     @Override
+    @PermitAll
     public Optional<ResetPasswordToken> findByToken(String token) {
         TypedQuery<ResetPasswordToken> namedQuery = this.createNamedQuery("ResetPasswordToken.findByToken");
         namedQuery.setParameter("token", token);
