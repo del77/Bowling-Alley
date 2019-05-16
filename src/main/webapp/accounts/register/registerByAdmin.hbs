@@ -3,34 +3,7 @@
         <div class="w-75">
             <form class="form-horizontal" role="form" method="post" data-form-confirm>
                 {{> "accounts/register/registerClientForm"}}
-                <label class="col-sm-3 control-label">
-                    {{lang.accessLevels}}
-                </label>
-                <div class="form-group">
-                    <div>
-                        <label for="clientSelected" class="control-label">
-                            {{lang.client}}:
-                        </label>
-                        <input type="checkbox" name="clientSelected" id="clientSelected" value="true">
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div>
-                        <label for="employeeSelected" class="control-label">
-                            {{lang.employee}}:
-                        </label>
-                        <input type="checkbox" name="employeeSelected" id="employeeSelected" value="true">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div>
-                        <label for="adminSelected" class="control-label">
-                            {{lang.admin}}:
-                        </label>
-                        <input type="checkbox" id="adminSelected" name="adminSelected" value="true">
-                    </div>
-                </div>
+                {{> accounts/forms/rolesSelector}}
                 {{> "accounts/register/submitButton"}}
             </form>
         </div>

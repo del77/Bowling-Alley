@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Klasa reprezentująca tory.
@@ -23,18 +24,22 @@ public class Alley {
     private Long id;
 
     @Min(0)
+    @NotNull
     @Column(name = "number", nullable = false, unique = true)
     private int number;
-
+    
+    @NotNull
     @Column(name = "active", nullable = false)
     private boolean active;
-
-    @Column(name = "max_score", nullable = true)
+    
+    @NotNull
+    @Column(name = "max_score", nullable = false)
     @Min(0)
     @Max(300)
-    private Integer maxScore;
+    private int maxScore;
 
     @Version
+    @NotNull
     @Min(0)
     @Column(name = "version", nullable = false)
     private long version;
