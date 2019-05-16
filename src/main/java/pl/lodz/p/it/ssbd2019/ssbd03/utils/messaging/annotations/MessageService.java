@@ -1,4 +1,4 @@
-﻿package pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.annotations;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.annotations;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
