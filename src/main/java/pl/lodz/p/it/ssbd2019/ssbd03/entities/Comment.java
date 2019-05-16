@@ -30,16 +30,19 @@ public class Comment {
             unique = true,
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__comment__reservation", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private Reservation reservation;
 
     @NotEmpty
     @NotNull
     @Size(max = 256)
     @Column(name = "content", nullable = false, length = 256)
+    @ToString.Exclude
     private String content;
     
     @NotNull
     @Column(name = "date", nullable = false)
+    @ToString.Exclude
     private Timestamp date;
 
     @Version

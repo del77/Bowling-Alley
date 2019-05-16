@@ -28,6 +28,7 @@ public class ItemType {
     @NotNull
     @Size(max = 25)
     @Column(name = "name", nullable = false, length = 25, unique = true)
+    @ToString.Exclude
     private String name;
 
     @Version

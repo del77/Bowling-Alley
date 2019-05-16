@@ -25,11 +25,13 @@ public class Item {
     @Min(0)
     @NotNull
     @Column(name = "size", nullable = false)
+    @ToString.Exclude
     private int size;
 
     @Min(0)
     @NotNull
     @Column(name = "count", nullable = false)
+    @ToString.Exclude
     private int count;
 
     @Version
@@ -43,5 +45,6 @@ public class Item {
     @JoinColumn(name = "item_type_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__item__item_type", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private ItemType itemType;
 }

@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web;
 
-import lombok.extern.slf4j.Slf4j;
+
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.HandlebarsUtils;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,10 +11,7 @@ import javax.mvc.engine.ViewEngineContext;
 import javax.mvc.engine.ViewEngineException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,7 +21,6 @@ import java.util.stream.Collectors;
  * Implementacja klasy ViewEngine odpowiedzialna za przetwarzanie widoku .hbs / .handlebars (szablony Handlebars)
  */
 @ApplicationScoped
-@Slf4j
 public class HandlebarsViewEngine implements ViewEngine {
     @Inject
     private ServletContext servletContext;
