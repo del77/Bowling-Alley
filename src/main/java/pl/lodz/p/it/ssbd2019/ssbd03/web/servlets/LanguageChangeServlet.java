@@ -5,8 +5,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.context.LocaleConfi
 
 import javax.inject.Inject;
 import javax.mvc.Models;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +25,7 @@ public class LanguageChangeServlet extends HttpServlet {
     private Models models;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String requestURI = req.getRequestURI();
         String langPath = requestURI.substring( requestURI.lastIndexOf("/") + 1 );
         LocaleConfig newLocaleConfig = null;
@@ -40,10 +38,7 @@ public class LanguageChangeServlet extends HttpServlet {
         if (newLocaleConfig == null) {
             newLocaleConfig = languageContext.getDefault();
         }
-
         languageContext.setCurrent(newLocaleConfig);
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher((String)models.get("path"));
-        dispatcher.forward(req, resp);
+        resp.sendRedirect(models.get("path", String.class));
     }
 }
