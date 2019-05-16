@@ -6,10 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.*;
@@ -58,7 +55,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
+    public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
         try {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
             addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
@@ -66,6 +63,9 @@ public class UserAccountServiceImpl implements UserAccountService {
             return userAccountRepositoryLocal.edit(userAccount);
         } catch (EntityUpdateException e) {
             throw new EntityUpdateException("Data is not up-to-date", e);
+        } catch (EJBTransactionRolledbackException e) {
+            ExceptionHandler.handleNotUniqueLoginOrEmailException(e, EntityUpdateException.class);
+            throw new EntityUpdateException("Unknown error", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }

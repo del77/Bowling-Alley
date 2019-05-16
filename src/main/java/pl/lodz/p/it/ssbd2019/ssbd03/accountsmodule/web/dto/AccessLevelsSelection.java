@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto;
 
 
-public interface AccessLevelsDto {
+public interface AccessLevelsSelection {
     
     boolean isClientRoleSelected();
     

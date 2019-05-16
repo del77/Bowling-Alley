@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -137,7 +138,6 @@ public class UserAdminController implements Serializable {
         }
 
         try {
-            editedAccount.setLogin(dto.getLogin());
             editedAccount.setFirstName(dto.getFirstName());
             editedAccount.setLastName(dto.getLastName());
             editedAccount.setEmail(dto.getEmail());
@@ -148,6 +148,8 @@ public class UserAdminController implements Serializable {
                     String.format("Successfully updated %s", editedAccount.getLogin())));
         } catch (EntityUpdateException e) {
             displayError("There was a problem during user update.\n", e.getMessage());
+        } catch (NotUniqueEmailException e) {
+            displayError("Your new email is not unique", e.getLocalizedMessage());
         } catch (Exception e) {
             displayError("FATAL ERROR", e.getLocalizedMessage());
         }
@@ -237,7 +239,12 @@ public class UserAdminController implements Serializable {
     }
 
     private void displayError(String s, String localizedMessage) {
-        models.put(ERROR, Collections.singletonList(s + localizedMessage));
+        models.put(
+                ERROR,
+                localizedMessage == null ?
+                Collections.singletonList(s) :
+                Collections.singletonList(String.format("%s%n%s", s, localizedMessage))
+        );
     }
 
 }

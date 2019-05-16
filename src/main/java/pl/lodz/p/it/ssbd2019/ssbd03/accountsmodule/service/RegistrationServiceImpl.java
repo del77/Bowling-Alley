@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccountAccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
@@ -60,23 +59,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         try {
             return userAccountRepositoryLocal.create(userAccount);
         } catch (EJBTransactionRolledbackException e) {
-            handleException(e);
+            ExceptionHandler.handleNotUniqueLoginOrEmailException(e, RegistrationProcessException.class);
         }
         throw new RegistrationProcessException("Something went wrong during creation a user in database.");
     }
 
-    private void handleException(EJBTransactionRolledbackException e) throws NotUniqueLoginException, NotUniqueEmailException, RegistrationProcessException {
-        Throwable t = e.getCause();
-        while ((t != null) && !(t instanceof PSQLException)) {
-            t = t.getCause();
-            if (t.getMessage().contains("login")){
-                throw new NotUniqueLoginException();
-            } else if (t.getMessage().contains("email")) {
-                throw new NotUniqueEmailException();
-            }
-        }
-        throw new RegistrationProcessException(e.getMessage());
-    }
 
     private void createAccountAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
         for (String accessLevelName : accessLevelNames) {

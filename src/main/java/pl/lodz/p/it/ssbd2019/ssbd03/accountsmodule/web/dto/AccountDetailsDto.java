@@ -13,14 +13,8 @@ import javax.ws.rs.FormParam;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ToString
-public class AccountDetailsDto implements AccessLevelsDto {
+public class AccountDetailsDto implements AccessLevelsSelection {
     protected Long id;
-    
-    @NotNull(message = "Login cannot be null.")
-    @NotBlank(message = "Login cannot be blank.")
-    @Size(max = 16, message = "Login cannot be longer than 16 characters.")
-    @FormParam("login")
-    protected String login;
     
     @NotNull(message = "First name cannot be null.")
     @NotBlank(message = "First name cannot be blank.")

@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 
 import java.util.List;
 
@@ -44,7 +41,7 @@ public interface UserAccountService {
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException;
+    UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.

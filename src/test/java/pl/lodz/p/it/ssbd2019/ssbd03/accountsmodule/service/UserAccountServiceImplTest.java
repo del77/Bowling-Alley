@@ -12,10 +12,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import java.util.*;
@@ -114,8 +111,8 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException {
-        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(asList()).build();
+    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
@@ -125,7 +122,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException {
+    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
                 .accountAccessLevels(new ArrayList<>())
@@ -204,7 +201,7 @@ public class UserAccountServiceImplTest {
 
 
     @Test
-    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException {
+    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -237,7 +234,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException {
+    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -343,7 +340,7 @@ public class UserAccountServiceImplTest {
     }
     
     @Test
-    public void updateUserAccountDetailsTest() throws EntityUpdateException {
+    public void updateUserAccountDetailsTest() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
