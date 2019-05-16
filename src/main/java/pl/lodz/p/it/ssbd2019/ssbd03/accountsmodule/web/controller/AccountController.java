@@ -35,6 +35,7 @@ public class AccountController {
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_URL = "account";
     private static final String DISPLAY_DETAILS = "accounts/users/userOwnDetails.hbs";
+    private static final String ERROR_PAGE = "accounts/users/userDetailsError.hbs";
 
     @Inject
     private Models models;
@@ -69,7 +70,7 @@ public class AccountController {
             models.put("user", user);
             userRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (EntityRetrievalException e) {
-            models.put(ERROR, Collections.singletonList("Could not retrieve user. " + e.getLocalizedMessage()));
+            return ERROR_PAGE;
         }
         return DISPLAY_DETAILS;
     }

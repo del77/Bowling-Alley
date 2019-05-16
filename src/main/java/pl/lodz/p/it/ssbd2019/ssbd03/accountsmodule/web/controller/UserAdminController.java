@@ -43,6 +43,8 @@ public class UserAdminController implements Serializable {
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_PATH = "accounts";
     private static final String DISPLAY_DETAILS = "accounts/users/userDetailsForAdmin.hbs";
+    private static final String ERROR_PAGE = "accounts/users/userDetailsError.hbs";
+
 
     @Inject
     private Models models;
