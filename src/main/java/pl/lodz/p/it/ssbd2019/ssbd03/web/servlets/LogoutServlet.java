@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
+
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +15,7 @@ import java.io.IOException;
  * strony głównej.
  */
 @WebServlet(name = "LogoutServlet", urlPatterns = {"/logout"})
+@RolesAllowed(MokRoles.LOGOUT)
 public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

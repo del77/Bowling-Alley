@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.*;
@@ -24,9 +26,9 @@ public class UserModelFilter extends HttpFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         Principal userPrincipal = httpServletRequest.getUserPrincipal();
         boolean isLoggedIn = userPrincipal != null;
-        boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
-        boolean isEmployee = httpServletRequest.isUserInRole("EMPLOYEE");
-        boolean isClient = httpServletRequest.isUserInRole("CLIENT");
+        boolean isAdmin = httpServletRequest.isUserInRole(AppRoles.ADMIN);
+        boolean isEmployee = httpServletRequest.isUserInRole(AppRoles.EMPLOYEE);
+        boolean isClient = httpServletRequest.isUserInRole(AppRoles.CLIENT);
         models.put("isAdmin", isAdmin);
         models.put("loggedIn", isLoggedIn);
         models.put("isEmployee", isEmployee);

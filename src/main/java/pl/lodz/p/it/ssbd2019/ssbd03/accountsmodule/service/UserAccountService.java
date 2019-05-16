@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 
@@ -30,14 +29,6 @@ public interface UserAccountService {
     UserAccount getUserById(Long id) throws EntityRetrievalException;
 
     /**
-     * Metoda dodaje uzytkownika do bazy danych oraz zwraca dodaną encję.
-     * @param userAccount Obiekt typu UserAccount, którego dane mają być dodane do bazy danych.
-     * @return Encja użytkowniak dodanego do bazy danych.
-     * @throws EntityCreationException w wypadku gdy nie powiedzie się tworzenie encji.
-     */
-    UserAccount addUser(UserAccount userAccount) throws EntityCreationException;
-
-    /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
@@ -45,14 +36,6 @@ public interface UserAccountService {
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      */
     UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException;
-
-    /**
-     * Aktualizuje użytkownika w bazie danych.
-     * @param userAccount Encja użytkownika do zaktualizowania.
-     * @return Zaktualizowana encja uzytkownika.
-     * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
-     */
-    UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.

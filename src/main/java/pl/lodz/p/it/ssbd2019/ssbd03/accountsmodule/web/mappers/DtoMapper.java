@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
@@ -12,13 +13,13 @@ public class DtoMapper {
     public List<String> getListOfAccessLevels(ComplexAccountDto editUserDto) {
         List<String> selectedAccessLevels = new ArrayList<>();
         if (editUserDto.isClientRoleSelected()) {
-            selectedAccessLevels.add("CLIENT");
+            selectedAccessLevels.add(AppRoles.CLIENT);
         }
         if (editUserDto.isEmployeeRoleSelected()) {
-            selectedAccessLevels.add("EMPLOYEE");
+            selectedAccessLevels.add(AppRoles.EMPLOYEE);
         }
         if (editUserDto.isAdminRoleSelected()) {
-            selectedAccessLevels.add("ADMIN");
+            selectedAccessLevels.add(AppRoles.ADMIN);
         }
 
         return selectedAccessLevels;

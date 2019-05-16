@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
@@ -14,6 +16,7 @@ import java.util.Collections;
  */
 @RequestScoped
 @Controller
+@PermitAll
 @Path("register")
 public class ClientRegistrationController extends RegistrationController {
 
@@ -40,7 +43,7 @@ public class ClientRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
-        return super.registerAccount(basicAccountDto, Collections.singletonList("CLIENT"));
+        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT));
     }
 
 
