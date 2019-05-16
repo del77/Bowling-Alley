@@ -1,11 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Optional;
 
 @ApplicationScoped
-public class CacheFormData {
+public class CacheFormData implements Serializable {
     private HashMap<Long, FormData> cache = new HashMap<>();
 
     void save(Long key, FormData element) {

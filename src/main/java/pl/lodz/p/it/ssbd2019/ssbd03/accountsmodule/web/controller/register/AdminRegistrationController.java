@@ -35,9 +35,7 @@ public class AdminRegistrationController extends RegistrationController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationFormWithFailure(@QueryParam("idCache") Long id) {
-        if (id != null) {
-            fillModels(id);
-        }
+        redirectUtil.injectFormDataToModels(id, models);
         return REGISTER_VIEW_URL;
     }
 
@@ -49,7 +47,7 @@ public class AdminRegistrationController extends RegistrationController {
     @GET
     @Path("/success")
     @Produces(MediaType.TEXT_HTML)
-    public String viewSuccess() {
+    public String viewRegistrationSuccessPage() {
         return SUCCESS_VIEW_URL;
     }
 

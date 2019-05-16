@@ -15,7 +15,18 @@ public class RedirectUtil implements Serializable {
 
     public String redirectError(String path, Object object, List<String> errors) {
         Long id = System.currentTimeMillis();
-        FormData formData = FormData.builder().data(object).errors(errors).build();
+
+        FormData formData;
+        if (object == null) {
+            formData = FormData.builder().errors(errors).build();
+        } else {
+            formData = FormData
+                    .builder()
+                    .data(object)
+                    .errors(errors)
+                    .build();
+        }
+
         cacheFormData.save(id, formData);
         return String.format("redirect:%s?idCache=%d", path, id);
     }

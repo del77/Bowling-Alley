@@ -42,7 +42,7 @@ public class UserAdminController implements Serializable {
     private static final String ERROR = "errors";
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByAdmin.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
-    private static final String BASE_PATH = "admin/users";
+    private static final String BASE_PATH = "accounts";
 
     @Inject
     private Models models;
@@ -98,26 +98,29 @@ public class UserAdminController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String updateLockStatusOnAccount(@BeanParam AccountActivationDto dto,
                                             @QueryParam("idCache") Long id) {
-        FormData formData = new FormData();
         boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
         try {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
-            if(account.isAccountActive() == active) {
+            if (account.isAccountActive() == active) {
+                FormData formData = new FormData();
                 formData.setInfos(
                         Collections.singletonList(String.format("Successfully changed %s's lock state.", account.getLogin()))
                 );
                 return redirectUtil.redirect(BASE_PATH, formData);
             } else {
-                formData.setErrors(
+                return redirectUtil.redirectError(
+                        BASE_PATH,
+                        null,
                         Collections.singletonList(String.format("Could not change %s's lock state", account.getLogin()))
                 );
             }
         } catch (Exception e) {
-            formData.setErrors(
+            return redirectUtil.redirectError(
+                    BASE_PATH,
+                    null,
                     Collections.singletonList("Could not change user's lock state" + e.getLocalizedMessage())
             );
         }
-        return redirectUtil.redirect(BASE_PATH, formData);
     }
 
 
@@ -187,14 +190,17 @@ public class UserAdminController implements Serializable {
     @POST
     @Path("/{id}/edit")
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam ComplexAccountDto editUser, @QueryParam("idCache") Long idCache) {
+    public String editUser(@BeanParam ComplexAccountDto editUser, @PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
         try {
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
             userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
             models.put("updated", true);
         } catch (EntityUpdateException e) {
-            return redirectUtil.redirectError(BASE_PATH + "/{id}/edit", null, Collections.singletonList("There was a problem during user update.\n" + e.getLocalizedMessage()));
-
+            return redirectUtil.redirectError(
+                    String.format("%s/%d/edit", BASE_PATH, id),
+                    null,
+                    Collections.singletonList("There was a problem during user update.\n" + e.getLocalizedMessage())
+            );
         }
         return redirectSuccessPath();
     }
@@ -216,13 +222,20 @@ public class UserAdminController implements Serializable {
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(BASE_PATH + "/{id}/edit/password", null, errorMessages);
+            return redirectUtil.redirectError(
+                    String.format("%s/%d/edit/password", BASE_PATH, id),
+                    null,
+                    errorMessages);
         }
 
         try {
             userAccountService.changePasswordById(id, userData.getNewPassword());
         } catch (Exception e) {
-            return redirectUtil.redirectError(BASE_PATH + "/{id}/edit/password", null, Collections.singletonList(e.getMessage()));
+            return redirectUtil.redirectError(
+                    String.format("%s/%d/edit/password", BASE_PATH, id),
+                    null,
+                    Collections.singletonList(e.getMessage()));
+
         }
 
         return String.format("redirect:%s/success", BASE_PATH);
