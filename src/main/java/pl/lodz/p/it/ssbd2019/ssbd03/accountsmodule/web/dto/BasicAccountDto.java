@@ -13,6 +13,7 @@ import javax.ws.rs.FormParam;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
+@ToString
 public class BasicAccountDto {
 
     @NotNull(message = "{validate.loginNotNull}")
@@ -56,7 +57,7 @@ public class BasicAccountDto {
     @NotBlank(message = "{validate.phoneNumberNotBlank}")
     @Size(min = 9, message = "{validate.phoneNumberAtLeastNine}")
     @Size(max = 16, message = "{validate.phoneNumberShorterThanSixteen}")
-    @ValidPhoneNumberFormat
+    @ValidPhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
     protected String phoneNumber;
 

@@ -7,11 +7,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -27,6 +28,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
+    @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     public List<UserAccount> getAllUsers() throws EntityRetrievalException {
         try {
             return userAccountRepositoryLocal.findAll();
@@ -36,6 +38,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed(MokRoles.GET_USER_DETAILS)
     public UserAccount getUserById(Long id) throws EntityRetrievalException {
         try {
             UserAccount user = userAccountRepositoryLocal.findById(id).orElseThrow(
@@ -47,17 +50,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
-    @Override
-    public UserAccount addUser(UserAccount userAccount) throws EntityCreationException {
-        try {
-            return userAccountRepositoryLocal.create(userAccount);
-        } catch (Exception e) {
-            throw new EntityCreationException("Could not add userAccount", e);
-        }
-    }
-
 
     @Override
+    @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT})
     public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
         try {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
@@ -70,15 +65,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException {
-        try {
-            return userAccountRepositoryLocal.edit(userAccount);
-        } catch (Exception e) {
-            throw new EntityUpdateException("Could not update userAccount", e);
-        }
-    }
-
-    @Override
+    @RolesAllowed({MokRoles.CHANGE_OWN_PASSWORD, MokRoles.GET_OWN_ACCOUNT_DETAILS})
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
             return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
@@ -89,6 +76,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getByLogin(login);
@@ -105,6 +93,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
+    @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     public void changePasswordById(long id, String newPassword) throws ChangePasswordException {
         try {
             UserAccount account = this.getUserById(id);
@@ -115,6 +104,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
     
     @Override
+    @RolesAllowed(MokRoles.LOCK_UNLOCK_ACCOUNT)
     public UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws EntityUpdateException {
         try {
             UserAccount account = getUserById(id);

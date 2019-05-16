@@ -12,7 +12,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityCreationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
@@ -46,12 +45,6 @@ public class UserAccountServiceImplTest {
     public void shouldThrowEntityRetrievalExceptionWhenGetUserByIdCatchesException() {
         when(userAccountRepositoryLocal.findById(any())).thenThrow(RuntimeException.class);
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getUserById(1L));
-    }
-
-    @Test
-    public void shouldThrowEntityCreationExceptionWhenAddUserCatchesException() {
-        when(userAccountRepositoryLocal.create(any(UserAccount.class))).thenThrow(RuntimeException.class);
-        Assertions.assertThrows(EntityCreationException.class, () -> userService.addUser(mock(UserAccount.class)));
     }
 
 
@@ -91,16 +84,6 @@ public class UserAccountServiceImplTest {
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
     }
 
-    @Test
-    public void shouldReturnRightEntityOnAddUser() throws EntityCreationException {
-        UserAccount userAccount = new UserAccount();
-        when(userAccountRepositoryLocal.create(any(UserAccount.class))).then((u) -> {
-            UserAccount newUserAccount = u.getArgument(0);
-            newUserAccount.setId(1L);
-            return newUserAccount;
-        });
-        Assertions.assertEquals( userService.addUser(userAccount).getId(), 1L);
-    }
 
     @Test
     public void shouldThrowEntityUpdateExceptionWhenUpdateUserCatchesException() {

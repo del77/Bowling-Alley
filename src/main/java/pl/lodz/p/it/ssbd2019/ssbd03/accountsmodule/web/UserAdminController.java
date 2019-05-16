@@ -12,7 +12,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -31,7 +34,7 @@ import java.util.List;
  */
 @Controller
 @SessionScoped
-@Path("admin/users")
+@Path("accounts")
 public class UserAdminController implements Serializable {
 
     private static final String ERROR = "errors";
@@ -61,6 +64,7 @@ public class UserAdminController implements Serializable {
      * @return Widok z listą wszystkich użytkowników.
      */
     @GET
+    @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     @Produces(MediaType.TEXT_HTML)
     public String allUsersList() {
         List<UserAccount> userAccounts = new ArrayList<>();
@@ -80,6 +84,7 @@ public class UserAdminController implements Serializable {
      * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
      */
     @POST
+    @RolesAllowed(MokRoles.LOCK_UNLOCK_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String updateLockStatusOnAccount(@BeanParam AccountActivationDto dto) {
         boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
@@ -105,6 +110,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/edit")
+    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@PathParam("id") Long id) {
         try {
@@ -126,6 +132,7 @@ public class UserAdminController implements Serializable {
      */
     @POST
     @Path("/{id}/edit")
+    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam ComplexAccountDto editUser) {
         try {
@@ -146,6 +153,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/details")
+    @RolesAllowed(MokRoles.GET_USER_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String displayUserDetails(@PathParam("id") Long id) {
         try {
@@ -165,6 +173,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/edit/password")
+    @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword() {
         return EDIT_PASSWORD_FORM_HBS;
@@ -180,6 +189,7 @@ public class UserAdminController implements Serializable {
      */
     @POST
     @Path("/{id}/edit/password")
+    @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword(@BeanParam NewPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
@@ -205,13 +215,13 @@ public class UserAdminController implements Serializable {
         for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
             if (accountAccessLevel.isActive()) {
                 switch (accountAccessLevel.getAccessLevel().getName()) {
-                    case "CLIENT":
+                    case AppRoles.CLIENT:
                         models.put("clientActive", true);
                         break;
-                    case "EMPLOYEE":
+                    case AppRoles.EMPLOYEE:
                         models.put("employeeActive", true);
                         break;
-                    case "ADMIN":
+                    case AppRoles.ADMIN:
                         models.put("adminActive", true);
                         break;
                     default:

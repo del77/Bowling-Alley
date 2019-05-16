@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -14,13 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-class UserAccountTest {
+@RunWith(MockitoJUnitRunner.class)
+public class UserAccountTest {
     
     @Mock
     private Validator validator;
     
     @Test
-    void setPhoneFormatWithSpacesTest() {
+    public void setPhoneFormatWithSpacesTest() {
         UserAccount user = UserAccount.builder()
             .phone("123 123 123")
             .build();
@@ -36,7 +39,7 @@ class UserAccountTest {
     }
     
     @Test
-    void setPhoneFormatWithHyphensTest() {
+    public void setPhoneFormatWithHyphensTest() {
         UserAccount user = UserAccount.builder()
                 .phone("123-123-123")
                 .build();
@@ -52,7 +55,7 @@ class UserAccountTest {
     }
     
     @Test
-    void setPhoneWithLettersTest() {
+    public void setPhoneWithLettersTest() {
         UserAccount user = UserAccount.builder()
                 .phone("123abcxyz")
                 .build();
@@ -69,7 +72,7 @@ class UserAccountTest {
     
     
     @Test
-    void setPhoneCorrectFormatTest() {
+    public void setPhoneCorrectFormatTest() {
         UserAccount user = UserAccount.builder()
                 .phone("123456789")
                 .build();
