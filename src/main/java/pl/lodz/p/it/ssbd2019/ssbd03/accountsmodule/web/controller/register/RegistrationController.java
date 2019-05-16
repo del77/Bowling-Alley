@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -10,7 +11,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.CacheFormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.ejb.EJB;
@@ -19,9 +19,6 @@ import javax.mvc.Models;
 import java.util.List;
 
 public abstract class RegistrationController {
-
-    @Inject
-    protected CacheFormData cacheFormData;
 
     @Inject
     protected Models models;
@@ -38,6 +35,9 @@ public abstract class RegistrationController {
     @Inject
     protected RedirectUtil redirectUtil;
 
+    @Inject
+    protected LocalizedMessageRetriever localization;
+
     static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
 
     /**
@@ -46,7 +46,7 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    protected String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
         List<String> errorMessages = validator.validate(basicAccountDto);
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
@@ -71,9 +71,9 @@ public abstract class RegistrationController {
         try {
             registrationService.registerAccount(userAccount, accessLevelNames);
         } catch (NotUniqueLoginException e) {
-            errorMessages.add("Your login is not unique.");
+            errorMessages.add(localization.get("loginNotUnique"));
         } catch (NotUniqueEmailException e) {
-            errorMessages.add("Your email is not unique.");
+            errorMessages.add(localization.get("emailNotUnique"));
         } catch (RegistrationProcessException | EntityRetrievalException e) {
             errorMessages.add(e.getMessage());
         } catch (Exception e) {

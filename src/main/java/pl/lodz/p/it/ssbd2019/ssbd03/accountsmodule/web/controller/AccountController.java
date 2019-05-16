@@ -1,8 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
@@ -41,6 +42,8 @@ public class AccountController {
     private PasswordDtoValidator passwordDtoValidator;
     @Inject
     private RedirectUtil redirectUtil;
+    @Inject
+    private LocalizedMessageRetriever localization;
 
     @EJB
     private UserAccountService userAccountService;
@@ -98,7 +101,7 @@ public class AccountController {
             return redirectUtil.redirectError(BASE_URL, null, Collections.singletonList(e.getMessage()));
         }
 
-        models.put(INFO, Collections.singletonList("Password has been changed."));
+        models.put(INFO, Collections.singletonList(localization.get("Password has been changed.")));
         return redirectSuccessPath();
     }
 

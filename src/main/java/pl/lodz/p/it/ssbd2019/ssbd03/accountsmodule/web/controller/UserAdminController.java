@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
@@ -56,6 +57,8 @@ public class UserAdminController implements Serializable {
     private DtoMapper dtoMapper;
     @Inject
     private RedirectUtil redirectUtil;
+    @Inject
+    private LocalizedMessageRetriever localization;
 
     private transient UserAccount editedAccount;
 
@@ -81,7 +84,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
+            displayError(localization.get("userAccountsListError"));
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -104,21 +107,21 @@ public class UserAdminController implements Serializable {
             if (account.isAccountActive() == active) {
                 FormData formData = new FormData();
                 formData.setInfos(
-                        Collections.singletonList(String.format("Successfully changed %s's lock state.", account.getLogin()))
+                        Collections.singletonList(localization.get("unlockedSuccessFullyFor") + account.getLogin())
                 );
                 return redirectUtil.redirect(BASE_PATH, formData);
             } else {
                 return redirectUtil.redirectError(
                         BASE_PATH,
                         null,
-                        Collections.singletonList(String.format("Could not change %s's lock state", account.getLogin()))
+                        Collections.singletonList(localization.get("couldntLock") + account.getLogin())
                 );
             }
         } catch (Exception e) {
             return redirectUtil.redirectError(
                     BASE_PATH,
                     null,
-                    Collections.singletonList("Could not change user's lock state" + e.getLocalizedMessage())
+                    Collections.singletonList(localization.get("couldntLock"))
             );
         }
     }
@@ -141,7 +144,7 @@ public class UserAdminController implements Serializable {
             models.put("login", editedAccount.getLogin());
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
-            displayError("Could not update user.\n", e.getLocalizedMessage());
+            displayError(localization.get("userDetailsNotUpdated"));
         }
         return "accounts/users/editUser.hbs";
     }
@@ -163,7 +166,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            displayError("Could not retrieve user.\n", e.getLocalizedMessage());
+            displayError(localization.get("userCouldntRetrieve"));
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -199,7 +202,7 @@ public class UserAdminController implements Serializable {
             return redirectUtil.redirectError(
                     String.format("%s/%d/edit", BASE_PATH, id),
                     null,
-                    Collections.singletonList("There was a problem during user update.\n" + e.getLocalizedMessage())
+                    Collections.singletonList(localization.get("userDetailsNotUpdated"))
             );
         }
         return redirectSuccessPath();
@@ -265,8 +268,8 @@ public class UserAdminController implements Serializable {
         }
     }
 
-    private void displayError(String s, String localizedMessage) {
-        models.put(ERROR, Collections.singletonList(s + localizedMessage));
+    private void displayError(String s) {
+        models.put(ERROR, s);
     }
 
 }
