@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
@@ -25,10 +26,7 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -50,6 +48,8 @@ public class UserAdminController implements Serializable {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+    @Inject
+    private LocalizedMessageRetriever localizedMessageRetriever;
 
     @EJB
     private UserAccountService userAccountService;
@@ -73,7 +73,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            displayError(getLangMessage("userAccountsListError"), e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("userAccountsListError"));
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -94,12 +94,12 @@ public class UserAdminController implements Serializable {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
             if(account.isAccountActive() == active) {
                 models.put(INFO, Collections.singletonList(
-                        String.format("%s. %s", getLangMessage("changeLockStatusSuccess"), account.getLogin())));
+                        String.format("%s. %s", localizedMessageRetriever.getLocalizedMessage("changeLockStatusSuccess"), account.getLogin())));
             } else {
-                displayError(String.format("%s. %s", getLangMessage("changeLockStatusFailure"), account.getLogin()), "");
+                displayError(String.format("%s. %s", localizedMessageRetriever.getLocalizedMessage("changeLockStatusFailure"), account.getLogin()));
             }
         } catch (Exception e) {
-            displayError(getLangMessage("changeLockStatusFailure"), e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("changeLockStatusFailure"));
         }
         return allUsersList();
     }
@@ -120,7 +120,7 @@ public class UserAdminController implements Serializable {
             models.put("editedAccount", editedAccount);
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
-            displayError("Could not update user.\n", e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("userDetailsNotUpdated"));
         }
         return "accounts/users/editUser.hbs";
     }
@@ -140,7 +140,7 @@ public class UserAdminController implements Serializable {
     
         if(!errorMessages.isEmpty()) {
             for (String errorMessage : errorMessages) {
-                displayError(errorMessage, "");
+                displayError(errorMessage);
             }
             return editUser(editedAccount.getId());
         }
@@ -152,13 +152,13 @@ public class UserAdminController implements Serializable {
             editedAccount.setPhone(dto.getPhoneNumber());
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
             editedAccount = userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
-            models.put(INFO, Collections.singletonList(getLangMessage("profileUpdatedSuccessfully")));
+            models.put(INFO, Collections.singletonList(localizedMessageRetriever.getLocalizedMessage("profileUpdatedSuccessfully")));
         } catch (EntityUpdateException e) {
-            displayError(getLangMessage("profileUpdatedUnsuccessfully"), e.getMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("profileUpdatedUnsuccessfully"));
         } catch (NotUniqueEmailException e) {
-            displayError(getLangMessage("validate.emailNotUnique"), e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("notUniqueEmailException"));
         } catch (Exception e) {
-            displayError(getLangMessage("FATAL"), e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("FATAL"));
         }
         return editUser(editedAccount.getId());
     }
@@ -179,7 +179,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            displayError(getLangMessage("userRetrievalError"), e.getLocalizedMessage());
+            displayError(localizedMessageRetriever.getLocalizedMessage("userRetrievalError"));
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -224,7 +224,8 @@ public class UserAdminController implements Serializable {
             return EDIT_PASSWORD_FORM_HBS;
         }
 
-        models.put(INFO, Collections.singletonList("Password has been changed."));
+        models.put(INFO, Collections.singletonList(
+                localizedMessageRetriever.getLocalizedMessage("passwordChanged")));
         return EDIT_PASSWORD_FORM_HBS;
     }
 
@@ -248,16 +249,7 @@ public class UserAdminController implements Serializable {
         }
     }
 
-    private void displayError(String s, String localizedMessage) {
-        models.put(
-                ERROR,
-                localizedMessage == null ?
-                Collections.singletonList(s) :
-                Collections.singletonList(String.format("%s%n%s", s, localizedMessage))
-        );
-    }
-
-    private String getLangMessage(String key) {
-        return ((Map<String, String>)models.get("lang")).get(key);
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
     }
 }
