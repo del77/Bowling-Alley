@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.utils;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker;
 
 
 import javax.annotation.Resource;
@@ -10,12 +10,12 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @Interceptor
-public class TrackerInterceptor {
+public class InterceptorTracker {
 
     @Resource
     private SessionContext sessionContext;
 
-    private static final Logger logger = Logger.getLogger(TrackerInterceptor.class.getName());
+    private static final Logger logger = Logger.getLogger(InterceptorTracker.class.getName());
 
     @AroundInvoke
     public Object logMethodInvocation(InvocationContext context) throws Exception {
@@ -27,14 +27,14 @@ public class TrackerInterceptor {
         String parameters = retrieveMethodParameters(context);
 
         logger.info( () ->
-                String.format("%s.%s(%s) zostala wywolana przez uzytkownika %s", className, methodName, parameters, user)
+                String.format("%s.%s(%s) was called by the user %s", className, methodName, parameters, user)
         );
 
         Object result = proceedMethod(context, className, methodName, user, parameters);
 
         String resultString = context.getMethod().getReturnType().equals(Void.TYPE) ? "void" : Objects.toString(result);
         logger.info( () ->
-                String.format("%s.%s(%s) wywolana przez uzytkownika %s zwrocila %s",
+                String.format("%s.%s(%s) was called by the user %s and returned %s",
                 className, methodName, parameters, user, resultString)
         );
 
@@ -75,7 +75,7 @@ public class TrackerInterceptor {
             String causes = concatenateCauses(e);
 
             logger.severe( () ->
-                    String.format("%s.%s(%s) wywolana przez uzytkownika %s rzucila następujacy wyjatek %s: %s. Causes: [%s]",
+                    String.format("%s.%s(%s) was called by the user %s and threw the exception %s: %s. Causes: [%s]",
                             className, methodName, parameters, user, e, e.getLocalizedMessage(), causes)
             );
 

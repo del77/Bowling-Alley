@@ -10,8 +10,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.TrackerInterceptor;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.TransactionTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -23,7 +23,7 @@ import java.util.List;
 
 @Stateful
 @Transactional
-@Interceptors(TrackerInterceptor.class)
+@Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;

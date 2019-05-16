@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.utils;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -18,21 +18,21 @@ public class TransactionTracker implements SessionSynchronization {
     public void afterBegin() {
         txId = System.currentTimeMillis();
         String user = getUserName();
-        String msg = String.format("Transakcja o ID: %d, dla uzytkownika: %s, zostala rozpoczeta.", txId, user);
+        String msg = String.format("Transaction ID: %d, for the user: %s, is after begin.", txId, user);
         logger.info(msg);
     }
 
     @Override
     public void beforeCompletion() {
         String user = getUserName();
-        String msg = String.format("Transakcja o ID: %d, dla uzytkownika: %s, przed zakończeniem.", txId, user);
+        String msg = String.format("Transaction ID: %d, for the user: %s, is before completion.", txId, user);
         logger.info(msg);
     }
 
     @Override
     public void afterCompletion(boolean committed) {
         String user = getUserName();
-        String msg = String.format("Transakcja o ID: %d, dla uzytkownika: %s, zostala zakonczona przez: %s.", txId, user, (committed?"zatwierdzenie":"wycofanie"));
+        String msg = String.format("Transaction ID: %d, for the user: %s, is after completion: %s.", txId, user, (committed?"committed":"rolled back"));
         logger.info(msg);
     }
 
