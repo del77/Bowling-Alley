@@ -27,16 +27,8 @@ public interface UserAccountService {
     UserAccount getUserById(Long id) throws EntityRetrievalException;
 
     /**
-     * Metoda dodaje uzytkownika do bazy danych oraz zwraca dodaną encję.
-     * @param userAccount Obiekt typu UserAccount, którego dane mają być dodane do bazy danych.
-     * @return Encja użytkowniak dodanego do bazy danych.
-     * @throws EntityCreationException w wypadku gdy nie powiedzie się tworzenie encji.
-     */
-    UserAccount addUser(UserAccount userAccount) throws EntityCreationException;
-
-    /**
      * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
-     * @param userAccount encja użytkownika do zaktualizowania.
+     * @param userAccount Encja użytkownika do zaktualizowania.
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
@@ -62,7 +54,7 @@ public interface UserAccountService {
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
     void changePasswordByLogin(String login, String currentPassword, String newPassword) throws ChangePasswordException;
-    
+
     /**
      * Zmienia flagę zablokowania konta użytkownika z podanym id
      *

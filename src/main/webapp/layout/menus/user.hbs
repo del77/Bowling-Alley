@@ -11,40 +11,40 @@
         <div class="dropdown-item-text">
           {{#if isClient}}
             <span class="badge badge-info">
-              Client
+               {{lang.client}}
             </span>
           {{/if}}
           {{#if isEmployee}}
             <span class="badge badge-warning">
-              Employee
+              {{lang.employee}}
             </span>
           {{/if}}
           {{#if isAdmin}}
             <span class="badge badge-danger">
-              Admin
+              {{lang.admin}}
             </span>
           {{/if}}
         </div>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#">
-          My profile
+          {{lang.myProfile}}
         </a>
-        <a class="dropdown-item" href="{{webContextPath}}/client/users/edit-password">
-          Change password
+        <a class="dropdown-item" href="{{webContextPath}}/account/edit-password">
+          {{lang.changePassword}}
         </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{{webContextPath}}/logout">
-          Logout
+          {{lang.logout}}
         </a>
       </div>
     </div>
   {{else}}
     <a href="{{webContextPath}}/login" class="btn btn-secondary mr-1">
-      Login
+      {{lang.loginAction}}
     </a>
     <a href="{{webContextPath}}/register" class="btn btn-secondary">
       <i class="fas fa-user-plus"></i>
-      Register
+      {{lang.registerAction}}
     </a>
   {{/if}}
 {{/block}}

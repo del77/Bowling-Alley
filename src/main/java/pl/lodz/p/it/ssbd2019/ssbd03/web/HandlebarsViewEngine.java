@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.*;
 import lombok.extern.slf4j.Slf4j;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.HandlebarsUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,9 +10,14 @@ import javax.mvc.engine.ViewEngine;
 import javax.mvc.engine.ViewEngineContext;
 import javax.mvc.engine.ViewEngineException;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 /**
@@ -53,19 +56,19 @@ public class HandlebarsViewEngine implements ViewEngine {
         if (!viewName.startsWith("/"))
             viewName = "/" + viewName;
 
-        try (PrintWriter writer = context.getResponse(HttpServletResponse.class).getWriter();
-             InputStream resourceAsStream = servletContext.getResourceAsStream(viewName);
-             InputStreamReader in = new InputStreamReader(resourceAsStream, "UTF-8");
-             BufferedReader bufferedReader = new BufferedReader(in)) {
-
-            models.put("webContextPath", context.getRequest(HttpServletRequest.class).getContextPath());
-            models.put("page", context.getRequest(HttpServletRequest.class).getRequestURI());
-            models.put("viewName", viewName);
-            String viewContent = bufferedReader.lines().collect(Collectors.joining());
-            final TemplateLoader loader = new ServletContextTemplateLoader(servletContext);
-            final Handlebars handlebars = new Handlebars(loader);
-            final Template template = handlebars.compileInline(viewContent);
-            template.apply(models.asMap(), writer);
+        String realPath = servletContext.getRealPath(viewName);
+        try {
+            String viewContent = Files.readAllLines(Paths.get(realPath)).stream().collect(Collectors.joining());
+            HttpServletResponse httpServletResponse = context.getResponse(HttpServletResponse.class);
+            if (httpServletResponse != null) {
+                models.put("viewName", viewName);
+                httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
+                HandlebarsUtils
+                        .servletContextLoader(servletContext)
+                        .withModels(models)
+                        .compile(viewContent)
+                        .apply(httpServletResponse.getWriter());
+            }
 
         } catch (IOException e) {
             throw new ViewEngineException(e);

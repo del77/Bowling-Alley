@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Klasa reprezentująca relację wiele do wielu pomiedzy rezerwacją a przedmiotami.
  */
@@ -24,6 +26,7 @@ public class ReservationItem {
     private Reservation reservation;
 
     @Id
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "item_id",
             updatable = false,
@@ -31,11 +34,13 @@ public class ReservationItem {
             foreignKey = @ForeignKey(name = "fk__reservation_items__item", value = ConstraintMode.CONSTRAINT))
     private Item item;
 
-    @Min(0)
+    @Min(1)
+    @NotNull
     @Column(name = "count", nullable = false)
     private int count;
 
     @Version
+    @NotNull
     @Min(0)
     @Column(name = "version", nullable = false)
     private long version;

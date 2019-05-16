@@ -77,7 +77,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      */
     @Override
     public List<T> findAll() {
-        CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(getTypeParameterClass());
         cq.select(cq.from(getTypeParameterClass()));
         return getEntityManager().createQuery(cq).getResultList();
     }

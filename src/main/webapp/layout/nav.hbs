@@ -1,27 +1,54 @@
 {{#block "nav"}}
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="{{webContextPath}}/">
-        <i class="fas fa-bowling-ball"></i>
-        Bowling Alley
-      </a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{webContextPath}}/">
+                <i class="fas fa-bowling-ball"></i>
+                Bowling Alley
+            </a>
 
-      <button
-        class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+            <button
+                    class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto">
-          {{> "layout/menus/main"}}
-          {{> "layout/menus/employee"}}
-          {{> "layout/menus/admin"}}
-        </ul>
-
-        {{> "layout/menus/user"}}
-      </div>
-    </div>
-  </nav>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    {{> "layout/menus/main"}}
+                    {{> "layout/menus/employee"}}
+                    {{> "layout/menus/admin"}}
+                </ul>
+                <div class="mr-2">
+                    <a href="{{page}}">
+                        {{#if lang.PL}}
+                            <img src="{{webContextPath}}/static/img/united-kingdom.png"
+                                 aria-label="English" alt="English" onclick="changeLang('en')" width="30px"
+                                 height="20px">
+                        {{/if}}
+                        {{#if lang.ENG}}
+                            <img src="{{webContextPath}}/static/img/poland.png"
+                                 aria-label="Polish" alt="Polski" onclick="changeLang('pl')" width="30px"
+                                 height="20px">
+                        {{/if}}
+                    </a>
+                </div>
+                {{> "layout/menus/user"}}
+                <script>
+                    function changeLang(lang) {
+                        try {
+                            const response = fetch('{{webContextPath}}/lang/' + lang, {
+                                method: 'post'
+                            });
+                            if (response) {
+                                window.location = self.location;
+                            }
+                        } catch (err) {
+                            console.error(`Error: ${err}`);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </nav>
 {{/block}}

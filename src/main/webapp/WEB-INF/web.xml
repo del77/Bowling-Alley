@@ -12,6 +12,7 @@
     </session-timeout>
   </session-config>
 
+  <!-- MOK -->
   <security-role>
     <description/>
     <role-name>ADMIN</role-name>
@@ -27,6 +28,202 @@
     <role-name>CLIENT</role-name>
   </security-role>
 
+  <security-role>
+    <description/>
+    <role-name>CreateAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>LockUnlockAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeAccessLevel</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeOwnPassword</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ChangeUserPassword</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditOwnAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditUserAccount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>Logout</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAllUsersList</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetUserDetails</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetOwnAccountDetails</role-name>
+  </security-role>
+
+  <!-- MOT -->
+
+  <security-role>
+    <description/>
+    <role-name>AddAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EnableDisableAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAlleyGamesHistory</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>AddServiceRequest</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditServiceRequest</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetServiceRequests</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EnterGameResult</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetBestScoreForAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditBallsCount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditShoesCount</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>ShowUserScoreHistory</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetAlleysList</role-name>
+  </security-role>
+
+  <!-- MOR -->
+
+  <security-role>
+    <description/>
+    <role-name>CreateReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CreateReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditOwnReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CancelOwnReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>CancelReservationForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationsForUser</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationsForAlley</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetReservationDetails</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>AddCommentForReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditCommentForReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>EditCommentForOwnReservation</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>DisableComment</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetOwnReservations</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
+    <role-name>GetOwnReservationDetails</role-name>
+  </security-role>
+
+
+  <!--Constraints-->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All pages</web-resource-name>
@@ -38,13 +235,27 @@
     </user-data-constraint>
   </security-constraint>
 
-  <!-- Access control for Administrators -->
+  <!-- MOK -->
   <security-constraint>
-    <display-name>AdminConstr</display-name>
+    <display-name>GetAllAccountsConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>Admin pages</web-resource-name>
+      <web-resource-name>GetAllAccounts</web-resource-name>
       <description/>
-      <url-pattern>/admin/*</url-pattern>
+      <url-pattern>/accounts</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditUserAccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditUserAccount</web-resource-name>
+      <description/>
+      <url-pattern>/admin/users/*/edit</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -52,13 +263,134 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- access control for Employees -->
   <security-constraint>
-    <display-name>EmployeeConstr</display-name>
+    <display-name>GetUserDetailsConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>Employee pages</web-resource-name>
+      <web-resource-name>GetUserDetails</web-resource-name>
       <description/>
-      <url-pattern>/employee/*</url-pattern>
+      <url-pattern>/admin/users/*/details</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>ChangeUserPasswordConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>ChangeUserPassword</web-resource-name>
+      <description/>
+      <url-pattern>/admin/users/*/edit/password</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>LockUnlockAccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>LockUnlockAccount</web-resource-name>
+      <description/>
+      <url-pattern>/admin/users</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetOwnAccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetOwnAccount</web-resource-name>
+      <description/>
+      <url-pattern>/account</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditOwnAccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditOwnAccount</web-resource-name>
+      <description/>
+      <url-pattern>/account/edit</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>ChangeOwnPasswordConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>ChangeOwnPassword</web-resource-name>
+      <description/>
+      <url-pattern>/account/edit-password</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- MOT -->
+  <security-constraint>
+    <display-name>AlleysConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>Alleys</web-resource-name>
+      <description/>
+      <url-pattern>/alleys</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>AddAlleyConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>AddAlley</web-resource-name>
+      <description/>
+      <url-pattern>/alleys/new</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -66,17 +398,363 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- access control for Clients -->
   <security-constraint>
-    <display-name>ClientConstr</display-name>
+    <display-name>EnableDisableAlleyConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>Client pages</web-resource-name>
+      <web-resource-name>EnableDisableAlley</web-resource-name>
       <description/>
-      <url-pattern>/client/*</url-pattern>
+      <url-pattern>/alleys/state</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetAlleyGamesHistoryConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetAlleyGamesHistory</web-resource-name>
+      <description/>
+      <url-pattern>/alleys/*/history</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>AddServiceRequestConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>AddServiceRequest</web-resource-name>
+      <description/>
+      <url-pattern>/service-requests/new</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditServiceRequestConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditServiceRequest</web-resource-name>
+      <description/>
+      <url-pattern>/service-requests/*/edit</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetServiceRequestsConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetServiceRequests</web-resource-name>
+      <description/>
+      <url-pattern>/service-requests</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EnterGameResultConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EnterGameResult</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/enter-result</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetBestScoreForAlleyConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetBestScoreForAlley</web-resource-name>
+      <description/>
+      <url-pattern>/alleys/*/best-result</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditBallsCountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditBallsCount</web-resource-name>
+      <description/>
+      <url-pattern>/items/balls</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditShoesCountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditShoesCount</web-resource-name>
+      <description/>
+      <url-pattern>/items/shoes</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>ShowUserScoreHistoryConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>ShowUserScoreHistory</web-resource-name>
+      <description/>
+      <url-pattern>/accounts/*/history</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- MOR -->
+  <security-constraint>
+    <display-name>CreateReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CreateReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations/new</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
       <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>CreateReservationForUserConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CreateReservationForUser</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/new</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditOwnReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditOwnReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations/*/edit</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditReservationForUserConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditReservationForUser</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/edit</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>CancelOwnReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CancelOwnReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>CancelReservationForUserConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CancelReservationForUser</web-resource-name>
+      <description/>
+      <url-pattern>/reservations</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetReservationsForUserConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetReservationsForUser</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/user/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+
+  <security-constraint>
+    <display-name>GetReservationsForAlleyConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetReservationsForAlley</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/alley/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>CancelOwnReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CancelOwnReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetOwnReservationsConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetOwnReservations</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetOwnReservationDetailsConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetOwnReservationDetails</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations/*/details</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetReservationDetailsConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetReservationDetails</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/details</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>GetReservationsForUserConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>GetReservationsForUser</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/details</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>AddCommentForReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>AddCommentForReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations/*/add-comment</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+
+
+  <security-constraint>
+    <display-name>EditCommentForReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditCommentForReservation</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/edit-comment</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>ADMIN</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>EditCommentForOwnReservationConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>EditCommentForOwnReservation</web-resource-name>
+      <description/>
+      <url-pattern>/myreservations/*/edit-comment</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>CLIENT</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>DisableCommentConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>DisableComment</web-resource-name>
+      <description/>
+      <url-pattern>/reservations/*/details</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+      <role-name>ADMIN</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -106,37 +784,16 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- MODELS FILTER -->
-  <filter>
-    <filter-name>UserModelFilter</filter-name>
-    <filter-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters.UserModelFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>UserModelFilter</filter-name> <!-- mandatory -->
-    <url-pattern>/*</url-pattern> <!-- either url-pattern or servlet-name is mandatory -->
-    <dispatcher>REQUEST</dispatcher>
-  </filter-mapping>
-
   <!-- login method definition, references to login form and login error pages -->
   <login-config>
     <auth-method>FORM</auth-method>
     <realm-name>ssbd03realm</realm-name>
     <form-login-config>
       <form-login-page>/login</form-login-page>
-      <form-error-page>/login/error/</form-error-page>
+      <form-error-page>/login/error</form-error-page>
     </form-login-config>
   </login-config>
 
-  <servlet>
-    <servlet-name>ErrorServlet</servlet-name>
-    <servlet-class>pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.ErrorServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>ErrorServlet</servlet-name>
-    <url-pattern>/ErrorServlet</url-pattern>
-  </servlet-mapping>
 
   <error-page>
     <location>/ErrorServlet</location>

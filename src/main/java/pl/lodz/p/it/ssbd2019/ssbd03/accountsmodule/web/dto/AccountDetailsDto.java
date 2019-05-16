@@ -39,8 +39,8 @@ public class AccountDetailsDto implements AccessLevelsSelection {
     @NotBlank(message = "Phone number cannot be blank.")
     @Size(min = 9, message = "Phone needs to be at least 9 characters long.")
     @Size(max = 16, message = "Phone cannot be longer than 16 characters.")
-    @FormParam("phone")
-    protected String phone;
+    @FormParam("phoneNumber")
+    protected String phoneNumber;
     
     @FormParam("clientSelected")
     boolean clientRoleSelected;

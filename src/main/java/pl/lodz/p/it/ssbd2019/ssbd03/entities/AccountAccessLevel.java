@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Klasa reprezentująca relację wiele do wielu pomiedzy kontem a poziomem dostępu.
@@ -28,6 +29,7 @@ import javax.validation.constraints.Min;
 public class AccountAccessLevel {
     @Id
     @ManyToOne(fetch=FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
     @JoinColumn(name = "user_id",
             unique = true,
             updatable = false,
@@ -38,6 +40,7 @@ public class AccountAccessLevel {
 
     @Id
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "access_level_id",
             unique = true,
             updatable = false,
@@ -45,12 +48,14 @@ public class AccountAccessLevel {
             foreignKey = @ForeignKey(name = "fk__accounts_accesses__access_level",
                     value = ConstraintMode.CONSTRAINT))
     private AccessLevel accessLevel;
-
+    
+    @NotNull
     @Column(name = "active", nullable = false)
     private boolean active;
 
     @Version
     @Min(0)
+    @NotNull
     @Column(name = "version", nullable = false)
     private long version;
 }

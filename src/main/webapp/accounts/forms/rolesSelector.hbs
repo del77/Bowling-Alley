@@ -1,0 +1,32 @@
+{{#block "rolesSelector"}}
+    <aside class="my-3">
+        <h3>{{lang.roles}}: </h3>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" aria-label="client checkbox" name="clientSelected"
+                           id="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+                </div>
+            </div>
+            <span class="input-group-text">{{lang.client}}</span>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" aria-label="employee checkbox" name="employeeSelected"
+                           id="adminSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
+                </div>
+            </div>
+            <span class="input-group-text">{{lang.employee}}</span>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" aria-label="admin checkbox" name="adminSelected"
+                           id="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
+                </div>
+            </div>
+            <span class="input-group-text">{{lang.admin}}</span>
+        </div>
+    </aside>
+{{/block}}

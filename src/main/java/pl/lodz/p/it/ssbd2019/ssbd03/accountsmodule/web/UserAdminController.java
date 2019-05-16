@@ -13,7 +13,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -25,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -32,7 +36,7 @@ import java.util.List;
  */
 @Controller
 @SessionScoped
-@Path("admin/users")
+@Path("accounts")
 public class UserAdminController implements Serializable {
 
     private static final String ERROR = "errors";
@@ -62,13 +66,14 @@ public class UserAdminController implements Serializable {
      * @return Widok z listą wszystkich użytkowników.
      */
     @GET
+    @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     @Produces(MediaType.TEXT_HTML)
     public String allUsersList() {
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            displayError("Could not retrieve list of userAccounts.\n", e.getLocalizedMessage());
+            displayError(getLangMessage("userAccountsListError"), e.getLocalizedMessage());
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -81,6 +86,7 @@ public class UserAdminController implements Serializable {
      * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
      */
     @POST
+    @RolesAllowed(MokRoles.LOCK_UNLOCK_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String updateLockStatusOnAccount(@BeanParam AccountActivationDto dto) {
         boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
@@ -88,12 +94,12 @@ public class UserAdminController implements Serializable {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
             if(account.isAccountActive() == active) {
                 models.put(INFO, Collections.singletonList(
-                        String.format("Successfully changed %s's lock state.", account.getLogin())));
+                        String.format("%s. %s", getLangMessage("changeLockStatusSuccess"), account.getLogin())));
             } else {
-                displayError(String.format("Could not change %s's lock state", account.getLogin()), "");
+                displayError(String.format("%s. %s", getLangMessage("changeLockStatusFailure"), account.getLogin()), "");
             }
         } catch (Exception e) {
-            displayError("Could not change user's lock state", e.getLocalizedMessage());
+            displayError(getLangMessage("changeLockStatusFailure"), e.getLocalizedMessage());
         }
         return allUsersList();
     }
@@ -106,6 +112,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/edit")
+    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@PathParam("id") Long id) {
         try {
@@ -126,6 +133,7 @@ public class UserAdminController implements Serializable {
      */
     @POST
     @Path("/{id}/edit")
+    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
     public String editUser(@BeanParam AccountDetailsDto dto) {
         List<String> errorMessages = validator.validate(dto);
@@ -141,17 +149,16 @@ public class UserAdminController implements Serializable {
             editedAccount.setFirstName(dto.getFirstName());
             editedAccount.setLastName(dto.getLastName());
             editedAccount.setEmail(dto.getEmail());
-            editedAccount.setPhone(dto.getPhone());
+            editedAccount.setPhone(dto.getPhoneNumber());
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
             editedAccount = userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
-            models.put(INFO, Collections.singletonList(
-                    String.format("Successfully updated %s", editedAccount.getLogin())));
+            models.put(INFO, Collections.singletonList(getLangMessage("profileUpdatedSuccessfully")));
         } catch (EntityUpdateException e) {
-            displayError("There was a problem during user update.\n", e.getMessage());
+            displayError(getLangMessage("profileUpdatedUnsuccessfully"), e.getMessage());
         } catch (NotUniqueEmailException e) {
-            displayError("Your new email is not unique", e.getLocalizedMessage());
+            displayError(getLangMessage("validate.emailNotUnique"), e.getLocalizedMessage());
         } catch (Exception e) {
-            displayError("FATAL ERROR", e.getLocalizedMessage());
+            displayError(getLangMessage("FATAL"), e.getLocalizedMessage());
         }
         return editUser(editedAccount.getId());
     }
@@ -164,6 +171,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/details")
+    @RolesAllowed(MokRoles.GET_USER_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String displayUserDetails(@PathParam("id") Long id) {
         try {
@@ -171,7 +179,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            displayError("Could not retrieve user.\n", e.getLocalizedMessage());
+            displayError(getLangMessage("userRetrievalError"), e.getLocalizedMessage());
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -183,6 +191,7 @@ public class UserAdminController implements Serializable {
      */
     @GET
     @Path("/{id}/edit/password")
+    @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword() {
         return EDIT_PASSWORD_FORM_HBS;
@@ -197,6 +206,7 @@ public class UserAdminController implements Serializable {
      */
     @POST
     @Path("/{id}/edit/password")
+    @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String editUserPassword(@BeanParam NewPasswordDto userData, @PathParam("id") Long id) {
         List<String> errorMessages = validator.validate(userData);
@@ -206,14 +216,14 @@ public class UserAdminController implements Serializable {
             models.put(ERROR, errorMessages);
             return EDIT_PASSWORD_FORM_HBS;
         }
-    
+
         try {
             userAccountService.changePasswordById(id, userData.getNewPassword());
         } catch (Exception e) {
             models.put(ERROR, Collections.singletonList(e.getMessage()));
             return EDIT_PASSWORD_FORM_HBS;
         }
-    
+
         models.put(INFO, Collections.singletonList("Password has been changed."));
         return EDIT_PASSWORD_FORM_HBS;
     }
@@ -222,13 +232,13 @@ public class UserAdminController implements Serializable {
         for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
             if (accountAccessLevel.isActive()) {
                 switch (accountAccessLevel.getAccessLevel().getName()) {
-                    case "CLIENT":
+                    case AppRoles.CLIENT:
                         models.put("clientActive", true);
                         break;
-                    case "EMPLOYEE":
+                    case AppRoles.EMPLOYEE:
                         models.put("employeeActive", true);
                         break;
-                    case "ADMIN":
+                    case AppRoles.ADMIN:
                         models.put("adminActive", true);
                         break;
                     default:
@@ -247,4 +257,7 @@ public class UserAdminController implements Serializable {
         );
     }
 
+    private String getLangMessage(String key) {
+        return ((Map<String, String>)models.get("lang")).get(key);
+    }
 }

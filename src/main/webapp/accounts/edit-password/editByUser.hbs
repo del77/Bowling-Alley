@@ -2,33 +2,21 @@
   <div class="w-75 mx-auto">
     <form class="form-horizontal" method="post" data-form-confirm>
       <h2 class="mb-3">
-        Edit password
+        {{lang.editPassword}}
       </h2>
-      <div class="form-group">
-        <label for="current-password">
-          Current password *
-        </label>
-        <input type="password" id="current-password" name="currentPassword" class="form-control" autofocus required>
-      </div>
-      <div class="form-group">
-        <label for="new-password">
-          New password *
-        </label>
-        <input type="password" id="new-password" name="newPassword" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label for="confirm-new-password">
-          Confirm new password *
-        </label>
-        <input type="password" id="confirm-new-password" name="confirmNewPassword" class="form-control" required>
-      </div>
+      {{> accounts/forms/passwordInput label=lang.currentPassword
+              id="current-password" name="currentPassword"}}
+      {{> accounts/forms/passwordInput label=lang.newPassword
+              id="new-password" name="newPassword"}}
+      {{> accounts/forms/passwordInput label=lang.confirmNewPassword
+              id="confirm-new-password" name="confirmNewPassword"}}
       <div class="form-group">
         <span class="form-text text-muted">
-          * Required fields
+          * {{lang.requiredFields}}
         </span>
       </div>
       <button type="submit" class="btn btn-primary btn-block btn-lg">
-        Edit
+        {{lang.edit}}
       </button>
     </form>
   </div>
