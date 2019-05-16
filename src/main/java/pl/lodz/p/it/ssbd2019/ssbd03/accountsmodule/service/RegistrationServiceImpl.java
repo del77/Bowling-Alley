@@ -69,7 +69,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         Throwable t = e.getCause();
         while ((t != null) && !(t instanceof PSQLException)) {
             t = t.getCause();
-            if (t.getMessage().contains("login")){
+            if (t.getMessage() == null) {
+                throw new RegistrationProcessException(e.getMessage(), e);
+            } else if (t.getMessage().contains("login")){
                 throw new NotUniqueLoginException();
             } else if (t.getMessage().contains("email")) {
                 throw new NotUniqueEmailException();
@@ -91,13 +93,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         AccessLevel accessLevel = accessLevelOptional
                 .orElseThrow(() -> new EntityRetrievalException(String.format("Could not retrieve access level for %s.", accessLevelName)));
-        AccountAccessLevel accountAccessLevel = AccountAccessLevel
+    
+        return AccountAccessLevel
                 .builder()
                 .accessLevel(accessLevel)
                 .account(userAccount)
                 .active(true)
+                .version(0L)
                 .build();
-
-        return accountAccessLevel;
     }
 }

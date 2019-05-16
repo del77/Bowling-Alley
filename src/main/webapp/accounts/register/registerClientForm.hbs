@@ -1,55 +1,10 @@
 {{#block "registerClientForm"}}
-    <h2>Registration</h2>
-    <div class="form-group">
-        <label for="login" class="col-sm-3 control-label">Login *</label>
-        <div class="col-sm-9">
-            <input type="text" value="{{#if data}}{{data.login}}{{/if}}" id="login" name="login"
-                   placeholder="Login" class="form-control" autofocus>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="firstName" class="col-sm-3 control-label">{{lang.firstName}} *</label>
-        <div class="col-sm-9">
-            <input type="text" id="firstName" value="{{#if data}}{{data.firstName}}{{/if}}" name="firstName"
-                   placeholder="{{lang.firstName}}" class="form-control"
-                   autofocus>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="lastName" class="col-sm-3 control-label">{{lang.lastName}} *</label>
-        <div class="col-sm-9">
-            <input type="text" id="lastName" name="lastName" value="{{#if data}}{{data.lastName}}{{/if}}"
-                   placeholder="{{lang.lastName}}" class="form-control" autofocus>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="email" class="col-sm-3 control-label">Email *</label>
-        <div class="col-sm-9">
-            <input type="email" id="email" placeholder="Email" value="{{#if data}}{{data.email}}{{/if}}"
-                   class="form-control" name="email">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="password" class="col-sm-3 control-label">{{lang.password}} *</label>
-        <div class="col-sm-9">
-            <input type="password" id="password" name="password" value="{{#if data}}{{data.password}}{{/if}}"
-                   placeholder="{{lang.password}}" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="password" class="col-sm-3 control-label">{{lang.confirmPassword}} *</label>
-        <div class="col-sm-9">
-            <input type="password" id="confirmPassword" value="{{#if data}}{{data.confirmPassword}}{{/if}}"
-                   name="confirmPassword" placeholder="{{lang.confirmPassword}}"
-                   class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="phoneNumber" class="col-sm-3 control-label">{{lang.phoneNumber}}</label>
-        <div class="col-sm-9">
-            <input type="text" id="phoneNumber" value="{{#if data}}{{data.phoneNumber}}{{/if}}" name="phoneNumber"
-                   placeholder="{{lang.phoneNumber}}" class="form-control">
-            <span class="help-block">{{lang.phoneNumberNonDisclosure}}</span>
-        </div>
-    </div>
+    <h2>{{lang.register}}</h2>
+    {{> accounts/forms/loginInput login=data.login }}
+    {{> accounts/forms/firstNameInput firstName=data.firstName}}
+    {{> accounts/forms/lastNameInput lastName=data.lastName}}
+    {{> accounts/forms/emailInput email=data.email}}
+    {{> accounts/forms/passwordInput value=data.password id="password" name="password" label=lang.password}}
+    {{> accounts/forms/passwordInput value=data.password id="confirmPassword" name="confirmPassword" label=lang.confirmPassword}}
+    {{> accounts/forms/phoneInput phone=data.phoneNumber}}
 {{/block}}

@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Klasa reprezentująca poziom dostępu.
@@ -30,11 +32,14 @@ public class AccessLevel {
     private Long id;
 
     @NotEmpty
+    @NotNull
+    @Size(max = 16)
     @Column(name = "name", nullable = false, length = 16, unique = true)
     private String name;
 
     @Version
     @Min(0)
+    @NotNull
     @Column(name = "version", nullable = false)
     private long version;
 }

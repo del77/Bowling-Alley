@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidPhoneNumberFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -31,40 +32,59 @@ public class UserAccount {
     private Long id;
 
     @NotEmpty
+    @NotNull
+    @Size(max = 32)
     @Column(name = "first_name", nullable = false, length = 32, table = "users")
     private String firstName;
 
     @NotEmpty
+    @NotNull
+    @Size(max = 32)
     @Column(name = "last_name", nullable = false, length = 32, table = "users")
     private String lastName;
 
-    @Size(min = 9)
+    @Size(min = 9, max = 16)
     @NotNull
-    @Column(name = "phone", length = 16, table = "users")
+    @ValidPhoneNumberFormat
+    @Column(name = "phone", nullable = false, length = 16, table = "users")
     private String phone;
 
     @Email
+    @NotNull
+    @Size(max = 50)
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
     private String email;
 
     @NotEmpty
+    @NotNull
+    @Size(max = 16)
     @Column(name = "login", nullable = false, length = 16, unique = true)
     private String login;
 
     @NotEmpty
+    @NotNull
+    @Size(min = 64, max = 64)
     @Column(name = "password", nullable = false, length = 64)
     private String password;
 
+    @NotNull
     @Column(name = "confirmed", nullable = false)
     private boolean accountConfirmed;
 
+    @NotNull
     @Column(name = "active", nullable = false)
     private boolean accountActive;
 
+    /**
+     * Ta lista tworzy rekurencyjną relację - w przypadku odczytywaniu z bazy nie ma problemu,
+     * ale adnotacja @NotNull nie pozwala utworzyć AccountAccessLevels bez UserAccount i odwrotnie,
+     * co skutecznie uniemożliwia tworzenie nowych encji.
+     */
     @OneToMany(mappedBy = "account", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     private List<AccountAccessLevel> accountAccessLevels;
 
     @Version
+    @NotNull
     @Min(0)
     @Column(name = "version", nullable = false)
     private Long version;
