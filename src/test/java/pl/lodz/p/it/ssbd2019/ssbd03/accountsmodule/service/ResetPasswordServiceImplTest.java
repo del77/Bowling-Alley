@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.mail.EmailMessenger;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -39,6 +40,9 @@ public class ResetPasswordServiceImplTest {
     @Mock
     EmailMessenger emailMessenger;
 
+    @Mock
+    ServletContext servletContext;
+
     @InjectMocks
     private ResetPasswordServiceImpl resetPasswordService;
 
@@ -54,7 +58,7 @@ public class ResetPasswordServiceImplTest {
         when(userAccountRepositoryLocal.findByEmail(anyString())).thenReturn(Optional.of(user));
 
         try {
-            ResetPasswordToken resetPasswordToken = resetPasswordService.requestResetPassword(email);
+            ResetPasswordToken resetPasswordToken = resetPasswordService.requestResetPassword(email, servletContext);
             Assertions.assertEquals(user, resetPasswordToken.getUserAccount());
         } catch (Exception e) {
             Assertions.fail(e);
@@ -69,7 +73,7 @@ public class ResetPasswordServiceImplTest {
 
         try {
             Assertions.assertThrows(ResetPasswordException.class, () ->
-                    resetPasswordService.requestResetPassword(email));
+                    resetPasswordService.requestResetPassword(email, servletContext));
         } catch (Exception e) {
             Assertions.fail(e);
         }

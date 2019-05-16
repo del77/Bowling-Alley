@@ -12,7 +12,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +63,7 @@ public class ResetPasswordController {
     @POST
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
-    public String requestPasswordReset(@BeanParam EmailDto userData) {
+    public String requestPasswordReset(@BeanParam EmailDto userData, @Context ServletContext servletContext) {
         List<String> errorMessages = validator.validate(userData);
 
         if (!errorMessages.isEmpty()) {
@@ -70,7 +72,7 @@ public class ResetPasswordController {
         }
 
         try {
-            resetPasswordService.requestResetPassword(userData.getEmail());
+            resetPasswordService.requestResetPassword(userData.getEmail(), servletContext);
         } catch (Exception e) {
             models.put(ERROR, Collections.singletonList(e.getMessage()));
             return REQUEST_FORM_HBS;

@@ -4,14 +4,17 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
 
+import javax.servlet.ServletContext;
+
 public interface ResetPasswordService {
     /**
      * Metoda obsługująca żądanie resetowania hasła przez użytkownika.
      *
-     * @param email Adres email powiązany z kontem
+     * @param email          Adres email powiązany z kontem
+     * @param servletContext Servlet context
      * @throws ResetPasswordException Wyjątek
      */
-    ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException;
+    ResetPasswordToken requestResetPassword(String email, ServletContext servletContext) throws ResetPasswordException;
 
     /**
      * Metoda obsługująca resetowanie hasła przez użytkownika.

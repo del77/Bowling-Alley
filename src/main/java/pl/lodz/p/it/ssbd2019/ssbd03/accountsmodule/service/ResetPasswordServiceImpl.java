@@ -16,6 +16,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import java.sql.Timestamp;
 
 @Stateless
@@ -32,7 +33,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     @Override
     @PermitAll
-    public ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException {
+    public ResetPasswordToken requestResetPassword(String email, ServletContext servletContext) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
             String token = TokenUtils.generate();
@@ -46,7 +47,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                     .build();
 
             resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
-            sendEmailWithToken(email, token);
+            sendEmailWithToken(email, token, servletContext);
 
             return resetPasswordToken;
         } catch (Exception e) {
@@ -112,15 +113,21 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @param email Adres email użytkownika
      * @param token Token
      */
-    private void sendEmailWithToken(String email, String token) throws MessageNotSentException {
+    private void sendEmailWithToken(String email, String token, ServletContext servletContext) throws MessageNotSentException {
+        String url = getResetPasswordUrl(token, servletContext);
+
         ClassicMessage message = ClassicMessage
                 .builder()
                 .from("ssbd201903@gmail.com")
                 .to(email)
                 .subject("Kregielnia - przypomnienie hasla")
-                .body(token)
+                .body(url)
                 .build();
 
         emailMessenger.sendMessage(message);
+    }
+
+    private String getResetPasswordUrl(String token, ServletContext servletContext) {
+        return "https://studapp.it.p.lodz.pl:8403" + servletContext.getContextPath() + "/reset-password/" + token;
     }
 }
