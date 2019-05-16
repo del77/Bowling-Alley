@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
 
 public interface ResetPasswordService {
@@ -9,14 +11,14 @@ public interface ResetPasswordService {
      * @param email Adres email powiązany z kontem
      * @throws ResetPasswordException Wyjątek
      */
-    void requestResetPassword(String email) throws ResetPasswordException;
+    ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException;
 
     /**
      * Metoda obsługująca resetowanie hasła przez użytkownika.
      *
-     * @param token    Unikalny token pozwalający zmienić hasło
+     * @param token       Unikalny token pozwalający zmienić hasło
      * @param newPassword Nowe hasło użytkownika
      * @throws ResetPasswordException Wyjątek
      */
-    void resetPassword(String token, String newPassword) throws ResetPasswordException;
+    UserAccount resetPassword(String token, String newPassword) throws ResetPasswordException;
 }

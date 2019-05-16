@@ -32,7 +32,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     @Override
     @PermitAll
-    public void requestResetPassword(String email) throws ResetPasswordException {
+    public ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
             String token = TokenUtils.generate();
@@ -47,6 +47,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
             resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
             sendEmailWithToken(email, token);
+
+            return resetPasswordToken;
         } catch (Exception e) {
             throw new ResetPasswordException(e.getMessage());
         }
@@ -54,7 +56,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     @Override
     @PermitAll
-    public void resetPassword(String token, String newPassword) throws ResetPasswordException {
+    public UserAccount resetPassword(String token, String newPassword) throws ResetPasswordException {
         try {
             ResetPasswordToken resetPasswordToken = getToken(token);
             UserAccount userAccount = resetPasswordToken.getUserAccount();
@@ -67,6 +69,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             userAccount.setPassword(newPasswordHash);
             resetPasswordToken.setValidity(new Timestamp(System.currentTimeMillis() - 1));
             userAccountRepositoryLocal.edit(userAccount);
+
+            return userAccount;
         } catch (Exception e) {
             throw new ResetPasswordException(e.getMessage());
         }
