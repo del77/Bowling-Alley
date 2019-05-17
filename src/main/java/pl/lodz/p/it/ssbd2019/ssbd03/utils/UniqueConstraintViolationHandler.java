@@ -1,24 +1,24 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.postgresql.util.PSQLException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ExceptionImplementationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.MissingRequiredConstructorException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
 
 import java.lang.reflect.InvocationTargetException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ExceptionHandler {
+public final class UniqueConstraintViolationHandler {
     
-    static <T extends Throwable> void handleNotUniqueLoginOrEmailException(
+    public static <T extends Throwable> void handleNotUniqueLoginOrEmailException(
             Throwable originalException,
             Class<T> exceptionType) throws NotUniqueLoginException, NotUniqueEmailException, T {
         Throwable t = originalException.getCause();
         while ((t != null) && !(t instanceof PSQLException)) {
             t = t.getCause();
-            if (t.getMessage().contains("login")){
+            if (t.getMessage().contains("login")) {
                 throw new NotUniqueLoginException();
             } else if (t.getMessage().contains("email")) {
                 throw new NotUniqueEmailException();
@@ -26,10 +26,11 @@ final class ExceptionHandler {
         }
         
         try {
-            throw exceptionType.getConstructor(String.class).newInstance(originalException.getMessage());
+            throw exceptionType.getConstructor(String.class, Throwable.class)
+                    .newInstance(originalException.getMessage(), originalException);
         } catch (NoSuchMethodException | InvocationTargetException |
                 IllegalArgumentException | IllegalAccessException | InstantiationException e) {
-            throw new ExceptionImplementationException(String.format(
+            throw new MissingRequiredConstructorException(String.format(
                     "Exception of type %s doesn't have a constructor taking throwable as a parameter",
                     exceptionType.getCanonicalName()
             ), e);

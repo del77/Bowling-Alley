@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
@@ -61,7 +62,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         } catch (EntityUpdateException e) {
             throw new EntityUpdateException("Data is not up-to-date", e);
         } catch (EJBTransactionRolledbackException e) {
-            ExceptionHandler.handleNotUniqueLoginOrEmailException(e, EntityUpdateException.class);
+            UniqueConstraintViolationHandler.handleNotUniqueLoginOrEmailException(e, EntityUpdateException.class);
             throw new EntityUpdateException("Unknown error", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);

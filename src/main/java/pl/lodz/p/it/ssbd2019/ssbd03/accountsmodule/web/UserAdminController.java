@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
@@ -49,13 +49,13 @@ public class UserAdminController implements Serializable {
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
     @Inject
-    private LocalizedMessageRetriever localizedMessageRetriever;
+    private DtoMapper dtoMapper;
+    
+    @Inject
+    private LocalizedMessageProvider localizedMessageProvider;
 
     @EJB
     private UserAccountService userAccountService;
-
-    @Inject
-    private DtoMapper dtoMapper;
 
     private transient UserAccount editedAccount;
 
@@ -73,7 +73,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (EntityRetrievalException e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("userAccountsListError"));
+            displayError(localizedMessageProvider.getLocalizedMessage("userAccountsListError"));
         }
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
@@ -94,12 +94,12 @@ public class UserAdminController implements Serializable {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
             if(account.isAccountActive() == active) {
                 models.put(INFO, Collections.singletonList(
-                        String.format("%s. %s", localizedMessageRetriever.getLocalizedMessage("changeLockStatusSuccess"), account.getLogin())));
+                        String.format("%s. %s", localizedMessageProvider.getLocalizedMessage("changeLockStatusSuccess"), account.getLogin())));
             } else {
-                displayError(String.format("%s. %s", localizedMessageRetriever.getLocalizedMessage("changeLockStatusFailure"), account.getLogin()));
+                displayError(String.format("%s. %s", localizedMessageProvider.getLocalizedMessage("changeLockStatusFailure"), account.getLogin()));
             }
         } catch (Exception e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("changeLockStatusFailure"));
+            displayError(localizedMessageProvider.getLocalizedMessage("changeLockStatusFailure"));
         }
         return allUsersList();
     }
@@ -120,7 +120,7 @@ public class UserAdminController implements Serializable {
             models.put("editedAccount", editedAccount);
             putAccessLevelsIntoModel(editedAccount);
         } catch (Exception e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("userDetailsNotUpdated"));
+            displayError(localizedMessageProvider.getLocalizedMessage("userDetailsNotUpdated"));
         }
         return "accounts/users/editUser.hbs";
     }
@@ -152,13 +152,13 @@ public class UserAdminController implements Serializable {
             editedAccount.setPhone(dto.getPhoneNumber());
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
             editedAccount = userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
-            models.put(INFO, Collections.singletonList(localizedMessageRetriever.getLocalizedMessage("profileUpdatedSuccessfully")));
+            models.put(INFO, Collections.singletonList(localizedMessageProvider.getLocalizedMessage("profileUpdatedSuccessfully")));
         } catch (EntityUpdateException e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("profileUpdatedUnsuccessfully"));
+            displayError(localizedMessageProvider.getLocalizedMessage("profileUpdatedUnsuccessfully"));
         } catch (NotUniqueEmailException e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("notUniqueEmailException"));
+            displayError(localizedMessageProvider.getLocalizedMessage("notUniqueEmailException"));
         } catch (Exception e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("FATAL"));
+            displayError(localizedMessageProvider.getLocalizedMessage("FATAL"));
         }
         return editUser(editedAccount.getId());
     }
@@ -179,7 +179,7 @@ public class UserAdminController implements Serializable {
             models.put("user", user);
             putAccessLevelsIntoModel(user);
         } catch (EntityRetrievalException e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("userRetrievalError"));
+            displayError(localizedMessageProvider.getLocalizedMessage("userRetrievalError"));
         }
         return "accounts/users/userDetails.hbs";
     }
@@ -225,7 +225,7 @@ public class UserAdminController implements Serializable {
         }
 
         models.put(INFO, Collections.singletonList(
-                localizedMessageRetriever.getLocalizedMessage("passwordChanged")));
+                localizedMessageProvider.getLocalizedMessage("passwordChanged")));
         return EDIT_PASSWORD_FORM_HBS;
     }
 

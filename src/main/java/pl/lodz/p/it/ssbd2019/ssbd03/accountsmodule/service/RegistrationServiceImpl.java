@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.annotation.security.PermitAll;
@@ -59,7 +60,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         try {
             return userAccountRepositoryLocal.create(userAccount);
         } catch (EJBTransactionRolledbackException e) {
-            ExceptionHandler.handleNotUniqueLoginOrEmailException(e, RegistrationProcessException.class);
+            UniqueConstraintViolationHandler.handleNotUniqueLoginOrEmailException(e, RegistrationProcessException.class);
         }
         throw new RegistrationProcessException("Something went wrong during creation a user in database.");
     }
