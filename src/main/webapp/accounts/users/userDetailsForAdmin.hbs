@@ -1,0 +1,48 @@
+{{#partial "content"}}
+    {{#unless errors}}
+        {{> "accounts/users/userDetails"}}
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-10">
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{lang.userConfirmed}}</h6>
+                                </div>
+                                {{#if this.user.accountConfirmed}}
+                                    <img src="{{webContextPath}}/static/img/tick.png"
+                                         alt="true"
+                                         width="30px"
+                                         height="30px">
+                                {{else}}
+                                    <img src="{{webContextPath}}/static/img/cross.png"
+                                         alt="false"
+                                         width="30px"
+                                         height="30px">
+                                {{/if}}
+                            </li>
+                            <li class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{lang.userActive}}</h6>
+                                </div>
+                                {{#if this.user.accountActive}}
+                                    <img src="{{webContextPath}}/static/img/tick.png"
+                                         alt="true"
+                                         width="30px"
+                                         height="30px">
+                                {{else}}
+                                    <img src="{{webContextPath}}/static/img/cross.png"
+                                         alt="false"
+                                         width="30px"
+                                         height="30px">
+                                {{/if}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/unless}}
+{{/partial}}
+{{> layout }}

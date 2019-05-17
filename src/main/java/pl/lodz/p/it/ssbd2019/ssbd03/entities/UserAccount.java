@@ -35,24 +35,28 @@ public class UserAccount {
     @NotNull
     @Size(max = 32)
     @Column(name = "first_name", nullable = false, length = 32, table = "users")
+    @ToString.Exclude
     private String firstName;
 
     @NotEmpty
     @NotNull
     @Size(max = 32)
     @Column(name = "last_name", nullable = false, length = 32, table = "users")
+    @ToString.Exclude
     private String lastName;
 
     @Size(min = 9, max = 16)
     @NotNull
     @PhoneNumberFormat
     @Column(name = "phone", nullable = false, length = 16, table = "users")
+    @ToString.Exclude
     private String phone;
 
     @Email
     @NotNull
     @Size(max = 50)
     @Column(name = "email", nullable = false, length = 50, unique = true, table = "users")
+    @ToString.Exclude
     private String email;
 
     @NotEmpty
@@ -65,14 +69,17 @@ public class UserAccount {
     @NotNull
     @Size(min = 64, max = 64)
     @Column(name = "password", nullable = false, length = 64)
+    @ToString.Exclude
     private String password;
     
     @NotNull
     @Column(name = "confirmed", nullable = false)
+    @ToString.Exclude
     private boolean accountConfirmed;
     
     @NotNull
     @Column(name = "active", nullable = false)
+    @ToString.Exclude
     private boolean accountActive;
     
     /**
@@ -81,6 +88,7 @@ public class UserAccount {
      * co skutecznie uniemożliwia tworzenie nowych encji.
      */
     @OneToMany(mappedBy = "account", cascade={CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ToString.Exclude
     private List<AccountAccessLevel> accountAccessLevels;
 
     @Version

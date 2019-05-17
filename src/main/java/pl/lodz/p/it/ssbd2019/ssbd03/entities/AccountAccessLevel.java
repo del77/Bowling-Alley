@@ -52,6 +52,7 @@ public class AccountAccessLevel {
     
     @NotNull
     @Column(name = "active", nullable = false)
+    @ToString.Exclude
     private boolean active;
 
     @Version

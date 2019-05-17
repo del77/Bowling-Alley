@@ -32,25 +32,30 @@ public class Reservation {
     @JoinColumn(name = "user_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private UserAccount userAccount;
     
     @NotNull
     @Column(name = "start_date", nullable = false)
     @FutureOrPresent
+    @ToString.Exclude
     private Timestamp startDate;
     
     @NotNull
     @Column(name = "end_date", nullable = false)
     @Future
+    @ToString.Exclude
     private Timestamp endDate;
 
     @Min(1)
     @NotNull
     @Column(name = "players_count", nullable = false)
+    @ToString.Exclude
     private int playersCount;
     
     @NotNull
     @Column(name = "active", nullable = false)
+    @ToString.Exclude
     private boolean active;
 
     @ManyToOne
@@ -58,6 +63,7 @@ public class Reservation {
     @JoinColumn(name = "alley_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__reservations__alleys", value = ConstraintMode.CONSTRAINT))
+    @ToString.Exclude
     private Alley alley;
 
     @Version

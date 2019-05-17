@@ -10,17 +10,23 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.interceptor.Interceptors;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Stateless
+@Stateful
 @Transactional
-public class UserAccountServiceImpl implements UserAccountService {
+@Interceptors(InterceptorTracker.class)
+public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
 
@@ -73,8 +79,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     @RolesAllowed({MokRoles.CHANGE_OWN_PASSWORD, MokRoles.GET_OWN_ACCOUNT_DETAILS})
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
-            return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+            UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new EntityRetrievalException("No account with login specified."));
+            Hibernate.initialize(user.getAccountAccessLevels());
+            return user;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }

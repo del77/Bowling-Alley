@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
