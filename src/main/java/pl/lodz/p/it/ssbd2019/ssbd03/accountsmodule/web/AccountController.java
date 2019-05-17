@@ -4,6 +4,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -37,6 +39,8 @@ public class AccountController {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+    @Inject
+    private RecaptchaValidator recaptchaValidator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -69,6 +73,11 @@ public class AccountController {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
         errorMessages.addAll(passwordDtoValidator.validateCurrentAndNewPassword(userData.getCurrentPassword(), userData.getNewPassword()));
+        try {
+            recaptchaValidator.validateCaptcha(userData.getRecaptcha());
+        } catch (RecaptchaValidationException e) {
+
+        }
 
         if (!errorMessages.isEmpty()) {
             models.put(ERROR, errorMessages);

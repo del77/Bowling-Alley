@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
@@ -14,6 +15,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.mvc.Models;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RegistrationController {
@@ -25,10 +27,12 @@ public abstract class RegistrationController {
     private DtoValidator validator;
 
     @Inject
-    private Models models;
+    protected Models models;
 
     @EJB
     private RegistrationService registrationService;
+
+    protected List<String> errorMessages = new ArrayList<>();
 
     private static final String ERROR_PREFIX = "errors";
 
@@ -40,7 +44,7 @@ public abstract class RegistrationController {
      */
     protected String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
-        List<String> errorMessages = validator.validate(basicAccountDto);
+        errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
         if (!errorMessages.isEmpty()) {
@@ -90,7 +94,7 @@ public abstract class RegistrationController {
      * oraz pozwalająca uzyskać url do zwracanego widoku rejestracji
      * @return String url
      */
-    private String handleException(List<String> errors) {
+    protected String handleException(List<String> errors) {
         models.put(ERROR_PREFIX, errors);
         return getRegisterViewUrl();
     }

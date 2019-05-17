@@ -1,10 +1,13 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,6 +22,9 @@ import java.util.Collections;
 @PermitAll
 @Path("register")
 public class ClientRegistrationController extends RegistrationController {
+
+    @Inject
+    private RecaptchaValidator recaptchaValidator;
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
 
@@ -43,6 +49,11 @@ public class ClientRegistrationController extends RegistrationController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
+        try {
+            recaptchaValidator.validateCaptcha(basicAccountDto.getRecaptcha());
+        } catch (RecaptchaValidationException e) {
+            errorMessages.add(e.getMessage());
+        }
         return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT));
     }
 

@@ -61,4 +61,7 @@ public class BasicAccountDto {
     @FormParam("phoneNumber")
     protected String phoneNumber;
 
+    @FormParam("g-recaptcha-response")
+    protected String recaptcha;
+
 }
