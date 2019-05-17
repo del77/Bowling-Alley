@@ -7,9 +7,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import javax.enterprise.context.ApplicationScoped;
 import javax.mvc.Models;
 
-@ApplicationScoped
 public class UserRolesRetriever {
-    public void putAccessLevelsIntoModel(UserAccount userAccount, Models models) {
+    public static void putAccessLevelsIntoModel(UserAccount userAccount, Models models) {
 
         for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
             if (accountAccessLevel.isActive()) {

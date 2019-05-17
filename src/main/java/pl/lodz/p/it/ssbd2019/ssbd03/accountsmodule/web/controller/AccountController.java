@@ -48,8 +48,6 @@ public class AccountController {
     @Inject
     private LocalizedMessageRetriever localization;
     @Inject
-    private UserRolesRetriever userRolesRetriever;
-    @Inject
     private LocalizedMessageRetriever localizedMessageRetriever;
 
     @EJB
@@ -70,7 +68,7 @@ public class AccountController {
             String login = (String) models.get("userName");
             UserAccount user = userAccountService.getByLogin(login);
             models.put("user", user);
-            userRolesRetriever.putAccessLevelsIntoModel(user,models);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (EntityRetrievalException e) {
             displayError(localizedMessageRetriever.get("detailsRetrievalError"));
         }

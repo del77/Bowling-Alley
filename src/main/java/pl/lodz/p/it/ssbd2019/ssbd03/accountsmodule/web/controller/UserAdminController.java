@@ -51,8 +51,6 @@ public class UserAdminController implements Serializable {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
-    @Inject
-    private UserRolesRetriever userRolesRetriever;
     @EJB
     private UserAccountService userAccountService;
     @Inject
@@ -144,7 +142,7 @@ public class UserAdminController implements Serializable {
             editedAccount = userAccountService.getUserById(id);
             models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
-            userRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
+            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
         } catch (Exception e) {
             displayError(localization.get("userDetailsNotUpdated"));
         }
@@ -166,7 +164,7 @@ public class UserAdminController implements Serializable {
         try {
             UserAccount user = userAccountService.getUserById(id);
             models.put("user", user);
-            userRolesRetriever.putAccessLevelsIntoModel(user,models);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (EntityRetrievalException e) {
             displayError(localization.get("userCouldntRetrieve"));
          }
