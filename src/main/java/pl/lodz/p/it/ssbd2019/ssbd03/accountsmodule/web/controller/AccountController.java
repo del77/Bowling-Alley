@@ -35,7 +35,6 @@ public class AccountController {
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_URL = "account";
     private static final String DISPLAY_DETAILS = "accounts/users/userOwnDetails.hbs";
-    private static final String ERROR_PAGE = "accounts/users/userDetailsError.hbs";
 
     @Inject
     private Models models;
@@ -49,6 +48,8 @@ public class AccountController {
     private LocalizedMessageRetriever localization;
     @Inject
     private UserRolesRetriever userRolesRetriever;
+    @Inject
+    private LocalizedMessageRetriever localizedMessageRetriever;
 
     @EJB
     private UserAccountService userAccountService;
@@ -70,7 +71,7 @@ public class AccountController {
             models.put("user", user);
             userRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (EntityRetrievalException e) {
-            return ERROR_PAGE;
+            displayError(localizedMessageRetriever.getLocalizedMessage("detailsRetrievalError"));
         }
         return DISPLAY_DETAILS;
     }
@@ -136,6 +137,10 @@ public class AccountController {
 
     private String redirectSuccessPath() {
         return String.format("redirect:%s/success", BASE_URL);
+    }
+
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
     }
 
 }

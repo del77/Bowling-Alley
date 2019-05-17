@@ -1,4 +1,22 @@
 {{#partial "content"}}
-    {{> "accounts/users/userDetails"}}
+    <div>
+        {{> "accounts/users/userDetails"}}
+        <div class="container">
+            <div class="row">
+                <div class="column-6">
+                    <div>
+                        <h6>{{lang.userConfirmed}}</h6>
+                    </div>
+                    <p>{{this.user.accountConfirmed}}</p>
+                </div>
+                <div class="column-6">
+                    <div>
+                        <h6>{{lang.userActive}}</h6>
+                    </div>
+                    <p>{{this.user.accountActive}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 {{/partial}}
 {{> layout }}

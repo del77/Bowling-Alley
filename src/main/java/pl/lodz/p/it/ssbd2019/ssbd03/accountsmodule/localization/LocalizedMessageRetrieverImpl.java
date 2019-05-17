@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization;
-
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.LanguageMapFactory;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.context.LanguageContext;
-
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
