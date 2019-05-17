@@ -1,14 +1,18 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import javax.annotation.security.RolesAllowed;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,19 +35,49 @@ public class AccountController {
     private static final String ERROR = "errors";
     private static final String INFO = "infos";
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
+    private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
+    private static final String BASE_URL = "account";
+    private static final String DISPLAY_DETAILS = "accounts/users/userOwnDetails.hbs";
 
     @Inject
     private Models models;
-
     @Inject
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
     @Inject
+    private RedirectUtil redirectUtil;
+    @Inject
+    private LocalizedMessageRetriever localization;
+    @Inject
     private RecaptchaValidator recaptchaValidator;
 
     @EJB
     private UserAccountService userAccountService;
+
+
+    /**
+     * Zwraca widok z danymi zalogowanego użytkownika.
+     *
+     * @return widok z danymi użytkownika.
+     */
+    @GET
+    @Path("details")
+    @RolesAllowed(MokRoles.GET_OWN_ACCOUNT_DETAILS)
+    @Produces(MediaType.TEXT_HTML)
+    public String displayUserDetails() {
+        try {
+            String login = (String) models.get("userName");
+            UserAccount user = userAccountService.getByLogin(login);
+            models.put("user", user);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
+       } catch (EntityRetrievalException e) {
+            displayError(localization.get("detailsRetrievalError"));
+        }
+        return DISPLAY_DETAILS;
+    }
+
+
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła.
@@ -54,8 +88,21 @@ public class AccountController {
     @Path("edit-password")
     @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
-    public String viewEditPasswordForm() {
+    public String viewEditPasswordForm(@QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         return EDIT_PASSWORD_FORM_HBS;
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z informacją o udanej zmianie hasła.
+     *
+     * @return Widoku z informacją o udanej zmianie hasła
+     */
+    @GET
+    @Path("edit-password/success")
+    @Produces(MediaType.TEXT_HTML)
+    public String viewSuccess() {
+        return EDIT_SUCCESS_VIEW;
     }
 
     /**
@@ -80,19 +127,27 @@ public class AccountController {
         }
 
         if (!errorMessages.isEmpty()) {
-            models.put(ERROR, errorMessages);
-            return EDIT_PASSWORD_FORM_HBS;
+            return redirectUtil.redirectError(BASE_URL, null, errorMessages);
         }
 
         try {
             String login = (String) models.get("userName");
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getMessage()));
-            return EDIT_PASSWORD_FORM_HBS;
+            return redirectUtil.redirectError(BASE_URL, null, Collections.singletonList(e.getMessage()));
         }
 
-        models.put(INFO, Collections.singletonList("Password has been changed."));
-        return EDIT_PASSWORD_FORM_HBS;
+        models.put(INFO, Collections.singletonList(localization.get("Password has been changed.")));
+        return redirectSuccessPath();
     }
+
+    private String redirectSuccessPath() {
+        return String.format("redirect:%s/success", BASE_URL);
+    }
+
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
+    }
+
 }
+

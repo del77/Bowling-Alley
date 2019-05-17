@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
@@ -22,10 +22,10 @@ import javax.ws.rs.core.MediaType;
 public class AdminRegistrationController extends RegistrationController {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
+    private static final String REGISTER_ENDPOINT_URL = "admin/register";
 
     @Inject
     private DtoMapper dtoMapper;
-
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -34,8 +34,21 @@ public class AdminRegistrationController extends RegistrationController {
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
+    public String viewRegistrationFormWithFailure(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         return REGISTER_VIEW_URL;
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z komunikatem.
+     *
+     * @return Widok z komunikatem.
+     */
+    @GET
+    @Path("/success")
+    @Produces(MediaType.TEXT_HTML)
+    public String viewRegistrationSuccessPage() {
+        return SUCCESS_VIEW_URL;
     }
 
     /**
@@ -47,13 +60,13 @@ public class AdminRegistrationController extends RegistrationController {
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
+    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto,
+                                  @QueryParam("idCache") Long id) {
         return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
     }
 
-
     @Override
-    protected String getRegisterViewUrl() {
-        return REGISTER_VIEW_URL;
+    protected String getRegisterEndpointUrl() {
+        return REGISTER_ENDPOINT_URL;
     }
 }

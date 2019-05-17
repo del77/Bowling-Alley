@@ -72,8 +72,10 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @RolesAllowed({MokRoles.CHANGE_OWN_PASSWORD, MokRoles.GET_OWN_ACCOUNT_DETAILS})
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
-            return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+            UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new EntityRetrievalException("No account with login specified."));
+            Hibernate.initialize(user.getAccountAccessLevels());
+            return user;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
