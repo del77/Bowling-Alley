@@ -27,8 +27,8 @@ describe("login form", () => {
   });
 
   it("should allow access with correct creds", () => {
-    LoginPage.username.setValue("admin");
-    LoginPage.password.setValue("admin");
+    LoginPage.username.setValue("testAdmin");
+    LoginPage.password.setValue("testAdmin");
     LoginPage.submit();
 
     browser.waitUntil(
@@ -43,16 +43,7 @@ describe("login form", () => {
   });
 
   it("should login as admin", () => {
-    LoginPage.username.setValue("testAdmin");
-    LoginPage.password.setValue("testAdmin");
-    LoginPage.submit();
-    browser.waitUntil(
-      () => {
-        return browser.getUrl() === baseUrl;
-      },
-      callTimeout,
-      `expected to navigate to landing page: ${baseUrl}`
-    );
+    LoginPage.loginAsAdmin();
 
     LoginPage.headerMenu.click();
     const role = LoginPage.roles.pop();
@@ -60,16 +51,7 @@ describe("login form", () => {
   });
 
   it("should login as client", () => {
-    LoginPage.username.setValue("testClient");
-    LoginPage.password.setValue("testClient");
-    LoginPage.submit();
-    browser.waitUntil(
-      () => {
-        return browser.getUrl() === baseUrl;
-      },
-      callTimeout,
-      `expected to navigate to landing page: ${baseUrl}`
-    );
+    LoginPage.loginAsClient();
 
     LoginPage.headerMenu.click();
     const role = LoginPage.roles.pop();
@@ -77,16 +59,7 @@ describe("login form", () => {
   });
 
   it("should login as employee", () => {
-    LoginPage.username.setValue("testEmployee");
-    LoginPage.password.setValue("testEmployee");
-    LoginPage.submit();
-    browser.waitUntil(
-      () => {
-        return browser.getUrl() === baseUrl;
-      },
-      callTimeout,
-      `expected to navigate to landing page: ${baseUrl}`
-    );
+    LoginPage.loginAsEmployee();
 
     LoginPage.headerMenu.click();
     const role = LoginPage.roles.pop();
@@ -94,16 +67,7 @@ describe("login form", () => {
   });
 
   it("should login as client, employee and admin", () => {
-    LoginPage.username.setValue("testAllRoles");
-    LoginPage.password.setValue("testAllRoles");
-    LoginPage.submit();
-    browser.waitUntil(
-      () => {
-        return browser.getUrl() === baseUrl;
-      },
-      callTimeout,
-      `expected to navigate to landing page: ${baseUrl}`
-    );
+    LoginPage.loginAsGod();
 
     LoginPage.headerMenu.click();
     const roles = LoginPage.roles.map(role => role.getText());

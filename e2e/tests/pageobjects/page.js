@@ -1,5 +1,19 @@
 import { baseUrl, callTimeout } from "../constants";
 export default class Page {
+  constructor() {
+    const _username = () => browser.$("#j_username");
+    const _password = () => browser.$("#j_password");
+    const _submitBtn = () => browser.$("form > button[type='submit']");
+
+    this.login = (username, password) => {
+      this.open("login");
+      _username().setValue(username);
+      _password().setValue(password);
+      _submitBtn().click();
+      this._checkIfLoggedIn();
+    };
+  }
+
   open(path) {
     browser.url(path);
   }
@@ -8,45 +22,33 @@ export default class Page {
     browser.refresh();
   }
 
+  loginAsClient() {
+    this.login("testClient", "testClient");
+    this._checkIfLoggedIn();
+  }
+
+  loginAsAdmin() {
+    this.login("testAdmin", "testAdmin");
+    this._checkIfLoggedIn();
+  }
+
   loginAsEmployee() {
-    this.open("login");
-    browser.$("input[name='login']").setValue("employee");
-    $("input[name='password']").setValue("pass1");
-    $("form button[type='submit']").click();
+    this.login("testEmployee", "testEmployee");
     this._checkIfLoggedIn();
   }
 
-  loginAsManager() {
-    this.open("login");
-    browser.$("input[name='login']").setValue("manager");
-    $("input[name='password']").setValue("pass2");
-    $("form button[type='submit']").click();
-    this._checkIfLoggedIn();
-  }
-
-  loginAsApprover() {
-    this.open("login");
-    browser.$("input[name='login']").setValue("approver");
-    $("input[name='password']").setValue("pass3");
-    $("form button[type='submit']").click();
-    this._checkIfLoggedIn();
-  }
-
-  loginAsAccountant() {
-    this.open("login");
-    browser.$("input[name='login']").setValue("accountant");
-    $("input[name='password']").setValue("pass4");
-    $("form button[type='submit']").click();
+  loginAsGod() {
+    this.login("testAllRoles", "testAllRoles");
     this._checkIfLoggedIn();
   }
 
   _checkIfLoggedIn() {
     browser.waitUntil(
       () => {
-        return browser.getUrl() === baseUrl + "/";
+        return browser.getUrl() === baseUrl;
       },
       callTimeout,
-      "Login failed. Expected to navigate to landing page " + baseUrl + "/"
+      `Login failed. Expected to navigate to landing page " + ${baseUrl}`
     );
   }
 }
