@@ -9,15 +9,13 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfir
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -44,6 +42,8 @@ public class UserAdminController implements Serializable {
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByAdmin.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_PATH = "accounts";
+    private static final String DISPLAY_DETAILS = "accounts/users/userDetailsForAdmin.hbs";
+
 
     @Inject
     private Models models;
@@ -142,7 +142,7 @@ public class UserAdminController implements Serializable {
             editedAccount = userAccountService.getUserById(id);
             models.put("id", editedAccount.getId());
             models.put("login", editedAccount.getLogin());
-            putAccessLevelsIntoModel(editedAccount);
+            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
         } catch (Exception e) {
             displayError(localization.get("userDetailsNotUpdated"));
         }
@@ -164,11 +164,11 @@ public class UserAdminController implements Serializable {
         try {
             UserAccount user = userAccountService.getUserById(id);
             models.put("user", user);
-            putAccessLevelsIntoModel(user);
+            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (EntityRetrievalException e) {
             displayError(localization.get("userCouldntRetrieve"));
-        }
-        return "accounts/users/userDetails.hbs";
+         }
+        return DISPLAY_DETAILS;
     }
 
     /**
@@ -248,28 +248,7 @@ public class UserAdminController implements Serializable {
         return String.format("redirect:%s/success", BASE_PATH);
     }
 
-    private void putAccessLevelsIntoModel(UserAccount userAccount) {
-        for (AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
-            if (accountAccessLevel.isActive()) {
-                switch (accountAccessLevel.getAccessLevel().getName()) {
-                    case AppRoles.CLIENT:
-                        models.put("clientActive", true);
-                        break;
-                    case AppRoles.EMPLOYEE:
-                        models.put("employeeActive", true);
-                        break;
-                    case AppRoles.ADMIN:
-                        models.put("adminActive", true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
     private void displayError(String s) {
-        models.put(ERROR, s);
+        models.put(ERROR, Collections.singletonList(s));
     }
-
 }
