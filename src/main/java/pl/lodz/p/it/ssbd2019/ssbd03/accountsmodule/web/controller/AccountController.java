@@ -47,8 +47,6 @@ public class AccountController {
     private RedirectUtil redirectUtil;
     @Inject
     private LocalizedMessageRetriever localization;
-    @Inject
-    private LocalizedMessageRetriever localizedMessageRetriever;
 
     @EJB
     private UserAccountService userAccountService;
@@ -70,7 +68,7 @@ public class AccountController {
             models.put("user", user);
             UserRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (EntityRetrievalException e) {
-            displayError(localizedMessageRetriever.get("detailsRetrievalError"));
+            displayError(localization.get("detailsRetrievalError"));
         }
         return DISPLAY_DETAILS;
     }
