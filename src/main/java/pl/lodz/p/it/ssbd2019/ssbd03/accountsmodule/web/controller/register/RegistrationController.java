@@ -1,16 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
-
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.ejb.EJB;
@@ -79,6 +75,8 @@ public abstract class RegistrationController {
             errorMessages.add(localization.get("emailNotUnique"));
         } catch (RegistrationProcessException | EntityRetrievalException e) {
             errorMessages.add(e.getMessage());
+        } catch (ConfirmationTokenException e) {
+            errorMessages.add(localization.get("tokenGenerationError"));
         } catch (Exception e) {
             errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
         }

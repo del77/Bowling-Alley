@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -44,10 +44,13 @@ public class AccountController {
     private Models models;
     @Inject
     private DtoValidator validator;
+
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+
     @Inject
     private RedirectUtil redirectUtil;
+
     @Inject
     private LocalizedMessageProvider localization;
     @Inject
@@ -132,13 +135,13 @@ public class AccountController {
         }
 
         try {
-            String login = (String) models.get("userName");
+            String login = models.get("userName", String.class);
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
             return redirectUtil.redirectError(BASE_URL + "/edit-password", null, Collections.singletonList(e.getMessage()));
         }
 
-        models.put(INFO, Collections.singletonList(localization.get("Password has been changed.")));
+        models.put(INFO, Collections.singletonList(localization.get("passwordChanged")));
         return redirectSuccessPath();
     }
 

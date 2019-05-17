@@ -12,31 +12,37 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.EJB;
-import javax.ejb.EJBTransactionRolledbackException;
-import javax.ejb.Stateful;
+import javax.ejb.*;
 import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
 @PermitAll
-@Stateful
-@Transactional
+@Stateless
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
     @EJB(beanName = "MOKUserRepository")
-    UserAccountRepositoryLocal userAccountRepositoryLocal;
+    private UserAccountRepositoryLocal userAccountRepositoryLocal;
     @EJB(beanName = "MOKAccessLevelRepository")
-    AccessLevelRepositoryLocal accessLevelRepositoryLocal;
+    private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
+    @EJB
+    private ConfirmationTokenService confirmationTokenService;
 
     @Override
-    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueLoginException, NotUniqueEmailException {
+    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
+            throws RegistrationProcessException,
+                EntityRetrievalException,
+                NotUniqueLoginException,
+                NotUniqueEmailException,
+                ConfirmationTokenException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
+        userAccount.setAccountConfirmed(false);
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
-        createUser(userAccount);
+        userAccount = createUser(userAccount);
+        confirmationTokenService.createNewTokenForAccount(userAccount);
     }
 
     @Override

@@ -12,4 +12,5 @@ public class MokRoles {
     public static final String GET_ALL_USERS_LIST = "GetAllUsersList";
     public static final String GET_USER_DETAILS = "GetUserDetails";
     public static final String GET_OWN_ACCOUNT_DETAILS = "GetOwnAccountDetails";
+    public static final String CONFIRM_ACCOUNT = "ConfirmAccount";
 }

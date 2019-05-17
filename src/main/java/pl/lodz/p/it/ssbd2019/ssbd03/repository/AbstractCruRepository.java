@@ -83,6 +83,17 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     }
 
     /**
+     * Odświeża obiekt encji w kontekście EntityManager.
+     * @param entity obiekt encji, który należy odświeżyć.
+     * @return odświeżony obiekt encji.
+     */
+    @Override
+    public T refresh(T entity) {
+        getEntityManager().refresh(entity);
+        return entity;
+    }
+
+    /**
      * Tworzy TypedQuery dla zadanego NamedQuery. Metoda pomocnicza dla klas dziedziczących.
      * @param queryName Nazwa NamedQuery dla encji
      * @return TypedQuery, zapytanie dla podanej nazwy NamedQuery
