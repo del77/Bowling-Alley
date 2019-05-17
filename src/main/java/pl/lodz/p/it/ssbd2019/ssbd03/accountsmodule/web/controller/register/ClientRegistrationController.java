@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
@@ -21,6 +21,7 @@ import java.util.Collections;
 public class ClientRegistrationController extends RegistrationController {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
+    private static final String REGISTER_ENDPOINT_URL = "register";
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -29,8 +30,21 @@ public class ClientRegistrationController extends RegistrationController {
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
+    public String viewRegistrationForm(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         return REGISTER_VIEW_URL;
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z komunikatem.
+     *
+     * @return Widok z komunikatem.
+     */
+    @GET
+    @Path("/success")
+    @Produces(MediaType.TEXT_HTML)
+    public String viewRegistrationSuccessPage() {
+        return SUCCESS_VIEW_URL;
     }
 
     /**
@@ -42,13 +56,13 @@ public class ClientRegistrationController extends RegistrationController {
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam BasicAccountDto basicAccountDto) {
+    public String registerAccount(@BeanParam BasicAccountDto basicAccountDto,
+                                  @QueryParam("idCache") Long id) {
         return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT));
     }
 
-
     @Override
-    protected String getRegisterViewUrl() {
-        return REGISTER_VIEW_URL;
+    protected String getRegisterEndpointUrl() {
+        return REGISTER_ENDPOINT_URL;
     }
 }
