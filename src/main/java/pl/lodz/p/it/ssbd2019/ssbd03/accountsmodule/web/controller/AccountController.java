@@ -30,6 +30,7 @@ import java.util.List;
 @Path("account")
 public class AccountController {
 
+    private static final String ERROR = "errors";
     private static final String INFO = "infos";
     private static final String EDIT_PASSWORD_FORM_HBS = "accounts/edit-password/editByUser.hbs";
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
@@ -71,7 +72,7 @@ public class AccountController {
             models.put("user", user);
             userRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (EntityRetrievalException e) {
-            displayError(localizedMessageRetriever.getLocalizedMessage("detailsRetrievalError"));
+            displayError(localizedMessageRetriever.get("detailsRetrievalError"));
         }
         return DISPLAY_DETAILS;
     }
