@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Tests for Bowling Alley application",
   "scripts": {
-    "test": "node_modules/.bin/wdio ./wdio-config/wdio-chrome.conf.js"
+    "test": "node_modules/.bin/wdio ./wdio-config/wdio-chrome.conf.js",
+    "test:firefox": "node_modules/.bin/wdio ./wdio-config/wdio-firefox.conf.js"
   },
   "author": "",
   "license": "ISC",

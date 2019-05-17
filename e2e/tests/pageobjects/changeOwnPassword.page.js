@@ -18,7 +18,11 @@ class ChangeOwnPasswordPage extends Page {
   }
 
   get errors() {
-    return $$("div[role='alert'] > div");
+    return $$("div[role='alert'].alert-danger > div");
+  }
+
+  get success() {
+    return $("div[role='alert'].alert-success > div");
   }
 }
 

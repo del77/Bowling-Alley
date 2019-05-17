@@ -42,6 +42,11 @@ export default class Page {
     this._checkIfLoggedIn();
   }
 
+  logout() {
+    $("#user-dropdown").click();
+    $("div.dropdown.show > div > a:last-child").click();
+  }
+
   _checkIfLoggedIn() {
     browser.waitUntil(
       () => {
