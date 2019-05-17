@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Klasa odpowiedzialna za dostarczenie do wybranych formularzy klucza niezbędnego do wyświetlenie modułu recaptcha.
+ */
 @WebFilter(value = {"/register", "/account/edit-password"}, dispatcherTypes = {DispatcherType.ERROR, DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class RecaptchaFilter extends HttpFilter {
     @Inject
@@ -26,7 +29,7 @@ public class RecaptchaFilter extends HttpFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         try {
-            models.put("racaptchaSiteKey", recaptchaKeysProvider.getSiteKey());
+            models.put("recaptchaSiteKey", recaptchaKeysProvider.getSiteKey());
             chain.doFilter(request, response);
         } catch (PropertiesLoadException e) {
             e.printStackTrace();

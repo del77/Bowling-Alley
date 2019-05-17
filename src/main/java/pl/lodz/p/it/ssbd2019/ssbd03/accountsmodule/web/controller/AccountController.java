@@ -123,7 +123,7 @@ public class AccountController {
         try {
             recaptchaValidator.validateCaptcha(userData.getRecaptcha());
         } catch (RecaptchaValidationException e) {
-
+            errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
         }
 
         if (!errorMessages.isEmpty()) {

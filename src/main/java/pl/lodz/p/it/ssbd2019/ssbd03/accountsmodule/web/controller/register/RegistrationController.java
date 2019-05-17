@@ -25,6 +25,12 @@ public abstract class RegistrationController {
     protected Models models;
 
     @Inject
+    protected RedirectUtil redirectUtil;
+
+    @Inject
+    protected LocalizedMessageRetriever localization;
+
+    @Inject
     private PasswordDtoValidator passwordValidator;
 
     @Inject
@@ -36,11 +42,6 @@ public abstract class RegistrationController {
     protected List<String> errorMessages = new ArrayList<>();
 
     private static final String ERROR_PREFIX = "errors";
-    @Inject
-    protected RedirectUtil redirectUtil;
-
-    @Inject
-    protected LocalizedMessageRetriever localization;
 
     static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
 

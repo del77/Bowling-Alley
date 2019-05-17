@@ -10,6 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+/**
+ * Klasa pomocnicza pobierająca klucze Recaptcha z pliku properties.
+ */
 @ApplicationScoped
 public class RecaptchaKeysProvider {
     @Inject

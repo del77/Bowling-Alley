@@ -13,6 +13,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * Klasa odpowiedzialna za wysłanie żądania a następnie przetworzenie odpowiedzi,
+ * która reprezentuje poprawność procedury antybotowej.
+ */
 @ApplicationScoped
 public class RecaptchaValidator {
 
