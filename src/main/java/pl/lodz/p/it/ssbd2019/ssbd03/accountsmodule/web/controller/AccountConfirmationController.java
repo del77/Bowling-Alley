@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.AccountAlreadyConfirmedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -22,7 +23,11 @@ import java.util.Collections;
 @Controller
 @RequestScoped
 @Path("confirm-account")
+@PermitAll
 public class AccountConfirmationController {
+
+    private static final String FAILURE_PAGE = "accounts/confirm/confirm-failure.hbs";
+    private static final String SUCCESS_PAGE = "accounts/confirm/confirm-success.hbs";
 
     @EJB
     private ConfirmationTokenService confirmationTokenService;
@@ -35,7 +40,6 @@ public class AccountConfirmationController {
 
     @GET
     @Path("{token}")
-    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     @Produces(MediaType.TEXT_HTML)
     public String confirmAccount(@PathParam("token") String token) {
         try {
@@ -49,11 +53,11 @@ public class AccountConfirmationController {
                 }
             }
             models.put("error", error);
-            return "layout/confirm/confirm-failure.hbs";
+            return FAILURE_PAGE;
         } catch (final Exception e) {
             models.put("error", Collections.singletonList(localization.get("couldntConfirmAccount")));
-            return "layout/confirm/confirm-failure.hbs";
+            return FAILURE_PAGE;
         }
-        return "accounts/confirm/confirm-success.hbs";
+        return SUCCESS_PAGE;
     }
 }

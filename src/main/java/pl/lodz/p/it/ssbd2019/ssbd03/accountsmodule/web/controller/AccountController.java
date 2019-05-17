@@ -53,6 +53,7 @@ public class AccountController {
 
     @Inject
     private LocalizedMessageProvider localization;
+
     @Inject
     private RecaptchaValidator recaptchaValidator;
 
