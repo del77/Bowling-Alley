@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -48,7 +49,8 @@ public class AdminRegistrationController extends RegistrationController {
     @Path("/success")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationSuccessPage() {
-        return SUCCESS_VIEW_URL;
+        models.put("infos", Collections.singletonList(localization.get("accountCreated")));
+        return this.getSuccessViewUrl();
     }
 
     /**
@@ -62,11 +64,20 @@ public class AdminRegistrationController extends RegistrationController {
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto,
                                   @QueryParam("idCache") Long id) {
-        return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
+        return super.registerAccount(
+                complexAccountDto,
+                dtoMapper.getListOfAccessLevels(complexAccountDto),
+                true
+        );
     }
 
     @Override
     protected String getRegisterEndpointUrl() {
         return REGISTER_ENDPOINT_URL;
+    }
+
+    @Override
+    protected String getSuccessViewUrl() {
+        return REGISTER_VIEW_URL;
     }
 }

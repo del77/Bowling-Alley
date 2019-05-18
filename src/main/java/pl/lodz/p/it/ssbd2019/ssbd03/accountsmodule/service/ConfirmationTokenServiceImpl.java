@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.ConfirmationToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.AccountAlreadyConfirmedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -24,6 +25,7 @@ import javax.mvc.Models;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Context;
+import java.util.Optional;
 
 @PermitAll
 @Stateless
@@ -49,6 +51,12 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     @Context
     private HttpServletRequest httpServletRequest;
 
+    /**
+     * Metoda dłuży do aktywacji użytkownika na podstawie tokenu z nim powiązanego.
+     * @param token wartość tokena potwierdzenia
+     * @throws ConfirmationTokenException w przypadku, gdy nie uda się znaleźć tokena, konto jest już aktywne, nie uda się
+     * dokonać edycji użytkownika, bądź gdy użytkownik nie istnieje.
+     */
     @Override
     public void activateAccountByToken(String token) throws ConfirmationTokenException {
         try {
@@ -66,34 +74,57 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         }
     }
 
+    /**
+     * Metoda tworzy token dla użytkownika, a następnie wysyła wiadomość mail. Uwaga: w przypadku, gdy nie uda się
+     * wysłać wiadomości metoda nadal zwraca sukces. Wysyłanie wiadomości jest asynchroniczne.
+     * @param userName nazwa użytkownika.
+     * @throws ConfirmationTokenException w przypadku gdy użytkownik nie istnieje, nie uda się utrwalić encji ConfirmationToken
+     */
     @Override
-    public void createNewTokenForAccount(UserAccount userAccount) throws ConfirmationTokenException {
+    public void createNewTokenForAccount(String userName) throws ConfirmationTokenException {
         try {
-            ConfirmationToken confirmationToken = ConfirmationToken
-                    .builder()
-                    .userAccount(userAccount)
-                    .token(TokenUtils.generate())
-                    .build();
-            confirmationTokenRepository.create(confirmationToken);
-            ClassicMessage classicMessage = ClassicMessage
-                    .builder()
-                    .subject(
-                            localization.get("activateAccount") + ", " + userAccount.getLogin()
-                    )
-                    .to(userAccount.getEmail())
-                    .from("admin@bowling.com")
-                    .body(
-                            localization.get("clickToActivate")
-                                    + ": " + "<a href=\""
-                                    + getRootAddress()
-                                    + models.get("webContextPath") + "/confirm-account/" + confirmationToken.getToken()
-                                    + "\">Link</a>"
-                    )
-                    .build();
+            @NotNull UserAccount userAccount = this.retrieveUser(userName);
+            ConfirmationToken confirmationToken = this.buildTokenForUser(userAccount);
+            ClassicMessage classicMessage = this.buildMessageForUser(userAccount, confirmationToken.getToken());
             messenger.sendMessage(classicMessage);
         } catch (final Exception e) {
             throw new ConfirmationTokenException("Could not create token.");
         }
+    }
+
+    private ClassicMessage buildMessageForUser(UserAccount userAccount, String token) {
+        ClassicMessage classicMessage = ClassicMessage
+                .builder()
+                .subject(
+                        localization.get("activateAccount") + ", " + userAccount.getLogin()
+                )
+                .to(userAccount.getEmail())
+                .from("admin@bowling.com")
+                .body(
+                        localization.get("clickToActivate")
+                                + ": " + "<a href=\""
+                                + getRootAddress()
+                                + models.get("webContextPath") + "/confirm-account/" + token
+                                + "\">Link</a>"
+                )
+                .build();
+        return classicMessage;
+    }
+
+    private ConfirmationToken buildTokenForUser(UserAccount userAccount) {
+        ConfirmationToken confirmationToken = ConfirmationToken
+                .builder()
+                .userAccount(userAccount)
+                .token(TokenUtils.generate())
+                .build();
+        return confirmationTokenRepository.create(confirmationToken);
+    }
+
+    private UserAccount retrieveUser(String userName) throws EntityRetrievalException {
+        Optional<UserAccount> userAccount =
+                userAccountRepositoryLocal.findByLogin(userName);
+        return userAccount
+                .orElseThrow( () -> new EntityRetrievalException("Not user account with that login"));
     }
 
     private String getRootAddress() {

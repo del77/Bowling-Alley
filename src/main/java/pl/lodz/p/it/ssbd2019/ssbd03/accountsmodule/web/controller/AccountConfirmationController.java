@@ -20,6 +20,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 
+/**
+ * Klasa kontrolera odpowiedzialnego za akcje związane z potwierdzaniem kont użytkowników.
+ */
 @Controller
 @RequestScoped
 @Path("confirm-account")
@@ -38,6 +41,14 @@ public class AccountConfirmationController {
     @Inject
     private Models models;
 
+    /**
+     * Metoda potwierdza konto uzytkownika na bazie tokenu, który powinien dostać.
+     * W przypadku, gdy konto zostało już wcześniej potwierdzone zwróci stosowny komunikat użytkownikowi.
+     * Podobnie w przypadku błędu nieoczekiwanego.
+     * Gdy potwierdzenie się zaś uda, generuje widok suckesu komunikujący o udanej aktywacji.
+     * @param token token powiązany z kontem, które nalezy potwierdzić.
+     * @return Widok strony błędu badź strony suckesu
+     */
     @GET
     @Path("{token}")
     @Produces(MediaType.TEXT_HTML)

@@ -37,7 +37,7 @@ public abstract class RegistrationController {
 
     protected List<String> errorMessages = new ArrayList<>();
 
-    static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
+    private static final String ERROR_PREFIX = "errors";
 
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
@@ -45,7 +45,7 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed) {
         models.put("data", basicAccountDto);
         errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
@@ -58,7 +58,7 @@ public abstract class RegistrationController {
                 .builder()
                 .login(basicAccountDto.getLogin())
                 .password(basicAccountDto.getPassword())
-                .accountConfirmed(false)
+                .accountConfirmed(isConfirmed)
                 .accountActive(true)
                 .email(basicAccountDto.getEmail())
                 .firstName(basicAccountDto.getFirstName())
@@ -89,8 +89,14 @@ public abstract class RegistrationController {
     }
 
     /**
-     * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
      * @return String url
      */
     protected abstract String getRegisterEndpointUrl();
+
+    /**
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku suckesu.
+     * @return String url
+     */
+    protected abstract String getSuccessViewUrl();
 }

@@ -27,7 +27,7 @@ import java.sql.Timestamp;
 )
 public class ConfirmationToken {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
@@ -37,7 +37,7 @@ public class ConfirmationToken {
 
     @NotNull
     @OneToOne(
-            cascade = CascadeType.ALL,
+            cascade = { CascadeType.REFRESH, CascadeType.MERGE },
             fetch = FetchType.EAGER
     )
     @JoinColumn(name = "user_id",

@@ -6,6 +6,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 import javax.ejb.Local;
 import java.util.Optional;
 
+/**
+ * Repozytorium dla encji typu ConfirmationToken.
+ */
 @Local
 public interface ConfirmationTokenRepositoryLocal extends CruRepository<ConfirmationToken, Long> {
 

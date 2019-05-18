@@ -24,25 +24,22 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
+
     @EJB(beanName = "MOKUserRepository")
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
+
     @EJB(beanName = "MOKAccessLevelRepository")
     private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
-    @EJB
-    private ConfirmationTokenService confirmationTokenService;
 
     @Override
     public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
             throws RegistrationProcessException,
                 EntityRetrievalException,
                 NotUniqueLoginException,
-                NotUniqueEmailException,
-                ConfirmationTokenException {
+                NotUniqueEmailException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
-        userAccount.setAccountConfirmed(false);
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
-        userAccount = createUser(userAccount);
-        confirmationTokenService.createNewTokenForAccount(userAccount);
+        createUser(userAccount);
     }
 
     @Override
