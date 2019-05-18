@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Klasa odpowiedzialna za dostarczenie do wybranych formularzy klucza niezbędnego do wyświetlenie modułu recaptcha.
  */
-@WebFilter(value = {"/register", "/account/edit-password"}, dispatcherTypes = {DispatcherType.ERROR, DispatcherType.REQUEST, DispatcherType.FORWARD})
+@WebFilter(value = {"/register", "/account/edit-password", "/account/edit"}, dispatcherTypes = {DispatcherType.ERROR, DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class RecaptchaFilter extends HttpFilter {
     @Inject
     private Models models;
