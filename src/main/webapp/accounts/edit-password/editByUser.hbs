@@ -4,12 +4,13 @@
       <h2 class="mb-3">
         {{lang.editPassword}}
       </h2>
-      {{> accounts/forms/passwordInput label=lang.currentPassword
+        {{> accounts/forms/passwordInput label=lang.currentPassword
               id="current-password" name="currentPassword"}}
-      {{> accounts/forms/passwordInput label=lang.newPassword
+        {{> accounts/forms/passwordInput label=lang.newPassword
               id="new-password" name="newPassword"}}
-      {{> accounts/forms/passwordInput label=lang.confirmNewPassword
+        {{> accounts/forms/passwordInput label=lang.confirmNewPassword
               id="confirm-new-password" name="confirmNewPassword"}}
+        {{> accounts/forms/recaptcha }}
       <div class="form-group">
         <span class="form-text text-muted">
           * {{lang.requiredFields}}

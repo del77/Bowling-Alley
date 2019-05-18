@@ -5,6 +5,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
@@ -47,6 +49,8 @@ public class AccountController {
     private RedirectUtil redirectUtil;
     @Inject
     private LocalizedMessageRetriever localization;
+    @Inject
+    private RecaptchaValidator recaptchaValidator;
 
     @EJB
     private UserAccountService userAccountService;
@@ -116,6 +120,11 @@ public class AccountController {
         List<String> errorMessages = validator.validate(userData);
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
         errorMessages.addAll(passwordDtoValidator.validateCurrentAndNewPassword(userData.getCurrentPassword(), userData.getNewPassword()));
+        try {
+            recaptchaValidator.validateCaptcha(userData.getRecaptcha());
+        } catch (RecaptchaValidationException e) {
+            errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
+        }
 
         if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(BASE_URL, null, errorMessages);
