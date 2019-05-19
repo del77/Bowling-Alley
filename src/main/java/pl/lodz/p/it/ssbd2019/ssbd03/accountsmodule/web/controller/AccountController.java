@@ -6,13 +6,14 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfir
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
+
 import javax.annotation.security.RolesAllowed;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -127,14 +128,14 @@ public class AccountController {
         }
 
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(BASE_URL, null, errorMessages);
+            return redirectUtil.redirectError(BASE_URL + "/edit-password", null, errorMessages);
         }
 
         try {
             String login = (String) models.get("userName");
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (Exception e) {
-            return redirectUtil.redirectError(BASE_URL, null, Collections.singletonList(e.getMessage()));
+            return redirectUtil.redirectError(BASE_URL + "/edit-password", null, Collections.singletonList(e.getMessage()));
         }
 
         models.put(INFO, Collections.singletonList(localization.get("Password has been changed.")));
@@ -142,7 +143,7 @@ public class AccountController {
     }
 
     private String redirectSuccessPath() {
-        return String.format("redirect:%s/success", BASE_URL);
+        return String.format("redirect:%s/edit-password/success", BASE_URL);
     }
 
     private void displayError(String s) {

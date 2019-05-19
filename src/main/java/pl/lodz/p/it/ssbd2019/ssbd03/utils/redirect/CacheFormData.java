@@ -17,7 +17,10 @@ public class CacheFormData implements Serializable {
 
     public Optional<FormData> get(Long key) {
         synchronized (this) {
-            return Optional.of(cache.get(key));
+            if (cache.containsKey(key)) {
+                return Optional.of(cache.get(key));
+            }
+            return Optional.empty();
         }
     }
 }
