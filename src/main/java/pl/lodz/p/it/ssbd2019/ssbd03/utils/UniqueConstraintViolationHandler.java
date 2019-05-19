@@ -36,4 +36,27 @@ public final class UniqueConstraintViolationHandler {
             ), e);
         }
     }
+    
+    public static <T extends Throwable> void handleNotUniqueEmailException(
+            Throwable originalException,
+            Class<T> exceptionType) throws NotUniqueEmailException, T {
+        Throwable t = originalException.getCause();
+        while ((t != null) && !(t instanceof PSQLException)) {
+            t = t.getCause();
+            if (t.getMessage().contains("email")) {
+                throw new NotUniqueEmailException();
+            }
+        }
+        
+        try {
+            throw exceptionType.getConstructor(String.class, Throwable.class)
+                    .newInstance(originalException.getMessage(), originalException);
+        } catch (NoSuchMethodException | InvocationTargetException |
+                IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+            throw new MissingRequiredConstructorException(String.format(
+                    "Exception of type %s doesn't have a constructor taking throwable as a parameter",
+                    exceptionType.getCanonicalName()
+            ), e);
+        }
+    }
 }

@@ -32,8 +32,9 @@ public interface UserAccountService {
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
+     * @throws NotUniqueEmailException w wypadku, gdy nowy email nie jest unikalny
      */
-    UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException;
+    UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.

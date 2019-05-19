@@ -19,5 +19,6 @@ public class NewPasswordWithConfirmationDto extends NewPasswordDto {
     @FormParam("currentPassword")
     String currentPassword;
 
-
+    @FormParam("g-recaptcha-response")
+    protected String recaptcha;
 }

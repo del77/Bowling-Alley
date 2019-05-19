@@ -13,6 +13,7 @@ import javax.ws.rs.FormParam;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
+@ToString
 public class BasicAccountDto {
 
     @NotNull(message = "{validate.loginNotNull}")
@@ -59,4 +60,8 @@ public class BasicAccountDto {
     @PhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
     protected String phoneNumber;
+
+    @FormParam("g-recaptcha-response")
+    protected String recaptcha;
+
 }

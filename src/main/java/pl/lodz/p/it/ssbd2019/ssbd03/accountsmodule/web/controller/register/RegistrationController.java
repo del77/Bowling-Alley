@@ -16,12 +16,19 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.mvc.Models;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RegistrationController {
 
     @Inject
     protected Models models;
+
+    @Inject
+    protected RedirectUtil redirectUtil;
+
+    @Inject
+    protected LocalizedMessageProvider localization;
 
     @Inject
     private PasswordDtoValidator passwordValidator;
@@ -32,11 +39,7 @@ public abstract class RegistrationController {
     @EJB
     private RegistrationService registrationService;
 
-    @Inject
-    protected RedirectUtil redirectUtil;
-
-    @Inject
-    protected LocalizedMessageProvider localization;
+    protected List<String> errorMessages = new ArrayList<>();
 
     static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
 
@@ -48,7 +51,7 @@ public abstract class RegistrationController {
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
-        List<String> errorMessages = validator.validate(basicAccountDto);
+        errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
         if (!errorMessages.isEmpty()) {
@@ -92,5 +95,4 @@ public abstract class RegistrationController {
      * @return String url
      */
     protected abstract String getRegisterEndpointUrl();
-
 }
