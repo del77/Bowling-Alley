@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;

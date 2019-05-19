@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils.localization;
 
 public interface LocalizedMessageProvider {
     /**

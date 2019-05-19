@@ -1,16 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
-
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.ejb.EJB;
@@ -41,7 +37,7 @@ public abstract class RegistrationController {
 
     protected List<String> errorMessages = new ArrayList<>();
 
-    static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
+    private static final String ERROR_PREFIX = "errors";
 
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu
@@ -49,7 +45,7 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed) {
         models.put("data", basicAccountDto);
         errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
@@ -62,7 +58,7 @@ public abstract class RegistrationController {
                 .builder()
                 .login(basicAccountDto.getLogin())
                 .password(basicAccountDto.getPassword())
-                .accountConfirmed(false)
+                .accountConfirmed(isConfirmed)
                 .accountActive(true)
                 .email(basicAccountDto.getEmail())
                 .firstName(basicAccountDto.getFirstName())
@@ -79,6 +75,8 @@ public abstract class RegistrationController {
             errorMessages.add(localization.get("emailNotUnique"));
         } catch (RegistrationProcessException | EntityRetrievalException e) {
             errorMessages.add(e.getMessage());
+        } catch (ConfirmationTokenException e) {
+            errorMessages.add(localization.get("tokenGenerationError"));
         } catch (Exception e) {
             errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
         }
@@ -91,8 +89,14 @@ public abstract class RegistrationController {
     }
 
     /**
-     * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
      * @return String url
      */
     protected abstract String getRegisterEndpointUrl();
+
+    /**
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku suckesu.
+     * @return String url
+     */
+    protected abstract String getSuccessViewUrl();
 }

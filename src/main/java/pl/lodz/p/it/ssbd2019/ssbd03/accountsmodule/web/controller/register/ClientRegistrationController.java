@@ -1,11 +1,14 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
@@ -27,7 +30,11 @@ public class ClientRegistrationController extends RegistrationController {
     private RecaptchaValidator recaptchaValidator;
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
+    private static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
     private static final String REGISTER_ENDPOINT_URL = "register";
+
+    @EJB
+    private ConfirmationTokenService confirmationTokenService;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -42,7 +49,7 @@ public class ClientRegistrationController extends RegistrationController {
     }
 
     /**
-     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z komunikatem.
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z komunikatem suckesu.
      *
      * @return Widok z komunikatem.
      */
@@ -50,7 +57,7 @@ public class ClientRegistrationController extends RegistrationController {
     @Path("/success")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationSuccessPage() {
-        return SUCCESS_VIEW_URL;
+        return this.getSuccessViewUrl();
     }
 
     /**
@@ -69,11 +76,24 @@ public class ClientRegistrationController extends RegistrationController {
         } catch (RecaptchaValidationException e) {
             errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
         }
-        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT));
+        String address = super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
+        try {
+            confirmationTokenService.createNewTokenForAccount(
+                    basicAccountDto.getLogin()
+            );
+        } catch (ConfirmationTokenException e) {
+            e.printStackTrace();
+        }
+        return address;
     }
 
     @Override
     protected String getRegisterEndpointUrl() {
         return REGISTER_ENDPOINT_URL;
+    }
+
+    @Override
+    protected String getSuccessViewUrl() {
+        return SUCCESS_VIEW_URL;
     }
 }

@@ -13,16 +13,15 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.Stateful;
+import javax.ejb.*;
 import javax.interceptor.Interceptors;
 import javax.ejb.EJBTransactionRolledbackException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Stateful
-@Transactional
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
@@ -74,7 +73,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     }
 
     @Override
-    @RolesAllowed({MokRoles.CHANGE_OWN_PASSWORD, MokRoles.GET_OWN_ACCOUNT_DETAILS})
+    @PermitAll
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
             UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(

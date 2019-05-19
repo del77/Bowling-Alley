@@ -36,7 +36,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
+    @PermitAll
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);

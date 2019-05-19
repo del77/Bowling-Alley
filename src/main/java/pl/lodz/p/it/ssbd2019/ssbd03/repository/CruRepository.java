@@ -43,4 +43,11 @@ public interface CruRepository<T, ID> {
      * @return Lista wszystkich encji
      */
     List<T> findAll();
+
+    /**
+     * Odświeża stan istniejącej encji.
+     * @param entity obiekt encji, który należy odświeżyć.
+     * @return Obiekt encji.
+     */
+    T refresh(T entity);
 }
