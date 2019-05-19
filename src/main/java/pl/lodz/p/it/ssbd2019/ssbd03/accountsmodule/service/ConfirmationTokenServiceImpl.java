@@ -13,12 +13,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.mvc.Models;
@@ -28,10 +26,10 @@ import javax.ws.rs.core.Context;
 import java.util.Optional;
 
 @PermitAll
-@Stateless
+@Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
-public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
+public class ConfirmationTokenServiceImpl extends TransactionTracker implements ConfirmationTokenService {
 
     @EJB(beanName = "MOKConfirmationTokenRepository")
     private ConfirmationTokenRepositoryLocal confirmationTokenRepository;
@@ -52,7 +50,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     private HttpServletRequest httpServletRequest;
 
     /**
-     * Metoda dłuży do aktywacji użytkownika na podstawie tokenu z nim powiązanego.
+     * Metoda służy do aktywacji użytkownika na podstawie tokenu z nim powiązanego.
      * @param token wartość tokena potwierdzenia
      * @throws ConfirmationTokenException w przypadku, gdy nie uda się znaleźć tokena, konto jest już aktywne, nie uda się
      * dokonać edycji użytkownika, bądź gdy użytkownik nie istnieje.

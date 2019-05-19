@@ -15,15 +15,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.*;
 import javax.interceptor.Interceptors;
 import javax.ejb.EJBTransactionRolledbackException;
 import java.util.List;
 
-@Stateless
+@Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {

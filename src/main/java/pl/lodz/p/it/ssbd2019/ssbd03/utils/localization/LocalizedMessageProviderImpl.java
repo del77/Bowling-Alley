@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 
 /**
- * Klasa, któej obiekty na podstawie lokalizacji użytkownika pobierają odpowiednie elementy z bazy
+ * Klasa, której obiekty na podstawie lokalizacji użytkownika pobierają odpowiednie elementy z bazy
  * klucz-wartość. Klasa przystosowana jest do potrzeb warstwy widoku.
  */
 @SessionScoped

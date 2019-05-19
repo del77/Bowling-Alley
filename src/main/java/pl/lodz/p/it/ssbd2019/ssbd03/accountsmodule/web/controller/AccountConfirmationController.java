@@ -3,11 +3,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenService;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.AccountAlreadyConfirmedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -18,7 +16,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
 
 /**
  * Klasa kontrolera odpowiedzialnego za akcje związane z potwierdzaniem kont użytkowników.
@@ -30,16 +27,14 @@ import java.util.Collections;
 public class AccountConfirmationController {
 
     private static final String FAILURE_PAGE = "accounts/confirm/confirm-failure.hbs";
+    private static final String FAILURE_ALREADY_CONFIRMED_PAGE = "accounts/confirm/confirm-failure-ac.hbs";
     private static final String SUCCESS_PAGE = "accounts/confirm/confirm-success.hbs";
+    public static final String FAILURE_REDIRECT = "redirect:confirm-account/failure";
+    public static final String SUCCESS_REDIRECT = "redirect:confirm-account/success";
+    private static final String FAILURE_ALREADY_CONFIRMED = "redirect:confirm-account/failure/already-confirmed";
 
     @EJB
     private ConfirmationTokenService confirmationTokenService;
-
-    @Inject
-    private LocalizedMessageProvider localization;
-
-    @Inject
-    private Models models;
 
     /**
      * Metoda potwierdza konto uzytkownika na bazie tokenu, który powinien dostać.
@@ -47,7 +42,7 @@ public class AccountConfirmationController {
      * Podobnie w przypadku błędu nieoczekiwanego.
      * Gdy potwierdzenie się zaś uda, generuje widok suckesu komunikujący o udanej aktywacji.
      * @param token token powiązany z kontem, które nalezy potwierdzić.
-     * @return Widok strony błędu badź strony suckesu
+     * @return Widok strony błędu badź strony sukcesu
      */
     @GET
     @Path("{token}")
@@ -55,20 +50,32 @@ public class AccountConfirmationController {
     public String confirmAccount(@PathParam("token") String token) {
         try {
             confirmationTokenService.activateAccountByToken(token);
-        } catch (final ConfirmationTokenException e) {
-            String error = localization.get("couldntConfirmAccount");
+        } catch (final Exception e) {
             if (e.getCause() != null) {
                 if (e.getCause().getClass().equals(AccountAlreadyConfirmedException.class)) {
-                    error += "\n"
-                            + localization.get("accountAlreadyConfirmed");
+                    return FAILURE_ALREADY_CONFIRMED;
                 }
             }
-            models.put("error", error);
-            return FAILURE_PAGE;
-        } catch (final Exception e) {
-            models.put("error", Collections.singletonList(localization.get("couldntConfirmAccount")));
-            return FAILURE_PAGE;
+            return FAILURE_REDIRECT;
         }
+        return SUCCESS_REDIRECT;
+    }
+
+    @GET
+    @Path("failure")
+    public String failurePage() {
+        return FAILURE_PAGE;
+    }
+
+    @GET
+    @Path("failure/already-confirmed")
+    public String alreadyConfirmedFailurePage() {
+        return FAILURE_ALREADY_CONFIRMED_PAGE;
+    }
+
+    @GET
+    @Path("success")
+    public String successPage() {
         return SUCCESS_PAGE;
     }
 }
