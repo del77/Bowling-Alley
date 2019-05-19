@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 
 @SessionScoped
-public class LocalizedMessageRetrieverImpl implements Serializable, LocalizedMessageRetriever {
+public class LocalizedMessageProviderImpl implements Serializable, LocalizedMessageProvider {
     private static final long serialVersionUID = 1L;
 
     @Inject

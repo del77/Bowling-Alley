@@ -30,6 +30,7 @@ public class AccountAccessLevel {
     @Id
     @ManyToOne(fetch=FetchType.LAZY)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JoinColumn(name = "user_id",
             unique = true,
             updatable = false,

@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -28,7 +28,7 @@ public abstract class RegistrationController {
     protected RedirectUtil redirectUtil;
 
     @Inject
-    protected LocalizedMessageRetriever localization;
+    protected LocalizedMessageProvider localization;
 
     @Inject
     private PasswordDtoValidator passwordValidator;
@@ -40,8 +40,6 @@ public abstract class RegistrationController {
     private RegistrationService registrationService;
 
     protected List<String> errorMessages = new ArrayList<>();
-
-    private static final String ERROR_PREFIX = "errors";
 
     static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
 

@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +22,7 @@ public interface CruRepository<T, ID> {
      * Edycja istniejącej encji.
      * @param entity Obiekt encji
      */
-    T edit(T entity);
+    T edit(T entity) throws EntityUpdateException;
 
     /**
      * Zwraca z magazynu danych encję o zadanym identyfikatorze.

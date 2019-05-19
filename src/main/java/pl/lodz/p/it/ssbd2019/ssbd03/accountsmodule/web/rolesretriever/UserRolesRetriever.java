@@ -1,12 +1,14 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.mvc.Models;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRolesRetriever {
     public static void putAccessLevelsIntoModel(UserAccount userAccount, Models models) {
 

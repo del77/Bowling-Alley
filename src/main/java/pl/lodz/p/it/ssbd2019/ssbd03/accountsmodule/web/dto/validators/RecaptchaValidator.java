@@ -54,11 +54,10 @@ public class RecaptchaValidator {
                 .target(URL)
                 .queryParam("secret", secret)
                 .queryParam("response", gRecaptchaResponse);
-        Response response = webTarget
+    
+        return webTarget
                 .request(MediaType.APPLICATION_JSON)
                 .accept("application/ld+json")
                 .get();
-
-        return response;
     }
 }

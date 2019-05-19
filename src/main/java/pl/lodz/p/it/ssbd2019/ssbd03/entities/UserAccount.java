@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidPhoneNumberFormat;
+import pl.lodz.p.it.ssbd2019.ssbd03.validators.PhoneNumberFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -47,7 +47,7 @@ public class UserAccount {
 
     @Size(min = 9, max = 16)
     @NotNull
-    @ValidPhoneNumberFormat
+    @PhoneNumberFormat
     @Column(name = "phone", nullable = false, length = 16, table = "users")
     @ToString.Exclude
     private String phone;

@@ -1,19 +1,20 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.annotation.security.RolesAllowed;
@@ -25,9 +26,7 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -43,6 +42,7 @@ public class UserAdminController implements Serializable {
     private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String BASE_PATH = "accounts";
     private static final String DISPLAY_DETAILS = "accounts/users/userDetailsForAdmin.hbs";
+    private static final String EDIT_USER_PATH = "accounts/%d/edit";
 
 
     @Inject
@@ -51,6 +51,7 @@ public class UserAdminController implements Serializable {
     private DtoValidator validator;
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
+
     @EJB
     private UserAccountService userAccountService;
     @Inject
@@ -58,7 +59,7 @@ public class UserAdminController implements Serializable {
     @Inject
     private RedirectUtil redirectUtil;
     @Inject
-    private LocalizedMessageRetriever localization;
+    private LocalizedMessageProvider localization;
 
     private transient UserAccount editedAccount;
 
@@ -89,7 +90,7 @@ public class UserAdminController implements Serializable {
         models.put("userAccounts", userAccounts);
         return "accounts/users/userslist.hbs";
     }
-
+    
     /**
      * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
      *
@@ -140,13 +141,69 @@ public class UserAdminController implements Serializable {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
             editedAccount = userAccountService.getUserById(id);
-            models.put("id", editedAccount.getId());
-            models.put("login", editedAccount.getLogin());
-            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount,models);
+            models.put("editedAccount", editedAccount);
+            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount, models);
         } catch (Exception e) {
-            displayError(localization.get("userDetailsNotUpdated"));
+            displayError(localization.get("userCouldntRetrieve"));
         }
         return "accounts/users/editUser.hbs";
+    }
+
+
+    /**
+     * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
+     *
+     * @return Informacja o rezultacie edycji.
+     */
+    @POST
+    @Path("/{id}/edit")
+    @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
+    @Produces(MediaType.TEXT_HTML)
+    public String editUser(@BeanParam AccountDetailsDto dto) {
+        List<String> errorMessages = validator.validate(dto);
+    
+        if(!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(
+                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    dto,
+                    errorMessages);
+        }
+
+        try {
+            editedAccount.setFirstName(dto.getFirstName());
+            editedAccount.setLastName(dto.getLastName());
+            editedAccount.setEmail(dto.getEmail());
+            editedAccount.setPhone(dto.getPhoneNumber());
+            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
+            editedAccount = userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
+        } catch (EntityUpdateException e) {
+            return redirectUtil.redirectError(
+                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    dto,
+                    Collections.singletonList("profileNotUpdated")
+            );
+        } catch (NotUniqueEmailException e) {
+            return redirectUtil.redirectError(
+                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    dto,
+                    Collections.singletonList("emailNotUnique")
+            );
+        } catch (Exception e) {
+            return redirectUtil.redirectError(
+                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    dto,
+                    Collections.singletonList("FATAL")
+            );
+        }
+        FormData formData = FormData.builder()
+                .data(dto)
+                .infos(Collections.singletonList(String.format(
+                        "%s %s",
+                        localization.get("userDetailsUpdated"),
+                        editedAccount.getLogin()
+                )))
+                .build();
+        return redirectUtil.redirect(String.format(EDIT_USER_PATH, editedAccount.getId()), formData);
     }
 
     /**
@@ -185,33 +242,9 @@ public class UserAdminController implements Serializable {
         return EDIT_PASSWORD_FORM_HBS;
     }
 
-    /**
-     * Odpowiada za edycję danych użytkownika oraz poziomów jego dostępu.
-     *
-     * @return Informacja o rezultacie edycji.
-     */
-    @POST
-    @Path("/{id}/edit")
-    @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam ComplexAccountDto editUser, @PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
-        try {
-            List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(editUser);
-            userAccountService.updateUserWithAccessLevels(editedAccount, selectedAccessLevels);
-            models.put("updated", true);
-        } catch (EntityUpdateException e) {
-            return redirectUtil.redirectError(
-                    String.format("%s/%d/edit", BASE_PATH, id),
-                    null,
-                    Collections.singletonList(localization.get("userDetailsNotUpdated"))
-            );
-        }
-        return redirectSuccessPath();
-    }
-
 
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
-     *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
      * @see NewPasswordWithConfirmationDto
@@ -241,7 +274,7 @@ public class UserAdminController implements Serializable {
 
         }
 
-        return String.format("redirect:%s/success", BASE_PATH);
+        return redirectSuccessPath();
     }
 
     private String redirectSuccessPath() {
@@ -251,4 +284,5 @@ public class UserAdminController implements Serializable {
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
+
 }

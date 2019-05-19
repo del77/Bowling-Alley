@@ -1,34 +1,39 @@
 
 {{#partial "content"}}
-    {{#if updated}}
-        <div class="alert alert-success" role="alert">
-            <p>{{lang.userDetailsUpdated}}.</p>
-        </div>
-    {{/if}}
-    {{#if error}}
-        <div class="alert alert-danger" role="alert">
-            <p>{{error}}</p>
-        </div>
-    {{/if}}
-    <h2>{{lang.editUser}}: {{this.login}}</h2>
     <form class="form-horizontal" role="form" method="post">
     <div class="container">
         <div class="row">
             <div class="col-10">
-                <p>todo: zmiana innych danych uzytkownika</p>
+                <h2>{{lang.editUser}}: {{this.editedAccount.login}}</h2>
+                <h5>({{this.editedAccount.email}})</h5>
             </div>
             <div class="col-2">
                 <div>
-                    <a href="{{webContextPath}}/accounts/{{id}}/edit/password" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
+                    <a href="{{webContextPath}}/accounts/{{this.editedAccount.id}}/edit/password" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
                         <span class="value">{{lang.changePassword}}</span>
                         <i class="far fa-edit ml-1"></i>
                     </a>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                {{> accounts/forms/firstNameInput firstName=this.editedAccount.firstName}}
+                {{> accounts/forms/lastNameInput lastName=this.editedAccount.lastName}}
+                {{> accounts/forms/emailInput email=this.editedAccount.email}}
+                {{> accounts/forms/phoneInput phone=this.editedAccount.phone}}
+            </div>
+            <div class="col-1"></div>
+            <div class="col-3">
                 {{> accounts/forms/rolesSelector}}
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">{{lang.update}}</button>
+            </div>
+        </div>
     </div>
-        <button type="submit" class="btn btn-primary btn-block">{{lang.save}}</button>
     </form>
 {{/partial}}
 {{> layout }}

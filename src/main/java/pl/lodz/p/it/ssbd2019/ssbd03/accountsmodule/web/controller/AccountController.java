@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -49,7 +49,7 @@ public class AccountController {
     @Inject
     private RedirectUtil redirectUtil;
     @Inject
-    private LocalizedMessageRetriever localization;
+    private LocalizedMessageProvider localization;
     @Inject
     private RecaptchaValidator recaptchaValidator;
 

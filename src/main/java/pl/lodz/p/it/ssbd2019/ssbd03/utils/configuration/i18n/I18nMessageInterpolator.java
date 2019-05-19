@@ -31,7 +31,6 @@ public class I18nMessageInterpolator implements MessageInterpolator {
     @Override
     public String interpolate(final String messageTemplate, final Context context, final Locale locale) {
         Message message = extractMessage(messageTemplate);
-        System.out.println(message);
         if (message.isCoded) {
             try {
                 Hashtable<Object, Object> newLanguageMap =
