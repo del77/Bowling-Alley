@@ -6,11 +6,15 @@ export default class Page {
     const _submitBtn = () => browser.$("form > button[type='submit']");
 
     this.login = (username, password) => {
+      this.loginNoCheck(username, password);
+      this._checkIfLoggedIn();
+    };
+
+    this.loginNoCheck = (username, password) => {
       this.open("login");
       _username().setValue(username);
       _password().setValue(password);
       _submitBtn().click();
-      this._checkIfLoggedIn();
     };
   }
 

@@ -1,3 +1,5 @@
+> Każdy uruchowmienie testów tworzy nowego usera w bazie, ostrożnie !
+
 # Wymagane oprogramowanie:
 
 ## Package manager:
@@ -22,3 +24,29 @@
 # Dokumentacja
 
 - [WebdriverIO](http://v4.webdriver.io/api.html)
+
+# Wymagane konta do testów
+
+## konta do testów e2e:
+
+| login            | haslo            | mail                      |
+| ---------------- | ---------------- | ------------------------- |
+| testClient       | testClient       | testClient@mail.com       |
+| testEmployee     | testEmplotee     | testEmployee@mail.com     |
+| testAdmin        | testAdmin        | testAdmin@mail.com        |
+| testAllRoles     | testAllRoles     | testAllRoles@mail.com     |
+| testChangePasswd | testChangePasswd | testChangePasswd@mail.com |
+| testLockUnlock   | testLockUnlock   | testLockUnlock@mail.com   |
+
+## konto które nie może istnieć:
+
+**login:** `unikalneKontoDoTestow`
+
+# Testowanie lokalnie/inny deploy
+
+- zmienić ścieżkę `baseUrl` w `e2e/tests/constants.js`
+
+# Uruchamianie pojedynczego testu:
+
+- `yarn test --spec [sciezka_do_testu]`
+- `npm test --spec [sciezka_do_testu]`

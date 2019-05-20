@@ -1,25 +1,25 @@
+const { baseUrl } = require("../tests/constants.js");
 const chromedriver = require("chromedriver");
 exports.config = {
   path: "/",
-  baseUrl: "https://studapp.it.p.lodz.pl:8403/ssbd03/",
+  baseUrl: baseUrl,
   port: 9515,
   runner: "local",
   specs: ["./tests/specs/**/*.spec.js"],
 
-  exclude: [
-    // 'path/to/excluded/files'
-  ],
+  exclude: ["./tests/specs/ChangeOwnPassword.spec.js"],
 
   maxInstances: 10,
 
   capabilities: [
     {
       maxInstances: 5,
-      browserName: "chrome"
+      browserName: "chrome",
       // Uncomment to run tests withiout opening browser window
       // "goog:chromeOptions": {
       //   args: ["--headless", "--disable-gpu"]
       // }
+      acceptInsecureCerts: true
     }
   ],
 

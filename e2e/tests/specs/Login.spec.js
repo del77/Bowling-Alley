@@ -2,28 +2,28 @@ import { expect } from "chai";
 import LoginPage from "../pageobjects/login.page";
 import { baseUrl, callTimeout } from "../constants";
 
-describe("Login form", () => {
-  const roleAdmin = "Admin";
-  const roleEmployee = "Pracownik";
-  const roleClient = "Klient";
+const ROLE_ADMIN = "Admin";
+const ROLE_EMPLOYEE = "Pracownik";
+const ROLE_CLIENT = "Klient";
+const LOGIN_FAILED_MSG = "Nieudane logowanie";
 
+describe("Login form", () => {
   describe("Error scenarios", () => {
     beforeEach(function() {
       LoginPage.open();
     });
 
     it("should deny access with wrong credentials", () => {
-      const loginFailedMsg = "Nieudane logowanie";
       LoginPage.username.setValue("foo");
       LoginPage.password.setValue("bar");
       LoginPage.submit();
 
       browser.waitUntil(
         () => {
-          return LoginPage.status.getText() === loginFailedMsg;
+          return LoginPage.status.getText() === LOGIN_FAILED_MSG;
         },
         callTimeout,
-        `expected error message: + ${loginFailedMsg}.`
+        `expected error message: + ${LOGIN_FAILED_MSG}.`
       );
     });
   });
@@ -54,15 +54,14 @@ describe("Login form", () => {
 
       LoginPage.headerMenu.click();
       const role = LoginPage.roles.pop();
-      expect(role.getText()).to.equal(roleAdmin);
+      expect(role.getText()).to.equal(ROLE_ADMIN);
     });
 
     it("should login as client", () => {
       LoginPage.loginAsClient();
-
       LoginPage.headerMenu.click();
       const role = LoginPage.roles.pop();
-      expect(role.getText()).to.equal(roleClient);
+      expect(role.getText()).to.equal(ROLE_CLIENT);
     });
 
     it("should login as employee", () => {
@@ -70,7 +69,7 @@ describe("Login form", () => {
 
       LoginPage.headerMenu.click();
       const role = LoginPage.roles.pop();
-      expect(role.getText()).to.equal(roleEmployee);
+      expect(role.getText()).to.equal(ROLE_EMPLOYEE);
     });
 
     it("should login as client, employee and admin", () => {
@@ -78,7 +77,7 @@ describe("Login form", () => {
 
       LoginPage.headerMenu.click();
       const roles = LoginPage.roles.map(role => role.getText());
-      expect(roles).to.have.members([roleClient, roleEmployee, roleAdmin]);
+      expect(roles).to.have.members([ROLE_CLIENT, ROLE_EMPLOYEE, ROLE_ADMIN]);
     });
   });
 });

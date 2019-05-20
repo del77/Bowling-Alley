@@ -1,25 +1,25 @@
+const { baseUrl } = require("../tests/constants.js");
 const geckodriver = require("geckodriver");
 exports.config = {
   path: "/",
-  baseUrl: "https://studapp.it.p.lodz.pl:8403/ssbd03/",
+  baseUrl: baseUrl,
   port: 4444,
   runner: "local",
   specs: ["./tests/specs/**/*.spec.js"],
 
-  exclude: [
-    // 'path/to/excluded/files'
-  ],
+  exclude: ["./tests/specs/ChangeOwnPassword.spec.js"],
 
   maxInstances: 1,
 
   capabilities: [
     {
       maxInstances: 1,
-      browserName: "firefox"
+      browserName: "firefox",
       // Uncomment to run tests withiout opening browser window
       // "moz:firefoxOptions": {
       //   args: ["-headless"]
       // }
+      acceptInsecureCerts: true
     }
   ],
 
