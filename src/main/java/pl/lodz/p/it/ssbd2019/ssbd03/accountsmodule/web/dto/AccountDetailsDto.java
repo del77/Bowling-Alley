@@ -13,7 +13,7 @@ import javax.ws.rs.FormParam;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class AccountDetailsDto implements AccessLevelsSelection {
+public class AccountDetailsDto {
     protected Long id;
     
     @NotNull(message = "{validate.firstNameNotNull}")
@@ -42,13 +42,4 @@ public class AccountDetailsDto implements AccessLevelsSelection {
     @PhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
     protected String phoneNumber;
-    
-    @FormParam("clientSelected")
-    boolean clientRoleSelected;
-    
-    @FormParam("employeeSelected")
-    boolean employeeRoleSelected;
-    
-    @FormParam("adminSelected")
-    boolean adminRoleSelected;
 }

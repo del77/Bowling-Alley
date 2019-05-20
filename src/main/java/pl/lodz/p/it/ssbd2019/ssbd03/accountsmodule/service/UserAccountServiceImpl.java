@@ -55,18 +55,30 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
 
     @Override
-    @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT})
-    public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException {
+    @RolesAllowed({MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT})
+    public UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException, NotUniqueEmailException {
         try {
-            setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
-            addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
-
             return userAccountRepositoryLocal.edit(userAccount);
         } catch (EntityUpdateException e) {
             throw new EntityUpdateException("Data is not up-to-date", e);
         } catch (EJBTransactionRolledbackException e) {
             UniqueConstraintViolationHandler.handleNotUniqueEmailException(e, EntityUpdateException.class);
             throw new EntityUpdateException("Unknown error", e);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Could not update userAccount", e);
+        }
+    }
+    
+    @Override
+    @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_OWN_ACCOUNT})
+    public UserAccount updateUserAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
+        try {
+            setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
+            addNewAccountAccessLevelsForEditedUser(userAccount,selectedAccessLevels);
+            
+            return userAccountRepositoryLocal.edit(userAccount);
+        } catch (EntityUpdateException e) {
+            throw new EntityUpdateException("Data is not up-to-date", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }
