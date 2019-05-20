@@ -85,28 +85,38 @@ public class UserAccountServiceImplTest {
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
     }
 
-
     @Test
-    public void shouldThrowEntityUpdateExceptionWhenUpdateUserCatchesException() {
-        UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
-        when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
-
-        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserWithAccessLevels(userAccount, Collections.singletonList("CLIENT")));
-    }
-
-    @Test
-    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException, NotUniqueEmailException {
         UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
             newUserAccount.setId(1L);
             return newUserAccount;
         });
-        Assertions.assertEquals( userService.updateUserWithAccessLevels(userAccount, new ArrayList<>()).getId(), 1L);
+        Assertions.assertEquals(userService.updateUser(userAccount).getId(), 1L);
+    }
+    
+    @Test
+    public void shouldThrowEntityUpdateRolesExceptionWhenUpdateUserCatchesException() {
+        UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
+        when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
+        
+        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserAccessLevels(userAccount, Collections.singletonList("CLIENT")));
+    }
+    
+    @Test
+    public void shouldReturnRightEntityOnUpdateUserRoles() throws EntityUpdateException {
+        UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
+        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
+            UserAccount newUserAccount = u.getArgument(0);
+            newUserAccount.setId(1L);
+            return newUserAccount;
+        });
+        Assertions.assertEquals( userService.updateUserAccessLevels(userAccount, new ArrayList<>()).getId(), 1L);
     }
 
     @Test
-    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException {
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
                 .accountAccessLevels(new ArrayList<>())
@@ -126,7 +136,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUserWithAccessLevels(userAccount, Collections.singletonList("CLIENT"));
+        userAccount = userService.updateUserAccessLevels(userAccount, Collections.singletonList("CLIENT"));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
     }
@@ -185,7 +195,7 @@ public class UserAccountServiceImplTest {
 
 
     @Test
-    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -210,7 +220,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUserWithAccessLevels(userAccount, new LinkedList<>(Collections.singletonList("CLIENT")));
+        userAccount = userService.updateUserAccessLevels(userAccount, new LinkedList<>(Collections.singletonList("CLIENT")));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
@@ -218,7 +228,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -243,7 +253,7 @@ public class UserAccountServiceImplTest {
             return newUserAccount;
         });
 
-        userAccount = userService.updateUserWithAccessLevels(userAccount, new ArrayList<>());
+        userAccount = userService.updateUserAccessLevels(userAccount, new ArrayList<>());
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
         boolean activeAfter = userAccount.getAccountAccessLevels().get(0).isActive();
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
@@ -324,7 +334,7 @@ public class UserAccountServiceImplTest {
     }
     
     @Test
-    public void updateUserAccountDetailsTest() throws EntityUpdateException, NotUniqueEmailException, NotUniqueLoginException {
+    public void updateUserAccountDetailsTest() throws EntityUpdateException, NotUniqueEmailException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -344,7 +354,7 @@ public class UserAccountServiceImplTest {
         });
         try {
             Assertions.assertEquals("new login",
-                    userService.updateUserWithAccessLevels(userAccount, Stream.of("CLIENT").collect(Collectors.toList())).getLogin());
+                    userService.updateUser(userAccount).getLogin());
         } catch (EntityUpdateException e) {
             Assertions.fail(e);
         }
