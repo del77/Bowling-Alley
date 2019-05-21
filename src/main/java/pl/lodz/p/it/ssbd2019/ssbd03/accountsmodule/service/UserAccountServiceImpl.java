@@ -170,6 +170,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         try {
             String newPasswordHash = SHA256Provider.encode(newPassword);
             userAccount.setPassword(newPasswordHash);
+            userAccountRepositoryLocal.edit(userAccount);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
