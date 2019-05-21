@@ -1,5 +1,4 @@
-
-{{#partial "content"}}
+{{#block "userDetails"}}
     <h2>User details: {{this.user.login}}</h2>
     <div class="card-body">
         <div class="container">
@@ -32,18 +31,6 @@
                         </li>
                         <li class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{lang.userConfirmed}}</h6>
-                            </div>
-                            <p class="mb-1">{{this.user.accountConfirmed}}</p>
-                        </li>
-                        <li class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{lang.userActive}}</h6>
-                            </div>
-                            <p class="mb-1">{{this.user.accountActive}}</p>
-                        </li>
-                        <li class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">{{lang.roles}}</h6>
                             </div>
                             <div class="mb-1">
@@ -63,5 +50,4 @@
             </div>
         </div>
     </div>
-{{/partial}}
-{{> layout }}
+{{/block}}

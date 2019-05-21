@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -37,7 +38,7 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    public Alley edit(Alley alley) {
+    public Alley edit(Alley alley) throws EntityUpdateException {
         return super.edit(alley);
     }
 

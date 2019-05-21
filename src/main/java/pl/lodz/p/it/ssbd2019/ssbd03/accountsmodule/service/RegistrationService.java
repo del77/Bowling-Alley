@@ -18,7 +18,12 @@ public interface RegistrationService {
      * @throws NotUniqueEmailException      W przypadku, gdy email nie jest unikalny.
      */
 
-    void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueLoginException, NotUniqueEmailException;
+    void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
+            throws RegistrationProcessException,
+                    EntityRetrievalException,
+                    NotUniqueLoginException,
+                    NotUniqueEmailException,
+                    ConfirmationTokenException;
 
     /**
      * Potwierdzenie konta użytkownika.

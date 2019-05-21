@@ -2,16 +2,10 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TextParsingException;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenUtils {
@@ -27,13 +21,13 @@ public class TokenUtils {
     /**
      * Zwraca czas ważności tokenu
      *
-     * @param hours ilość godzin
+     * @param hours liczba godzin
      * @return token
      */
     public static Timestamp getValidity(int hours) {
         long currentTimeMillis = System.currentTimeMillis();
-        int oneDayMillis = 1000 * 60 * 60 * hours;
-        return new Timestamp(currentTimeMillis + oneDayMillis);
+        long hoursToMilis = TimeUnit.HOURS.toMillis(hours);
+        return new Timestamp(currentTimeMillis + hoursToMilis);
     }
 
     /**
@@ -44,7 +38,6 @@ public class TokenUtils {
      */
     public static boolean isValid(Timestamp validity) {
         Timestamp current = new Timestamp(System.currentTimeMillis());
-
-        return validity.getTime() > current.getTime();
+        return validity.after(current);
     }
 }

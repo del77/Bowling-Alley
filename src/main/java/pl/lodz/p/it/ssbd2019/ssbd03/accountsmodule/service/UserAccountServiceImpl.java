@@ -6,21 +6,24 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
+import javax.ejb.*;
+import javax.interceptor.Interceptors;
+import javax.ejb.EJBTransactionRolledbackException;
 import java.util.List;
 
-@Stateless
-@Transactional
-public class UserAccountServiceImpl implements UserAccountService {
+@Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(InterceptorTracker.class)
+public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
 
@@ -52,23 +55,30 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT})
-    public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException {
+    public UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException {
         try {
             setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
             addNewAccountAccessLevelsForEditedUser(userAccount, selectedAccessLevels);
 
             return userAccountRepositoryLocal.edit(userAccount);
+        } catch (EntityUpdateException e) {
+            throw new EntityUpdateException("Data is not up-to-date", e);
+        } catch (EJBTransactionRolledbackException e) {
+            UniqueConstraintViolationHandler.handleNotUniqueEmailException(e, EntityUpdateException.class);
+            throw new EntityUpdateException("Unknown error", e);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not update userAccount", e);
         }
     }
 
     @Override
-    @RolesAllowed({MokRoles.CHANGE_OWN_PASSWORD, MokRoles.GET_OWN_ACCOUNT_DETAILS})
+    @PermitAll
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
-            return userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+            UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new EntityRetrievalException("No account with login specified."));
+            Hibernate.initialize(user.getAccountAccessLevels());
+            return user;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }

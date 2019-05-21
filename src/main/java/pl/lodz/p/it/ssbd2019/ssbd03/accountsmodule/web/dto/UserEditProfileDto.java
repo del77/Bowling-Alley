@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidPhoneNumberFormat;
+
+import pl.lodz.p.it.ssbd2019.ssbd03.validators.PhoneNumberFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -41,7 +42,7 @@ public class UserEditProfileDto {
     @NotBlank(message = "{validate.phoneNumberNotBlank}")
     @Size(min = 9, message = "{validate.phoneNumberAtLeastNine}")
     @Size(max = 16, message = "{validate.phoneNumberShorterThanSixteen}")
+    @PhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
-    @ValidPhoneNumberFormat
     String phoneNumber;
 }

@@ -26,16 +26,19 @@ public class Alley {
     @Min(0)
     @NotNull
     @Column(name = "number", nullable = false, unique = true)
+    @ToString.Exclude
     private int number;
     
     @NotNull
     @Column(name = "active", nullable = false)
+    @ToString.Exclude
     private boolean active;
     
     @NotNull
     @Column(name = "max_score", nullable = false)
     @Min(0)
     @Max(300)
+    @ToString.Exclude
     private int maxScore;
 
     @Version

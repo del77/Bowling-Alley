@@ -10,11 +10,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.PropertyManager;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.annotations.MessageService;
 
 import javax.ejb.Asynchronous;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.ejb.Singleton;
 import javax.servlet.ServletContext;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -22,7 +21,6 @@ import java.util.Properties;
 /**
  * Klasa, której obiekt odpowiedzialny jest za wysyłanie wiadomości e-mail do użytkowników.
  */
-@MessageService("EMAIL")
 @Singleton
 public class EmailMessenger implements Messenger {
 
@@ -65,14 +63,13 @@ public class EmailMessenger implements Messenger {
 
 
     private Email rebuildIntoMail(ClassicMessage classicMessage) {
-        Email email = EmailBuilder
+        return EmailBuilder
                 .startingBlank()
                 .from(classicMessage.getFrom())
                 .to(classicMessage.getTo())
                 .withSubject(classicMessage.getSubject())
                 .withHTMLText(classicMessage.getBody())
                 .buildEmail();
-        return email;
     }
 
     private MailConfig loadPropertiesConfig() throws PropertiesLoadException {

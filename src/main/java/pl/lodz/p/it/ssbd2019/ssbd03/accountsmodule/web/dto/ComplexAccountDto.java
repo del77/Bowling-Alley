@@ -11,7 +11,7 @@ import javax.ws.rs.FormParam;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ComplexAccountDto extends BasicAccountDto {
+public class ComplexAccountDto extends BasicAccountDto implements AccessLevelsSelection {
 
     @FormParam("clientSelected")
     boolean clientRoleSelected;

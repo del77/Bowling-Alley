@@ -1,22 +1,30 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
-
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RegistrationProcessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.mvc.Models;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RegistrationController {
+
+    @Inject
+    protected Models models;
+
+    @Inject
+    protected RedirectUtil redirectUtil;
+
+    @Inject
+    protected LocalizedMessageProvider localization;
 
     @Inject
     private PasswordDtoValidator passwordValidator;
@@ -24,11 +32,10 @@ public abstract class RegistrationController {
     @Inject
     private DtoValidator validator;
 
-    @Inject
-    private Models models;
-
     @EJB
     private RegistrationService registrationService;
+
+    protected List<String> errorMessages = new ArrayList<>();
 
     private static final String ERROR_PREFIX = "errors";
 
@@ -38,20 +45,20 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    protected String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed) {
         models.put("data", basicAccountDto);
-        List<String> errorMessages = validator.validate(basicAccountDto);
+        errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
         if (!errorMessages.isEmpty()) {
-            return handleException(errorMessages);
+            return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);
         }
 
         UserAccount userAccount = UserAccount
                 .builder()
                 .login(basicAccountDto.getLogin())
                 .password(basicAccountDto.getPassword())
-                .accountConfirmed(false)
+                .accountConfirmed(isConfirmed)
                 .accountActive(true)
                 .email(basicAccountDto.getEmail())
                 .firstName(basicAccountDto.getFirstName())
@@ -63,35 +70,33 @@ public abstract class RegistrationController {
         try {
             registrationService.registerAccount(userAccount, accessLevelNames);
         } catch (NotUniqueLoginException e) {
-            errorMessages.add("Your login is not unique.");
+            errorMessages.add(localization.get("loginNotUnique"));
         } catch (NotUniqueEmailException e) {
-            errorMessages.add("Your email is not unique.");
+            errorMessages.add(localization.get("emailNotUnique"));
         } catch (RegistrationProcessException | EntityRetrievalException e) {
             errorMessages.add(e.getMessage());
+        } catch (ConfirmationTokenException e) {
+            errorMessages.add(localization.get("tokenGenerationError"));
         } catch (Exception e) {
             errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
         }
 
         if (!errorMessages.isEmpty()) {
-            return handleException(errorMessages);
+            return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);
         }
 
-        return "accounts/register/register-success.hbs";
+        return String.format("redirect:%s/success", getRegisterEndpointUrl());
     }
 
     /**
-     * funkcja pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku rejestracji
      * @return String url
      */
-    protected abstract String getRegisterViewUrl();
+    protected abstract String getRegisterEndpointUrl();
 
     /**
-     * funkcja pomocnicza umieszczająca w widoku dane na temat błędów
-     * oraz pozwalająca uzyskać url do zwracanego widoku rejestracji
+     * Metoda pomocnicza pozwalająca uzyskać url do zwracanego widoku suckesu.
      * @return String url
      */
-    private String handleException(List<String> errors) {
-        models.put(ERROR_PREFIX, errors);
-        return getRegisterViewUrl();
-    }
+    protected abstract String getSuccessViewUrl();
 }

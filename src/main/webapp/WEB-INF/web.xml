@@ -251,6 +251,17 @@
   </security-constraint>
 
   <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Confirm account</web-resource-name>
+      <url-pattern>/confirm-account/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <description/>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint>
     <display-name>EditUserAccountConstr</display-name>
     <web-resource-collection>
       <web-resource-name>EditUserAccount</web-resource-name>

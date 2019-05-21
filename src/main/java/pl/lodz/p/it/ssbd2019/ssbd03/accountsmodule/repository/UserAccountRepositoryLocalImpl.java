@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 import java.util.*;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
@@ -37,7 +38,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
+    @PermitAll
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);
@@ -67,7 +68,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @PermitAll
-    public UserAccount edit(UserAccount userAccount) {
+    public UserAccount edit(UserAccount userAccount) throws EntityUpdateException {
         return super.edit(userAccount);
     }
 

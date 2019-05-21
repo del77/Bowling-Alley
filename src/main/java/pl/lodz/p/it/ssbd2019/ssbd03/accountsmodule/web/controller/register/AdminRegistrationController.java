@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.register;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
@@ -22,10 +23,10 @@ import javax.ws.rs.core.MediaType;
 public class AdminRegistrationController extends RegistrationController {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
+    private static final String REGISTER_ENDPOINT_URL = "admin/register";
 
     @Inject
     private DtoMapper dtoMapper;
-
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -34,8 +35,22 @@ public class AdminRegistrationController extends RegistrationController {
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public String viewRegistrationForm() {
+    public String viewRegistrationFormWithFailure(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         return REGISTER_VIEW_URL;
+    }
+
+    /**
+     * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z komunikatem.
+     *
+     * @return Widok z komunikatem.
+     */
+    @GET
+    @Path("/success")
+    @Produces(MediaType.TEXT_HTML)
+    public String viewRegistrationSuccessPage() {
+        models.put("infos", Collections.singletonList(localization.get("accountCreated")));
+        return this.getSuccessViewUrl();
     }
 
     /**
@@ -47,13 +62,22 @@ public class AdminRegistrationController extends RegistrationController {
      */
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto) {
-        return super.registerAccount(complexAccountDto, dtoMapper.getListOfAccessLevels(complexAccountDto));
+    public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto,
+                                  @QueryParam("idCache") Long id) {
+        return super.registerAccount(
+                complexAccountDto,
+                dtoMapper.getListOfAccessLevels(complexAccountDto),
+                true
+        );
     }
 
+    @Override
+    protected String getRegisterEndpointUrl() {
+        return REGISTER_ENDPOINT_URL;
+    }
 
     @Override
-    protected String getRegisterViewUrl() {
+    protected String getSuccessViewUrl() {
         return REGISTER_VIEW_URL;
     }
 }

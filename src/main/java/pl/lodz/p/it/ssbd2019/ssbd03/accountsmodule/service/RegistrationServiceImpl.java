@@ -1,34 +1,42 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.EJB;
-import javax.ejb.EJBTransactionRolledbackException;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
+import javax.ejb.*;
+import javax.interceptor.Interceptors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Stateless
+
 @PermitAll
-@Transactional
-public class RegistrationServiceImpl implements RegistrationService {
+@Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors(InterceptorTracker.class)
+public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
+
     @EJB(beanName = "MOKUserRepository")
-    UserAccountRepositoryLocal userAccountRepositoryLocal;
+    private UserAccountRepositoryLocal userAccountRepositoryLocal;
+
     @EJB(beanName = "MOKAccessLevelRepository")
-    AccessLevelRepositoryLocal accessLevelRepositoryLocal;
+    private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
-    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames) throws RegistrationProcessException, EntityRetrievalException, NotUniqueLoginException, NotUniqueEmailException {
+    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
+            throws RegistrationProcessException,
+                EntityRetrievalException,
+                NotUniqueLoginException,
+                NotUniqueEmailException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
@@ -60,25 +68,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         try {
             return userAccountRepositoryLocal.create(userAccount);
         } catch (EJBTransactionRolledbackException e) {
-            handleException(e);
+            UniqueConstraintViolationHandler.handleNotUniqueLoginOrEmailException(e, RegistrationProcessException.class);
         }
         throw new RegistrationProcessException("Something went wrong during creation a user in database.");
     }
 
-    private void handleException(EJBTransactionRolledbackException e) throws NotUniqueLoginException, NotUniqueEmailException, RegistrationProcessException {
-        Throwable t = e.getCause();
-        while ((t != null) && !(t instanceof PSQLException)) {
-            t = t.getCause();
-            if (t.getMessage() == null) {
-                throw new RegistrationProcessException(e.getMessage(), e);
-            } else if (t.getMessage().contains("login")){
-                throw new NotUniqueLoginException();
-            } else if (t.getMessage().contains("email")) {
-                throw new NotUniqueEmailException();
-            }
-        }
-        throw new RegistrationProcessException(e.getMessage());
-    }
 
     private List<AccountAccessLevel> createAccountAccessLevels(UserAccount userAccount, List<String> accessLevelNames) throws EntityRetrievalException {
         List<AccountAccessLevel> accountAccessLevels = new ArrayList<>();

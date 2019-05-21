@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -37,7 +38,7 @@ public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER,
             MorRoles.ADD_COMMENT_FOR_RESERVATION})
-    public Reservation edit(Reservation reservation) {
+    public Reservation edit(Reservation reservation) throws EntityUpdateException {
         return super.edit(reservation);
     }
 
