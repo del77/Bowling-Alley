@@ -170,6 +170,9 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         try {
             String newPasswordHash = SHA256Provider.encode(newPassword);
             userAccount.setPassword(newPasswordHash);
+            userAccountRepositoryLocal.edit(userAccount);
+        } catch (EntityUpdateException e) {
+            throw new ChangePasswordException("Couldn't change the password because the account was changed by other user.", e);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
