@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
@@ -19,6 +20,7 @@ import javax.ejb.*;
 import javax.interceptor.Interceptors;
 import javax.ejb.EJBTransactionRolledbackException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -173,7 +175,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     }
 
     /**
-     * Zmienia hasło dla konta.
+     * Dopisuje aktualne hasło do historii haseł użytkownika i zmienia je.
      * @param userAccount Obiekt typu UserAccount, który jest edytowany.
      * @param newPassword Nowe hasło dla konta.
      * @throws ChangePasswordException w wypadku, gdy nie uda się zmienić hasła.
@@ -181,12 +183,42 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     private void setNewPassword(UserAccount userAccount, String newPassword) throws ChangePasswordException {
         try {
             String newPasswordHash = SHA256Provider.encode(newPassword);
-            userAccount.setPassword(newPasswordHash);
+
+            if(isNewPasswordUniqueForUser(userAccount, newPasswordHash)) {
+                addCurrentPasswordToHistory(userAccount);
+                userAccount.setPassword(newPasswordHash);
+            } else {
+                throw new AccountPasswordNotUniqueException("New password was used before.");
+            }
             userAccountRepositoryLocal.edit(userAccount);
         } catch (EntityUpdateException e) {
             throw new ChangePasswordException("Couldn't change the password because the account was changed by other user.", e);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
         }
+    }
+
+    /**
+     * Sprawdza czy nowe hasło nie było wcześniej używane przez użytkownika
+     * @param userAccount użytkownik dla którego sprawdzana jest unikalność hasla
+     * @param newPassword nowe hasło
+     * @return rezultat sprawdzenia
+     */
+    private boolean isNewPasswordUniqueForUser(UserAccount userAccount, String newPassword) {
+        List<String> previousPasswords = userAccount.getPreviousUserPasswords().stream()
+                .map(x->x.getPassword()).collect(Collectors.toList());
+
+        return !previousPasswords.contains(newPassword) && !userAccount.getPassword().equals(newPassword);
+    }
+
+    /**
+     * Dodaje istniejące hasło użytkownika do historii haseł
+     * @param userAccount obiekt konta użytkownika
+     */
+    private void addCurrentPasswordToHistory(UserAccount userAccount) {
+        PreviousUserPassword newPrevious = PreviousUserPassword.builder()
+                .password(userAccount.getPassword())
+                .build();
+        userAccount.getPreviousUserPasswords().add(newPrevious);
     }
 }

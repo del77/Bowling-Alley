@@ -272,7 +272,9 @@ public class UserAccountServiceImplTest {
             UserAccount user = UserAccount
                     .builder()
                     .login(login)
+                    .id(1L)
                     .password(currentPasswordHash)
+                    .previousUserPasswords(new ArrayList<>())
                     .build();
 
             when(userAccountRepositoryLocal.findByLogin(any(String.class))).thenReturn(Optional.of(user));
@@ -295,6 +297,7 @@ public class UserAccountServiceImplTest {
 
             UserAccount user = UserAccount
                     .builder()
+                    .id(1L)
                     .login(login)
                     .password(currentPasswordHash)
                     .build();
@@ -317,6 +320,7 @@ public class UserAccountServiceImplTest {
 
         UserAccount userAccount = UserAccount.builder()
                 .password(currentPasswordHash)
+                .previousUserPasswords(new ArrayList<>())
                 .build();
         when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
             Long id = u.getArgument(0);
