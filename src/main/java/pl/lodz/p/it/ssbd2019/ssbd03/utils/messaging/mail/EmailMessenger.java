@@ -63,14 +63,13 @@ public class EmailMessenger implements Messenger {
 
 
     private Email rebuildIntoMail(ClassicMessage classicMessage) {
-        Email email = EmailBuilder
+        return EmailBuilder
                 .startingBlank()
                 .from(classicMessage.getFrom())
                 .to(classicMessage.getTo())
                 .withSubject(classicMessage.getSubject())
                 .withHTMLText(classicMessage.getBody())
                 .buildEmail();
-        return email;
     }
 
     private MailConfig loadPropertiesConfig() throws PropertiesLoadException {

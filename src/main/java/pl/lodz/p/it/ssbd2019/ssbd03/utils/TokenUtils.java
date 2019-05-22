@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 import java.sql.Timestamp;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;

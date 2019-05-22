@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
+import java.util.*;
+
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
@@ -43,17 +45,24 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
         return Optional.of(namedQuery.getSingleResult());
     }
 
+
     @Override
     @PermitAll
-    public Optional<UserAccount> findById(Long id)
-    {
+    public Optional<UserAccount> findByEmail(String email) {
+        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByEmail");
+        namedQuery.setParameter("email", email);
+        return Optional.of(namedQuery.getSingleResult());
+    }
+
+    @Override
+    @PermitAll
+    public Optional<UserAccount> findById(Long id) {
         return super.findById(id);
     }
 
     @Override
     @PermitAll
-    public UserAccount create(UserAccount userAccount)
-    {
+    public UserAccount create(UserAccount userAccount) {
         return super.create(userAccount);
     }
 
