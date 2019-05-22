@@ -143,7 +143,13 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             UserAccount account = getUserById(id);
             account.setAccountActive(isActive);
             UserAccount editedAccount = userAccountRepositoryLocal.edit(account);
-            sendMessageAboutActiveChanged(editedAccount);
+
+            notifyUserViaEmail(
+                    account.getEmail(),
+                    localization.get("accountStatusChanged"),
+                    account.isAccountActive() ? localization.get("yourAccountUnlocked") : localization.get("yourAccountLocked")
+            );
+
             return editedAccount;
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
@@ -205,13 +211,20 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         }
     }
 
-    private void sendMessageAboutActiveChanged(UserAccount account) {
+    /**
+     * Wysyła do użytkownika maila z powiadomieniem.
+     *
+     * @param email   Adres email odbiorcy
+     * @param subject Temat wiadomości
+     * @param body    Treść wiadomości
+     */
+    private void notifyUserViaEmail(String email, String subject, String body) {
         ClassicMessage message = ClassicMessage
                 .builder()
-                .subject(localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"))
-                .to(account.getEmail())
+                .subject(localization.get("bowlingAlley") + " - " + subject)
+                .to(email)
                 .from("ssbd201903@gmail.com")
-                .body(account.isAccountActive() ? localization.get("yourAccountUnlocked") : localization.get("yourAccountLocked"))
+                .body(body)
                 .build();
 
         try {
