@@ -15,6 +15,7 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ConfirmationToken</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>

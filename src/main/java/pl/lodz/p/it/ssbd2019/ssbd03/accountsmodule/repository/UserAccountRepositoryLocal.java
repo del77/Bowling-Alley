@@ -11,8 +11,17 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
 
     /**
      * Metoda służy do pozyskiwania encji konta użytkownika na podstawie jego loginu.
+     *
      * @param login Login użytkownika
      * @return Encja reprezentująca konto użytkownika.
      */
     Optional<UserAccount> findByLogin(String login);
+
+    /**
+     * Metoda służy do pozyskiwania encji konta użytkownika na podstawie jego adresu email.
+     *
+     * @param email Login użytkownika
+     * @return Encja reprezentująca konto użytkownika.
+     */
+    Optional<UserAccount> findByEmail(String email);
 }
