@@ -27,14 +27,22 @@ public interface UserAccountService {
     UserAccount getUserById(Long id) throws EntityRetrievalException;
 
     /**
-     * Aktualizuje użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
+     * Aktualizuje dane użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
-     * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
      * @return Zaktualizowana encja uzytkownika.
      * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
      * @throws NotUniqueEmailException w wypadku, gdy nowy email nie jest unikalny
      */
-    UserAccount updateUserWithAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException, NotUniqueEmailException;
+    UserAccount updateUser(UserAccount userAccount) throws EntityUpdateException, NotUniqueEmailException;
+    
+    /**
+     * Aktualizuje poziomy dostępu użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
+     * @param userAccount Encja użytkownika do zaktualizowania.
+     * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
+     * @return Zaktualizowana encja uzytkownika.
+     * @throws EntityUpdateException w wypadku, gdy nie uda się aktualizacja.
+     */
+    UserAccount updateUserAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws EntityUpdateException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.
