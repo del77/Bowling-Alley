@@ -8,24 +8,36 @@
                 <h5>({{this.editedAccount.email}})</h5>
             </div>
             <div class="col-2">
-                <div>
-                    <a href="{{webContextPath}}/accounts/{{this.editedAccount.id}}/edit/password" type="button" class="btn btn-outline-dark btn-sm px-2 waves-effect show_login">
-                        <span class="value">{{lang.changePassword}}</span>
-                        <i class="far fa-edit ml-1"></i>
-                    </a>
-                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-8">
+            <div class="col-10">
                 {{> accounts/forms/firstNameInput firstName=this.editedAccount.firstName}}
                 {{> accounts/forms/lastNameInput lastName=this.editedAccount.lastName}}
                 {{> accounts/forms/emailInput email=this.editedAccount.email}}
                 {{> accounts/forms/phoneInput phone=this.editedAccount.phone}}
             </div>
-            <div class="col-1"></div>
-            <div class="col-3">
-                {{> accounts/forms/rolesSelector}}
+            <div class="col-2">
+                <div class="row mt-3 mb-3">
+                    <div class="col-12">
+                        <div>
+                            <a href="{{webContextPath}}/accounts/{{this.editedAccount.id}}/edit/password" type="button" class="btn btn-block btn-outline-dark btn-sm px-2 waves-effect show_login">
+                                <span class="value">{{lang.changePassword}}</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3 mb-3">
+                    <div class="col-12">
+                        <div>
+                            <a href="{{webContextPath}}/accounts/{{this.editedAccount.id}}/edit/roles" type="button" class="btn btn-block btn-outline-dark btn-sm px-2 waves-effect show_login">
+                                <span class="value">{{lang.editRoles}}</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
