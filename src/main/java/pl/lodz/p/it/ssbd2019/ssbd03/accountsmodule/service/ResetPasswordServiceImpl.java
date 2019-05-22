@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
@@ -16,7 +17,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.mvc.Models;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
@@ -35,6 +35,9 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     @Inject
     private Models models;
+
+    @Inject
+    private LocalizedMessageProvider localization;
 
     @Context
     private HttpServletRequest httpServletRequest;
@@ -128,7 +131,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                 .builder()
                 .from("ssbd201903@gmail.com")
                 .to(email)
-                .subject("Kregielnia - przypomnienie hasla")
+                .subject(localization.get("bowlingAlley") + " - " + localization.get("resetPassword"))
                 .body(url)
                 .build();
 
