@@ -3,8 +3,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller.register;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;

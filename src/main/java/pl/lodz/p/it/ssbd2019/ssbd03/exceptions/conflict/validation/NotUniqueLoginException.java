@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation;
 
-public class NotUniqueLoginException extends Exception {
+public class NotUniqueLoginException extends ValidationException {
+
     public NotUniqueLoginException() {
         super();
     }

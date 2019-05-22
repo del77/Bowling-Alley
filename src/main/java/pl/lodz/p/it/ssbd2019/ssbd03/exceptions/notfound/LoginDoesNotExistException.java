@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound;
 
-public class LoginDoesNotExistException extends EntityRetrievalException {
+public class LoginDoesNotExistException extends NotFoundException {
     public LoginDoesNotExistException() { }
     
     public LoginDoesNotExistException(String message) {

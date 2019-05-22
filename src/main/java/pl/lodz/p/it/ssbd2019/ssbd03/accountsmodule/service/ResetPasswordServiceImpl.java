@@ -4,10 +4,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.ResetPasswordToken
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EmailDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenExpiredException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.EmailDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ResetPasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.TokenExpiredException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -116,7 +116,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      *
      * @param token Unikalny token
      * @return token
-     * @throws TokenNotFoundException Wyjątek
+     * @throws TokenNotFoundException w przypadku, gdy nie znajdzie zadanego tokena.
      */
     private ResetPasswordToken getToken(String token) throws TokenNotFoundException {
         try {

@@ -2,8 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.RecaptchaValidationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.PropertiesLoadException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.RecaptchaKeysProvider;
 
 import javax.enterprise.context.ApplicationScoped;

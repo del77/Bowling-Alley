@@ -1,7 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.LoginDoesNotExistException;
 
 import java.util.List;
 
@@ -51,7 +55,7 @@ public interface UserAccountService {
      * @throws EntityRetrievalException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    UserAccount getByLogin(String login) throws EntityRetrievalException;
+    UserAccount getByLogin(String login) throws EntityRetrievalException, LoginDoesNotExistException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym loginie.

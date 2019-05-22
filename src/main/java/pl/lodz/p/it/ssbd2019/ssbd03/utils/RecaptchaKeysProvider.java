@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.PropertyManager;
 
 import javax.enterprise.context.ApplicationScoped;

@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.MessageNotSentException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.MessageNotSentException;
 
 /**
  * Uogólniony interfejs dla klas, które służą do wysyłania wiadomości.

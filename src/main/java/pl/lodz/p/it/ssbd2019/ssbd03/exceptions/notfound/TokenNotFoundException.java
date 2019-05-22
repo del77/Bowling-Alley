@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound;
 
-public class TokenNotFoundException extends Exception {
+public class TokenNotFoundException extends NotFoundException {
+
     public TokenNotFoundException() {
     }
 

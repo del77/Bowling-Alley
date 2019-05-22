@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict;
 
-public class AccountAlreadyConfirmedException extends Exception {
+public class AccountAlreadyConfirmedException extends StateConflictedException {
+
     public AccountAlreadyConfirmedException() {
     }
 

@@ -1,16 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenService;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.AccountAlreadyConfirmedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.mvc.Controller;
-import javax.mvc.Models;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

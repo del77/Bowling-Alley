@@ -1,5 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.localization;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.LanguageMapFactory;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.context.LanguageContext;
 import javax.enterprise.context.SessionScoped;

@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict;
 
-public class AccountPasswordNotUniqueException extends Exception {
+public class AccountPasswordNotUniqueException extends StateConflictedException {
     public AccountPasswordNotUniqueException() {}
 
     public AccountPasswordNotUniqueException(String message) {

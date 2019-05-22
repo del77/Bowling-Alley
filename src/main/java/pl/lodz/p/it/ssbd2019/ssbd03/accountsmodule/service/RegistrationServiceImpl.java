@@ -5,7 +5,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
@@ -34,9 +38,9 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
     @Override
     public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
             throws RegistrationProcessException,
-                EntityRetrievalException,
-                NotUniqueLoginException,
-                NotUniqueEmailException {
+            EntityRetrievalException,
+            NotUniqueLoginException,
+            NotUniqueEmailException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);

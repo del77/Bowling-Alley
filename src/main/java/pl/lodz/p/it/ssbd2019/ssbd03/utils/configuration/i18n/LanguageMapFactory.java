@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.configuration.i18n.context.LocaleConfig;
 
 import java.util.Hashtable;

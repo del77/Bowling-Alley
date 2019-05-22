@@ -10,11 +10,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDt
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import javax.annotation.security.RolesAllowed;
