@@ -144,9 +144,9 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             account.setAccountActive(isActive);
             UserAccount editedAccount = userAccountRepositoryLocal.edit(account);
 
-            notifyUserViaEmail(
+            messenger.sendMessage(
                     account.getEmail(),
-                    localization.get("accountStatusChanged"),
+                    localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
                     account.isAccountActive() ? localization.get("yourAccountUnlocked") : localization.get("yourAccountLocked")
             );
 
@@ -208,29 +208,6 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             throw new ChangePasswordException("Couldn't change the password because the account was changed by other user.", e);
         } catch (Exception e) {
             throw new ChangePasswordException(e.getMessage());
-        }
-    }
-
-    /**
-     * Wysyła do użytkownika maila z powiadomieniem.
-     *
-     * @param email   Adres email odbiorcy
-     * @param subject Temat wiadomości
-     * @param body    Treść wiadomości
-     */
-    private void notifyUserViaEmail(String email, String subject, String body) {
-        ClassicMessage message = ClassicMessage
-                .builder()
-                .subject(localization.get("bowlingAlley") + " - " + subject)
-                .to(email)
-                .from("ssbd201903@gmail.com")
-                .body(body)
-                .build();
-
-        try {
-            messenger.sendMessage(message);
-        } catch (MessageNotSentException ignored) {
-
         }
     }
 }

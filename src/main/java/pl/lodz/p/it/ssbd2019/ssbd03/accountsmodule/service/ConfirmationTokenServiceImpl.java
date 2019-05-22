@@ -51,9 +51,10 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
 
     /**
      * Metoda służy do aktywacji użytkownika na podstawie tokenu z nim powiązanego.
+     *
      * @param token wartość tokena potwierdzenia
      * @throws ConfirmationTokenException w przypadku, gdy nie uda się znaleźć tokena, konto jest już aktywne, nie uda się
-     * dokonać edycji użytkownika, bądź gdy użytkownik nie istnieje.
+     *                                    dokonać edycji użytkownika, bądź gdy użytkownik nie istnieje.
      */
     @Override
     public void activateAccountByToken(String token) throws ConfirmationTokenException {
@@ -67,6 +68,13 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
             }
             userAccount.setAccountConfirmed(true);
             confirmationTokenRepository.edit(tokenEntity);
+
+            messenger.sendMessage(
+                    userAccount.getEmail(),
+                    localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
+                    localization.get("accountConfirmed")
+            );
+
         } catch (final Exception e) {
             throw new ConfirmationTokenException("Exception during token retrieval", e);
         }
@@ -75,6 +83,7 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
     /**
      * Metoda tworzy token dla użytkownika, a następnie wysyła wiadomość mail. Uwaga: w przypadku, gdy nie uda się
      * wysłać wiadomości metoda nadal zwraca sukces. Wysyłanie wiadomości jest asynchroniczne.
+     *
      * @param userName nazwa użytkownika.
      * @throws ConfirmationTokenException w przypadku gdy użytkownik nie istnieje, nie uda się utrwalić encji ConfirmationToken
      */
@@ -83,30 +92,16 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
         try {
             @NotNull UserAccount userAccount = this.retrieveUser(userName);
             ConfirmationToken confirmationToken = this.buildTokenForUser(userAccount);
-            ClassicMessage classicMessage = this.buildMessageForUser(userAccount, confirmationToken.getToken());
-            messenger.sendMessage(classicMessage);
+            String url = getActivationUrl(confirmationToken.getToken());
+
+            messenger.sendMessage(
+                    userAccount.getEmail(),
+                    localization.get("bowlingAlley") + " - " + localization.get("activateAccount"),
+                    url
+            );
         } catch (final Exception e) {
             throw new ConfirmationTokenException("Could not create token.");
         }
-    }
-
-    private ClassicMessage buildMessageForUser(UserAccount userAccount, String token) {
-        ClassicMessage classicMessage = ClassicMessage
-                .builder()
-                .subject(
-                        localization.get("activateAccount") + ", " + userAccount.getLogin()
-                )
-                .to(userAccount.getEmail())
-                .from("admin@bowling.com")
-                .body(
-                        localization.get("clickToActivate")
-                                + ": " + "<a href=\""
-                                + getRootAddress()
-                                + models.get("webContextPath") + "/confirm-account/" + token
-                                + "\">Link</a>"
-                )
-                .build();
-        return classicMessage;
     }
 
     private ConfirmationToken buildTokenForUser(UserAccount userAccount) {
@@ -122,12 +117,13 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
         Optional<UserAccount> userAccount =
                 userAccountRepositoryLocal.findByLogin(userName);
         return userAccount
-                .orElseThrow( () -> new EntityRetrievalException("Not user account with that login"));
+                .orElseThrow(() -> new EntityRetrievalException("Not user account with that login"));
     }
 
-    private String getRootAddress() {
+    private String getActivationUrl(String token) {
         String fullAddress = this.httpServletRequest.getRequestURL().toString();
         String contextPath = models.get("webContextPath", String.class);
-        return fullAddress.substring(0, fullAddress.indexOf(contextPath));
+
+        return fullAddress.substring(0, fullAddress.indexOf(contextPath)) + models.get("webContextPath") + "/confirm-account/" + token;
     }
 }
