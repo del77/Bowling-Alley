@@ -10,11 +10,10 @@ public interface ResetPasswordService {
     /**
      * Metoda obsługująca żądanie resetowania hasła przez użytkownika.
      *
-     * @param email          Adres email powiązany z kontem
-     * @param servletContext Servlet context
+     * @param email Adres email powiązany z kontem
      * @throws ResetPasswordException Wyjątek
      */
-    ResetPasswordToken requestResetPassword(String email, ServletContext servletContext) throws ResetPasswordException;
+    ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException;
 
     /**
      * Metoda obsługująca resetowanie hasła przez użytkownika.

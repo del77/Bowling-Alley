@@ -4,19 +4,21 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.ResetPasswordToken
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.MessageNotSentException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.mail.EmailMessenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
+import javax.mvc.Models;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
 @Stateless
@@ -28,12 +30,18 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKResetPasswordTokenRepository")
     ResetPasswordTokenRepositoryLocal resetPasswordTokenRepositoryLocal;
 
+    @EJB
+    private Messenger messenger;
+
     @Inject
-    EmailMessenger emailMessenger;
+    private Models models;
+
+    @Context
+    private HttpServletRequest httpServletRequest;
 
     @Override
     @PermitAll
-    public ResetPasswordToken requestResetPassword(String email, ServletContext servletContext) throws ResetPasswordException {
+    public ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException {
         try {
             UserAccount userAccount = getUserByEmail(email);
             String token = TokenUtils.generate();
@@ -47,7 +55,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                     .build();
 
             resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
-            sendEmailWithToken(email, token, servletContext);
+            sendEmailWithToken(email, token);
 
             return resetPasswordToken;
         } catch (Exception e) {
@@ -64,7 +72,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             String newPasswordHash = SHA256Provider.encode(newPassword);
 
             if (!TokenUtils.isValid(resetPasswordToken.getValidity())) {
-                throw new ResetPasswordException("Invalid token.");
+                throw new TokenExpiredException("token_expired");
             }
 
             userAccount.setPassword(newPasswordHash);
@@ -73,7 +81,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
             return userAccount;
         } catch (Exception e) {
-            throw new ResetPasswordException(e.getMessage());
+            throw new ResetPasswordException(e);
         }
     }
 
@@ -82,13 +90,13 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      *
      * @param email Adres email powiązany z kontem
      * @return konto użytkownika
-     * @throws ResetPasswordException Wyjątek
+     * @throws EmailDoesNotExistException Wyjątek
      */
-    private UserAccount getUserByEmail(String email) throws ResetPasswordException {
+    private UserAccount getUserByEmail(String email) throws EmailDoesNotExistException {
         try {
             return userAccountRepositoryLocal.findByEmail(email).orElseThrow(ResetPasswordException::new);
         } catch (Exception e) {
-            throw new ResetPasswordException("Invalid email.");
+            throw new EmailDoesNotExistException("invalid_email");
         }
     }
 
@@ -97,13 +105,13 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      *
      * @param token Unikalny token
      * @return token
-     * @throws ResetPasswordException Wyjątek
+     * @throws TokenNotFoundException Wyjątek
      */
-    private ResetPasswordToken getToken(String token) throws ResetPasswordException {
+    private ResetPasswordToken getToken(String token) throws TokenNotFoundException {
         try {
             return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(ResetPasswordException::new);
         } catch (Exception e) {
-            throw new ResetPasswordException("Invalid token.");
+            throw new TokenNotFoundException("invalid_token");
         }
     }
 
@@ -113,8 +121,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @param email Adres email użytkownika
      * @param token Token
      */
-    private void sendEmailWithToken(String email, String token, ServletContext servletContext) throws MessageNotSentException {
-        String url = getResetPasswordUrl(token, servletContext);
+    private void sendEmailWithToken(String email, String token) throws MessageNotSentException {
+        String url = getResetPasswordUrl(token);
 
         ClassicMessage message = ClassicMessage
                 .builder()
@@ -124,10 +132,13 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                 .body(url)
                 .build();
 
-        emailMessenger.sendMessage(message);
+        messenger.sendMessage(message);
     }
 
-    private String getResetPasswordUrl(String token, ServletContext servletContext) {
-        return "https://studapp.it.p.lodz.pl:8403" + servletContext.getContextPath() + "/reset-password/" + token;
+    private String getResetPasswordUrl(String token) {
+        String fullAddress = this.httpServletRequest.getRequestURL().toString();
+        String contextPath = models.get("webContextPath", String.class);
+
+        return fullAddress.substring(0, fullAddress.indexOf(contextPath)) + models.get("webContextPath") + "/reset-password/" + token;
     }
 }

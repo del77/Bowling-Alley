@@ -1,10 +1,11 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web;
+package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ResetPasswordService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EmailDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -44,6 +45,9 @@ public class ResetPasswordController {
     @Inject
     private PasswordDtoValidator passwordDtoValidator;
 
+    @Inject
+    private LocalizedMessageProvider localization;
+
     /**
      * @return Formularz żądania resetowania hasła
      */
@@ -63,7 +67,7 @@ public class ResetPasswordController {
     @POST
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
-    public String requestPasswordReset(@BeanParam EmailDto userData, @Context ServletContext servletContext) {
+    public String requestPasswordReset(@BeanParam EmailDto userData) {
         List<String> errorMessages = validator.validate(userData);
 
         if (!errorMessages.isEmpty()) {
@@ -72,13 +76,13 @@ public class ResetPasswordController {
         }
 
         try {
-            resetPasswordService.requestResetPassword(userData.getEmail(), servletContext);
+            resetPasswordService.requestResetPassword(userData.getEmail());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getMessage()));
+            models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
             return REQUEST_FORM_HBS;
         }
 
-        models.put(INFO, Collections.singletonList("Success, check your email!"));
+        models.put(INFO, Collections.singletonList(localization.get("emailHasBeenSent")));
         return REQUEST_FORM_HBS;
     }
 
@@ -116,11 +120,11 @@ public class ResetPasswordController {
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getMessage()));
+            models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
             return RESET_FORM_HBS;
         }
 
-        models.put(INFO, Collections.singletonList("Your password has been changed!"));
+        models.put(INFO, Collections.singletonList(localization.get("passwordChangedSuccess")));
         return RESET_FORM_HBS;
     }
 }
