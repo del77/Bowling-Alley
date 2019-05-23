@@ -85,6 +85,11 @@ public class UserAccount {
     @Column(name="failed_logins_counter")
     private Integer failedLoginsCounter;
 
+    @OneToMany(cascade={CascadeType.MERGE})
+    @JoinColumn(name="user_id", referencedColumnName = "id", nullable = false)
+    private List<PreviousUserPassword> previousUserPasswords;
+
+
     /**
      * Ta lista tworzy rekurencyjną relację - w przypadku odczytywaniu z bazy nie ma problemu,
      * ale adnotacja @NotNull nie pozwala utworzyć AccountAccessLevels bez UserAccount i odwrotnie,
@@ -93,10 +98,6 @@ public class UserAccount {
     @OneToMany(mappedBy = "account", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @ToString.Exclude
     private List<AccountAccessLevel> accountAccessLevels;
-    
-    @OneToMany(cascade={CascadeType.MERGE})
-    @JoinColumn(name="user_id", referencedColumnName = "id", nullable = false)
-    private List<PreviousUserPassword> previousUserPasswords;
 
     @Version
     @NotNull
