@@ -4,11 +4,13 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.ResetPasswordToken
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EmailDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenExpiredException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
 import javax.annotation.security.PermitAll;
@@ -49,6 +51,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             UserAccount userAccount = getUserByEmail(email);
             String token = TokenUtils.generate();
             Timestamp validity = TokenUtils.getValidity(24);
+            String url = getResetPasswordUrl(token);
 
             ResetPasswordToken resetPasswordToken = ResetPasswordToken
                     .builder()
@@ -58,7 +61,12 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                     .build();
 
             resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
-            sendEmailWithToken(email, token);
+
+            messenger.sendMessage(
+                    email,
+                    localization.get("bowlingAlley") + " - " + localization.get("resetPassword"),
+                    url
+            );
 
             return resetPasswordToken;
         } catch (Exception e) {
@@ -116,26 +124,6 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         } catch (Exception e) {
             throw new TokenNotFoundException("invalid_token");
         }
-    }
-
-    /**
-     * Wysyła email z tokenem do użytkownika
-     *
-     * @param email Adres email użytkownika
-     * @param token Token
-     */
-    private void sendEmailWithToken(String email, String token) throws MessageNotSentException {
-        String url = getResetPasswordUrl(token);
-
-        ClassicMessage message = ClassicMessage
-                .builder()
-                .from("ssbd201903@gmail.com")
-                .to(email)
-                .subject(localization.get("bowlingAlley") + " - " + localization.get("resetPassword"))
-                .body(url)
-                .build();
-
-        messenger.sendMessage(message);
     }
 
     private String getResetPasswordUrl(String token) {
