@@ -61,6 +61,18 @@ public class EmailMessenger implements Messenger {
         mailer.sendMail(rebuildIntoMail(message));
     }
 
+    @Override
+    public void sendMessage(String email, String subject, String body) throws MessageNotSentException {
+        ClassicMessage message = ClassicMessage
+                .builder()
+                .subject(subject)
+                .to(email)
+                .from("ssbd201903@gmail.com")
+                .body(body)
+                .build();
+
+        this.sendMessage(message);
+    }
 
     private Email rebuildIntoMail(ClassicMessage classicMessage) {
         return EmailBuilder

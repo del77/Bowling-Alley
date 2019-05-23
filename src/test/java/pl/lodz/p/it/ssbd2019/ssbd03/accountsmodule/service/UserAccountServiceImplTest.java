@@ -8,19 +8,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +34,12 @@ public class UserAccountServiceImplTest {
 
     @Mock
     private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
+
+    @Mock
+    private Messenger messenger;
+
+    @Mock
+    private LocalizedMessageProvider localization;
 
     @InjectMocks
     private UserAccountServiceImpl userService;
@@ -49,12 +57,11 @@ public class UserAccountServiceImplTest {
     }
 
 
-
     @Test
     public void shouldReturnAllUsersOnGetAllUsers() throws EntityRetrievalException {
-        List<UserAccount> allUserAccounts = asList( mock(UserAccount.class), mock(UserAccount.class), mock(UserAccount.class) );
+        List<UserAccount> allUserAccounts = asList(mock(UserAccount.class), mock(UserAccount.class), mock(UserAccount.class));
         when(userAccountRepositoryLocal.findAll()).thenReturn(allUserAccounts);
-        Assertions.assertEquals( allUserAccounts.size(), userService.getAllUsers().size() );
+        Assertions.assertEquals(allUserAccounts.size(), userService.getAllUsers().size());
     }
 
     @Test
@@ -65,7 +72,7 @@ public class UserAccountServiceImplTest {
             userAccount.setId(id);
             return Optional.of(userAccount);
         });
-        Assertions.assertEquals( userService.getUserById(1L), userAccount);
+        Assertions.assertEquals(userService.getUserById(1L), userAccount);
     }
 
     @Test
@@ -76,7 +83,7 @@ public class UserAccountServiceImplTest {
             userAccount.setLogin(login);
             return Optional.of(userAccount);
         });
-        Assertions.assertEquals( userService.getByLogin("login"), userAccount);
+        Assertions.assertEquals(userService.getByLogin("login"), userAccount);
     }
 
     @Test
@@ -95,15 +102,15 @@ public class UserAccountServiceImplTest {
         });
         Assertions.assertEquals(userService.updateUser(userAccount).getId(), 1L);
     }
-    
+
     @Test
     public void shouldThrowEntityUpdateRolesExceptionWhenUpdateUserCatchesException() {
         UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
         when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
-        
+
         Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserAccessLevels(userAccount, Collections.singletonList("CLIENT")));
     }
-    
+
     @Test
     public void shouldReturnRightEntityOnUpdateUserRoles() throws EntityUpdateException {
         UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
@@ -112,7 +119,7 @@ public class UserAccountServiceImplTest {
             newUserAccount.setId(1L);
             return newUserAccount;
         });
-        Assertions.assertEquals( userService.updateUserAccessLevels(userAccount, new ArrayList<>()).getId(), 1L);
+        Assertions.assertEquals(userService.updateUserAccessLevels(userAccount, new ArrayList<>()).getId(), 1L);
     }
 
     @Test
@@ -138,7 +145,7 @@ public class UserAccountServiceImplTest {
 
         userAccount = userService.updateUserAccessLevels(userAccount, Collections.singletonList("CLIENT"));
         int accessLevelsAfter = userAccount.getAccountAccessLevels().size();
-        Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore+1);
+        Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore + 1);
     }
 
     @Test
@@ -166,7 +173,7 @@ public class UserAccountServiceImplTest {
             Assertions.fail(e);
         }
     }
-    
+
     @Test
     public void lockLockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
@@ -179,7 +186,7 @@ public class UserAccountServiceImplTest {
             Assertions.fail(e);
         }
     }
-    
+
     @Test
     public void lockUnlockedAccountTestShouldNotThrow() throws EntityUpdateException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
@@ -259,6 +266,7 @@ public class UserAccountServiceImplTest {
         Assertions.assertEquals(accessLevelsAfter, accessLevelsBefore);
         Assertions.assertTrue(activeBefore && !activeAfter);
     }
+
     @Test
     public void changePasswordTestShouldNotThrow() {
         String login = "login69";
@@ -318,25 +326,23 @@ public class UserAccountServiceImplTest {
             String currentPasswordHash = SHA256Provider.encode("password");
             String newPasswordHash = SHA256Provider.encode(newPassword);
 
-        UserAccount userAccount = UserAccount.builder()
-                .password(currentPasswordHash)
-                .previousUserPasswords(new ArrayList<>())
-                .build();
-        when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
-            Long id = u.getArgument(0);
-            userAccount.setId(id);
-            return Optional.of(userAccount);
-        });
+            UserAccount userAccount = UserAccount.builder()
+                    .password(currentPasswordHash)
+                    .previousUserPasswords(new ArrayList<>())
+                    .build();
+            when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
+                Long id = u.getArgument(0);
+                userAccount.setId(id);
+                return Optional.of(userAccount);
+            });
 
-        userService.changePasswordById(1L, newPassword);
-        Assertions.assertEquals(userAccount.getPassword(), newPasswordHash);
+            userService.changePasswordById(1L, newPassword);
+            Assertions.assertEquals(userAccount.getPassword(), newPasswordHash);
         } catch (Exception e) {
             Assertions.fail();
         }
-
-
     }
-    
+
     @Test
     public void updateUserAccountDetailsTest() throws EntityUpdateException, NotUniqueEmailException {
         AccessLevel accessLevel = AccessLevel.builder()
@@ -357,8 +363,7 @@ public class UserAccountServiceImplTest {
             return edited;
         });
         try {
-            Assertions.assertEquals("new login",
-                    userService.updateUser(userAccount).getLogin());
+            Assertions.assertEquals("new login", userService.updateUser(userAccount).getLogin());
         } catch (EntityUpdateException e) {
             Assertions.fail(e);
         }
