@@ -795,7 +795,7 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- login method definition, references to login form and login error pages -->
+  <!-- login method definition, references to login form and login error pages
   <login-config>
     <auth-method>FORM</auth-method>
     <realm-name>ssbd03realm</realm-name>
@@ -804,7 +804,7 @@
       <form-error-page>/login/error</form-error-page>
     </form-login-config>
   </login-config>
-
+-->
 
   <error-page>
     <location>/ErrorServlet</location>

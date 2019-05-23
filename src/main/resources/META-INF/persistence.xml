@@ -8,6 +8,7 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Item</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
@@ -24,6 +25,19 @@
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
     </properties>
   </persistence-unit>
+    <persistence-unit name="ssbd03authPU" transaction-type="JTA">
+      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+      <jta-data-source>jdbc/ssbd03authDS</jta-data-source>
+      <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AuthenticationViewEntity</class>
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
+      <shared-cache-mode>NONE</shared-cache-mode>
+      <properties>
+        <property name="hibernate.hbm2dll.auto" value="update"/>
+        <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/>
+        <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
+      </properties>
+    </persistence-unit>
+
   <persistence-unit name="ssbd03motPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/ssbd03motDS</jta-data-source>
@@ -32,6 +46,7 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Item</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
@@ -48,12 +63,13 @@
   </persistence-unit>
   <persistence-unit name="ssbd03morPU" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <jta-data-source>jdbc/ssbd03motDS</jta-data-source>
+    <jta-data-source>jdbc/ssbd03morDS</jta-data-source>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Item</class>
+    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>

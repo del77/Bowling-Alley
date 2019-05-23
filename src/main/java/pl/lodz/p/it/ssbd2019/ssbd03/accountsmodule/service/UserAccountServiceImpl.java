@@ -89,9 +89,11 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
             UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
-                    () -> new EntityRetrievalException("No account with login specified."));
+                    () -> new LoginDoesNotExistException("No account with login specified."));
             Hibernate.initialize(user.getAccountAccessLevels());
             return user;
+        } catch (LoginDoesNotExistException e) {
+            throw e;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
@@ -134,6 +136,36 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             return userAccountRepositoryLocal.edit(account);
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
+        }
+    }
+    
+    @PermitAll
+    public void restartFailedLoginsCounter(String login) throws EntityUpdateException {
+        try {
+            UserAccount account = getByLogin(login);
+            account.setFailedLoginsCounter(0);
+            userAccountRepositoryLocal.edit(account);
+        } catch (EntityRetrievalException e) {
+            throw new EntityUpdateException("Couldn't retrieve user from database that has just logged in", e);
+        }
+    }
+    
+    @PermitAll
+    public void incrementFailedLoginsCounter(String login) throws EntityUpdateException {
+        try {
+            UserAccount account = getByLogin(login);
+            Integer counter = account.getFailedLoginsCounter();
+            if (counter == null) {
+                account.setFailedLoginsCounter(1);
+            } else if (counter < 2) {
+                account.setFailedLoginsCounter(++counter);
+            } else {
+                account.setFailedLoginsCounter(0); // reset it now, so after unlocking the account back it won't be locked after 1 failed attempt
+                account.setAccountActive(false);
+            }
+            userAccountRepositoryLocal.edit(account);
+        } catch (EntityRetrievalException e) {
+            throw new EntityUpdateException(e);
         }
     }
 
