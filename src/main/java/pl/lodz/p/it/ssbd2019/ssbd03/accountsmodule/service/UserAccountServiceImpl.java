@@ -163,7 +163,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         try {
             UserAccount account = getByLogin(login);
             account.setFailedLoginsCounter(0);
-            userAccountRepositoryLocal.edit(account);
+            userAccountRepositoryLocal.editWithoutMerge(account);
         } catch (EntityRetrievalException e) {
             throw new EntityUpdateException("Couldn't retrieve user from database that has just logged in", e);
         }
@@ -176,15 +176,24 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             Integer counter = account.getFailedLoginsCounter();
             if (counter == null) {
                 account.setFailedLoginsCounter(1);
+                userAccountRepositoryLocal.editWithoutMerge(account);
             } else if (counter < 2) {
                 account.setFailedLoginsCounter(++counter);
+                userAccountRepositoryLocal.editWithoutMerge(account);
             } else {
                 account.setFailedLoginsCounter(0); // reset it now, so after unlocking the account back it won't be locked after 1 failed attempt
                 account.setAccountActive(false);
+                userAccountRepositoryLocal.editWithoutMerge(account); // edit before sending email in case this method throws an exception
+                messenger.sendMessage(
+                        account.getEmail(),
+                        localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
+                        localization.get("accountLockedByFailedLogins")
+                );
             }
-            userAccountRepositoryLocal.edit(account);
         } catch (EntityRetrievalException e) {
             throw new EntityUpdateException(e);
+        } catch (MessageNotSentException e) {
+            throw new EntityUpdateException("Couldn't notify user via email", e);
         }
     }
 

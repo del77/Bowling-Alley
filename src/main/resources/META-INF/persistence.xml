@@ -12,7 +12,6 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
-    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel</class>
@@ -52,7 +51,6 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest</class>
-    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -76,7 +74,6 @@
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.Score</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest</class>
-    <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount</class>
     <class>pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
