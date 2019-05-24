@@ -6,6 +6,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -13,9 +15,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.servlet.ServletContext;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +28,6 @@ import java.util.List;
 @Path("reset-password")
 public class ResetPasswordController {
 
-    private static final String ERROR = "errors";
-    private static final String INFO = "infos";
     private static final String REQUEST_FORM_HBS = "accounts/reset-password/requestForm.hbs";
     private static final String RESET_FORM_HBS = "accounts/reset-password/resetForm.hbs";
 
@@ -43,6 +41,9 @@ public class ResetPasswordController {
     private DtoValidator validator;
 
     @Inject
+    private RedirectUtil redirectUtil;
+
+    @Inject
     private PasswordDtoValidator passwordDtoValidator;
 
     @Inject
@@ -54,7 +55,8 @@ public class ResetPasswordController {
     @GET
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
-    public String requestPasswordResetForm() {
+    public String requestPasswordResetForm(@QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         return REQUEST_FORM_HBS;
     }
 
@@ -71,19 +73,19 @@ public class ResetPasswordController {
         List<String> errorMessages = validator.validate(userData);
 
         if (!errorMessages.isEmpty()) {
-            models.put(ERROR, errorMessages);
-            return REQUEST_FORM_HBS;
+            return redirectUtil.redirectError("/reset-password", null, errorMessages);
         }
 
         try {
             resetPasswordService.requestResetPassword(userData.getEmail());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
-            return REQUEST_FORM_HBS;
+            return redirectUtil.redirectError("/reset-password", null, Collections.singletonList(e.getLocalizedMessage()));
         }
-
-        models.put(INFO, Collections.singletonList(localization.get("emailHasBeenSent")));
-        return REQUEST_FORM_HBS;
+        FormData formData = new FormData();
+        formData.setInfos(
+                Collections.singletonList(localization.get("emailHasBeenSent"))
+        );
+        return redirectUtil.redirect("/reset-password", formData);
     }
 
     /**
@@ -93,7 +95,8 @@ public class ResetPasswordController {
     @PermitAll
     @Path("/{token}")
     @Produces(MediaType.TEXT_HTML)
-    public String resetPasswordForm(@PathParam("token") String token) {
+    public String resetPasswordForm(@PathParam("token") String token, @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         return RESET_FORM_HBS;
     }
 
@@ -113,18 +116,19 @@ public class ResetPasswordController {
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            models.put(ERROR, errorMessages);
-            return RESET_FORM_HBS;
+            return redirectUtil.redirectError("/reset-password/" + token, null, errorMessages);
         }
 
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
         } catch (Exception e) {
-            models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
-            return RESET_FORM_HBS;
+            return redirectUtil.redirectError("/reset-password/" + token, null, Collections.singletonList(e.getLocalizedMessage()));
         }
 
-        models.put(INFO, Collections.singletonList(localization.get("passwordChangedSuccess")));
-        return RESET_FORM_HBS;
+        FormData formData = new FormData();
+        formData.setInfos(
+                Collections.singletonList(localization.get("passwordChangedSuccess"))
+        );
+        return redirectUtil.redirect("/reset-password", formData);
     }
 }
