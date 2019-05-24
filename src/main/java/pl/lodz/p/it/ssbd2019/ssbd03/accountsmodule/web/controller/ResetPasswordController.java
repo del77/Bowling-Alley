@@ -28,6 +28,7 @@ import java.util.List;
 @Path("reset-password")
 public class ResetPasswordController {
 
+    private static final String RESET_PASSWORD_URL = "/reset-password";
     private static final String REQUEST_FORM_HBS = "accounts/reset-password/requestForm.hbs";
     private static final String RESET_FORM_HBS = "accounts/reset-password/resetForm.hbs";
 
@@ -71,21 +72,20 @@ public class ResetPasswordController {
     @Produces(MediaType.TEXT_HTML)
     public String requestPasswordReset(@BeanParam EmailDto userData) {
         List<String> errorMessages = validator.validate(userData);
-
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError("/reset-password", null, errorMessages);
+            return redirectUtil.redirectError(RESET_PASSWORD_URL, null, errorMessages);
         }
 
         try {
             resetPasswordService.requestResetPassword(userData.getEmail());
         } catch (Exception e) {
-            return redirectUtil.redirectError("/reset-password", null, Collections.singletonList(e.getLocalizedMessage()));
+            return redirectUtil.redirectError(RESET_PASSWORD_URL, null, Collections.singletonList(e.getLocalizedMessage()));
         }
         FormData formData = new FormData();
         formData.setInfos(
                 Collections.singletonList(localization.get("emailHasBeenSent"))
         );
-        return redirectUtil.redirect("/reset-password", formData);
+        return redirectUtil.redirect(RESET_PASSWORD_URL, formData);
     }
 
     /**
@@ -116,19 +116,19 @@ public class ResetPasswordController {
         errorMessages.addAll(passwordDtoValidator.validatePassword(userData.getNewPassword(), userData.getConfirmNewPassword()));
 
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError("/reset-password/" + token, null, errorMessages);
+            return redirectUtil.redirectError(RESET_PASSWORD_URL + "/" + token, null, errorMessages);
         }
 
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
         } catch (Exception e) {
-            return redirectUtil.redirectError("/reset-password/" + token, null, Collections.singletonList(e.getLocalizedMessage()));
+            return redirectUtil.redirectError(RESET_PASSWORD_URL + "/" + token, null, Collections.singletonList(e.getLocalizedMessage()));
         }
 
         FormData formData = new FormData();
         formData.setInfos(
                 Collections.singletonList(localization.get("passwordChangedSuccess"))
         );
-        return redirectUtil.redirect("/reset-password", formData);
+        return redirectUtil.redirect(RESET_PASSWORD_URL, formData);
     }
 }
