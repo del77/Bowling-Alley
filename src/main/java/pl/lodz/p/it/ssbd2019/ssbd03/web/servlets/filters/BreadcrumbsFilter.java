@@ -1,7 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.localization.LocalizedMessageRetriever;
+
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.breadcrumbs.Breadcrumb;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
 import javax.servlet.annotation.WebFilter;
 import javax.inject.Inject;
@@ -25,7 +26,7 @@ public class BreadcrumbsFilter extends HttpFilter {
     private Models models;
 
     @Inject
-    private LocalizedMessageRetriever localization;
+    private LocalizedMessageProvider localization;
 
     private String contextPath;
 
@@ -33,7 +34,6 @@ public class BreadcrumbsFilter extends HttpFilter {
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         contextPath = request.getContextPath();
-
         if (!isPageRequest(request)) {
             chain.doFilter(request, response);
             return;
@@ -56,18 +56,25 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/accounts/\\d+/edit")) {
             addBreadcrumbToModel(model, "accounts", "/accounts", false);
             addBreadcrumbToModel(model, "editAccount", "#", true);
+        } else if (relativePath.matches("/accounts/\\d+/edit/roles")) {
+            addBreadcrumbToModel(model, "accounts", "/accounts", false);
+            addBreadcrumbToModel(model, "editAccount", removeLastUriSection(relativePath), false);
+            addBreadcrumbToModel(model, "editRoles", "#", true);
         } else if (relativePath.matches("/accounts/\\d+/edit/password")) {
             addBreadcrumbToModel(model, "accounts", "/accounts", false);
             addBreadcrumbToModel(model, "editAccount", removeLastUriSection(relativePath), false);
             addBreadcrumbToModel(model, "editPassword", "#", true);
         } else if (relativePath.matches("/admin/register(/success)?")) {
             addBreadcrumbToModel(model, "createAccount", "/admin/register", true);
-        } else if (relativePath.matches("/account/edit-password")) {
+        } else if (relativePath.matches("/account/edit-password(/success)?")) {
             addBreadcrumbToModel(model, "editPassword", "/account/edit-password", true);
         } else if (relativePath.matches("/login")) {
             addBreadcrumbToModel(model, "login", "/login", true);
         } else if (relativePath.matches("/register(/success)?")) {
             addBreadcrumbToModel(model, "register", "/register", true);
+        } else if (relativePath.matches("/reset-password")) {
+            addBreadcrumbToModel(model, "login", "/login", false);
+            addBreadcrumbToModel(model, "resetPassword", "#", true);
         }
 
         models.put("breadcrumbs", model);

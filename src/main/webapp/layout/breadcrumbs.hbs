@@ -4,7 +4,7 @@
             <ol class="breadcrumb">
                 {{#each breadcrumbs}}
                     {{#unless disabled}}
-                        <li class="breadcrumb-item"><a href="{{href}}"> {{label}} </a></li>
+                        <li class="breadcrumb-item"><a href="{{href}}">{{label}}</a></li>
                     {{/unless}}
                     {{#if disabled}}
                         <li class="breadcrumb-item active" aria-current="page">{{label}}</li>
