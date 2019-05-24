@@ -82,4 +82,21 @@ public interface UserAccountService {
      * @throws ChangePasswordException wyjątek zmiany hasła
      */
     void changePasswordById(long id, String newPassword) throws ChangePasswordException;
+    
+    /**
+     * Resetuje licznik nieudanych prób logowania dla konta o podanym loginie
+     *
+     * @param login login konta
+     * @throws EntityUpdateException w wypadku, gdy nie uda się zmiana stanu encji
+     */
+    void restartFailedLoginsCounter(String login) throws EntityUpdateException;
+    
+    /**
+     * Zwiększa licznik nieudanych prób logowania dla konta o podanym loginie
+     * i blokuje konto, jeśli licznik osiągnął wartość 3
+     *
+     * @param login login konta
+     * @throws EntityUpdateException w wypadku, gdy nie uda się zmiana stanu encji
+     */
+    void incrementFailedLoginsCounter(String login) throws EntityUpdateException;
 }

@@ -10,7 +10,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.ClassicMessage;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
@@ -23,7 +22,6 @@ import javax.ejb.*;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.ejb.EJBTransactionRolledbackException;
-import javax.xml.registry.infomodel.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,10 +99,12 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @PermitAll
     public UserAccount getByLogin(String login) throws EntityRetrievalException {
         try {
-            UserAccount user = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
-                    () -> new EntityRetrievalException("No account with login specified."));
+            UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+                    () -> new LoginDoesNotExistException("No account with login specified."));
             Hibernate.initialize(user.getAccountAccessLevels());
             return user;
+        } catch (LoginDoesNotExistException e) {
+            throw e;
         } catch (Exception e) {
             throw new EntityRetrievalException("Could not retrieve user with specified login.", e);
         }
@@ -155,6 +155,45 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             return editedAccount;
         } catch (Exception e) {
             throw new EntityUpdateException("Could not unlock user", e);
+        }
+    }
+    
+    @PermitAll
+    public void restartFailedLoginsCounter(String login) throws EntityUpdateException {
+        try {
+            UserAccount account = getByLogin(login);
+            account.setFailedLoginsCounter(0);
+            userAccountRepositoryLocal.editWithoutMerge(account);
+        } catch (EntityRetrievalException e) {
+            throw new EntityUpdateException("Couldn't retrieve user from database that has just logged in", e);
+        }
+    }
+    
+    @PermitAll
+    public void incrementFailedLoginsCounter(String login) throws EntityUpdateException {
+        try {
+            UserAccount account = getByLogin(login);
+            Integer counter = account.getFailedLoginsCounter();
+            if (counter == null) {
+                account.setFailedLoginsCounter(1);
+                userAccountRepositoryLocal.editWithoutMerge(account);
+            } else if (counter < 2) {
+                account.setFailedLoginsCounter(++counter);
+                userAccountRepositoryLocal.editWithoutMerge(account);
+            } else {
+                account.setFailedLoginsCounter(0); // reset it now, so after unlocking the account back it won't be locked after 1 failed attempt
+                account.setAccountActive(false);
+                userAccountRepositoryLocal.editWithoutMerge(account); // edit before sending email in case this method throws an exception
+                messenger.sendMessage(
+                        account.getEmail(),
+                        localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
+                        localization.get("accountLockedByFailedLogins")
+                );
+            }
+        } catch (EntityRetrievalException e) {
+            throw new EntityUpdateException(e);
+        } catch (MessageNotSentException e) {
+            throw new EntityUpdateException("Couldn't notify user via email", e);
         }
     }
 
@@ -226,7 +265,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
      */
     private boolean isNewPasswordUniqueForUser(UserAccount userAccount, String newPassword) {
         List<String> previousPasswords = userAccount.getPreviousUserPasswords().stream()
-                .map(x->x.getPassword()).collect(Collectors.toList());
+                .map(PreviousUserPassword::getPassword).collect(Collectors.toList());
 
         return !previousPasswords.contains(newPassword) && !userAccount.getPassword().equals(newPassword);
     }

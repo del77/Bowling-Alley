@@ -45,6 +45,22 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
             throw new EntityUpdateException("Entity has been updated before these changes were made", e);
         }
     }
+    
+    /**
+     * Edycja istniejącej encji bez wykonywania operacji merge.
+     * @param entity Obiekt encji
+     * @return encja po edycji
+     * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
+     */
+    @Override
+    public T editWithoutMerge(T entity) throws EntityUpdateException {
+        try {
+            getEntityManager().flush();
+            return entity;
+        } catch(OptimisticLockException e) {
+            throw new EntityUpdateException("Entity has been updated before these changes were made", e);
+        }
+    }
 
     /**
      * Znajduje obiekt encji na podstawie podanego identyfikatora.

@@ -81,6 +81,9 @@ public class UserAccount {
     @Column(name = "active", nullable = false)
     @ToString.Exclude
     private boolean accountActive;
+    
+    @Column(name="failed_logins_counter")
+    private Integer failedLoginsCounter;
 
     @OneToMany(cascade={CascadeType.MERGE})
     @JoinColumn(name="user_id", referencedColumnName = "id", nullable = false)

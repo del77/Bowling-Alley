@@ -20,14 +20,14 @@ public class PreviousUserPassword {
     @Column(name = "id", nullable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
-
+    
     @NotEmpty
     @NotNull
     @Size(min = 64, max = 64)
     @Column(name = "password", nullable = false, length = 64)
     @ToString.Exclude
     private String password;
-
+    
     @Version
     @Min(0)
     @NotNull
