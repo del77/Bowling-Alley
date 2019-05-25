@@ -11,14 +11,16 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,7 +78,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnRightUserOnGetByLogin() throws EntityRetrievalException {
+    public void shouldReturnRightUserOnGetByLogin() throws EntityRetrievalException, LoginDoesNotExistException {
         UserAccount userAccount = new UserAccount();
         when(userAccountRepositoryLocal.findByLogin("login")).then((u) -> {
             String login = u.getArgument(0);

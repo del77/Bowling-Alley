@@ -1,6 +1,9 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized;
 
-public class MessageNotSentException extends Exception {
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+
+public class MessageNotSentException extends SsbdApplicationException {
+
 
     public MessageNotSentException() {
         super();

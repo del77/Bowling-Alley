@@ -2,7 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TextParsingException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.TextParsingException;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

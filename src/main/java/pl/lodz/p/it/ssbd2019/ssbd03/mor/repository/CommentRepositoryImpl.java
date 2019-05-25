@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 

@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.PropertiesLoadException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.PropertiesLoadException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.RecaptchaKeysProvider;
 
 import javax.inject.Inject;

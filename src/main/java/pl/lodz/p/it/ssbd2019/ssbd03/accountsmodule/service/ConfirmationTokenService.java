@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ConfirmationTokenException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 
 /**
  * Klasa reprezentująca logikę biznesową dla operacji związanych z obiektami oraz encjami klasy ConfirmationToken.

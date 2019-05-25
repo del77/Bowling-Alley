@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound;
 
-public class EmailDoesNotExistException extends Exception {
+public class EmailDoesNotExistException extends NotFoundException {
     public EmailDoesNotExistException() { }
 
     public EmailDoesNotExistException(String message) {

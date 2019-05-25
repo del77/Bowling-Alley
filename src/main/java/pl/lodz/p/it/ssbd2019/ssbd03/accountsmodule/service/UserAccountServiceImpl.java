@@ -7,7 +7,13 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountPasswordNotUniqueException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.MessageNotSentException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -97,7 +103,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Override
     @PermitAll
-    public UserAccount getByLogin(String login) throws EntityRetrievalException {
+    public UserAccount getByLogin(String login) throws EntityRetrievalException, LoginDoesNotExistException {
         try {
             UserAccount user =  userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                     () -> new LoginDoesNotExistException("No account with login specified."));
@@ -164,7 +170,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             UserAccount account = getByLogin(login);
             account.setFailedLoginsCounter(0);
             userAccountRepositoryLocal.editWithoutMerge(account);
-        } catch (EntityRetrievalException e) {
+        } catch (EntityRetrievalException | LoginDoesNotExistException e) {
             throw new EntityUpdateException("Couldn't retrieve user from database that has just logged in", e);
         }
     }
@@ -190,7 +196,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                         localization.get("accountLockedByFailedLogins")
                 );
             }
-        } catch (EntityRetrievalException e) {
+        } catch (EntityRetrievalException | LoginDoesNotExistException e) {
             throw new EntityUpdateException(e);
         } catch (MessageNotSentException e) {
             throw new EntityUpdateException("Couldn't notify user via email", e);

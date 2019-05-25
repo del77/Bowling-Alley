@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation;
 
-public class RecaptchaValidationException extends Exception {
+public class RecaptchaValidationException extends ValidationException {
+
     public RecaptchaValidationException(String message) {
         super(message);
     }

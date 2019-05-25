@@ -3,9 +3,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.postgresql.util.PSQLException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.MissingRequiredConstructorException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.MissingRequiredConstructorException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
 
 import java.lang.reflect.InvocationTargetException;
 

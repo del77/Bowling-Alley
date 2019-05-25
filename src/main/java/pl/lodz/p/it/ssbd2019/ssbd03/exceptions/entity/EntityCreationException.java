@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
-public class EntityCreationException extends Exception {
+public class EntityCreationException extends DataAccessException {
+
     public EntityCreationException() {
     }
 

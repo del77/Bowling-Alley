@@ -2,9 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.TextParsingException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.TextParsingException;
 
-import javax.inject.Inject;
 import java.security.NoSuchAlgorithmException;
 
 public class SHA256ProviderTest {

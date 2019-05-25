@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;

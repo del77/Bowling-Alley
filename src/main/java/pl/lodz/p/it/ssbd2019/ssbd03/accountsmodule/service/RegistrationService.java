@@ -1,7 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
 
 import java.util.List;
 
@@ -23,7 +28,7 @@ public interface RegistrationService {
                     EntityRetrievalException,
                     NotUniqueLoginException,
                     NotUniqueEmailException,
-                    ConfirmationTokenException;
+            ConfirmationTokenException;
 
     /**
      * Potwierdzenie konta użytkownika.

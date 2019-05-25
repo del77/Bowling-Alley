@@ -1,6 +1,9 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized;
 
-public class TextParsingException extends Exception{
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+
+public class TextParsingException extends SsbdApplicationException {
+
     public TextParsingException() {
     }
 

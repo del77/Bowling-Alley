@@ -2,9 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.ResetPasswordException;
-
-import javax.servlet.ServletContext;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ResetPasswordException;
 
 public interface ResetPasswordService {
     /**

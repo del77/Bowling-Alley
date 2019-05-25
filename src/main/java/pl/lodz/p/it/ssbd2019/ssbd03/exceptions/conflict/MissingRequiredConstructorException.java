@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict;
 
 public class MissingRequiredConstructorException extends RuntimeException {
+
     public MissingRequiredConstructorException() { }
     
     public MissingRequiredConstructorException(String message) {
