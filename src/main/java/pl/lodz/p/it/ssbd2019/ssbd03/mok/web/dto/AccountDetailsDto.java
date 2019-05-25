@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.PhoneNumberFormat;
 
 import javax.validation.constraints.Email;
@@ -42,4 +45,7 @@ public class AccountDetailsDto {
     @PhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
     protected String phoneNumber;
+
+    @FormParam("g-recaptcha-response")
+    protected String recaptcha;
 }
