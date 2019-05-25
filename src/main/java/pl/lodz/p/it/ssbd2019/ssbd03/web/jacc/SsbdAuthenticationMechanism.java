@@ -28,36 +28,36 @@ import java.util.logging.Logger;
 @LoginToContinue(errorPage = "/login/error")
 @ApplicationScoped
 public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism, LoginToContinueHolder {
-    
+
     private static final String ERROR_PAGE = "/login/error";
     private static final Logger logger = Logger.getLogger(SsbdAuthenticationMechanism.class.getName());
-    
+
     @EJB
     private UserAccountService userAccountService;
-    
+
     @Inject
     IdentityStoreHandler identityStoreHandler;
-    
+
     @Override
     public LoginToContinue getLoginToContinue() {
         return this.getClass().getAnnotation(LoginToContinue.class);
     }
-    
+
     @Override
     public AuthenticationStatus validateRequest(
             HttpServletRequest request,
             HttpServletResponse response,
             HttpMessageContext httpMessageContext) throws AuthenticationException {
-        
+
         if (!isValidFormPost(request)) {
             return AuthenticationStatus.NOT_DONE;
         }
-        
+
         String login = request.getParameter("j_username");
         String password = request.getParameter("j_password");
         CredentialValidationResult credentialValidationResult = identityStoreHandler.validate(
                 new UsernamePasswordCredential(login, password));
-        
+
         try {
             if (credentialValidationResult.getStatus().equals(CredentialValidationResult.Status.VALID)) {
                 AuthenticationStatus status =
@@ -83,18 +83,18 @@ public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism,
             return AuthenticationStatus.NOT_DONE;
         }
     }
-    
+
     @Override
     public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
         HttpAuthenticationMechanism.super.cleanSubject(request, response, httpMessageContext);
     }
-    
+
     private static boolean isValidFormPost(HttpServletRequest request) {
         return "POST".equals(request.getMethod())
                 && request.getRequestURI().endsWith("/j_security_check")
                 && Utils.notNull(request.getParameter("j_username"), request.getParameter("j_password"));
     }
-    
+
     private boolean isRedirectedFromLoginPage(HttpServletRequest request) {
         return request.getHeader("referer").equals(request.getRequestURL().toString().replace(request.getRequestURI(), "") + request.getContextPath() + getLoginToContinue().loginPage());
     }
