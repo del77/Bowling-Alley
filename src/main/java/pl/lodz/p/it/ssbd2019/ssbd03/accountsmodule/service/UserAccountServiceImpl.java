@@ -190,7 +190,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
      * Dopisuje aktualne hasło do historii haseł użytkownika i zmienia je.
      * @param userAccount Obiekt typu UserAccount, który jest edytowany.
      * @param newPassword Nowe hasło dla konta.
-     * @throws ChangePasswordException w wypadku, gdy nie uda się zmienić hasła.
+     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmienić hasła.
      */
     private void setNewPassword(UserAccount userAccount, String newPassword) throws SsbdApplicationException {
         String newPasswordHash = SHA256Provider.encode(newPassword);

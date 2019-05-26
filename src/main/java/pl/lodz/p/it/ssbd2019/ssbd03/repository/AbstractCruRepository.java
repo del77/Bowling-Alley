@@ -22,6 +22,8 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Tworzy obiekt encji w bazie danych.
      * @param entity Obiekt encji
+     * @throws DataAccessException gdy nie uda się dodać obiektu do bazy danych
+     * @return utworzony obiekt
      */
     @Override
     public T create(T entity) throws DataAccessException {
@@ -33,6 +35,8 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Wykonuje merge na istniejącym obiekcie encji.
      * @param entity Obiekt encji
+     * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
+     * @return edytowany obiekt
      */
     @Override
     public T edit(T entity) throws DataAccessException {
@@ -56,6 +60,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Znajduje obiekt encji na podstawie podanego identyfikatora.
      * @param id Identyfikator encji
+     * @throws DataAccessException gdy nie uda się pobrać encji
      * @return Obiekt encji opakowany w obiekt klasy Optional
      */
     @Override
@@ -74,6 +79,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Sprawdza czy obiekt istnieje w bazie danych.
      * @param id Identyfikator encji
+     * @throws DataAccessException gdy sprawdzenie nie powiedzie się
      * @return true w przypadku, gdy obiekt istnieje w magazynie danych, w przeciwnym wypadku false
             */
     @Override
