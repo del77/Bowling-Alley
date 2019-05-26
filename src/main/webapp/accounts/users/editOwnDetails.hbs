@@ -1,0 +1,27 @@
+{{#partial "content"}}
+    <div class="container w-75">
+        <form class="form-horizontal" role="form" method="post">
+            <div class="row">
+                <div class="col">
+                    <h2>{{lang.editOwnDetails}}</h2>
+                    <h5>({{this.editedAccount.email}})</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{> accounts/forms/firstNameInput firstName=this.editedAccount.firstName}}
+                    {{> accounts/forms/lastNameInput lastName=this.editedAccount.lastName}}
+                    {{> accounts/forms/emailInput email=this.editedAccount.email}}
+                    {{> accounts/forms/phoneInput phone=this.editedAccount.phone}}
+                    {{> accounts/forms/recaptcha }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary btn-block">{{lang.update}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{{/partial}}
+{{> layout }}
