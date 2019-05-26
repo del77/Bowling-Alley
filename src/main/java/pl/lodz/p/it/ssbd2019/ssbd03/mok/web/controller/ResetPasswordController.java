@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.ResetPasswordService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.EmailDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.NewPasswordDto;
@@ -78,7 +79,7 @@ public class ResetPasswordController {
 
         try {
             resetPasswordService.requestResetPassword(userData.getEmail());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(RESET_PASSWORD_URL, null, Collections.singletonList(e.getLocalizedMessage()));
         }
         FormData formData = new FormData();
@@ -121,7 +122,7 @@ public class ResetPasswordController {
 
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(RESET_PASSWORD_URL + "/" + token, null, Collections.singletonList(e.getLocalizedMessage()));
         }
 

@@ -28,12 +28,14 @@ public class RecaptchaFilter extends HttpFilter {
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
         try {
             models.put("recaptchaSiteKey", recaptchaKeysProvider.getSiteKey());
-            chain.doFilter(request, response);
         } catch (PropertiesLoadException e) {
-            e.printStackTrace();
+            throw new IOException("Could not load recaptcha properties", e);
         }
+        chain.doFilter(request, response);
+
     }
 
 }

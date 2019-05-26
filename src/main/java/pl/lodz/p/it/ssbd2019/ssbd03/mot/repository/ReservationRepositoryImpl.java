@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -30,7 +30,7 @@ public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation
 
     @Override
     @RolesAllowed(MotRoles.ENTER_GAME_RESULT)
-    public Reservation edit(Reservation reservation) throws EntityUpdateException {
+    public Reservation edit(Reservation reservation) throws DataAccessException {
         return super.edit(reservation);
     }
 }

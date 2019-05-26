@@ -8,6 +8,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 @Stateless(name = "MOKAuthenticationViewEntityRepositoryLocalImpl")
+@DenyAll
 public class AuthenticationViewEntityRepositoryLocalImpl
         extends AbstractCruRepository<AuthenticationViewEntity, AuthenticationViewEntityId>
         implements AuthenticationViewEntityRepositoryLocal {
@@ -31,13 +34,13 @@ public class AuthenticationViewEntityRepositoryLocalImpl
         return entityManager.createQuery(query).getResultList();
     }
     
-    @DenyAll
+    @PermitAll
     @Override
     protected EntityManager getEntityManager() {
         return entityManager;
     }
     
-    @DenyAll
+    @PermitAll
     @Override
     protected Class<AuthenticationViewEntity> getTypeParameterClass() {
         return AuthenticationViewEntity.class;

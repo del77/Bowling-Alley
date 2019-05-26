@@ -1,11 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +22,11 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Tworzy obiekt encji w bazie danych.
      * @param entity Obiekt encji
+     * @throws DataAccessException gdy nie uda się dodać obiektu do bazy danych
+     * @return utworzony obiekt
      */
     @Override
-    public T create(T entity) {
+    public T create(T entity) throws DataAccessException {
         getEntityManager().persist(entity);
         getEntityManager().flush();
         return entity;
@@ -34,55 +35,55 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
     /**
      * Wykonuje merge na istniejącym obiekcie encji.
      * @param entity Obiekt encji
+     * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
+     * @return edytowany obiekt
      */
     @Override
-    public T edit(T entity) throws EntityUpdateException {
-        try {
-            getEntityManager().merge(entity);
-            getEntityManager().flush();
-            return entity;
-        } catch(OptimisticLockException e) {
-            throw new EntityUpdateException("Entity has been updated before these changes were made", e);
-        }
+    public T edit(T entity) throws DataAccessException {
+        getEntityManager().merge(entity);
+        getEntityManager().flush();
+        return entity;
     }
     
     /**
      * Edycja istniejącej encji bez wykonywania operacji merge.
      * @param entity Obiekt encji
      * @return encja po edycji
-     * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
+     * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
      */
     @Override
-    public T editWithoutMerge(T entity) throws EntityUpdateException {
-        try {
-            getEntityManager().flush();
-            return entity;
-        } catch(OptimisticLockException e) {
-            throw new EntityUpdateException("Entity has been updated before these changes were made", e);
-        }
+    public T editWithoutMerge(T entity) throws DataAccessException {
+        getEntityManager().flush();
+        return entity;
     }
 
     /**
      * Znajduje obiekt encji na podstawie podanego identyfikatora.
      * @param id Identyfikator encji
+     * @throws DataAccessException gdy nie uda się pobrać encji
      * @return Obiekt encji opakowany w obiekt klasy Optional
      */
     @Override
-    public Optional<T> findById(ID id) {
-        T retrievedObject = getEntityManager().find(getTypeParameterClass(), id);
+    public Optional<T> findById(ID id) throws DataAccessException {
+        try {
+            T retrievedObject = getEntityManager().find(getTypeParameterClass(), id);
 
-        if (retrievedObject == null){
-            return Optional.empty();
+            if (retrievedObject == null) {
+                return Optional.empty();
+            }
+            return Optional.of(retrievedObject);
+        } catch (PersistenceException e) {
+            throw new EntityRetrievalException("Could not retrieve entity.");
         }
-        return Optional.of(retrievedObject);
     }
     /**
      * Sprawdza czy obiekt istnieje w bazie danych.
      * @param id Identyfikator encji
+     * @throws DataAccessException gdy sprawdzenie nie powiedzie się
      * @return true w przypadku, gdy obiekt istnieje w magazynie danych, w przeciwnym wypadku false
             */
     @Override
-    public boolean existsById(ID id) {
+    public boolean existsById(ID id) throws DataAccessException {
         Optional<T> retrieved = findById(id);
         return retrieved.isPresent();
     }
@@ -92,10 +93,14 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * @return Lista wszystkich encji
      */
     @Override
-    public List<T> findAll() {
-        CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(getTypeParameterClass());
-        cq.select(cq.from(getTypeParameterClass()));
-        return getEntityManager().createQuery(cq).getResultList();
+    public List<T> findAll() throws DataAccessException {
+        try {
+            CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(getTypeParameterClass());
+            cq.select(cq.from(getTypeParameterClass()));
+            return getEntityManager().createQuery(cq).getResultList();
+        } catch (PersistenceException e) {
+            throw new EntityRetrievalException("Could not retrieve users list", e);
+        }
     }
 
     /**

@@ -1,11 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
 
 import java.util.List;
@@ -17,18 +16,11 @@ public interface RegistrationService {
      *
      * @param userAccount      Obiekt klasy UserAccount, który ma zostać dodany do bazy danych.
      * @param accessLevelNames Lista obiektów klasy String, który definiuje poziom dostępu.
-     * @throws RegistrationProcessException W przypadku niespodziewanego błędu w trakcie rejestracji.
-     * @throws EntityRetrievalException     W przypadku, gdy nie jest w stanie pozyskać encji AccessLevel.
-     * @throws NotUniqueLoginException      W przypadku, gdy login nie jest unikalny.
-     * @throws NotUniqueEmailException      W przypadku, gdy email nie jest unikalny.
+     * @throws SsbdApplicationException W przypadku gdy nie uda się stworzyć konta użytkownika.
      */
 
     void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
-            throws RegistrationProcessException,
-                    EntityRetrievalException,
-                    NotUniqueLoginException,
-                    NotUniqueEmailException,
-            ConfirmationTokenException;
+            throws SsbdApplicationException;
 
     /**
      * Potwierdzenie konta użytkownika.
@@ -36,5 +28,5 @@ public interface RegistrationService {
      *
      * @param accountId Identyfikator konta
      */
-    void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException;
+    void confirmAccount(long accountId) throws SsbdApplicationException;
 }

@@ -1,16 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.ejb.EJB;
@@ -70,20 +66,11 @@ public abstract class RegistrationController {
                 .phone(basicAccountDto.getPhoneNumber())
                 .version(0L) // TODO It's workaround for the bug.
                 .build();
-
-        try {
-            registrationService.registerAccount(userAccount, accessLevelNames);
-        } catch (NotUniqueLoginException e) {
-            errorMessages.add(localization.get("loginNotUnique"));
-        } catch (NotUniqueEmailException e) {
-            errorMessages.add(localization.get("emailNotUnique"));
-        } catch (RegistrationProcessException | EntityRetrievalException e) {
-            errorMessages.add(e.getMessage());
-        } catch (ConfirmationTokenException e) {
-            errorMessages.add(localization.get("tokenGenerationError"));
-        } catch (Exception e) {
-            errorMessages.add(e.getLocalizedMessage() + "\n" + e.getCause());
-        }
+            try {
+                registrationService.registerAccount(userAccount, accessLevelNames);
+            } catch (SsbdApplicationException e) {
+                errorMessages.add(e.getMessage());
+            }
 
         if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);

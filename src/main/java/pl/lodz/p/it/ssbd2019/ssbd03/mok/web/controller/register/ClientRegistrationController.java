@@ -4,7 +4,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.ConfirmationTokenService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;
@@ -32,9 +31,6 @@ public class ClientRegistrationController extends RegistrationController {
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
     private static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
     private static final String REGISTER_ENDPOINT_URL = "register";
-
-    @EJB
-    private ConfirmationTokenService confirmationTokenService;
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
@@ -76,15 +72,7 @@ public class ClientRegistrationController extends RegistrationController {
         } catch (RecaptchaValidationException e) {
             errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
         }
-        String address = super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
-        try {
-            confirmationTokenService.createNewTokenForAccount(
-                    basicAccountDto.getLogin()
-            );
-        } catch (ConfirmationTokenException e) {
-            e.printStackTrace();
-        }
-        return address;
+        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
     }
 
     @Override

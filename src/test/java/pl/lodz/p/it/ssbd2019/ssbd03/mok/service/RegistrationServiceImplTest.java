@@ -9,6 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
@@ -43,7 +45,7 @@ public class RegistrationServiceImplTest {
     public void shouldThrowOnPasswordNull() {
         UserAccount userAccount = mock(UserAccount.class);
         Assertions.assertThrows(
-                RegistrationProcessException.class,
+                SsbdApplicationException.class,
                 () -> registrationService.registerAccount(userAccount, ACCESS_LEVEL_NAME)
         );
     }
@@ -59,13 +61,13 @@ public class RegistrationServiceImplTest {
     }
 
     @Test
-    public void shouldThrowOnConfirmAccountWhenUserDoesNotExist() {
+    public void shouldThrowOnConfirmAccountWhenUserDoesNotExist() throws SsbdApplicationException {
         when(userAccountRepositoryLocal.findById(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(EntityRetrievalException.class, () -> registrationService.confirmAccount(0));
     }
 
     @Test
-    public void shouldSetFlagOnConfirmAccount() throws EntityRetrievalException, EntityUpdateException {
+    public void shouldSetFlagOnConfirmAccount() throws SsbdApplicationException {
         UserAccount account = UserAccount
                 .builder()
                 .accountConfirmed(false)

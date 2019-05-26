@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -32,25 +32,25 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
 
     @Override
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
-    public List<Alley> findAll() {
+    public List<Alley> findAll() throws DataAccessException {
         return super.findAll();
     }
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    public Alley edit(Alley alley) throws EntityUpdateException {
+    public Alley edit(Alley alley) throws DataAccessException {
         return super.edit(alley);
     }
 
     @Override
     @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY})
-    public Optional<Alley> findById(Long id) {
+    public Optional<Alley> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 
     @Override
     @RolesAllowed(MotRoles.ADD_ALLEY)
-    public Alley create(Alley alley) {
+    public Alley create(Alley alley) throws DataAccessException {
         return super.create(alley);
     }
 }

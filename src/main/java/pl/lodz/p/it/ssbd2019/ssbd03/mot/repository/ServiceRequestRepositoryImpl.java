@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -31,19 +31,19 @@ public class ServiceRequestRepositoryImpl extends AbstractCruRepository<ServiceR
 
     @Override
     @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
-    public ServiceRequest create(ServiceRequest serviceRequest) {
+    public ServiceRequest create(ServiceRequest serviceRequest) throws DataAccessException {
         return super.create(serviceRequest);
     }
 
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
-    public ServiceRequest edit(ServiceRequest serviceRequest) throws EntityUpdateException {
+    public ServiceRequest edit(ServiceRequest serviceRequest) throws DataAccessException {
         return super.edit(serviceRequest);
     }
 
     @Override
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
-    public List<ServiceRequest> findAll() {
+    public List<ServiceRequest> findAll() throws DataAccessException {
         return super.findAll();
     }
 }

@@ -1,6 +1,6 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation;
+package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
-public class NotUniqueEmailException extends ValidationException {
+public class NotUniqueEmailException extends DataAccessException {
 
     public NotUniqueEmailException() {
         super();
