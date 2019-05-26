@@ -126,7 +126,7 @@ public class AccountController implements Serializable {
         try {
             recaptchaValidator.validateCaptcha(accountDetailsDto.getRecaptcha());
         } catch (RecaptchaValidationException e) {
-            errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
+            errorMessages.add(localization.get(e.getCode()));
         }
 
         if (!errorMessages.isEmpty()) {
