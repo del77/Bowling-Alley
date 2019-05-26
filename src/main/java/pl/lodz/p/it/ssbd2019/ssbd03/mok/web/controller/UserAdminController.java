@@ -116,9 +116,8 @@ public class UserAdminController implements Serializable {
             UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
             if (account.isAccountActive() == active) {
                 FormData formData = new FormData();
-                formData.setInfos(
-                        Collections.singletonList(localization.get("unlockedSuccessFullyFor") + account.getLogin())
-                );
+                String message = account.isAccountActive() ? localization.get("unlockedSuccess") : localization.get("lockedSuccess");
+                formData.setInfos(Collections.singletonList(message + ": " + account.getLogin()));
                 return redirectUtil.redirect(BASE_PATH, formData);
             } else {
                 return redirectUtil.redirectError(
