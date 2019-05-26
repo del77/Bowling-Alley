@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.jacc;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.AuthenticationViewEntityRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AuthenticationViewEntityRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AuthenticationViewEntity;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
