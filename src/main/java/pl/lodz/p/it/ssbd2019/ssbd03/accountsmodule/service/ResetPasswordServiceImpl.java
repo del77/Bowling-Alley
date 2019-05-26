@@ -25,7 +25,7 @@ import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
@@ -105,7 +105,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      *
      * @param token Unikalny token
      * @return token
-     * @throws TokenNotFoundException w przypadku, gdy nie znajdzie zadanego tokena.
+     * @throws SsbdApplicationException w przypadku, gdy nie znajdzie zadanego tokena.
      */
     private ResetPasswordToken getToken(String token) throws SsbdApplicationException {
         return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(TokenNotFoundException::new);

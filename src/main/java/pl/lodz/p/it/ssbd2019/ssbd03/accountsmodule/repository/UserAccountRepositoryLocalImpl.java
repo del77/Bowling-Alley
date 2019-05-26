@@ -86,10 +86,29 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @PermitAll
+    @RolesAllowed({MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT, MokRoles.CHANGE_ACCESS_LEVEL,
+            MokRoles.CHANGE_OWN_PASSWORD, MokRoles.CHANGE_USER_PASSWORD})
     public UserAccount edit(UserAccount userAccount) throws DataAccessException {
         try {
             return super.edit(userAccount);
+        } catch (OptimisticLockException e) {
+            throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
+        } catch (PersistenceException e) {
+            Throwable t = e.getCause();
+            if(t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
+                throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
+                        "' because it was already in use.");
+            } else {
+                throw new EntityUpdateException("Could not perform update operation.");
+            }
+        }
+    }
+
+    @Override
+    @PermitAll
+    public UserAccount editWithoutMerge(UserAccount userAccount) throws DataAccessException {
+        try {
+            return super.editWithoutMerge(userAccount);
         } catch (OptimisticLockException e) {
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
         } catch (PersistenceException e) {

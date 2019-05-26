@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateful
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
@@ -201,7 +201,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         } else {
             throw new AccountPasswordNotUniqueException("New password was used before.");
         }
-        userAccountRepositoryLocal.editWithoutMerge(userAccount);
+        userAccountRepositoryLocal.edit(userAccount);
     }
 
     /**

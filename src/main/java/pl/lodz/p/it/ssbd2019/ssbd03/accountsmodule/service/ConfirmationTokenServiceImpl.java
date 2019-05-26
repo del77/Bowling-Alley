@@ -54,7 +54,7 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
      * Metoda służy do aktywacji użytkownika na podstawie tokenu z nim powiązanego.
      *
      * @param token wartość tokena potwierdzenia
-     * @throws ConfirmationTokenException w przypadku, gdy nie uda się znaleźć tokena, konto jest już aktywne, nie uda się
+     * @throws SsbdApplicationException w przypadku, gdy nie uda się znaleźć tokena, konto jest już aktywne, nie uda się
      *                                    dokonać edycji użytkownika, bądź gdy użytkownik nie istnieje.
      */
     @Override
@@ -81,7 +81,7 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
      * wysłać wiadomości metoda nadal zwraca sukces. Wysyłanie wiadomości jest asynchroniczne.
      *
      * @param userAccount konto użytkownika.
-     * @throws ConfirmationTokenException w przypadku gdy użytkownik nie istnieje, nie uda się utrwalić encji ConfirmationToken
+     * @throws SsbdApplicationException w przypadku gdy użytkownik nie istnieje, nie uda się utrwalić encji ConfirmationToken
      */
     @Override
     public void createNewTokenForAccount(UserAccount userAccount) throws SsbdApplicationException {

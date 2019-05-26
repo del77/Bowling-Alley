@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.annotation.security.PermitAll;

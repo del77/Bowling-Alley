@@ -23,7 +23,7 @@ public interface CruRepository<T, ID> {
      * Edycja istniejącej encji.
      * @param entity Obiekt encji
      * @return encja po edycji
-     * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
+     * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
      */
     T edit(T entity) throws DataAccessException;
     
@@ -31,7 +31,7 @@ public interface CruRepository<T, ID> {
      * Edycja istniejącej encji bez wykonywania operacji merge.
      * @param entity Obiekt encji
      * @return encja po edycji
-     * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
+     * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
      */
     T editWithoutMerge(T entity) throws DataAccessException;
 

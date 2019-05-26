@@ -16,10 +16,7 @@ public interface RegistrationService {
      *
      * @param userAccount      Obiekt klasy UserAccount, który ma zostać dodany do bazy danych.
      * @param accessLevelNames Lista obiektów klasy String, który definiuje poziom dostępu.
-     * @throws RegistrationProcessException W przypadku niespodziewanego błędu w trakcie rejestracji.
-     * @throws EntityRetrievalException     W przypadku, gdy nie jest w stanie pozyskać encji AccessLevel.
-     * @throws NotUniqueLoginException      W przypadku, gdy login nie jest unikalny.
-     * @throws NotUniqueEmailException      W przypadku, gdy email nie jest unikalny.
+     * @throws SsbdApplicationException W przypadku gdy nie uda się stworzyć konta użytkownika.
      */
 
     void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
