@@ -85,7 +85,6 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
      */
     @Override
     public void createNewTokenForAccount(UserAccount userAccount) throws SsbdApplicationException {
-        //@NotNull UserAccount userAccount = this.retrieveUser(userName);
         ConfirmationToken confirmationToken = this.buildTokenForUser(userAccount);
         String url = getActivationUrl(confirmationToken.getToken());
 

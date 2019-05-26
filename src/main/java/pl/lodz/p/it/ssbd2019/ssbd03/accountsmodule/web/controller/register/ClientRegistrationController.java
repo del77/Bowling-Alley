@@ -32,9 +32,6 @@ public class ClientRegistrationController extends RegistrationController {
     private static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
     private static final String REGISTER_ENDPOINT_URL = "register";
 
-    @EJB
-    private ConfirmationTokenService confirmationTokenService;
-
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem rejestracji.
      *
