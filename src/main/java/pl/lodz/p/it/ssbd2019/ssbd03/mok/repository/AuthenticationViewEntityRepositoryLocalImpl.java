@@ -17,7 +17,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 @Stateless(name = "MOKAuthenticationViewEntityRepositoryLocalImpl")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class AuthenticationViewEntityRepositoryLocalImpl
         extends AbstractCruRepository<AuthenticationViewEntity, AuthenticationViewEntityId>

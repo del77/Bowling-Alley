@@ -25,7 +25,6 @@ import java.util.Optional;
 
 @PermitAll
 @Stateful
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
 

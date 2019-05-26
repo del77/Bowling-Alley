@@ -21,7 +21,6 @@ import java.util.Optional;
 
 
 @Stateless(name = "MOKUserRepository")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")

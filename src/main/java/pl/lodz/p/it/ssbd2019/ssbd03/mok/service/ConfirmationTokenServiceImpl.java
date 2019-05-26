@@ -28,7 +28,6 @@ import java.util.Optional;
 
 @PermitAll
 @Stateful
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class ConfirmationTokenServiceImpl extends TransactionTracker implements ConfirmationTokenService {
 

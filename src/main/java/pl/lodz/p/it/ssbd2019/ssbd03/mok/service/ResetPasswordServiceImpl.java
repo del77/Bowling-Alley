@@ -25,7 +25,6 @@ import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;

@@ -14,7 +14,6 @@ import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 @Stateless(name = "MOKAccessLevelRepository")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class AccessLevelRepositoryLocalImpl extends AbstractCruRepository<AccessLevel, Long> implements AccessLevelRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")

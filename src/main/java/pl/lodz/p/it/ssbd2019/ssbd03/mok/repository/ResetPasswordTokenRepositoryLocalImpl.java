@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 @Stateless(name = "MOKResetPasswordTokenRepository")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class ResetPasswordTokenRepositoryLocalImpl extends AbstractCruRepository<ResetPasswordToken, Long> implements ResetPasswordTokenRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")
     private EntityManager entityManager;

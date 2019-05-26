@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateful
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")

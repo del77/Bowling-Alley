@@ -15,7 +15,6 @@ import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 @Stateless(name = "MOKConfirmationTokenRepository")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ConfirmationTokenRepositoryLocalImpl extends AbstractCruRepository<ConfirmationToken, Long>
         implements ConfirmationTokenRepositoryLocal {
