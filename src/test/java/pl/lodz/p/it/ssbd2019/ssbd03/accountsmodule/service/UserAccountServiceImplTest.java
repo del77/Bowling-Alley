@@ -11,11 +11,12 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.LoginDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -47,27 +48,27 @@ public class UserAccountServiceImplTest {
     private UserAccountServiceImpl userService;
 
     @Test
-    public void shouldThrowEntityRetrievalExceptionWhenGetAllUsersCatchesException() {
-        when(userAccountRepositoryLocal.findAll()).thenThrow(RuntimeException.class);
+    public void shouldThrowEntityRetrievalExceptionWhenGetAllUsersCatchesException() throws DataAccessException {
+        when(userAccountRepositoryLocal.findAll()).thenThrow(EntityRetrievalException.class);
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getAllUsers());
     }
 
     @Test
-    public void shouldThrowEntityRetrievalExceptionWhenGetUserByIdCatchesException() {
-        when(userAccountRepositoryLocal.findById(any())).thenThrow(RuntimeException.class);
+    public void shouldThrowEntityRetrievalExceptionWhenGetUserByIdCatchesException() throws DataAccessException {
+        when(userAccountRepositoryLocal.findById(any())).thenThrow(EntityRetrievalException.class);
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getUserById(1L));
     }
 
 
     @Test
-    public void shouldReturnAllUsersOnGetAllUsers() throws EntityRetrievalException {
+    public void shouldReturnAllUsersOnGetAllUsers() throws SsbdApplicationException {
         List<UserAccount> allUserAccounts = asList(mock(UserAccount.class), mock(UserAccount.class), mock(UserAccount.class));
         when(userAccountRepositoryLocal.findAll()).thenReturn(allUserAccounts);
         Assertions.assertEquals(allUserAccounts.size(), userService.getAllUsers().size());
     }
 
     @Test
-    public void shouldReturnRightUserOnGetUserById() throws EntityRetrievalException {
+    public void shouldReturnRightUserOnGetUserById() throws SsbdApplicationException {
         UserAccount userAccount = new UserAccount();
         when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
             Long id = u.getArgument(0);
@@ -78,7 +79,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnRightUserOnGetByLogin() throws EntityRetrievalException, LoginDoesNotExistException {
+    public void shouldReturnRightUserOnGetByLogin() throws SsbdApplicationException {
         UserAccount userAccount = new UserAccount();
         when(userAccountRepositoryLocal.findByLogin("login")).then((u) -> {
             String login = u.getArgument(0);
@@ -89,13 +90,13 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldThrowEntityRetrievalExceptionWhenGetByLoginCatchesException() {
-        when(userAccountRepositoryLocal.findByLogin(any())).thenThrow(RuntimeException.class);
+    public void shouldThrowEntityRetrievalExceptionWhenGetByLoginCatchesException() throws SsbdApplicationException {
+        when(userAccountRepositoryLocal.findByLogin(any())).thenThrow(EntityRetrievalException.class);
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
     }
 
     @Test
-    public void shouldReturnRightEntityOnUpdateUser() throws EntityUpdateException, NotUniqueEmailException {
+    public void shouldReturnRightEntityOnUpdateUser() throws SsbdApplicationException {
         UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
@@ -105,16 +106,10 @@ public class UserAccountServiceImplTest {
         Assertions.assertEquals(userService.updateUser(userAccount).getId(), 1L);
     }
 
-    @Test
-    public void shouldThrowEntityUpdateRolesExceptionWhenUpdateUserCatchesException() {
-        UserAccount userAccount = UserAccount.builder().accountAccessLevels(new ArrayList<>()).build();
-        when(accessLevelRepositoryLocal.findByName(anyString())).thenThrow(RuntimeException.class);
 
-        Assertions.assertThrows(EntityUpdateException.class, () -> userService.updateUserAccessLevels(userAccount, Collections.singletonList("CLIENT")));
-    }
 
     @Test
-    public void shouldReturnRightEntityOnUpdateUserRoles() throws EntityUpdateException {
+    public void shouldReturnRightEntityOnUpdateUserRoles() throws SsbdApplicationException {
         UserAccount userAccount = UserAccount.builder().id(1L).accountAccessLevels(new ArrayList<>()).build();
         when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
             UserAccount newUserAccount = u.getArgument(0);
@@ -125,7 +120,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws EntityUpdateException {
+    public void shouldAddAccessLevelToAccountWhenItDidNotExistBefore() throws SsbdApplicationException {
         UserAccount userAccount = UserAccount.builder()
                 .id(1L)
                 .accountAccessLevels(new ArrayList<>())
@@ -151,11 +146,11 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void unlockLockedAccountTestShouldNotThrow() throws EntityUpdateException {
+    public void unlockLockedAccountTestShouldNotThrow() throws SsbdApplicationException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
         try {
             Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
         } catch (EntityUpdateException e) {
@@ -164,11 +159,11 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void unlockUnlockedAccountTestShouldNotThrow() throws EntityUpdateException {
+    public void unlockUnlockedAccountTestShouldNotThrow() throws SsbdApplicationException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
         try {
             Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
         } catch (EntityUpdateException e) {
@@ -177,11 +172,11 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void lockLockedAccountTestShouldNotThrow() throws EntityUpdateException {
+    public void lockLockedAccountTestShouldNotThrow() throws SsbdApplicationException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
         try {
             Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
         } catch (EntityUpdateException e) {
@@ -190,11 +185,11 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void lockUnlockedAccountTestShouldNotThrow() throws EntityUpdateException {
+    public void lockUnlockedAccountTestShouldNotThrow() throws SsbdApplicationException {
         UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
         Optional<UserAccount> optionalAccount = Optional.of(sut);
         when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).thenReturn(sut);
+        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
         try {
             Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
         } catch (EntityUpdateException e) {
@@ -204,7 +199,7 @@ public class UserAccountServiceImplTest {
 
 
     @Test
-    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws EntityUpdateException {
+    public void shouldMakeExistingAccessLevelActiveWhenItWasNotActiveBefore() throws SsbdApplicationException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -237,7 +232,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws EntityUpdateException {
+    public void shouldMakeExistingAccessLevelNotActiveWhenItWasActiveBefore() throws SsbdApplicationException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();
@@ -346,7 +341,7 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void updateUserAccountDetailsTest() throws EntityUpdateException, NotUniqueEmailException {
+    public void updateUserAccountDetailsTest() throws SsbdApplicationException {
         AccessLevel accessLevel = AccessLevel.builder()
                 .name("CLIENT")
                 .build();

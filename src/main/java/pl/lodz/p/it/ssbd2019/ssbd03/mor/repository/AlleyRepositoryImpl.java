@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -28,7 +29,7 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
 
     @Override
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
-    public Optional<Alley> findById(Long id) {
+    public Optional<Alley> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 }

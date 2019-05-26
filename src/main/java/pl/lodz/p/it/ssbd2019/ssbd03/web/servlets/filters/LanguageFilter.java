@@ -43,12 +43,11 @@ public class LanguageFilter extends HttpFilter {
         chain.doFilter(request, response);
     }
 
-    private Hashtable<Object, Object> localeCheckSet(LocaleConfig localeConfig) {
+    private Hashtable<Object, Object> localeCheckSet(LocaleConfig localeConfig) throws IOException {
         try {
             return i18nManager.getLanguageMap(localeConfig);
         } catch (PropertiesLoadException e) {
-            e.printStackTrace();
+            throw new IOException("Could not load properties", e);
         }
-        return null;
     }
 }

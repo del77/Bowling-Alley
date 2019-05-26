@@ -5,18 +5,18 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountReposit
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.UniqueConstraintViolationHandler;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,56 +25,45 @@ import java.util.Optional;
 
 @PermitAll
 @Stateful
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors(InterceptorTracker.class)
 public class RegistrationServiceImpl extends TransactionTracker implements RegistrationService {
 
     @EJB(beanName = "MOKUserRepository")
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
+    @EJB
+    private ConfirmationTokenService confirmationTokenService;
+
     @EJB(beanName = "MOKAccessLevelRepository")
     private AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
     @Override
     public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
-            throws RegistrationProcessException,
-            EntityRetrievalException,
-            NotUniqueLoginException,
-            NotUniqueEmailException {
+            throws SsbdApplicationException {
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
+        confirmationTokenService.createNewTokenForAccount(
+                userAccount);
     }
 
     @Override
-    public void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException {
+    public void confirmAccount(long accountId) throws SsbdApplicationException {
         Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
         UserAccount account = accountOptional
-                .orElseThrow(() -> new EntityRetrievalException("No Account with specified ID."));
+                .orElseThrow(() -> new UserIdDoesNotExistException("Account with id '" + accountId + "' does not exist."));
         account.setAccountConfirmed(true);
 
-        try {
-            userAccountRepositoryLocal.edit(account);
-        } catch (final Exception e) {
-            throw new EntityUpdateException("Exception during update of user account (account confirmation)", e);
-        }
+        userAccountRepositoryLocal.editWithoutMerge(account);
     }
 
-    private String encodePassword(String password) throws RegistrationProcessException {
-        try {
-            return SHA256Provider.encode(password);
-        } catch (Exception e) {
-            throw new RegistrationProcessException(e.getMessage());
-        }
+    private String encodePassword(String password) throws SsbdApplicationException {
+        return SHA256Provider.encode(password);
     }
 
-    private UserAccount createUser(UserAccount userAccount) throws NotUniqueLoginException, RegistrationProcessException, NotUniqueEmailException {
-        try {
-            return userAccountRepositoryLocal.create(userAccount);
-        } catch (EJBTransactionRolledbackException e) {
-            UniqueConstraintViolationHandler.handleNotUniqueLoginOrEmailException(e, RegistrationProcessException.class);
-        }
-        throw new RegistrationProcessException("Something went wrong during creation a user in database.");
+    private UserAccount createUser(UserAccount userAccount) throws SsbdApplicationException {
+        return userAccountRepositoryLocal.create(userAccount);
     }
 
 

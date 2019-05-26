@@ -4,9 +4,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.ResetPasswordToken
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.EmailDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ResetPasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.TokenExpiredException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EmailDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
@@ -17,6 +17,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
 @Stateless
-@TransactionAttribute
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ResetPasswordServiceImpl implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
@@ -46,54 +47,46 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     @Override
     @PermitAll
-    public ResetPasswordToken requestResetPassword(String email) throws ResetPasswordException {
-        try {
-            UserAccount userAccount = getUserByEmail(email);
-            String token = TokenUtils.generate();
-            Timestamp validity = TokenUtils.getValidity(24);
-            String url = getResetPasswordUrl(token);
+    public ResetPasswordToken requestResetPassword(String email) throws SsbdApplicationException {
+        UserAccount userAccount = getUserByEmail(email);
+        String token = TokenUtils.generate();
+        Timestamp validity = TokenUtils.getValidity(24);
+        String url = getResetPasswordUrl(token);
 
-            ResetPasswordToken resetPasswordToken = ResetPasswordToken
-                    .builder()
-                    .token(token)
-                    .userAccount(userAccount)
-                    .validity(validity)
-                    .build();
+        ResetPasswordToken resetPasswordToken = ResetPasswordToken
+                .builder()
+                .token(token)
+                .userAccount(userAccount)
+                .validity(validity)
+                .build();
 
-            resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
+        resetPasswordTokenRepositoryLocal.create(resetPasswordToken);
 
-            messenger.sendMessage(
-                    email,
-                    localization.get("bowlingAlley") + " - " + localization.get("resetPassword"),
-                    url
-            );
+        messenger.sendMessage(
+                email,
+                localization.get("bowlingAlley") + " - " + localization.get("resetPassword"),
+                url
+        );
 
-            return resetPasswordToken;
-        } catch (Exception e) {
-            throw new ResetPasswordException(e.getMessage());
-        }
+        return resetPasswordToken;
     }
 
     @Override
     @PermitAll
-    public UserAccount resetPassword(String token, String newPassword) throws ResetPasswordException {
-        try {
-            ResetPasswordToken resetPasswordToken = getToken(token);
-            UserAccount userAccount = resetPasswordToken.getUserAccount();
-            String newPasswordHash = SHA256Provider.encode(newPassword);
+    public UserAccount resetPassword(String token, String newPassword) throws SsbdApplicationException {
+        ResetPasswordToken resetPasswordToken = getToken(token);
+        UserAccount userAccount = resetPasswordToken.getUserAccount();
+        String newPasswordHash = SHA256Provider.encode(newPassword);
 
-            if (!TokenUtils.isValid(resetPasswordToken.getValidity())) {
-                throw new TokenExpiredException("token_expired");
-            }
-
-            userAccount.setPassword(newPasswordHash);
-            resetPasswordToken.setValidity(new Timestamp(System.currentTimeMillis() - 1));
-            userAccountRepositoryLocal.edit(userAccount);
-
-            return userAccount;
-        } catch (Exception e) {
-            throw new ResetPasswordException(e);
+        if (!TokenUtils.isValid(resetPasswordToken.getValidity())) {
+            throw new TokenExpiredException("token_expired");
         }
+
+        userAccount.setPassword(newPasswordHash);
+        resetPasswordToken.setValidity(new Timestamp(System.currentTimeMillis() - 1));
+        userAccountRepositoryLocal.editWithoutMerge(userAccount);
+
+        return userAccount;
     }
 
     /**
@@ -104,11 +97,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @throws EmailDoesNotExistException Wyjątek
      */
     private UserAccount getUserByEmail(String email) throws EmailDoesNotExistException {
-        try {
-            return userAccountRepositoryLocal.findByEmail(email).orElseThrow(ResetPasswordException::new);
-        } catch (Exception e) {
-            throw new EmailDoesNotExistException("invalid_email");
-        }
+        return userAccountRepositoryLocal.findByEmail(email).orElseThrow(EmailDoesNotExistException::new);
     }
 
     /**
@@ -118,12 +107,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @return token
      * @throws TokenNotFoundException w przypadku, gdy nie znajdzie zadanego tokena.
      */
-    private ResetPasswordToken getToken(String token) throws TokenNotFoundException {
-        try {
-            return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(ResetPasswordException::new);
-        } catch (Exception e) {
-            throw new TokenNotFoundException("invalid_token");
-        }
+    private ResetPasswordToken getToken(String token) throws SsbdApplicationException {
+        return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(TokenNotFoundException::new);
     }
 
     private String getResetPasswordUrl(String token) {

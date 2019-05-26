@@ -1,22 +1,19 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.AccountActivationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.mappers.DtoMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -26,7 +23,9 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Kontroler odpowiedzialny za obdługę wszystkich operacji związanych z encjami typu UserAccount dla
@@ -92,7 +91,7 @@ public class UserAdminController implements Serializable {
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
             userAccounts = userAccountService.getAllUsers();
-        } catch (EntityRetrievalException e) {
+        } catch (SsbdApplicationException e) {
             displayError(localization.get("userAccountsListError"));
         }
         models.put("userAccounts", userAccounts);
@@ -127,7 +126,7 @@ public class UserAdminController implements Serializable {
                         Collections.singletonList(localization.get("couldntLock") + account.getLogin())
                 );
             }
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     BASE_PATH,
                     null,
@@ -153,8 +152,7 @@ public class UserAdminController implements Serializable {
         try {
             editedAccount = userAccountService.getUserById(id);
             models.put("editedAccount", editedAccount);
-            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount, models);
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieve"));
         }
         return EDIT_USER_VIEW;
@@ -187,25 +185,14 @@ public class UserAdminController implements Serializable {
             editedAccount.setEmail(dto.getEmail());
             editedAccount.setPhone(dto.getPhoneNumber());
             editedAccount = userAccountService.updateUser(editedAccount);
-        } catch (EntityUpdateException e) {
+                    } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     String.format(EDIT_USER_PATH, editedAccount.getId()),
                     dto,
-                    Collections.singletonList(localization.get("profileNotUpdated"))
-            );
-        } catch (NotUniqueEmailException e) {
-            return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, editedAccount.getId()),
-                    dto,
-                    Collections.singletonList(localization.get("emailNotUnique"))
-            );
-        } catch (Exception e) {
-            return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, editedAccount.getId()),
-                    dto,
-                    Collections.singletonList(localization.get("FATAL"))
+                    Collections.singletonList(e.getMessage())
             );
         }
+
         FormData formData = FormData.builder()
                 .data(dto)
                 .infos(Collections.singletonList(String.format(
@@ -233,8 +220,9 @@ public class UserAdminController implements Serializable {
         try {
             editedAccount = userAccountService.getUserById(id);
             models.put("editedAccount", editedAccount);
+            Hibernate.initialize(editedAccount.getAccountAccessLevels());
             UserRolesRetriever.putAccessLevelsIntoModel(editedAccount, models);
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieveRoles"));
         }
         return EDIT_USER_ROLES_VIEW;
@@ -263,17 +251,11 @@ public class UserAdminController implements Serializable {
         try {
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
             editedAccount = userAccountService.updateUserAccessLevels(editedAccount, selectedAccessLevels);
-        } catch (EntityUpdateException e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     String.format(EDIT_USER_ROLES_PATH, editedAccount.getId()),
                     dto,
                     Collections.singletonList(localization.get("rolesNotUpdated"))
-            );
-        } catch (Exception e) {
-            return redirectUtil.redirectError(
-                    String.format(EDIT_USER_ROLES_PATH, editedAccount.getId()),
-                    dto,
-                    Collections.singletonList(localization.get("FATAL"))
             );
         }
         FormData formData = FormData.builder()
@@ -304,9 +286,9 @@ public class UserAdminController implements Serializable {
             UserAccount user = userAccountService.getUserById(id);
             models.put("user", user);
             UserRolesRetriever.putAccessLevelsIntoModel(user,models);
-        } catch (EntityRetrievalException e) {
+        } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieve"));
-         }
+        }
         return DISPLAY_DETAILS_VIEW;
     }
 
@@ -352,7 +334,7 @@ public class UserAdminController implements Serializable {
 
         try {
             userAccountService.changePasswordById(id, userData.getNewPassword());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     String.format("%s/%d/edit/password", BASE_PATH, id),
                     null,

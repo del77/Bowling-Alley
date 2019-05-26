@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface CruRepository<T, ID> {
      * Dodawanie obiektu do magazynu danych.
      * @param entity Obiekt encji
      */
-    T create(T entity);
+    T create(T entity) throws DataAccessException;
 
     /**
      * Edycja istniejącej encji.
@@ -24,7 +25,7 @@ public interface CruRepository<T, ID> {
      * @return encja po edycji
      * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
      */
-    T edit(T entity) throws EntityUpdateException;
+    T edit(T entity) throws DataAccessException;
     
     /**
      * Edycja istniejącej encji bez wykonywania operacji merge.
@@ -32,27 +33,27 @@ public interface CruRepository<T, ID> {
      * @return encja po edycji
      * @throws EntityUpdateException rzucony, gdy edycja się nie powiedzie
      */
-    T editWithoutMerge(T entity) throws EntityUpdateException;
+    T editWithoutMerge(T entity) throws DataAccessException;
 
     /**
      * Zwraca z magazynu danych encję o zadanym identyfikatorze.
      * @param id Identyfikator encji
      * @return Opakowany w klasę Optional obiekt encji
      */
-    Optional<T> findById(ID id);
+    Optional<T> findById(ID id) throws DataAccessException;
 
     /**
      * Sprawdza czy obiekt istnieje w magazynie danych.
      * @param id Identyfikator encji
      * @return true w przypadku, gdy obiekt istnieje w magazynie danych, w przeciwnym wypadku false
      */
-    boolean existsById(ID id);
+    boolean existsById(ID id) throws DataAccessException;
 
     /**
      * Zwraca listę wszystkich encji w magazynie danych.
      * @return Lista wszystkich encji
      */
-    List<T> findAll();
+    List<T> findAll() throws DataAccessException;
 
     /**
      * Odświeża stan istniejącej encji.

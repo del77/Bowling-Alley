@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 
@@ -15,13 +17,13 @@ public interface ConfirmationTokenService {
      * @throws ConfirmationTokenException Gdy wystapi błąd w trakcie przetwarzania. M.in. gdy użytkownik nie istnieje lub
      * jest już potwierdzone jego konto.
      */
-    void activateAccountByToken(String token) throws TokenNotFoundException, ConfirmationTokenException;
+    void activateAccountByToken(String token) throws SsbdApplicationException;
 
     /**
      * Metoda tworzy token dla użytkowniak o podanej nazwie.
-     * @param userName nazwa użytkownika.
+     * @param userAccount konto użytkownika.
      * @throws ConfirmationTokenException W przypadku, gdy nie udaje się potwierdzić, tj. np. użytkownik o danym loginie
      * nie istnieje bądź wystapi błąd bazy danych.
      */
-    void createNewTokenForAccount(String userName) throws ConfirmationTokenException;
+    void createNewTokenForAccount(UserAccount userAccount) throws SsbdApplicationException;
 }

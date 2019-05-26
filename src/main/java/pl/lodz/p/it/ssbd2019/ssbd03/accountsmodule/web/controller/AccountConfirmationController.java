@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenService;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
 
 import javax.annotation.security.PermitAll;
@@ -46,7 +47,7 @@ public class AccountConfirmationController {
     public String confirmAccount(@PathParam("token") String token) {
         try {
             confirmationTokenService.activateAccountByToken(token);
-        } catch (final Exception e) {
+        } catch (SsbdApplicationException e) {
             if (e.getCause() != null) {
                 if (e.getCause().getClass().equals(AccountAlreadyConfirmedException.class)) {
                     return FAILURE_ALREADY_CONFIRMED;

@@ -4,7 +4,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.ConfirmationTokenServ
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;
@@ -76,15 +75,7 @@ public class ClientRegistrationController extends RegistrationController {
         } catch (RecaptchaValidationException e) {
             errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
         }
-        String address = super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
-        try {
-            confirmationTokenService.createNewTokenForAccount(
-                    basicAccountDto.getLogin()
-            );
-        } catch (ConfirmationTokenException e) {
-            e.printStackTrace();
-        }
-        return address;
+        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
     }
 
     @Override

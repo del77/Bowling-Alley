@@ -1,7 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
@@ -9,8 +7,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDt
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.rolesretriever.UserRolesRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
@@ -77,7 +76,7 @@ public class AccountController {
             UserAccount user = userAccountService.getByLogin(login);
             models.put("user", user);
             UserRolesRetriever.putAccessLevelsIntoModel(user,models);
-       } catch (EntityRetrievalException | LoginDoesNotExistException e) {
+       } catch (SsbdApplicationException e) {
             displayError(localization.get("detailsRetrievalError"));
         }
         return DISPLAY_DETAILS;
@@ -139,7 +138,7 @@ public class AccountController {
         try {
             String login = models.get("userName", String.class);
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(BASE_URL + "/edit-password", null, Collections.singletonList(e.getMessage()));
         }
 

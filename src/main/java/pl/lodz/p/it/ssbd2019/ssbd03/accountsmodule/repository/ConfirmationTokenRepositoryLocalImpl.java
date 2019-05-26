@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ConfirmationToken;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 
 import javax.annotation.security.DenyAll;
@@ -30,13 +30,13 @@ public class ConfirmationTokenRepositoryLocalImpl extends AbstractCruRepository<
 
     @Override
     @PermitAll
-    public ConfirmationToken create(ConfirmationToken confirmationToken) {
+    public ConfirmationToken create(ConfirmationToken confirmationToken) throws DataAccessException {
         return super.create(confirmationToken);
     }
 
     @Override
     @PermitAll
-    public ConfirmationToken edit(ConfirmationToken confirmationToken) throws EntityUpdateException {
+    public ConfirmationToken edit(ConfirmationToken confirmationToken) throws DataAccessException {
         return super.edit(confirmationToken);
     }
 

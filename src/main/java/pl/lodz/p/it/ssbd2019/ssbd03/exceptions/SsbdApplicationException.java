@@ -23,4 +23,8 @@ public class SsbdApplicationException extends Exception{
     public SsbdApplicationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
+    public String getCode() {
+        return "app.ssbd";
+    }
 }

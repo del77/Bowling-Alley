@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.EmailDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.NewPasswordDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.web.dto.validators.PasswordDtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
 import javax.annotation.security.PermitAll;
@@ -13,9 +14,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
-import javax.servlet.ServletContext;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +76,7 @@ public class ResetPasswordController {
 
         try {
             resetPasswordService.requestResetPassword(userData.getEmail());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
             return REQUEST_FORM_HBS;
         }
@@ -119,7 +118,7 @@ public class ResetPasswordController {
 
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
-        } catch (Exception e) {
+        } catch (SsbdApplicationException e) {
             models.put(ERROR, Collections.singletonList(e.getLocalizedMessage()));
             return RESET_FORM_HBS;
         }

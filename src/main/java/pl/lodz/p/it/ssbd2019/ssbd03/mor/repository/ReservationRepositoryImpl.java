@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -31,20 +31,20 @@ public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation
 
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public Reservation create(Reservation reservation) {
+    public Reservation create(Reservation reservation) throws DataAccessException {
         return super.create(reservation);
     }
 
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER,
             MorRoles.ADD_COMMENT_FOR_RESERVATION})
-    public Reservation edit(Reservation reservation) throws EntityUpdateException {
+    public Reservation edit(Reservation reservation) throws DataAccessException {
         return super.edit(reservation);
     }
 
     @Override
     @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
-    public Optional<Reservation> findById(Long id) {
+    public Optional<Reservation> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 }

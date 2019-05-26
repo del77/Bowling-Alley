@@ -1,11 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueLoginException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.RegistrationProcessException;
 
 import java.util.List;
@@ -24,11 +23,7 @@ public interface RegistrationService {
      */
 
     void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
-            throws RegistrationProcessException,
-                    EntityRetrievalException,
-                    NotUniqueLoginException,
-                    NotUniqueEmailException,
-            ConfirmationTokenException;
+            throws SsbdApplicationException;
 
     /**
      * Potwierdzenie konta użytkownika.
@@ -36,5 +31,5 @@ public interface RegistrationService {
      *
      * @param accountId Identyfikator konta
      */
-    void confirmAccount(long accountId) throws EntityRetrievalException, EntityUpdateException;
+    void confirmAccount(long accountId) throws SsbdApplicationException;
 }

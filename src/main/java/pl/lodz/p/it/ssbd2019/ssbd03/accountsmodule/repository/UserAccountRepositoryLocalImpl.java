@@ -1,9 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
-import java.util.*;
 
+import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
@@ -11,9 +11,9 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 
 @Stateless(name = "MOKUserRepository")
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
     @PersistenceContext(unitName = "ssbd03mokPU")
@@ -39,10 +40,14 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @PermitAll
-    public Optional<UserAccount> findByLogin(String login) {
-        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
-        namedQuery.setParameter("login", login);
-        return Optional.of(namedQuery.getSingleResult());
+    public Optional<UserAccount> findByLogin(String login) throws DataAccessException {
+        try {
+            TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
+            namedQuery.setParameter("login", login);
+            return Optional.of(namedQuery.getSingleResult());
+        } catch (PersistenceException e) {
+            throw new EntityRetrievalException("Could not find entity with given id");
+        }
     }
 
 
@@ -56,20 +61,46 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @PermitAll
-    public Optional<UserAccount> findById(Long id) {
+    public Optional<UserAccount> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 
     @Override
     @PermitAll
-    public UserAccount create(UserAccount userAccount) {
-        return super.create(userAccount);
+    public UserAccount create(UserAccount userAccount) throws DataAccessException {
+        try {
+            return super.create(userAccount);
+        } catch (PersistenceException e) {
+            Throwable t = e.getCause();
+            Throwable t2 = t.getCause();
+            if ((t2 instanceof PSQLException) && t2.getMessage().contains("email")) {
+                throw new NotUniqueEmailException("Could not create account with email '" + userAccount.getEmail() +
+                        "' because it was already in use.");
+            } else if ((t2 instanceof PSQLException) && t2.getMessage().contains("login")) {
+                throw new NotUniqueLoginException("Could not create account with login '" + userAccount.getLogin() +
+                        "' because it was already in use.");
+            } else {
+                throw new EntityUpdateException("Could not perform create operation.");
+            }
+        }
     }
 
     @Override
     @PermitAll
-    public UserAccount edit(UserAccount userAccount) throws EntityUpdateException {
-        return super.edit(userAccount);
+    public UserAccount edit(UserAccount userAccount) throws DataAccessException {
+        try {
+            return super.edit(userAccount);
+        } catch (OptimisticLockException e) {
+            throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
+        } catch (PersistenceException e) {
+            Throwable t = e.getCause();
+            if(t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
+                throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
+                        "' because it was already in use.");
+            } else {
+                throw new EntityUpdateException("Could not perform update operation.");
+            }
+        }
     }
 
     @Override

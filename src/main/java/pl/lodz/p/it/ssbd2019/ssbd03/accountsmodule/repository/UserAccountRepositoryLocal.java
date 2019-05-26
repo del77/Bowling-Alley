@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
@@ -15,7 +16,7 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
      * @param login Login użytkownika
      * @return Encja reprezentująca konto użytkownika.
      */
-    Optional<UserAccount> findByLogin(String login);
+    Optional<UserAccount> findByLogin(String login) throws DataAccessException;
 
     /**
      * Metoda służy do pozyskiwania encji konta użytkownika na podstawie jego adresu email.
