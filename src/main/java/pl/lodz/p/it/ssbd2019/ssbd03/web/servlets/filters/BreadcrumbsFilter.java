@@ -68,6 +68,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "createAccount", "/admin/register", true);
         } else if (relativePath.matches("/account/edit-password(/success)?")) {
             addBreadcrumbToModel(model, "editPassword", "/account/edit-password", true);
+        }else if (relativePath.matches("/account/edit")) {
+            addBreadcrumbToModel(model, "profile", "/account/details", false);
+            addBreadcrumbToModel(model, "editOwnAccount", "/account/edit", true);
         } else if (relativePath.matches("/login")) {
             addBreadcrumbToModel(model, "login", "/login", true);
         } else if (relativePath.matches("/register(/success)?")) {
