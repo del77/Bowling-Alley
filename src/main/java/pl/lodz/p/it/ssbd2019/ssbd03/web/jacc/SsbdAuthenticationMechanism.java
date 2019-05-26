@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.glassfish.soteria.Utils;
 import org.glassfish.soteria.mechanisms.FormAuthenticationMechanism;
-import pl.lodz.p.it.ssbd2019.ssbd03.accountsmodule.service.UserAccountService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
 
 /**
  * Klasa odpowiadająca za uwierzytelnienie w aplikacji
