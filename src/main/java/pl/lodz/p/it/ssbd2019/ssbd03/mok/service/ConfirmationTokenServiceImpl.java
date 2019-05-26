@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ConfirmationToken;
@@ -107,7 +108,7 @@ public class ConfirmationTokenServiceImpl extends TransactionTracker implements 
         Optional<UserAccount> userAccount =
                 userAccountRepositoryLocal.findByLogin(userName);
         return userAccount
-                .orElseThrow(() -> new EntityRetrievalException("Not user account with that login"));
+                .orElseThrow(() -> new LoginDoesNotExistException("No user account with that login"));
     }
 
     private String getActivationUrl(String token) {

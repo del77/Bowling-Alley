@@ -92,7 +92,7 @@ public class UserAdminController implements Serializable {
         try {
             userAccounts = userAccountService.getAllUsers();
         } catch (SsbdApplicationException e) {
-            displayError(localization.get("userAccountsListError"));
+            displayError(localization.get(e.getCode()) + "\n" + localization.get("userAccountsListError"));
         }
         models.put("userAccounts", userAccounts);
         return USER_LIST_VIEW;
@@ -129,7 +129,7 @@ public class UserAdminController implements Serializable {
             return redirectUtil.redirectError(
                     BASE_PATH,
                     null,
-                    Collections.singletonList(localization.get("couldntLock"))
+                    Collections.singletonList(localization.get(e.getCode()) + "\n" + localization.get("couldntLock"))
             );
         }
     }
@@ -188,7 +188,7 @@ public class UserAdminController implements Serializable {
             return redirectUtil.redirectError(
                     String.format(EDIT_USER_PATH, editedAccount.getId()),
                     dto,
-                    Collections.singletonList(e.getMessage())
+                    Collections.singletonList(localization.get(e.getCode()))
             );
         }
 
@@ -337,7 +337,7 @@ public class UserAdminController implements Serializable {
             return redirectUtil.redirectError(
                     String.format("%s/%d/edit/password", BASE_PATH, id),
                     null,
-                    Collections.singletonList(e.getMessage()));
+                    Collections.singletonList(localization.get(e.getCode())));
 
         }
 

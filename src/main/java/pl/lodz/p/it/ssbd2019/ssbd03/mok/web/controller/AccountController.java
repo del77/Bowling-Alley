@@ -84,7 +84,7 @@ public class AccountController implements Serializable {
             models.put("user", user);
             UserRolesRetriever.putAccessLevelsIntoModel(user,models);
        } catch (SsbdApplicationException e) {
-            displayError(localization.get("detailsRetrievalError"));
+            displayError(localization.get(e.getCode()));
         }
         return ACCOUNT_DETAILS_VIEW;
     }
@@ -106,7 +106,7 @@ public class AccountController implements Serializable {
             models.put("editedAccount", userAccount);
             UserRolesRetriever.putAccessLevelsIntoModel(userAccount, models);
         } catch (SsbdApplicationException e) {
-            displayError(localization.get("userCouldntRetrieve"));
+            displayError(localization.get(e.getCode()));
         }
         return EDIT_OWN_ACCOUNT_VIEW;
     }
@@ -146,7 +146,7 @@ public class AccountController implements Serializable {
             return redirectUtil.redirectError(
                     EDIT_OWN_ACCOUNT_PATH,
                     accountDetailsDto,
-                    Collections.singletonList(e.getMessage())
+                    Collections.singletonList(localization.get(e.getCode()))
             );
         }
 
@@ -215,7 +215,7 @@ public class AccountController implements Serializable {
             String login = models.get("userName", String.class);
             userAccountService.changePasswordByLogin(login, userData.getCurrentPassword(), userData.getNewPassword());
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(BASE_URL + "/edit-password", null, Collections.singletonList(e.getMessage()));
+            return redirectUtil.redirectError(BASE_URL + "/edit-password", null, Collections.singletonList(localization.get(e.getCode())));
         }
 
         models.put(INFO, Collections.singletonList(localization.get("passwordChanged")));

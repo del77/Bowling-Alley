@@ -69,7 +69,7 @@ public abstract class RegistrationController {
             try {
                 registrationService.registerAccount(userAccount, accessLevelNames);
             } catch (SsbdApplicationException e) {
-                errorMessages.add(e.getMessage());
+                errorMessages.add(localization.get(e.getCode()));
             }
 
         if (!errorMessages.isEmpty()) {

@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict;
 
 public class AccountAlreadyConfirmedException extends StateConflictedException {
 
+    private static String code = "accountAlreadyConfirmed";
+
     public AccountAlreadyConfirmedException() {
     }
 
@@ -15,5 +17,10 @@ public class AccountAlreadyConfirmedException extends StateConflictedException {
 
     public AccountAlreadyConfirmedException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

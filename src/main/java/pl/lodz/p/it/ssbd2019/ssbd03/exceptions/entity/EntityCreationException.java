@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class EntityCreationException extends DataAccessException {
 
+    private static String code = "cannotCreateEntity";
+
     public EntityCreationException() {
     }
 
@@ -15,5 +17,10 @@ public class EntityCreationException extends DataAccessException {
 
     public EntityCreationException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

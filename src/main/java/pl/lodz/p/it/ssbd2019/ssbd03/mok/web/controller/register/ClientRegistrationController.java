@@ -70,7 +70,7 @@ public class ClientRegistrationController extends RegistrationController {
         try {
             recaptchaValidator.validateCaptcha(basicAccountDto.getRecaptcha());
         } catch (RecaptchaValidationException e) {
-            errorMessages.add(localization.get("validate.recaptchaNotPerformed"));
+            errorMessages.add(localization.get(e.getCode()));
         }
         return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
     }

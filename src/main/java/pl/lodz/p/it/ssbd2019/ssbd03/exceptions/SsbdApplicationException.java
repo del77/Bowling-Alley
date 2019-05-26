@@ -5,6 +5,8 @@ import javax.ejb.ApplicationException;
 @ApplicationException(inherited = true, rollback = true)
 public class SsbdApplicationException extends Exception{
 
+    private static String code = "ssbdAppException";
+
     public SsbdApplicationException() {
     }
 
@@ -25,6 +27,6 @@ public class SsbdApplicationException extends Exception{
     }
 
     public String getCode() {
-        return "app.ssbd";
+        return code;
     }
 }
