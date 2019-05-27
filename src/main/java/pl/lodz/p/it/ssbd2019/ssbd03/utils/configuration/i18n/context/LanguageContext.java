@@ -12,6 +12,11 @@ public interface LanguageContext {
     LocaleConfig getDefault();
 
     /**
+     * @return zwraca czy obecne ustawienie językowe jest preferowane (zmiana manualna).
+     */
+    boolean isPreffered();
+
+    /**
      * @param name nazwa jezyka.
      * @return konfigurację dla Locale języka o podanej nazwie.
      */
@@ -32,4 +37,10 @@ public interface LanguageContext {
      * @param localeConfig konfiguracja do ustawienia.
      */
     void setCurrent(LocaleConfig localeConfig);
+
+    /**
+     * Pozwala ustawić nową konfigurację jezyka, wraz z flagą preferencji dla niej.
+     * @param localeConfig konfiguracja do ustawienia.
+     */
+    void setCurrent(LocaleConfig localeConfig, boolean isPreffered);
 }
