@@ -1,0 +1,16 @@
+{{#block "breadcrumbs"}}
+    {{#if breadcrumbs}}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {{#each breadcrumbs}}
+                    {{#unless disabled}}
+                        <li class="breadcrumb-item"><a href="{{href}}">{{label}}</a></li>
+                    {{/unless}}
+                    {{#if disabled}}
+                        <li class="breadcrumb-item active" aria-current="page">{{label}}</li>
+                    {{/if}}
+                {{/each}}
+            </ol>
+        </nav>
+    {{/if}}
+{{/block}}

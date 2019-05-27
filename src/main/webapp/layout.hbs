@@ -1,23 +1,26 @@
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Bowling Alley</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
     <link href="{{webContextPath}}/static/styles/style.css" rel="stylesheet">
-  </head>
-  <body>
+</head>
 
+<body>
     {{> "layout/nav"}}
+    {{> "layout/breadcrumbs"}}
     {{> "layout/alerts"}}
 
     <main class="my-5">
-      <div class="container">
-        {{#block "content"}}{{/block}}
-      </div>
+        <div class="container">
+            {{#block "content"}}{{/block}}
+        </div>
     </main>
 
     {{> "layout/footer"}}
@@ -27,5 +30,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
     <script src="{{webContextPath}}/static/scripts/index.js"></script>
-  </body>
+</body>
+
 </html>
