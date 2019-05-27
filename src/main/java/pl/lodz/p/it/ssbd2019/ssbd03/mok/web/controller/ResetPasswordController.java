@@ -80,7 +80,7 @@ public class ResetPasswordController {
         try {
             resetPasswordService.requestResetPassword(userData.getEmail());
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(RESET_PASSWORD_URL, null, Collections.singletonList(e.getLocalizedMessage()));
+            return redirectUtil.redirectError(RESET_PASSWORD_URL, null, Collections.singletonList(localization.get(e.getCode())));
         }
         FormData formData = new FormData();
         formData.setInfos(
@@ -123,7 +123,7 @@ public class ResetPasswordController {
         try {
             resetPasswordService.resetPassword(token, userData.getNewPassword());
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(RESET_PASSWORD_URL + "/" + token, null, Collections.singletonList(e.getLocalizedMessage()));
+            return redirectUtil.redirectError(RESET_PASSWORD_URL + "/" + token, null, Collections.singletonList(localization.get(e.getCode())));
         }
 
         FormData formData = new FormData();

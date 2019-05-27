@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class EntityUpdateException extends DataAccessException {
 
+    private static String code = "entityNotUpdated";
+
     public EntityUpdateException() {
     }
 
@@ -15,5 +17,10 @@ public class EntityUpdateException extends DataAccessException {
 
     public EntityUpdateException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

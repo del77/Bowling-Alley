@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class NotUniqueLoginException extends DataAccessException {
 
+    private static String code = "loginNotUnique";
+
     public NotUniqueLoginException() {
         super();
     }
@@ -16,5 +18,10 @@ public class NotUniqueLoginException extends DataAccessException {
 
     public NotUniqueLoginException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

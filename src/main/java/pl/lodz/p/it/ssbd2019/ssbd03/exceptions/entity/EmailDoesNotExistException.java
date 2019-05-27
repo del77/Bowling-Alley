@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class EmailDoesNotExistException extends EntityRetrievalException {
+
+    private static String code = "emailDoesNotExist";
+
     public EmailDoesNotExistException() { }
 
     public EmailDoesNotExistException(String message) {
@@ -13,5 +16,10 @@ public class EmailDoesNotExistException extends EntityRetrievalException {
 
     public EmailDoesNotExistException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

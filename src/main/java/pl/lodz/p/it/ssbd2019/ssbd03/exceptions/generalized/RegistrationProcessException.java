@@ -4,6 +4,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 
 public class RegistrationProcessException extends SsbdApplicationException {
 
+    private static String code = "cannotRegisterUser";
+
     public RegistrationProcessException() {
     }
 
@@ -17,5 +19,10 @@ public class RegistrationProcessException extends SsbdApplicationException {
 
     public RegistrationProcessException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

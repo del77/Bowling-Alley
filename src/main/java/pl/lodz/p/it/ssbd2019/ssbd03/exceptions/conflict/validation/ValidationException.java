@@ -4,6 +4,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException
 
 public class ValidationException extends StateConflictedException {
 
+    private static String code = "entityNotValid";
+
     public ValidationException() {
     }
 
@@ -21,5 +23,10 @@ public class ValidationException extends StateConflictedException {
 
     public ValidationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

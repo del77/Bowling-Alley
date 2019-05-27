@@ -4,6 +4,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 
 public class ConfirmationTokenException extends SsbdApplicationException {
 
+    private static String code = "confirmationTokenError";
+
     public ConfirmationTokenException() {
     }
 
@@ -17,5 +19,10 @@ public class ConfirmationTokenException extends SsbdApplicationException {
 
     public ConfirmationTokenException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

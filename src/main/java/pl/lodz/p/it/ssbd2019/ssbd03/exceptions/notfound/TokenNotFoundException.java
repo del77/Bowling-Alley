@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound;
 
 public class TokenNotFoundException extends NotFoundException {
 
+    private static String code = "tokenNotFound";
+
     public TokenNotFoundException() {
     }
 
@@ -15,5 +17,10 @@ public class TokenNotFoundException extends NotFoundException {
 
     public TokenNotFoundException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

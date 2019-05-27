@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class UserAccountOptimisticLockException extends DataAccessException {
+
+    private static String code = "userNotUpToDate";
+
     public UserAccountOptimisticLockException() {
     }
 
@@ -14,5 +17,10 @@ public class UserAccountOptimisticLockException extends DataAccessException {
 
     public UserAccountOptimisticLockException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }

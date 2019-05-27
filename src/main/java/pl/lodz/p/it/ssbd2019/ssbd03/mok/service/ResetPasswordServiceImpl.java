@@ -106,7 +106,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @return token
      * @throws SsbdApplicationException w przypadku, gdy nie znajdzie zadanego tokena.
      */
-    private ResetPasswordToken getToken(String token) throws SsbdApplicationException {
+    private ResetPasswordToken getToken(String token) throws TokenNotFoundException {
         return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(TokenNotFoundException::new);
     }
 

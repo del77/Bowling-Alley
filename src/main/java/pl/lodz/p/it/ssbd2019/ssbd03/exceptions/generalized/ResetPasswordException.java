@@ -3,6 +3,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 
 public class ResetPasswordException extends SsbdApplicationException {
+
+    private static String code = "cannotResetPassword";
+
     public ResetPasswordException() {
     }
 
@@ -16,5 +19,10 @@ public class ResetPasswordException extends SsbdApplicationException {
 
     public ResetPasswordException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 }
