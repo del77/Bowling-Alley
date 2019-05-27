@@ -1,5 +1,14 @@
-
 {{#partial "content"}}
+    <form class="form-inline" role="form" method="get" action="">
+        <div>
+            <a>{{lang.filterByNameOrSurname}}</a>
+            <div class="form-group justify-content-between">
+                <input name="name" type="text" class="form-input" placeholder="{{lang.firstName}}"/>
+                <input type="submit" class="btn btn-secondary" value="{{lang.userListFilterButtonText}}"/>
+            </div>
+            <a href="{{webContextPath}}/accounts/">{{lang.resetUserListFilter}}</a>
+        </div>
+    </form>
     <h2>{{lang.usersList}}:</h2>
     {{#each userAccounts}}
         <div class="question-card card mb-4">

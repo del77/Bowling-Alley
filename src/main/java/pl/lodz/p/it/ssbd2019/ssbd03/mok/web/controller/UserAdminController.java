@@ -86,11 +86,18 @@ public class UserAdminController implements Serializable {
     @GET
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String allUsersList(@QueryParam("idCache") Long id) {
+    public String allUsersList(
+            @QueryParam("idCache") Long id,
+            @DefaultValue("") @QueryParam("name") String name)
+    {
         redirectUtil.injectFormDataToModels(id, models);
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            userAccounts = userAccountService.getAllUsers();
+            if(name.equals("") || name == null) {
+                userAccounts = userAccountService.getAllUsers();
+            } else {
+                userAccounts = userAccountService.getAllByName(name);
+            }
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()) + "\n" + localization.get("userAccountsListError"));
         }
