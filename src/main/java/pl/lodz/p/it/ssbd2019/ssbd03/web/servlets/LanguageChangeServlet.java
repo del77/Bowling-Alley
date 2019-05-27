@@ -21,9 +21,6 @@ public class LanguageChangeServlet extends HttpServlet {
     @Inject
     private LanguageContext languageContext;
 
-    @Inject
-    private Models models;
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String requestURI = req.getRequestURI();
@@ -39,6 +36,6 @@ public class LanguageChangeServlet extends HttpServlet {
             newLocaleConfig = languageContext.getDefault();
         }
         languageContext.setCurrent(newLocaleConfig);
-        resp.sendRedirect(models.get("path", String.class));
+        resp.sendRedirect(requestURI);
     }
 }
