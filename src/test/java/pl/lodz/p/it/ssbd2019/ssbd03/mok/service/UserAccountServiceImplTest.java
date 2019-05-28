@@ -354,10 +354,10 @@ public class UserAccountServiceImplTest {
         list.add(userAccount1);
         list.add(userAccount2);
         String name = "a";
-        when(userAccountRepositoryLocal.filterByName("a")).then((u) -> {
+        when(userAccountRepositoryLocal.findAllByNameOrLastName("a")).then((u) -> {
             return list.stream().filter((UserAccount a) -> a.getFirstName().equals("a")).collect(Collectors.toList());
         });
-        List<UserAccount> result = userAccountRepositoryLocal.filterByName("a");
+        List<UserAccount> result = userAccountRepositoryLocal.findAllByNameOrLastName("a");
         Assert.assertEquals(1,result.size());
     }
 

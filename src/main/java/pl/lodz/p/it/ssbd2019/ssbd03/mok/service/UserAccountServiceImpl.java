@@ -150,10 +150,11 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Override
     @PermitAll
-    public List<UserAccount> getAllByName(String name) {
-        List<UserAccount> users = userAccountRepositoryLocal.filterByName(name);
-        for(UserAccount user : users)
+    public List<UserAccount> getAllByNameOrLastName(String name) {
+        List<UserAccount> users = userAccountRepositoryLocal.findAllByNameOrLastName(name);
+        for(UserAccount user : users) {
             Hibernate.initialize(user.getAccountAccessLevels());
+        }
         return users;
     }
 

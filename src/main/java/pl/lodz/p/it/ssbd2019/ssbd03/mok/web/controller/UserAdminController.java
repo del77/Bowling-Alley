@@ -96,7 +96,7 @@ public class UserAdminController implements Serializable {
             if(name.equals("") || name == null) {
                 userAccounts = userAccountService.getAllUsers();
             } else {
-                userAccounts = userAccountService.getAllByName(name);
+                userAccounts = userAccountService.getAllByNameOrLastName(name);
             }
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()) + "\n" + localization.get("userAccountsListError"));

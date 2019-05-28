@@ -34,6 +34,6 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
      * @param name Część imienia bądź nazwiska użytkowników, których chcemy wyszukać.
      * @return Lista encji reprezentujących konta użytkowników.
      */
-    List<UserAccount> filterByName(String name);
+    List<UserAccount> findAllByNameOrLastName(String name);
 
 }

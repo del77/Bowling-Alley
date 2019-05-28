@@ -59,7 +59,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @PermitAll
-    public List<UserAccount> filterByName(String name) {
+    public List<UserAccount> findAllByNameOrLastName(String name) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.filterByName");
         namedQuery.setParameter("name", "%"+name.toLowerCase()+"%");
         return namedQuery.getResultList();
