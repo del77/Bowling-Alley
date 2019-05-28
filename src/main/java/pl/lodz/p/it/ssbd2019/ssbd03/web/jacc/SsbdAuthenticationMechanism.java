@@ -68,7 +68,7 @@ public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism,
                 }
                 return status;
             } else {
-                logger.log(Level.WARNING, "Failed attempt to authenticate for user login: " + login);
+                logger.log(Level.WARNING, () -> "Failed attempt to authenticate for user login: " + login);
                 userAccountService.incrementFailedLoginsCounter(login);
                 response.sendRedirect(String.format("%s%s", request.getContextPath(), ERROR_PAGE));
                 return AuthenticationStatus.SEND_FAILURE;
