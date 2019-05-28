@@ -78,15 +78,17 @@ public class UserAdminController implements Serializable {
     }
 
     /**
-     * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
+     * Zwraca widok z listą wszystkich użytkowników, lub z listą użytkowników,
+     * których imię lub nazwisko zawiera podany ciąg znaków.
+     * W wypadku wystąpienia błędu lista jest pusta
      * a użytkownik widzi błąd.
-     *
-     * @return Widok z listą wszystkich użytkowników.
+     * @param name Ciąg znaków, który ma być obecny w imieniu lub nazwisku użytkowników.
+     * @return Widok z listą użytkowników.
      */
     @GET
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String allUsersList(
+    public String listUsers(
             @QueryParam("idCache") Long id,
             @DefaultValue("") @QueryParam("name") String name)
     {
