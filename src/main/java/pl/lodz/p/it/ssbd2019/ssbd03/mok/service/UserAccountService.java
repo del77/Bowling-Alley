@@ -102,4 +102,13 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
      */
     void incrementFailedLoginsCounter(String login) throws SsbdApplicationException;
+
+    /**
+     * Metoda pobiera z bazy danych uzytkowników, których imię lub nazwisko zawiera podany ciąg znaków.
+     * @param name Ciąg znaków, który musi zawierać się w imieniu bądź nazwisku użytkowników
+     * @return Lista użytkowników, których imię lub nazwisko zawierają podany ciąg znaków
+     * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkowników z bazy danych,
+     * bądź gdy nie znajdzie żadnego użytkownika.
+     */
+    List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
 }

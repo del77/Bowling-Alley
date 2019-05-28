@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
@@ -338,6 +340,25 @@ public class UserAccountServiceImplTest {
         } catch (Exception e) {
             Assertions.fail();
         }
+    }
+
+    @Test
+    public void shouldReturnOneUser(){
+        UserAccount userAccount1 = UserAccount.builder()
+                .firstName("a")
+                .build();
+        UserAccount userAccount2 = UserAccount.builder()
+                .firstName("b")
+                .build();
+        List<UserAccount> list = new ArrayList<>();
+        list.add(userAccount1);
+        list.add(userAccount2);
+        String name = "a";
+        when(userAccountRepositoryLocal.findAllByNameOrLastName("a")).then((u) -> {
+            return list.stream().filter((UserAccount a) -> a.getFirstName().equals("a")).collect(Collectors.toList());
+        });
+        List<UserAccount> result = userAccountRepositoryLocal.findAllByNameOrLastName("a");
+        Assert.assertEquals(1,result.size());
     }
 
     @Test

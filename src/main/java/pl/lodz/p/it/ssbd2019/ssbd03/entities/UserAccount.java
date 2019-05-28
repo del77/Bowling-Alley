@@ -22,6 +22,8 @@ import java.util.List;
         value = {
                 @NamedQuery(name = "UserAccount.findByLogin", query = "select a from UserAccount a where a.login = :login"),
                 @NamedQuery(name = "UserAccount.findByEmail", query = "select a from UserAccount a where a.email = :email"),
+                @NamedQuery(name = "UserAccount.filterByName", query = "select a from UserAccount a where lower(a.firstName) like :name or lower(a.lastName) like :name")
+
         }
 )
 public class UserAccount {

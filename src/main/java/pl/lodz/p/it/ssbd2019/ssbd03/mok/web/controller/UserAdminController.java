@@ -78,19 +78,28 @@ public class UserAdminController implements Serializable {
     }
 
     /**
-     * Zwraca widok z listą wszystkich użytkowników. W wypadku wystąpienia błędu lista jest pusta
+     * Zwraca widok z listą wszystkich użytkowników, lub z listą użytkowników,
+     * których imię lub nazwisko zawiera podany ciąg znaków.
+     * W wypadku wystąpienia błędu lista jest pusta
      * a użytkownik widzi błąd.
-     *
-     * @return Widok z listą wszystkich użytkowników.
+     * @param name Ciąg znaków, który ma być obecny w imieniu lub nazwisku użytkowników.
+     * @return Widok z listą użytkowników.
      */
     @GET
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String allUsersList(@QueryParam("idCache") Long id) {
+    public String listUsers(
+            @QueryParam("idCache") Long id,
+            @DefaultValue("") @QueryParam("name") String name)
+    {
         redirectUtil.injectFormDataToModels(id, models);
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            userAccounts = userAccountService.getAllUsers();
+            if(name.equals("") || name == null) {
+                userAccounts = userAccountService.getAllUsers();
+            } else {
+                userAccounts = userAccountService.getAllByNameOrLastName(name);
+            }
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()) + "\n" + localization.get("userAccountsListError"));
         }

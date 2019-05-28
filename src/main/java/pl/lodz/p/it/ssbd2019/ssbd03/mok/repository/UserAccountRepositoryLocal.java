@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
+import java.util.List;
 import java.util.Optional;
 
 @Local
@@ -26,4 +27,13 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
      * @return Encja reprezentująca konto użytkownika.
      */
     Optional<UserAccount> findByEmail(String email);
+
+    /**
+     * Metoda służy do pozyskiwania listy encji kont użytkowników zawierających podany ciąg znaków w imieniu lub nazwisku
+     *
+     * @param name Część imienia bądź nazwiska użytkowników, których chcemy wyszukać.
+     * @return Lista encji reprezentujących konta użytkowników.
+     */
+    List<UserAccount> findAllByNameOrLastName(String name);
+
 }

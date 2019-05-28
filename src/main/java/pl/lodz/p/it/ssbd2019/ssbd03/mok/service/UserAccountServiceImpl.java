@@ -22,10 +22,9 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.xml.registry.infomodel.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,6 +146,16 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                     localization.get("accountLockedByFailedLogins")
             );
         }
+    }
+
+    @Override
+    @PermitAll
+    public List<UserAccount> getAllByNameOrLastName(String name) {
+        List<UserAccount> users = userAccountRepositoryLocal.findAllByNameOrLastName(name);
+        for(UserAccount user : users) {
+            Hibernate.initialize(user.getAccountAccessLevels());
+        }
+        return users;
     }
 
     /**
