@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.MissingRequiredConstructorException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.NotUniqueLoginException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueEmailException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueLoginException;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -4,6 +4,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 
 public class NotFoundException extends SsbdApplicationException {
 
+    private static String code = "entityNotFound";
+
     public NotFoundException() {
     }
 
@@ -22,4 +24,10 @@ public class NotFoundException extends SsbdApplicationException {
     public NotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
+    @Override
+    public String getCode(){
+        return code;
+    }
+
 }

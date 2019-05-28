@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 
 public class MessageNotSentException extends SsbdApplicationException {
 
+    private static String code = "cannotSendEmail";
 
     public MessageNotSentException() {
         super();
@@ -19,6 +20,11 @@ public class MessageNotSentException extends SsbdApplicationException {
 
     public MessageNotSentException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public String getCode(){
+        return code;
     }
 
 }

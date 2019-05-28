@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Item;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -30,7 +30,7 @@ public class ItemRepositoryImpl extends AbstractCruRepository<Item, Long> implem
 
     @Override
     @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
-    public Item edit(Item item) throws EntityUpdateException {
+    public Item edit(Item item) throws DataAccessException {
         return super.edit(item);
     }
 }

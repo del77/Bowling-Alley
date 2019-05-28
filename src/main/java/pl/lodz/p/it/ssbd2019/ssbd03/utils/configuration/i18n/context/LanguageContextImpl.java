@@ -25,9 +25,16 @@ public class LanguageContextImpl implements LanguageContext, Serializable {
 
     private LocaleConfig currentLocale;
 
+    private boolean currentIsPrefered;
+
     @Override
     public LocaleConfig getDefault() {
         return polish;
+    }
+
+    @Override
+    public boolean isPreffered() {
+        return this.currentIsPrefered;
     }
 
     @Override
@@ -53,14 +60,20 @@ public class LanguageContextImpl implements LanguageContext, Serializable {
     }
 
     /**
-     * Ustawia konfigurację tylko jesli należy do dostępnych.
+     * Ustawia konfigurację tylko jesli należy do dostępnych. Standardowo flaga isPreffered jest równa false.
      * @param localeConfig konfiguracja do ustawienia.
      */
     @Override
     public void setCurrent(LocaleConfig localeConfig) {
+        setCurrent(localeConfig, false);
+    }
+
+    @Override
+    public void setCurrent(LocaleConfig localeConfig, boolean isPreffered) {
         for (LocaleConfig config : getAllLocaleConfig()) {
             if (config.equals(localeConfig)) {
                 this.currentLocale = localeConfig;
+                this.currentIsPrefered = isPreffered;
                 break;
             }
         }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
+import java.util.Locale;
 
 /**
  * Klasa odpowiedzialna za dodawanie elementów strony, które reprezentują treść dla zadanego jezyka, oraz zmianę języka.
@@ -37,18 +38,22 @@ public class LanguageFilter extends HttpFilter {
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        Hashtable<Object, Object> langMap = localeCheckSet(languageContext.getCurrent());
+        Locale locale = request.getLocale();
+        LocaleConfig localeConfig = languageContext.getLocaleConfig(locale.getLanguage());
+        Hashtable<Object, Object> langMap = localeCheckSet(localeConfig);
         models.put("lang", langMap);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
         chain.doFilter(request, response);
     }
 
-    private Hashtable<Object, Object> localeCheckSet(LocaleConfig localeConfig) {
+    private Hashtable<Object, Object> localeCheckSet(LocaleConfig localeConfig) throws IOException {
         try {
+            if (languageContext.isPreffered()) {
+                return i18nManager.getLanguageMap(languageContext.getCurrent());
+            }
             return i18nManager.getLanguageMap(localeConfig);
         } catch (PropertiesLoadException e) {
-            e.printStackTrace();
+            throw new IOException("Could not load properties", e);
         }
-        return null;
     }
 }

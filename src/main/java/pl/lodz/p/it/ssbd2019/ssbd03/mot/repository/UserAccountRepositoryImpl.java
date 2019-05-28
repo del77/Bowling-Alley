@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -23,7 +24,7 @@ public class UserAccountRepositoryImpl extends AbstractCruRepository<UserAccount
 
     @Override
     @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
-    public Optional<UserAccount> findById(Long id) {
+    public Optional<UserAccount> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 }

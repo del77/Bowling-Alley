@@ -21,14 +21,12 @@ public class LanguageChangeServlet extends HttpServlet {
     @Inject
     private LanguageContext languageContext;
 
-    @Inject
-    private Models models;
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String requestURI = req.getRequestURI();
         String langPath = requestURI.substring( requestURI.lastIndexOf("/") + 1 );
         LocaleConfig newLocaleConfig = null;
+        boolean isPreffered = true;
         for (LocaleConfig localeConfig : languageContext.getAllLocaleConfig()) {
             if (langPath.equalsIgnoreCase(localeConfig.locale().getLanguage())) {
                 newLocaleConfig = localeConfig;
@@ -37,8 +35,9 @@ public class LanguageChangeServlet extends HttpServlet {
         }
         if (newLocaleConfig == null) {
             newLocaleConfig = languageContext.getDefault();
+            isPreffered = false;
         }
-        languageContext.setCurrent(newLocaleConfig);
-        resp.sendRedirect(models.get("path", String.class));
+        languageContext.setCurrent(newLocaleConfig, isPreffered);
+        resp.sendRedirect(requestURI);
     }
 }
