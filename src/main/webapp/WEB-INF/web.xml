@@ -707,6 +707,15 @@
     </auth-constraint>
   </security-constraint>
 
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>ssbd03realm</realm-name>
+    <form-login-config>
+      <form-login-page>/login</form-login-page>
+      <form-error-page>/login/error</form-error-page>
+    </form-login-config>
+  </login-config>
+
   <error-page>
     <location>/ErrorServlet</location>
   </error-page>
