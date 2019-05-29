@@ -64,7 +64,7 @@ public abstract class RegistrationController {
                 .firstName(basicAccountDto.getFirstName())
                 .lastName(basicAccountDto.getLastName())
                 .phone(basicAccountDto.getPhoneNumber())
-                .version(0L) // TODO It's workaround for the bug.
+                .version(0L)
                 .build();
             try {
                 registrationService.registerAccount(userAccount, accessLevelNames);
