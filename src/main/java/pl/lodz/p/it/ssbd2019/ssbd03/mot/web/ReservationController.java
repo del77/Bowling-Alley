@@ -3,15 +3,16 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
-@RequestScoped
+@SessionScoped
 @Controller
 @Path("reservations")
-public class ReservationController {
+public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający dodać wyniki dla rezerwacji
      * @return Widok z formularzem.

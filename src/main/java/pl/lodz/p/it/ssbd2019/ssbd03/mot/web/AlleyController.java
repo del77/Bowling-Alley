@@ -4,15 +4,16 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
-@RequestScoped
+@SessionScoped
 @Controller
 @Path("alleys")
-public class AlleyController {
+public class AlleyController implements Serializable {
 
     /**
      * Pobiera widok dodawania toru.
