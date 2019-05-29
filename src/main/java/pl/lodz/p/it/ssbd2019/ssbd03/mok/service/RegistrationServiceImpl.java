@@ -1,13 +1,13 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -15,8 +15,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import java.util.ArrayList;
 import java.util.List;

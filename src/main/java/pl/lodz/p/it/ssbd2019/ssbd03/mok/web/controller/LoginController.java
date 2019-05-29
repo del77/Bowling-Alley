@@ -1,21 +1,21 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
 import javax.annotation.security.PermitAll;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
 /**
  * Controller dotyczący zadań związanych z logowaniem użytkowników.
  */
-@RequestScoped
+@SessionScoped
 @Controller
 @Path("login")
-public class LoginController {
-    
+public class LoginController implements Serializable {
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem logowania.
      * @return Widok strony logowania

@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    UserAccount getUserById(Long id) throws SsbdApplicationException;
+    AccountDetailsDto getUserById(Long id) throws SsbdApplicationException;
 
     /**
      * Aktualizuje dane użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
@@ -32,7 +34,7 @@ public interface UserAccountService {
      * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUser(UserAccount userAccount) throws SsbdApplicationException;
+    void updateUser(AccountDetailsDto userAccount) throws SsbdApplicationException;
     
     /**
      * Aktualizuje poziomy dostępu użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
@@ -41,7 +43,7 @@ public interface UserAccountService {
      * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUserAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException;
+    void updateUserAccessLevels(UserRolesDto userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.
@@ -50,7 +52,7 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    UserAccount getByLogin(String login) throws SsbdApplicationException;
+    AccountDetailsDto getByLogin(String login) throws SsbdApplicationException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym loginie.

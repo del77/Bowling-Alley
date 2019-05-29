@@ -30,7 +30,7 @@ public class ItemRepositoryImpl extends AbstractCruRepository<Item, Long> implem
 
     @Override
     @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
-    public Item edit(Item item) throws DataAccessException {
-        return super.edit(item);
+    public void edit(Item item) throws DataAccessException {
+        super.edit(item);
     }
 }

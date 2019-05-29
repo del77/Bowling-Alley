@@ -30,7 +30,7 @@ public class CommentRepositoryImpl extends AbstractCruRepository<Comment, Long> 
 
     @Override
     @RolesAllowed({MorRoles.EDIT_COMMENT_FOR_RESERVATION, MorRoles.DISABLE_COMMENT})
-    public Comment edit(Comment comment) throws DataAccessException {
-        return super.edit(comment);
+    public void edit(Comment comment) throws DataAccessException {
+        super.edit(comment);
     }
 }

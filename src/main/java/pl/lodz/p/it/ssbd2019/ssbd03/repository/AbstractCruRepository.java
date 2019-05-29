@@ -39,10 +39,9 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * @return edytowany obiekt
      */
     @Override
-    public T edit(T entity) throws DataAccessException {
+    public void edit(T entity) throws DataAccessException {
         getEntityManager().merge(entity);
         getEntityManager().flush();
-        return entity;
     }
     
     /**

@@ -2,8 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 
 /**
  * Klasa reprezentująca logikę biznesową dla operacji związanych z obiektami oraz encjami klasy ConfirmationToken.

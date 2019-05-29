@@ -30,7 +30,7 @@ public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation
 
     @Override
     @RolesAllowed(MotRoles.ENTER_GAME_RESULT)
-    public Reservation edit(Reservation reservation) throws DataAccessException {
-        return super.edit(reservation);
+    public void edit(Reservation reservation) throws DataAccessException {
+        super.edit(reservation);
     }
 }

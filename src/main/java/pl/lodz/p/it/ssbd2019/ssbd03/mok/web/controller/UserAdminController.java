@@ -68,8 +68,6 @@ public class UserAdminController implements Serializable {
     @Inject
     private LocalizedMessageProvider localization;
 
-    private transient UserAccount editedAccount;
-
     @GET
     @Path("/success")
     @Produces(MediaType.TEXT_HTML)
@@ -158,7 +156,7 @@ public class UserAdminController implements Serializable {
     public String editUser(@PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
-            editedAccount = userAccountService.getUserById(id);
+            AccountDetailsDto editedAccount = userAccountService.getUserById(id);
             models.put("editedAccount", editedAccount);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieve"));
@@ -182,20 +180,16 @@ public class UserAdminController implements Serializable {
     
         if(!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    String.format(EDIT_USER_PATH, dto.getId()),
                     dto,
                     errorMessages);
         }
 
         try {
-            editedAccount.setFirstName(dto.getFirstName());
-            editedAccount.setLastName(dto.getLastName());
-            editedAccount.setEmail(dto.getEmail());
-            editedAccount.setPhone(dto.getPhoneNumber());
-            editedAccount = userAccountService.updateUser(editedAccount);
+            userAccountService.updateUser(dto);
                     } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    String.format(EDIT_USER_PATH, dto.getId()),
                     dto,
                     Collections.singletonList(localization.get(e.getCode()))
             );
@@ -204,12 +198,11 @@ public class UserAdminController implements Serializable {
         FormData formData = FormData.builder()
                 .data(dto)
                 .infos(Collections.singletonList(String.format(
-                        "%s %s",
-                        localization.get("userDetailsUpdated"),
-                        editedAccount.getLogin()
-                )))
+                        "%s",
+                        localization.get("userDetailsUpdated"))
+                ))
                 .build();
-        return redirectUtil.redirect(String.format(EDIT_USER_PATH, editedAccount.getId()), formData);
+        return redirectUtil.redirect(String.format(EDIT_USER_PATH, dto.getId()), formData);
     }
     
     /**
@@ -226,10 +219,8 @@ public class UserAdminController implements Serializable {
     public String editUserRoles(@PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
-            editedAccount = userAccountService.getUserById(id);
+            AccountDetailsDto editedAccount = userAccountService.getUserById(id);
             models.put("editedAccount", editedAccount);
-            Hibernate.initialize(editedAccount.getAccountAccessLevels());
-            UserRolesRetriever.putAccessLevelsIntoModel(editedAccount, models);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieveRoles"));
         }
@@ -251,17 +242,17 @@ public class UserAdminController implements Serializable {
         
         if(!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, editedAccount.getId()),
+                    String.format(EDIT_USER_PATH, dto.getId()),
                     dto,
                     errorMessages);
         }
         
         try {
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
-            editedAccount = userAccountService.updateUserAccessLevels(editedAccount, selectedAccessLevels);
+            userAccountService.updateUserAccessLevels(dto, selectedAccessLevels);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_ROLES_PATH, editedAccount.getId()),
+                    String.format(EDIT_USER_ROLES_PATH, dto.getId()),
                     dto,
                     Collections.singletonList(localization.get("rolesNotUpdated"))
             );
@@ -269,12 +260,11 @@ public class UserAdminController implements Serializable {
         FormData formData = FormData.builder()
                 .data(dto)
                 .infos(Collections.singletonList(String.format(
-                        "%s %s",
-                        localization.get("rolesUpdated"),
-                        editedAccount.getLogin()
+                        "%s",
+                        localization.get("rolesUpdated")
                 )))
                 .build();
-        return redirectUtil.redirect(String.format(EDIT_USER_ROLES_PATH, editedAccount.getId()), formData);
+        return redirectUtil.redirect(String.format(EDIT_USER_ROLES_PATH, dto.getId()), formData);
     }
     
     /**
@@ -291,7 +281,7 @@ public class UserAdminController implements Serializable {
     public String displayUserDetails(@PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
-            UserAccount user = userAccountService.getUserById(id);
+            AccountDetailsDto user = userAccountService.getUserById(id);
             models.put("user", user);
             UserRolesRetriever.putAccessLevelsIntoModel(user,models);
         } catch (SsbdApplicationException e) {

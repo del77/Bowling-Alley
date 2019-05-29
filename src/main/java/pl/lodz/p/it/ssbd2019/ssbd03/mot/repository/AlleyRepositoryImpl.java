@@ -38,8 +38,8 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    public Alley edit(Alley alley) throws DataAccessException {
-        return super.edit(alley);
+    public void edit(Alley alley) throws DataAccessException {
+        super.edit(alley);
     }
 
     @Override

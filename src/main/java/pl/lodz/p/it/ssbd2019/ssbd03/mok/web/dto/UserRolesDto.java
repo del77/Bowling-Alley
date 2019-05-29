@@ -9,7 +9,8 @@ import javax.ws.rs.FormParam;
 @Setter
 @EqualsAndHashCode
 public class UserRolesDto implements AccessLevelsSelection {
-    
+    Long id;
+
     @FormParam("clientSelected")
     boolean clientRoleSelected;
     

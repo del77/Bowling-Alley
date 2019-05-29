@@ -35,9 +35,7 @@ public abstract class RegistrationController {
     @EJB
     private RegistrationService registrationService;
 
-    protected List<String> errorMessages = new ArrayList<>();
-
-    private static final String ERROR_PREFIX = "errors";
+    List<String> errorMessages = new ArrayList<>();
 
     /**
      * Metoda pomocnicza do uniknięcia duplikowania kodu

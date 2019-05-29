@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import org.hibernate.Hibernate;
+import org.modelmapper.ModelMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword;
@@ -14,6 +15,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistExceptio
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -25,12 +28,15 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors(InterceptorTracker.class)
 public class UserAccountServiceImpl extends TransactionTracker implements UserAccountService {
     @EJB(beanName = "MOKUserRepository")
@@ -45,6 +51,11 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @Inject
     private LocalizedMessageProvider localization;
 
+
+    private ModelMapper modelMapper = new ModelMapper();
+
+    private UserAccount userAccount;
+
     @Override
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
     public List<UserAccount> getAllUsers() throws SsbdApplicationException {
@@ -53,62 +64,71 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Override
     @RolesAllowed(MokRoles.GET_USER_DETAILS)
-    public UserAccount getUserById(Long id) throws SsbdApplicationException {
-        UserAccount user = userAccountRepositoryLocal.findById(id).orElseThrow(
+    public AccountDetailsDto getUserById(Long id) throws SsbdApplicationException {
+        this.userAccount = userAccountRepositoryLocal.findById(id).orElseThrow(
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
-        Hibernate.initialize(user.getAccountAccessLevels());
-        return user;
+        Hibernate.initialize(this.userAccount.getAccountAccessLevels());
+        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        return accountDetailsDto;
     }
 
 
     @Override
     @RolesAllowed({MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT})
-    public UserAccount updateUser(UserAccount userAccount) throws SsbdApplicationException {
-        return userAccountRepositoryLocal.edit(userAccount);
+    public void updateUser(AccountDetailsDto userAccountDto) throws SsbdApplicationException {
+        this.userAccount.setFirstName(userAccountDto.getFirstName());
+        this.userAccount.setLastName(userAccountDto.getLastName());
+        this.userAccount.setEmail(userAccountDto.getEmail());
+        this.userAccount.setPhone(userAccountDto.getPhone());
+        userAccountRepositoryLocal.edit(this.userAccount);
     }
 
     @Override
     @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_OWN_ACCOUNT})
-    public UserAccount updateUserAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException {
+    public void updateUserAccessLevels(UserRolesDto userAccountDto, List<String> selectedAccessLevels) throws SsbdApplicationException {
         setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
         addNewAccountAccessLevelsForEditedUser(userAccount, selectedAccessLevels);
-
-        return userAccountRepositoryLocal.edit(userAccount);
+        userAccountRepositoryLocal.edit(userAccount);
     }
 
     @Override
     @PermitAll
-    public UserAccount getByLogin(String login) throws SsbdApplicationException {
-        UserAccount user = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+    public AccountDetailsDto getByLogin(String login) throws SsbdApplicationException {
+        this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
-        Hibernate.initialize(user.getAccountAccessLevels());
-        return user;
+        Hibernate.initialize(this.userAccount.getAccountAccessLevels());
+
+        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        System.out.println("AccountDetails: " + accountDetailsDto);
+        return accountDetailsDto;
     }
 
     @Override
     @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws SsbdApplicationException {
-        UserAccount account = this.getByLogin(login);
+        this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+                () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
         String currentPasswordHash = SHA256Provider.encode(currentPassword);
 
-        if (!currentPasswordHash.equals(account.getPassword())) {
+        if (!currentPasswordHash.equals(this.userAccount.getPassword())) {
             throw new ChangePasswordException("Current password is incorrect.");
         }
 
-        setNewPassword(account, newPassword);
+        setNewPassword(newPassword);
     }
 
     @Override
     @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     public void changePasswordById(long id, String newPassword) throws SsbdApplicationException {
-        UserAccount account = this.getUserById(id);
-        setNewPassword(account, newPassword);
+        AccountDetailsDto account = this.getUserById(id);
+        setNewPassword(newPassword);
     }
 
     @Override
     @RolesAllowed(MokRoles.LOCK_UNLOCK_ACCOUNT)
     public UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException {
-        UserAccount account = getUserById(id);
+        UserAccount account = userAccountRepositoryLocal.findById(id).orElseThrow(
+                () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         account.setAccountActive(isActive);
         UserAccount editedAccount = userAccountRepositoryLocal.editWithoutMerge(account);
 
@@ -169,24 +189,25 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     /**
      * Dopisuje aktualne hasło do historii haseł użytkownika i zmienia je.
-     * @param userAccount Obiekt typu UserAccount, który jest edytowany.
+     *
      * @param newPassword Nowe hasło dla konta.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się zmienić hasła.
      */
-    private void setNewPassword(UserAccount userAccount, String newPassword) throws SsbdApplicationException {
+    private void setNewPassword(String newPassword) throws SsbdApplicationException {
         String newPasswordHash = SHA256Provider.encode(newPassword);
 
-        if(isNewPasswordUniqueForUser(userAccount, newPasswordHash)) {
-            addCurrentPasswordToHistory(userAccount);
-            userAccount.setPassword(newPasswordHash);
+        if (isNewPasswordUniqueForUser(this.userAccount, newPasswordHash)) {
+            addCurrentPasswordToHistory(this.userAccount);
+            this.userAccount.setPassword(newPasswordHash);
         } else {
             throw new AccountPasswordNotUniqueException("New password was used before.");
         }
-        userAccountRepositoryLocal.edit(userAccount);
+        userAccountRepositoryLocal.edit(this.userAccount);
     }
 
     /**
      * Sprawdza czy nowe hasło nie było wcześniej używane przez użytkownika
+     *
      * @param userAccount użytkownik dla którego sprawdzana jest unikalność hasla
      * @param newPassword nowe hasło
      * @return rezultat sprawdzenia
@@ -200,6 +221,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     /**
      * Dodaje istniejące hasło użytkownika do historii haseł
+     *
      * @param userAccount obiekt konta użytkownika
      */
     private void addCurrentPasswordToHistory(UserAccount userAccount) {

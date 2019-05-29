@@ -1,16 +1,14 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ConfirmationToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ConfirmationTokenException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -18,7 +16,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.mvc.Models;

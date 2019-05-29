@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.PhoneNumberFormat;
 
 import javax.validation.constraints.Email;
@@ -14,6 +11,7 @@ import javax.ws.rs.FormParam;
 
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 public class AccountDetailsDto {
@@ -44,7 +42,16 @@ public class AccountDetailsDto {
     @Size(max = 16, message = "{validate.phoneNumberShorterThanSixteen}")
     @PhoneNumberFormat(message = "{validate.phoneNumberWrongFormat}")
     @FormParam("phoneNumber")
-    protected String phoneNumber;
+    protected String phone;
+
+    @FormParam("clientSelected")
+    boolean clientRoleSelected;
+
+    @FormParam("employeeSelected")
+    boolean employeeRoleSelected;
+
+    @FormParam("adminSelected")
+    boolean adminRoleSelected;
 
     @FormParam("g-recaptcha-response")
     protected String recaptcha;

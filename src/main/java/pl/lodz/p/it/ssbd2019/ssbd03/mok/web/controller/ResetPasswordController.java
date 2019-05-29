@@ -12,22 +12,23 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Controller dotyczący zadań związanych z resetowaniem hasła użytkownika.
  */
-@RequestScoped
+@SessionScoped
 @Controller
 @Path("reset-password")
-public class ResetPasswordController {
+public class ResetPasswordController implements Serializable {
 
     private static final String RESET_PASSWORD_URL = "/reset-password";
     private static final String REQUEST_FORM_HBS = "accounts/reset-password/requestForm.hbs";

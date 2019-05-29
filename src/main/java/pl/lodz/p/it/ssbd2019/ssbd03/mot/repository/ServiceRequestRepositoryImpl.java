@@ -37,8 +37,8 @@ public class ServiceRequestRepositoryImpl extends AbstractCruRepository<ServiceR
 
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
-    public ServiceRequest edit(ServiceRequest serviceRequest) throws DataAccessException {
-        return super.edit(serviceRequest);
+    public void edit(ServiceRequest serviceRequest) throws DataAccessException {
+        super.edit(serviceRequest);
     }
 
     @Override
