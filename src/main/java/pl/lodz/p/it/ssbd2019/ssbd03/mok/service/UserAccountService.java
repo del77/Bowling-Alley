@@ -90,4 +90,11 @@ public interface UserAccountService {
      */
     List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
 
+    /**
+     * Metoda służy do potwierdzenia konta na bazie podanego tokena.
+     * Metoda może wyrzucić błąd również w przypadku, gdy użytkownik nie isntieje.
+     * @param token wartość tokena potwierdzenia
+     * @throws SsbdApplicationException W przypadku, gdy nie uda się potwierdzić konta.
+     */
+    void activateAccountByToken(String token) throws SsbdApplicationException;
 }
