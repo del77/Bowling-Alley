@@ -111,4 +111,21 @@ public interface UserAccountService {
      * bądź gdy nie znajdzie żadnego użytkownika.
      */
     List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
+
+    /**
+     * Rejestruje datę udanej próby logowania.
+     *
+     * @param login login konta
+     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
+     */
+    void registerSuccessfulLoginDate(String login) throws SsbdApplicationException;
+
+    /**
+     * Rejestruje datę nieudanej próby logowania.
+     *
+     * @param login login konta
+     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
+     */
+    void registerFailedLoginDate(String login) throws SsbdApplicationException;
+
 }
