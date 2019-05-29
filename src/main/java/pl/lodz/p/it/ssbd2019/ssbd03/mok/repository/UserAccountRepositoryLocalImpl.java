@@ -52,16 +52,20 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     @Override
     @PermitAll
     public Optional<UserAccount> findByEmail(String email) {
-        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByEmail");
-        namedQuery.setParameter("email", email);
-        return Optional.of(namedQuery.getSingleResult());
+        try {
+            TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByEmail");
+            namedQuery.setParameter("email", email);
+            return Optional.of(namedQuery.getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     @PermitAll
     public List<UserAccount> findAllByNameOrLastName(String name) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.filterByName");
-        namedQuery.setParameter("name", "%"+name.toLowerCase()+"%");
+        namedQuery.setParameter("name", "%" + name.toLowerCase() + "%");
         return namedQuery.getResultList();
     }
 
@@ -101,7 +105,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
-            if(t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
+            if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
                         "' because it was already in use.");
             } else {
@@ -119,7 +123,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
-            if(t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
+            if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
                         "' because it was already in use.");
             } else {

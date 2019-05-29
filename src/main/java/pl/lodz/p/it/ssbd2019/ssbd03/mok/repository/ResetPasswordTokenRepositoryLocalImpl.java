@@ -30,8 +30,12 @@ public class ResetPasswordTokenRepositoryLocalImpl extends AbstractCruRepository
     @Override
     @PermitAll
     public Optional<ResetPasswordToken> findByToken(String token) {
-        TypedQuery<ResetPasswordToken> namedQuery = this.createNamedQuery("ResetPasswordToken.findByToken");
-        namedQuery.setParameter("token", token);
-        return Optional.of(namedQuery.getSingleResult());
+        try {
+            TypedQuery<ResetPasswordToken> namedQuery = this.createNamedQuery("ResetPasswordToken.findByToken");
+            namedQuery.setParameter("token", token);
+            return Optional.of(namedQuery.getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }
