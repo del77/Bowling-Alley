@@ -4,8 +4,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Item;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class ItemServiceImpl implements ItemService {
     @Override
     @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})

@@ -5,14 +5,15 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
-@RequestScoped
+@SessionScoped
 @Controller
-public class ReservationController {
+public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
      * @return Widok z formularzem.

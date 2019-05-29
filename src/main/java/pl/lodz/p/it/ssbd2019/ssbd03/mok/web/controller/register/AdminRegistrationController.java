@@ -5,22 +5,23 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
  * takich jak rzeczywisty proces rejestracji oraz weryfikacji.
  */
-@RequestScoped
+@SessionScoped
 @Controller
 @RolesAllowed(MokRoles.CREATE_ACCOUNT)
 @Path("admin/register")
-public class AdminRegistrationController extends RegistrationController {
+public class AdminRegistrationController extends RegistrationController implements Serializable {
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerByAdmin.hbs";
     private static final String REGISTER_ENDPOINT_URL = "admin/register";

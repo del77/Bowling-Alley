@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
@@ -9,7 +8,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.NewPasswordWithConfirmationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.RecaptchaValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.rolesretriever.UserRolesRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -36,13 +34,13 @@ import java.util.List;
 @Path("account")
 public class AccountController implements Serializable {
 
+    private static final String BASE_URL = "account";
     private static final String ERROR = "errors";
     private static final String INFO = "infos";
-    private static final String BASE_URL = "account";
-    private static final String EDIT_PASSWORD_FORM_VIEW = "accounts/edit-password/editByUser.hbs";
-    private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String ACCOUNT_DETAILS_VIEW = "accounts/users/userOwnDetails.hbs";
     private static final String EDIT_OWN_ACCOUNT_VIEW = "accounts/users/editOwnDetails.hbs";
+    private static final String EDIT_PASSWORD_FORM_VIEW = "accounts/edit-password/editByUser.hbs";
+    private static final String EDIT_SUCCESS_VIEW = "accounts/edit-password/edit-success.hbs";
     private static final String EDIT_OWN_ACCOUNT_PATH = "account/edit";
 
     @Inject
@@ -66,8 +64,6 @@ public class AccountController implements Serializable {
     @EJB
     private UserAccountService userAccountService;
 
-    private transient UserAccount userAccount;
-
     /**
      * Zwraca widok z danymi zalogowanego użytkownika.
      *
@@ -79,11 +75,10 @@ public class AccountController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String displayUserDetails() {
         try {
-            String login = (String) models.get("userName");
-            UserAccount user = userAccountService.getByLogin(login);
+            String login = models.get("userName", String.class);
+            AccountDetailsDto user = userAccountService.getByLogin(login);
             models.put("user", user);
-            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
-       } catch (SsbdApplicationException e) {
+        } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
         return ACCOUNT_DETAILS_VIEW;
@@ -102,9 +97,8 @@ public class AccountController implements Serializable {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
             String login = (String) models.get("userName");
-            userAccount = userAccountService.getByLogin(login);
+            AccountDetailsDto userAccount = userAccountService.getByLogin(login);
             models.put("editedAccount", userAccount);
-            UserRolesRetriever.putAccessLevelsIntoModel(userAccount, models);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
@@ -137,11 +131,7 @@ public class AccountController implements Serializable {
         }
 
         try {
-            userAccount.setFirstName(accountDetailsDto.getFirstName());
-            userAccount.setLastName(accountDetailsDto.getLastName());
-            userAccount.setEmail(accountDetailsDto.getEmail());
-            userAccount.setPhone(accountDetailsDto.getPhoneNumber());
-            userAccountService.updateUser(userAccount);
+            userAccountService.updateUser(accountDetailsDto);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     EDIT_OWN_ACCOUNT_PATH,

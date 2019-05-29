@@ -3,17 +3,18 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 
-@RequestScoped
+@SessionScoped
 @Controller
-public class ScoresController {
+public class ScoresController implements Serializable {
     /**
      * Pobiera wyniki osiągnięte przez klienta
      */

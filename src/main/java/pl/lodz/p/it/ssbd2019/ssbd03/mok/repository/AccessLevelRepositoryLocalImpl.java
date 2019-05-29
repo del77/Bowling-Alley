@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Stateless(name = "MOKAccessLevelRepository")
 @DenyAll
 public class AccessLevelRepositoryLocalImpl extends AbstractCruRepository<AccessLevel, Long> implements AccessLevelRepositoryLocal {

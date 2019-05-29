@@ -4,8 +4,11 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AlleyServiceImpl implements AlleyService {
     @Override
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)

@@ -7,12 +7,14 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.mvc.Models;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
 @SessionScoped
+@Transactional(Transactional.TxType.REQUIRES_NEW)
 class LoginStat implements Serializable {
 
     private static final Logger logger = Logger.getLogger(LoginStat.class.getName());

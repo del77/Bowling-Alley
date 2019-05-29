@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Stateless(name = "MOKUserRepository")
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
@@ -44,7 +44,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             namedQuery.setParameter("login", login);
             return Optional.of(namedQuery.getSingleResult());
         } catch (PersistenceException e) {
-            throw new EntityRetrievalException("Could not find entity with given id");
+            throw new LoginDoesNotExistException("Could not find entity with given login", e);
         }
     }
 
@@ -85,12 +85,12 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             Throwable t2 = t.getCause();
             if ((t2 instanceof PSQLException) && t2.getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not create account with email '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else if ((t2 instanceof PSQLException) && t2.getMessage().contains("login")) {
                 throw new NotUniqueLoginException("Could not create account with login '" + userAccount.getLogin() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform create operation.");
+                throw new EntityUpdateException("Could not perform create operation.", e);
             }
         }
     }
@@ -98,18 +98,18 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     @Override
     @RolesAllowed({MokRoles.EDIT_USER_ACCOUNT, MokRoles.EDIT_OWN_ACCOUNT, MokRoles.CHANGE_ACCESS_LEVEL,
             MokRoles.CHANGE_OWN_PASSWORD, MokRoles.CHANGE_USER_PASSWORD})
-    public UserAccount edit(UserAccount userAccount) throws DataAccessException {
+    public void edit(UserAccount userAccount) throws DataAccessException {
         try {
-            return super.edit(userAccount);
+            super.edit(userAccount);
         } catch (OptimisticLockException e) {
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
             if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform update operation.");
+                throw new EntityUpdateException("Could not perform update operation.", e);
             }
         }
     }
@@ -125,9 +125,9 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             Throwable t = e.getCause();
             if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform update operation.");
+                throw new EntityUpdateException("Could not perform update operation.",e);
             }
         }
     }

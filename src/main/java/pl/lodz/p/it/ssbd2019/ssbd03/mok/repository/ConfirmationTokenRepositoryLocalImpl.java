@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Stateless(name = "MOKConfirmationTokenRepository")
 @DenyAll
 public class ConfirmationTokenRepositoryLocalImpl extends AbstractCruRepository<ConfirmationToken, Long>
@@ -38,8 +39,8 @@ public class ConfirmationTokenRepositoryLocalImpl extends AbstractCruRepository<
 
     @Override
     @PermitAll
-    public ConfirmationToken edit(ConfirmationToken confirmationToken) throws DataAccessException {
-        return super.edit(confirmationToken);
+    public void edit(ConfirmationToken confirmationToken) throws DataAccessException {
+        super.edit(confirmationToken);
     }
 
     @Override

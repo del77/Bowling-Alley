@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
+import javax.ejb.*;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.mvc.Models;
@@ -26,8 +27,9 @@ import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
 @Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors(InterceptorTracker.class)
-public class ResetPasswordServiceImpl extends TransactionTracker implements ResetPasswordService {
+public class ResetPasswordServiceImpl  extends TransactionTracker implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
 

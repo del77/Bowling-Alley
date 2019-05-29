@@ -8,12 +8,15 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> implements AlleyRepositoryLocal {
 
@@ -38,8 +41,8 @@ public class AlleyRepositoryImpl extends AbstractCruRepository<Alley, Long> impl
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    public Alley edit(Alley alley) throws DataAccessException {
-        return super.edit(alley);
+    public void edit(Alley alley) throws DataAccessException {
+        super.edit(alley);
     }
 
     @Override

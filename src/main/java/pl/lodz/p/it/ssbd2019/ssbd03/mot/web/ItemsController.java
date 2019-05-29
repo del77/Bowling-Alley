@@ -4,16 +4,17 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 import java.util.List;
 
-@RequestScoped
+@SessionScoped
 @Controller
 @Path("items")
-public class ItemsController {
+public class ItemsController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować liczbę kul

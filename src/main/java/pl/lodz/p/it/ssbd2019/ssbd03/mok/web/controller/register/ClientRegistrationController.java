@@ -1,29 +1,28 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.ConfirmationTokenService;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.RecaptchaValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
  * Klasa odpowiedzialna za mapowanie dla punktów dostępowych związanych z rejestracją użytkowników,
  * takich jak rzeczywisty proces rejestracji oraz weryfikacji.
  */
-@RequestScoped
+@SessionScoped
 @Controller
 @PermitAll
 @Path("register")
-public class ClientRegistrationController extends RegistrationController {
+public class ClientRegistrationController extends RegistrationController implements Serializable {
 
     @Inject
     private RecaptchaValidator recaptchaValidator;

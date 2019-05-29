@@ -31,7 +31,7 @@ public class PropertyManagerImpl implements PropertyManager {
                 properties.load(bufferedReader);
             }
         } catch (final Exception e) {
-            throw new PropertiesLoadException("Error during reading of " + filePath + ", " + e.getMessage());
+            throw new PropertiesLoadException("Error during reading of " + filePath + ", " + e.getMessage(), e);
         }
         return properties;
     }

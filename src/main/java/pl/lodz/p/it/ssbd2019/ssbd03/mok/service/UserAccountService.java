@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 
 import java.util.List;
 
@@ -24,24 +26,22 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    UserAccount getUserById(Long id) throws SsbdApplicationException;
+    AccountDetailsDto getUserById(Long id) throws SsbdApplicationException;
 
     /**
      * Aktualizuje dane użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
-     * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUser(UserAccount userAccount) throws SsbdApplicationException;
+    void updateUser(AccountDetailsDto userAccount) throws SsbdApplicationException;
     
     /**
      * Aktualizuje poziomy dostępu użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
-     * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateUserAccessLevels(UserAccount userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException;
+    void updateUserAccessLevels(UserRolesDto userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym loginie.
@@ -50,7 +50,7 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych,
      * bądź gdy nie znajdzie użytkownika.
      */
-    UserAccount getByLogin(String login) throws SsbdApplicationException;
+    AccountDetailsDto getByLogin(String login) throws SsbdApplicationException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym loginie.
@@ -68,10 +68,9 @@ public interface UserAccountService {
      *
      * @param id identyfikator użytkownika
      * @param isActive nowa wartość flagi zablokowania
-     * @return obiekt encji odblokowanego użytkownika
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException;
+    void updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym id.
@@ -91,4 +90,11 @@ public interface UserAccountService {
      */
     List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
 
+    /**
+     * Metoda służy do potwierdzenia konta na bazie podanego tokena.
+     * Metoda może wyrzucić błąd również w przypadku, gdy użytkownik nie isntieje.
+     * @param token wartość tokena potwierdzenia
+     * @throws SsbdApplicationException W przypadku, gdy nie uda się potwierdzić konta.
+     */
+    void activateAccountByToken(String token) throws SsbdApplicationException;
 }

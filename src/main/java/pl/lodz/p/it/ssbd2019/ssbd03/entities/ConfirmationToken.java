@@ -3,10 +3,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 
 /**
  * Klasa reprezentująca wyniki.
