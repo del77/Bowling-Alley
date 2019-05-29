@@ -2,7 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.ConfirmationTokenService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -33,7 +33,7 @@ public class AccountConfirmationController implements Serializable {
     private static final String FAILURE_REDIRECT = "redirect:confirm-account/failure";
 
     @EJB
-    private ConfirmationTokenService confirmationTokenService;
+    private UserAccountService confirmationTokenService;
 
     /**
      * Metoda potwierdza konto uzytkownika na bazie tokenu, który powinien dostać.

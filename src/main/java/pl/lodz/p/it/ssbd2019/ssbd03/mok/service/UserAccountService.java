@@ -31,7 +31,6 @@ public interface UserAccountService {
     /**
      * Aktualizuje dane użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
-     * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
     void updateUser(AccountDetailsDto userAccount) throws SsbdApplicationException;
@@ -40,7 +39,6 @@ public interface UserAccountService {
      * Aktualizuje poziomy dostępu użytkownika w bazie danych. Użytkownik musi być zawarty w obecnym kotekście (sesji).
      * @param userAccount Encja użytkownika do zaktualizowania.
      * @param selectedAccessLevels Przydzielone użytkownikowi poziomy dostępu.
-     * @return Zaktualizowana encja uzytkownika.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
     void updateUserAccessLevels(UserRolesDto userAccount, List<String> selectedAccessLevels) throws SsbdApplicationException;
@@ -70,10 +68,9 @@ public interface UserAccountService {
      *
      * @param id identyfikator użytkownika
      * @param isActive nowa wartość flagi zablokowania
-     * @return obiekt encji odblokowanego użytkownika
      * @throws SsbdApplicationException w wypadku, gdy nie uda się aktualizacja.
      */
-    UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException;
+    void updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException;
 
     /**
      * Metoda pozwalająca zmienić hasło użytkownika o podanym id.

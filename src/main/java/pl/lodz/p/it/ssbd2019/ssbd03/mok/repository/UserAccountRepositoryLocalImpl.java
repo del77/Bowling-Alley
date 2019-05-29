@@ -10,6 +10,8 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,7 +19,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
-
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Stateless(name = "MOKUserRepository")
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
@@ -42,7 +44,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             namedQuery.setParameter("login", login);
             return Optional.of(namedQuery.getSingleResult());
         } catch (PersistenceException e) {
-            throw new EntityRetrievalException("Could not find entity with given id");
+            throw new LoginDoesNotExistException("Could not find entity with given login", e);
         }
     }
 
@@ -83,12 +85,12 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             Throwable t2 = t.getCause();
             if ((t2 instanceof PSQLException) && t2.getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not create account with email '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else if ((t2 instanceof PSQLException) && t2.getMessage().contains("login")) {
                 throw new NotUniqueLoginException("Could not create account with login '" + userAccount.getLogin() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform create operation.");
+                throw new EntityUpdateException("Could not perform create operation.", e);
             }
         }
     }
@@ -105,9 +107,9 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             Throwable t = e.getCause();
             if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform update operation.");
+                throw new EntityUpdateException("Could not perform update operation.", e);
             }
         }
     }
@@ -123,9 +125,9 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             Throwable t = e.getCause();
             if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
                 throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.");
+                        "' because it was already in use.", e);
             } else {
-                throw new EntityUpdateException("Could not perform update operation.");
+                throw new EntityUpdateException("Could not perform update operation.",e);
             }
         }
     }

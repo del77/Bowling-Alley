@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
-import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
@@ -37,12 +36,12 @@ import java.util.List;
 public class UserAdminController implements Serializable {
 
     private static final String ERROR = "errors";
-    
+
     // ================ PATHS =========================
     private static final String BASE_PATH = "accounts";
     private static final String EDIT_USER_PATH = "accounts/%d/edit";
     private static final String EDIT_USER_ROLES_PATH = "accounts/%d/edit/roles";
-    
+
     // ================= VIEWS ========================
     private static final String DISPLAY_DETAILS_VIEW = "accounts/users/userDetailsForAdmin.hbs";
     private static final String EDIT_PASSWORD_FORM_VIEW = "accounts/edit-password/editByAdmin.hbs";
@@ -80,6 +79,7 @@ public class UserAdminController implements Serializable {
      * których imię lub nazwisko zawiera podany ciąg znaków.
      * W wypadku wystąpienia błędu lista jest pusta
      * a użytkownik widzi błąd.
+     *
      * @param name Ciąg znaków, który ma być obecny w imieniu lub nazwisku użytkowników.
      * @return Widok z listą użytkowników.
      */
@@ -88,12 +88,11 @@ public class UserAdminController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String listUsers(
             @QueryParam("idCache") Long id,
-            @DefaultValue("") @QueryParam("name") String name)
-    {
+            @DefaultValue("") @QueryParam("name") String name) {
         redirectUtil.injectFormDataToModels(id, models);
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
-            if(name.equals("") || name == null) {
+            if (name.equals("") || name == null) {
                 userAccounts = userAccountService.getAllUsers();
             } else {
                 userAccounts = userAccountService.getAllByNameOrLastName(name);
@@ -104,11 +103,11 @@ public class UserAdminController implements Serializable {
         models.put("userAccounts", userAccounts);
         return USER_LIST_VIEW;
     }
-    
+
     /**
      * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
      *
-     * @param dto dto z id konta, któremu należy zmienić flagę aktywności
+     * @param dto     dto z id konta, któremu należy zmienić flagę aktywności
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
      */
@@ -119,19 +118,11 @@ public class UserAdminController implements Serializable {
                                             @QueryParam("idCache") Long idCache) {
         boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
         try {
-            UserAccount account = userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
-            if (account.isAccountActive() == active) {
-                FormData formData = new FormData();
-                String message = account.isAccountActive() ? localization.get("unlockedSuccess") : localization.get("lockedSuccess");
-                formData.setInfos(Collections.singletonList(message + ": " + account.getLogin()));
-                return redirectUtil.redirect(BASE_PATH, formData);
-            } else {
-                return redirectUtil.redirectError(
-                        BASE_PATH,
-                        null,
-                        Collections.singletonList(localization.get("couldntLock") + account.getLogin())
-                );
-            }
+            userAccountService.updateLockStatusOnAccountById(dto.getId(), active);
+            FormData formData = new FormData();
+            String message = active ? localization.get("unlockedSuccess") : localization.get("lockedSuccess");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(BASE_PATH, formData);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
                     BASE_PATH,
@@ -145,7 +136,7 @@ public class UserAdminController implements Serializable {
     /**
      * Zwraca widok z formularzem edycji użytkownika.
      *
-     * @param id identyfikator użytkownika do edycji
+     * @param id      identyfikator użytkownika do edycji
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z formularzem edycji uzytkownika.
      */
@@ -175,21 +166,21 @@ public class UserAdminController implements Serializable {
     @Path("/{id}/edit")
     @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
-    public String editUser(@BeanParam AccountDetailsDto dto) {
+    public String editUser(@BeanParam AccountDetailsDto dto, @PathParam("id") Long userId) {
         List<String> errorMessages = validator.validate(dto);
-    
-        if(!errorMessages.isEmpty()) {
+
+        if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, dto.getId()),
+                    String.format(EDIT_USER_PATH, userId),
                     dto,
                     errorMessages);
         }
 
         try {
             userAccountService.updateUser(dto);
-                    } catch (SsbdApplicationException e) {
+        } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, dto.getId()),
+                    String.format(EDIT_USER_PATH, userId),
                     dto,
                     Collections.singletonList(localization.get(e.getCode()))
             );
@@ -202,13 +193,13 @@ public class UserAdminController implements Serializable {
                         localization.get("userDetailsUpdated"))
                 ))
                 .build();
-        return redirectUtil.redirect(String.format(EDIT_USER_PATH, dto.getId()), formData);
+        return redirectUtil.redirect(String.format(EDIT_USER_PATH, userId), formData);
     }
-    
+
     /**
      * Zwraca widok z formularzem edycji poziomów dostępu użytkownika.
      *
-     * @param id identyfikator użytkownika do edycji
+     * @param id      identyfikator użytkownika do edycji
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z formularzem edycji poziomów dostępu użytkownika.
      */
@@ -226,7 +217,7 @@ public class UserAdminController implements Serializable {
         }
         return EDIT_USER_ROLES_VIEW;
     }
-    
+
     /**
      * Odpowiada za edycję poziomów dostępu użytkownika.
      *
@@ -237,22 +228,22 @@ public class UserAdminController implements Serializable {
     @Path("/{id}/edit/roles")
     @RolesAllowed(MokRoles.EDIT_USER_ACCOUNT)
     @Produces(MediaType.TEXT_HTML)
-    public String editUserRoles(@BeanParam UserRolesDto dto) {
+    public String editUserRoles(@BeanParam UserRolesDto dto, @PathParam("id") Long userId) {
         List<String> errorMessages = validator.validate(dto);
-        
-        if(!errorMessages.isEmpty()) {
+
+        if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_PATH, dto.getId()),
+                    String.format(EDIT_USER_PATH, userId),
                     dto,
                     errorMessages);
         }
-        
+
         try {
             List<String> selectedAccessLevels = dtoMapper.getListOfAccessLevels(dto);
             userAccountService.updateUserAccessLevels(dto, selectedAccessLevels);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    String.format(EDIT_USER_ROLES_PATH, dto.getId()),
+                    String.format(EDIT_USER_ROLES_PATH, userId),
                     dto,
                     Collections.singletonList(localization.get("rolesNotUpdated"))
             );
@@ -264,13 +255,13 @@ public class UserAdminController implements Serializable {
                         localization.get("rolesUpdated")
                 )))
                 .build();
-        return redirectUtil.redirect(String.format(EDIT_USER_ROLES_PATH, dto.getId()), formData);
+        return redirectUtil.redirect(String.format(EDIT_USER_ROLES_PATH, userId), formData);
     }
-    
+
     /**
      * Zwraca widok z danymi użytkownika o podanym ID.
      *
-     * @param id id konta, którego dane mają zostać wyświetlone
+     * @param id      id konta, którego dane mają zostać wyświetlone
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return widok z danymi użytkownika o podanym ID.
      */
@@ -283,7 +274,7 @@ public class UserAdminController implements Serializable {
         try {
             AccountDetailsDto user = userAccountService.getUserById(id);
             models.put("user", user);
-            UserRolesRetriever.putAccessLevelsIntoModel(user,models);
+            UserRolesRetriever.putAccessLevelsIntoModel(user, models);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieve"));
         }
@@ -309,9 +300,9 @@ public class UserAdminController implements Serializable {
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
      *
-     * @param id identyfikator użytkownika do edycji hasła
+     * @param id       identyfikator użytkownika do edycji hasła
      * @param userData DTO przechowujące dane formularza edycji hasła.
-     * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
+     * @param idCache  opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
      * @see NewPasswordWithConfirmationDto
      */

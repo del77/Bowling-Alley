@@ -97,63 +97,6 @@ public class UserAccountServiceImplTest {
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
     }
 
-
-    @Test
-    public void unlockLockedAccountTestShouldNotThrow() throws SsbdApplicationException {
-        UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
-        Optional<UserAccount> optionalAccount = Optional.of(sut);
-        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
-        try {
-            Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
-        } catch (EntityUpdateException e) {
-            Assertions.fail(e);
-        }
-    }
-
-    @Test
-    public void unlockUnlockedAccountTestShouldNotThrow() throws SsbdApplicationException {
-        UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
-        Optional<UserAccount> optionalAccount = Optional.of(sut);
-        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
-        try {
-            Assertions.assertTrue(userService.updateLockStatusOnAccountById(18L, true).isAccountActive());
-        } catch (EntityUpdateException e) {
-            Assertions.fail(e);
-        }
-    }
-
-    @Test
-    public void lockLockedAccountTestShouldNotThrow() throws SsbdApplicationException {
-        UserAccount sut = UserAccount.builder().id(18L).accountActive(false).build();
-        Optional<UserAccount> optionalAccount = Optional.of(sut);
-        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
-        try {
-            Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
-        } catch (EntityUpdateException e) {
-            Assertions.fail(e);
-        }
-    }
-
-    @Test
-    public void lockUnlockedAccountTestShouldNotThrow() throws SsbdApplicationException {
-        UserAccount sut = UserAccount.builder().id(18L).accountActive(true).build();
-        Optional<UserAccount> optionalAccount = Optional.of(sut);
-        when(userAccountRepositoryLocal.findById(any(Long.class))).thenReturn(optionalAccount);
-        when(userAccountRepositoryLocal.editWithoutMerge(any(UserAccount.class))).thenReturn(sut);
-        try {
-            Assertions.assertFalse(userService.updateLockStatusOnAccountById(18L, false).isAccountActive());
-        } catch (EntityUpdateException e) {
-            Assertions.fail(e);
-        }
-    }
-
-
-
-
-
     @Test
     public void changePasswordTestShouldNotThrow() {
         String login = "login69";
@@ -230,48 +173,48 @@ public class UserAccountServiceImplTest {
         }
     }
 
-    @Test
-    public void shouldReturnOneUser(){
-        UserAccount userAccount1 = UserAccount.builder()
-                .firstName("a")
-                .build();
-        UserAccount userAccount2 = UserAccount.builder()
-                .firstName("b")
-                .build();
-        List<UserAccount> list = new ArrayList<>();
-        list.add(userAccount1);
-        list.add(userAccount2);
-        String name = "a";
-        when(userAccountRepositoryLocal.findAllByNameOrLastName("a")).then((u) -> {
-            return list.stream().filter((UserAccount a) -> a.getFirstName().equals("a")).collect(Collectors.toList());
-        });
-        List<UserAccount> result = userAccountRepositoryLocal.findAllByNameOrLastName("a");
-        Assert.assertEquals(1,result.size());
-    }
-
-    @Test
-    public void updateUserAccountDetailsTest() throws SsbdApplicationException {
-        AccessLevel accessLevel = AccessLevel.builder()
-                .name("CLIENT")
-                .build();
-        AccountAccessLevel existingAccountAccessLevel = AccountAccessLevel.builder()
-                .active(true)
-                .accessLevel(accessLevel)
-                .build();
-        UserAccount userAccount = UserAccount.builder()
-                .id(1L)
-                .login("login")
-                .accountAccessLevels(new ArrayList<>(Collections.singletonList(existingAccountAccessLevel)))
-                .build();
-        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
-            UserAccount edited = u.getArgument(0);
-            edited.setLogin(String.format("new %s", edited.getLogin()));
-            return edited;
-        });
-        try {
-            Assertions.assertEquals("new login", userService.updateUser(userAccount).getLogin());
-        } catch (EntityUpdateException e) {
-            Assertions.fail(e);
-        }
-    }
+//    @Test
+//    public void shouldReturnOneUser(){
+//        UserAccount userAccount1 = UserAccount.builder()
+//                .firstName("a")
+//                .build();
+//        UserAccount userAccount2 = UserAccount.builder()
+//                .firstName("b")
+//                .build();
+//        List<UserAccount> list = new ArrayList<>();
+//        list.add(userAccount1);
+//        list.add(userAccount2);
+//        String name = "a";
+//        when(userAccountRepositoryLocal.findAllByNameOrLastName("a")).then((u) -> {
+//            return list.stream().filter((UserAccount a) -> a.getFirstName().equals("a")).collect(Collectors.toList());
+//        });
+//        List<UserAccount> result = userAccountRepositoryLocal.findAllByNameOrLastName("a");
+//        Assert.assertEquals(1,result.size());
+//    }
+//
+//    @Test
+//    public void updateUserAccountDetailsTest() throws SsbdApplicationException {
+//        AccessLevel accessLevel = AccessLevel.builder()
+//                .name("CLIENT")
+//                .build();
+//        AccountAccessLevel existingAccountAccessLevel = AccountAccessLevel.builder()
+//                .active(true)
+//                .accessLevel(accessLevel)
+//                .build();
+//        UserAccount userAccount = UserAccount.builder()
+//                .id(1L)
+//                .login("login")
+//                .accountAccessLevels(new ArrayList<>(Collections.singletonList(existingAccountAccessLevel)))
+//                .build();
+//        when(userAccountRepositoryLocal.edit(any(UserAccount.class))).then((u) -> {
+//            UserAccount edited = u.getArgument(0);
+//            edited.setLogin(String.format("new %s", edited.getLogin()));
+//            return edited;
+//        });
+//        try {
+//            Assertions.assertEquals("new login", userService.updateUser(userAccount).getLogin());
+//        } catch (EntityUpdateException e) {
+//            Assertions.fail(e);
+//        }
+//    }
 }

@@ -2,24 +2,22 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountPasswordNotUniqueException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AccessLevelDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -32,6 +30,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.Context;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,16 +46,21 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @EJB(beanName = "MOKAccessLevelRepository")
     AccessLevelRepositoryLocal accessLevelRepositoryLocal;
 
+    @EJB(beanName = "MOKConfirmationTokenRepository")
+    private ConfirmationTokenRepositoryLocal confirmationTokenRepository;
+
     @EJB
     private Messenger messenger;
 
     @Inject
     private LocalizedMessageProvider localization;
 
-
     private ModelMapper modelMapper = new ModelMapper();
 
     private UserAccount userAccount;
+
+    @Context
+    private HttpServletRequest httpServletRequest;
 
     @Override
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
@@ -68,8 +74,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         this.userAccount = userAccountRepositoryLocal.findById(id).orElseThrow(
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
-        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
-        return accountDetailsDto;
+        return modelMapper.map(this.userAccount, AccountDetailsDto.class);
     }
 
 
@@ -86,9 +91,9 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @Override
     @RolesAllowed({MokRoles.CHANGE_ACCESS_LEVEL, MokRoles.EDIT_OWN_ACCOUNT})
     public void updateUserAccessLevels(UserRolesDto userAccountDto, List<String> selectedAccessLevels) throws SsbdApplicationException {
-        setActiveFieldForExistingAccountAccessLevelsOfEditedUser(userAccount.getAccountAccessLevels(), selectedAccessLevels);
-        addNewAccountAccessLevelsForEditedUser(userAccount, selectedAccessLevels);
-        userAccountRepositoryLocal.edit(userAccount);
+        setActiveFieldForExistingAccountAccessLevelsOfEditedUser(this.userAccount.getAccountAccessLevels(), selectedAccessLevels);
+        addNewAccountAccessLevelsForEditedUser(this.userAccount, selectedAccessLevels);
+        userAccountRepositoryLocal.edit(this.userAccount);
     }
 
     @Override
@@ -97,48 +102,45 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
-
-        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
-        System.out.println("AccountDetails: " + accountDetailsDto);
-        return accountDetailsDto;
+        AccountDetailsDto account = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        return account;
     }
 
     @Override
     @RolesAllowed(MokRoles.CHANGE_OWN_PASSWORD)
     public void changePasswordByLogin(String login, String currentPassword, String newPassword) throws SsbdApplicationException {
-        this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
+        UserAccount user = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
         String currentPasswordHash = SHA256Provider.encode(currentPassword);
 
-        if (!currentPasswordHash.equals(this.userAccount.getPassword())) {
+        if (!currentPasswordHash.equals(user.getPassword())) {
             throw new ChangePasswordException("Current password is incorrect.");
         }
 
-        setNewPassword(newPassword);
+        setNewPassword(user, newPassword);
     }
 
     @Override
     @RolesAllowed(MokRoles.CHANGE_USER_PASSWORD)
     public void changePasswordById(long id, String newPassword) throws SsbdApplicationException {
-        AccountDetailsDto account = this.getUserById(id);
-        setNewPassword(newPassword);
+        UserAccount user = userAccountRepositoryLocal.findById(id).orElseThrow(
+                () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
+        setNewPassword(user, newPassword);
     }
 
     @Override
     @RolesAllowed(MokRoles.LOCK_UNLOCK_ACCOUNT)
-    public UserAccount updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException {
+    public void updateLockStatusOnAccountById(Long id, boolean isActive) throws SsbdApplicationException {
         UserAccount account = userAccountRepositoryLocal.findById(id).orElseThrow(
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         account.setAccountActive(isActive);
-        UserAccount editedAccount = userAccountRepositoryLocal.editWithoutMerge(account);
+        userAccountRepositoryLocal.editWithoutMerge(account);
 
         messenger.sendMessage(
                 account.getEmail(),
                 localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
                 account.isAccountActive() ? localization.get("yourAccountUnlocked") : localization.get("yourAccountLocked")
         );
-
-        return editedAccount;
     }
 
     @Override
@@ -193,16 +195,16 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
      * @param newPassword Nowe hasło dla konta.
      * @throws SsbdApplicationException w wypadku, gdy nie uda się zmienić hasła.
      */
-    private void setNewPassword(String newPassword) throws SsbdApplicationException {
+    private void setNewPassword(UserAccount user, String newPassword) throws SsbdApplicationException {
         String newPasswordHash = SHA256Provider.encode(newPassword);
 
-        if (isNewPasswordUniqueForUser(this.userAccount, newPasswordHash)) {
-            addCurrentPasswordToHistory(this.userAccount);
-            this.userAccount.setPassword(newPasswordHash);
+        if (isNewPasswordUniqueForUser(user, newPasswordHash)) {
+            addCurrentPasswordToHistory(user);
+            user.setPassword(newPasswordHash);
         } else {
             throw new AccountPasswordNotUniqueException("New password was used before.");
         }
-        userAccountRepositoryLocal.edit(this.userAccount);
+        userAccountRepositoryLocal.edit(user);
     }
 
     /**
@@ -230,4 +232,39 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 .build();
         userAccount.getPreviousUserPasswords().add(newPrevious);
     }
+
+    /**
+     * Sprawdza czy użytkownik należy do grupy administratorów
+     *
+     * @param userAccount encja użytkownika
+     * @return wynik sprawdzenia
+     */
+    private boolean isUserAnAdmin(UserAccount userAccount) {
+        return userAccount.getAccountAccessLevels()
+                .stream()
+                .map(aal -> aal.getAccessLevel().getName())
+                .collect(Collectors.toList())
+                .contains(AppRoles.ADMIN);
+    }
+
+    @Override
+    public void activateAccountByToken(String token) throws SsbdApplicationException {
+        ConfirmationToken tokenEntity = confirmationTokenRepository
+                .findByToken(token)
+                .orElseThrow(() -> new TokenNotFoundException("Couldn't find token with provided value."));
+        @NotNull UserAccount userAccount = tokenEntity.getUserAccount();
+        if (userAccount.isAccountConfirmed()) {
+            throw new AccountAlreadyConfirmedException("Account already confirmed.");
+        }
+        userAccount.setAccountConfirmed(true);
+        confirmationTokenRepository.editWithoutMerge(tokenEntity);
+
+        messenger.sendMessage(
+                userAccount.getEmail(),
+                localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
+                localization.get("accountConfirmed")
+        );
+    }
+
+
 }

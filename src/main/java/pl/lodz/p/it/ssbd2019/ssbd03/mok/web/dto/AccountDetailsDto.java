@@ -11,7 +11,6 @@ import javax.ws.rs.FormParam;
 
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 public class AccountDetailsDto {

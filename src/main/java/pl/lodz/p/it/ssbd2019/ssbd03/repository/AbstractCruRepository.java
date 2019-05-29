@@ -72,7 +72,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
             }
             return Optional.of(retrievedObject);
         } catch (PersistenceException e) {
-            throw new EntityRetrievalException("Could not retrieve entity.");
+            throw new EntityRetrievalException("Could not retrieve entity.", e);
         }
     }
     /**
