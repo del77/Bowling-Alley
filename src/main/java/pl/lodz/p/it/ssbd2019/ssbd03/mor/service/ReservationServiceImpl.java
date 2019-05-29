@@ -27,7 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
+    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS})
     public List<Reservation> getReservationsForUser(String userLogin) {
         throw new UnsupportedOperationException();
     }

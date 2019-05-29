@@ -96,9 +96,9 @@ public class EmployeeReservationController {
      */
     @GET
     @Path("reservations/{id}/details")
-    @RolesAllowed(MorRoles.GET_OWN_RESERVATION_DETAILS)
+    @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
-    public String getOwnReservationDetails(@PathParam("id") Long id) {
+    public String getReservationDetails(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -117,15 +117,30 @@ public class EmployeeReservationController {
     }
 
     /**
+     * edytuje wybrany komentarz do rezerwacji
+     * @param id wybrana komentarza
+     * @return Widok z rezultatem.
+     */
+    @POST
+    @Path("{id}/details/edit")
+    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_RESERVATION)
+    @Produces(MediaType.TEXT_HTML)
+    public String editCommentForReservation(Long id) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Blokuje wybrany komentarz do rezerwacji
      * @param id wybrana komentarza
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("{id}/details")
+    @Path("{id}/disable")
     @RolesAllowed(MorRoles.DISABLE_COMMENT)
     @Produces(MediaType.TEXT_HTML)
-    public String editCommentForReservation(Long id) {
+    public String disableComment(Long id) {
         throw new UnsupportedOperationException();
     }
+
+
 }

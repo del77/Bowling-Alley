@@ -147,7 +147,7 @@ public class ReservationController {
     @Path("myreservations/{id}/edit-comment")
     @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String editCommentForReservation(@BeanParam Long id, Comment comment) {
+    public String editCommentForOwnReservation(@BeanParam Long id, Comment comment) {
         throw new UnsupportedOperationException();
     }
 

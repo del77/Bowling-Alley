@@ -237,16 +237,29 @@
 
   <!-- MOK -->
   <security-constraint>
-    <display-name>GetAllAccountsConstr</display-name>
+    <display-name>AllAccountsConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>GetAllAccounts</web-resource-name>
+      <web-resource-name>AllAccounts</web-resource-name>
       <description/>
-      <url-pattern>/accounts</url-pattern>
+      <url-pattern>/accounts/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
       <role-name>ADMIN</role-name>
       <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>CreateAccountConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>CreateAccount</web-resource-name>
+      <description/>
+      <url-pattern>/admin/register</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>ADMIN</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -261,64 +274,13 @@
     </user-data-constraint>
   </security-constraint>
 
-  <security-constraint>
-    <display-name>EditUserAccountConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EditUserAccount</web-resource-name>
-      <description/>
-      <url-pattern>/admin/users/*/edit</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-    </auth-constraint>
-  </security-constraint>
 
   <security-constraint>
-    <display-name>GetUserDetailsConstr</display-name>
+    <display-name>OwnAccountConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>GetUserDetails</web-resource-name>
+      <web-resource-name>OwnAccount</web-resource-name>
       <description/>
-      <url-pattern>/admin/users/*/details</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>ChangeUserPasswordConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>ChangeUserPassword</web-resource-name>
-      <description/>
-      <url-pattern>/admin/users/*/edit/password</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>LockUnlockAccountConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>LockUnlockAccount</web-resource-name>
-      <description/>
-      <url-pattern>/admin/users</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetOwnAccountConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetOwnAccount</web-resource-name>
-      <description/>
-      <url-pattern>/account</url-pattern>
+      <url-pattern>/account/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -327,56 +289,6 @@
       <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
-
-  <security-constraint>
-    <display-name>EditOwnAccountConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EditOwnAccount</web-resource-name>
-      <description/>
-      <url-pattern>/account/edit</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-      <role-name>EMPLOYEE</role-name>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>ChangeOwnPasswordConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>ChangeOwnPassword</web-resource-name>
-      <description/>
-      <url-pattern>/account/edit-password</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>ADMIN</role-name>
-      <role-name>EMPLOYEE</role-name>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

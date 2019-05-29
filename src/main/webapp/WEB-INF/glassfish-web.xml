@@ -23,11 +23,13 @@
     <security-role-mapping>
         <role-name>LockUnlockAccount</role-name>
         <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
         <role-name>ChangeAccessLevel</role-name>
         <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
@@ -40,6 +42,7 @@
     <security-role-mapping>
         <role-name>ChangeUserPassword</role-name>
         <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
@@ -52,6 +55,7 @@
     <security-role-mapping>
         <role-name>EditUserAccount</role-name>
         <group-name>ADMIN</group-name>
+        <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
