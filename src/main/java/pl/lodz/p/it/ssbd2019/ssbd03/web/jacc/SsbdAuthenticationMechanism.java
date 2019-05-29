@@ -1,22 +1,24 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.jacc;
 
 
+import org.glassfish.soteria.Utils;
+import org.glassfish.soteria.mechanisms.LoginToContinueHolder;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
+
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
-import javax.security.enterprise.authentication.mechanism.http.*;
+import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
+import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
+import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.glassfish.soteria.Utils;
-import org.glassfish.soteria.mechanisms.LoginToContinueHolder;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +65,7 @@ public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism,
                 AuthenticationStatus status =
                         httpMessageContext.notifyContainerAboutLogin(credentialValidationResult);
                 userAccountService.restartFailedLoginsCounter(login);
+                userAccountService.registerSuccessfulLoginDate(login);
                 if(isRedirectedFromLoginPage(request)) {
                     response.sendRedirect(request.getContextPath());
                 }
@@ -70,6 +73,7 @@ public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism,
             } else {
                 logger.log(Level.WARNING, () -> "Failed attempt to authenticate for user login: " + login);
                 userAccountService.incrementFailedLoginsCounter(login);
+                userAccountService.registerFailedLoginDate(login);
                 response.sendRedirect(String.format("%s%s", request.getContextPath(), ERROR_PAGE));
                 return AuthenticationStatus.SEND_FAILURE;
             }
