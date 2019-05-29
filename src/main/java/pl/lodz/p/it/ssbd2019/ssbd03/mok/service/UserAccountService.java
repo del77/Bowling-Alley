@@ -2,10 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueEmailException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
 
 import java.util.List;
 
@@ -85,23 +81,6 @@ public interface UserAccountService {
      * @throws SsbdApplicationException gdy nie uda się zmienic hasła
      */
     void changePasswordById(long id, String newPassword) throws SsbdApplicationException;
-    
-    /**
-     * Resetuje licznik nieudanych prób logowania dla konta o podanym loginie
-     *
-     * @param login login konta
-     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
-     */
-    void restartFailedLoginsCounter(String login) throws SsbdApplicationException;
-    
-    /**
-     * Zwiększa licznik nieudanych prób logowania dla konta o podanym loginie
-     * i blokuje konto, jeśli licznik osiągnął wartość 3
-     *
-     * @param login login konta
-     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
-     */
-    void incrementFailedLoginsCounter(String login) throws SsbdApplicationException;
 
     /**
      * Metoda pobiera z bazy danych uzytkowników, których imię lub nazwisko zawiera podany ciąg znaków.
@@ -111,21 +90,5 @@ public interface UserAccountService {
      * bądź gdy nie znajdzie żadnego użytkownika.
      */
     List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
-
-    /**
-     * Rejestruje datę udanej próby logowania.
-     *
-     * @param login login konta
-     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
-     */
-    void registerSuccessfulLoginDate(String login) throws SsbdApplicationException;
-
-    /**
-     * Rejestruje datę nieudanej próby logowania.
-     *
-     * @param login login konta
-     * @throws SsbdApplicationException w wypadku, gdy nie uda się zmiana stanu encji
-     */
-    void registerFailedLoginDate(String login) throws SsbdApplicationException;
 
 }

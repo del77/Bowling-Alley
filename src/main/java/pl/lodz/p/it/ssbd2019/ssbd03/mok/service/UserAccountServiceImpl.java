@@ -17,7 +17,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -28,7 +27,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,41 +120,6 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
         return editedAccount;
     }
-    
-    @PermitAll
-    public void restartFailedLoginsCounter(String login) throws SsbdApplicationException {
-        UserAccount account = getByLogin(login);
-        account.setFailedLoginsCounter(0);
-        userAccountRepositoryLocal.editWithoutMerge(account);
-    }
-    
-    @PermitAll
-    public void incrementFailedLoginsCounter(String login) throws SsbdApplicationException {
-        UserAccount account = getByLogin(login);
-    
-        // Don't increment if user is an administrator
-        if (isUserAnAdmin(account)) {
-            return;
-        }
-        
-        Integer counter = account.getFailedLoginsCounter();
-        if (counter == null) {
-            account.setFailedLoginsCounter(1);
-            userAccountRepositoryLocal.editWithoutMerge(account);
-        } else if (counter < 2) {
-            account.setFailedLoginsCounter(++counter);
-            userAccountRepositoryLocal.editWithoutMerge(account);
-        } else {
-            account.setFailedLoginsCounter(0); // reset it now, so after unlocking the account back it won't be locked after 1 failed attempt
-            account.setAccountActive(false);
-            userAccountRepositoryLocal.editWithoutMerge(account); // edit before sending email in case this method throws an exception
-            messenger.sendMessage(
-                    account.getEmail(),
-                    localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
-                    localization.get("accountLockedByFailedLogins")
-            );
-        }
-    }
 
     @Override
     @PermitAll
@@ -166,25 +129,6 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             Hibernate.initialize(user.getAccountAccessLevels());
         }
         return users;
-    }
-
-    @Override
-    @PermitAll
-    public void registerSuccessfulLoginDate(String login) throws SsbdApplicationException {
-        UserAccount account = getByLogin(login);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        account.setLastSuccessfulLogin(timestamp);
-        userAccountRepositoryLocal.editWithoutMerge(account);
-    }
-
-    @Override
-    @PermitAll
-    public void registerFailedLoginDate(String login) throws SsbdApplicationException {
-
-        UserAccount account = getByLogin(login);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        account.setLastFailedLogin(timestamp);
-        userAccountRepositoryLocal.editWithoutMerge(account);
     }
 
     /**
@@ -263,18 +207,5 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 .password(userAccount.getPassword())
                 .build();
         userAccount.getPreviousUserPasswords().add(newPrevious);
-    }
-    
-    /**
-     * Sprawdza czy użytkownik należy do grupy administratorów
-     * @param userAccount encja użytkownika
-     * @return wynik sprawdzenia
-     */
-    private boolean isUserAnAdmin(UserAccount userAccount) {
-        return userAccount.getAccountAccessLevels()
-                .stream()
-                .map(aal -> aal.getAccessLevel().getName())
-                .collect(Collectors.toList())
-                .contains(AppRoles.ADMIN);
     }
 }
