@@ -74,6 +74,8 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         this.userAccount = userAccountRepositoryLocal.findById(id).orElseThrow(
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
+
+
         return modelMapper.map(this.userAccount, AccountDetailsDto.class);
     }
 

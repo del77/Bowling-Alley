@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
@@ -52,20 +51,8 @@ public abstract class RegistrationController {
             return redirectUtil.redirectError(getRegisterEndpointUrl(), basicAccountDto, errorMessages);
         }
 
-        UserAccount userAccount = UserAccount
-                .builder()
-                .login(basicAccountDto.getLogin())
-                .password(basicAccountDto.getPassword())
-                .accountConfirmed(isConfirmed)
-                .accountActive(true)
-                .email(basicAccountDto.getEmail())
-                .firstName(basicAccountDto.getFirstName())
-                .lastName(basicAccountDto.getLastName())
-                .phone(basicAccountDto.getPhoneNumber())
-                .version(0L)
-                .build();
             try {
-                registrationService.registerAccount(userAccount, accessLevelNames);
+                registrationService.registerAccount(basicAccountDto, accessLevelNames, isConfirmed);
             } catch (SsbdApplicationException e) {
                 errorMessages.add(localization.get(e.getCode()));
             }

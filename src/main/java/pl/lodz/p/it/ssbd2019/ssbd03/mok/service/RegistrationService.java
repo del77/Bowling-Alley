@@ -2,7 +2,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 
+import javax.persistence.Basic;
 import java.util.List;
 
 public interface RegistrationService {
@@ -15,7 +17,7 @@ public interface RegistrationService {
      * @throws SsbdApplicationException W przypadku gdy nie uda się stworzyć konta użytkownika.
      */
 
-    void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
+    void registerAccount(BasicAccountDto userAccount, List<String> accessLevelNames, boolean isConfirmed)
             throws SsbdApplicationException;
 
     /**

@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistExceptio
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -62,8 +63,20 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
     private Messenger messenger;
 
     @Override
-    public void registerAccount(UserAccount userAccount, List<String> accessLevelNames)
+    public void registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed)
             throws SsbdApplicationException {
+        UserAccount userAccount = UserAccount
+                .builder()
+                .login(basicAccountDto.getLogin())
+                .password(basicAccountDto.getPassword())
+                .accountConfirmed(isConfirmed)
+                .accountActive(true)
+                .email(basicAccountDto.getEmail())
+                .firstName(basicAccountDto.getFirstName())
+                .lastName(basicAccountDto.getLastName())
+                .phone(basicAccountDto.getPhoneNumber())
+                .version(0L)
+                .build();
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
