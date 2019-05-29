@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path("login")
 public class LoginController {
+    
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem logowania.
      * @return Widok strony logowania

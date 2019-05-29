@@ -14,6 +14,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordExcepti
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -129,6 +130,12 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @PermitAll
     public void incrementFailedLoginsCounter(String login) throws SsbdApplicationException {
         UserAccount account = getByLogin(login);
+    
+        // Don't increment if user is an administrator
+        if (isUserAnAdmin(account)) {
+            return;
+        }
+        
         Integer counter = account.getFailedLoginsCounter();
         if (counter == null) {
             account.setFailedLoginsCounter(1);
@@ -234,5 +241,18 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 .password(userAccount.getPassword())
                 .build();
         userAccount.getPreviousUserPasswords().add(newPrevious);
+    }
+    
+    /**
+     * Sprawdza czy użytkownik należy do grupy administratorów
+     * @param userAccount encja użytkownika
+     * @return wynik sprawdzenia
+     */
+    private boolean isUserAnAdmin(UserAccount userAccount) {
+        return userAccount.getAccountAccessLevels()
+                .stream()
+                .map(aal -> aal.getAccessLevel().getName())
+                .collect(Collectors.toList())
+                .contains(AppRoles.ADMIN);
     }
 }

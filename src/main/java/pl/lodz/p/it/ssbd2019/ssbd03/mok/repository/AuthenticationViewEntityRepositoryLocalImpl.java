@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 @Stateless(name = "MOKAuthenticationViewEntityRepositoryLocalImpl")
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class AuthenticationViewEntityRepositoryLocalImpl
         extends AbstractCruRepository<AuthenticationViewEntity, AuthenticationViewEntityId>
@@ -34,13 +35,11 @@ public class AuthenticationViewEntityRepositoryLocalImpl
         return entityManager.createQuery(query).getResultList();
     }
     
-    @PermitAll
     @Override
     protected EntityManager getEntityManager() {
         return entityManager;
     }
     
-    @PermitAll
     @Override
     protected Class<AuthenticationViewEntity> getTypeParameterClass() {
         return AuthenticationViewEntity.class;

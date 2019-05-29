@@ -14,14 +14,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.glassfish.soteria.Utils;
-import org.glassfish.soteria.mechanisms.FormAuthenticationMechanism;
+import org.glassfish.soteria.mechanisms.LoginToContinueHolder;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Klasa odpowiadająca za uwierzytelnienie w aplikacji
  */
+@AutoApplySession
+@LoginToContinue(errorPage = "/login/error")
 @ApplicationScoped
-public class SsbdAuthenticationMechanism extends FormAuthenticationMechanism {
+public class SsbdAuthenticationMechanism implements HttpAuthenticationMechanism, LoginToContinueHolder {
+    
+    private static final String ERROR_PAGE = "/login/error";
+    private static final Logger logger = Logger.getLogger(SsbdAuthenticationMechanism.class.getName());
     
     @EJB
     private UserAccountService userAccountService;
@@ -30,43 +39,63 @@ public class SsbdAuthenticationMechanism extends FormAuthenticationMechanism {
     IdentityStoreHandler identityStoreHandler;
     
     @Override
+    public LoginToContinue getLoginToContinue() {
+        return this.getClass().getAnnotation(LoginToContinue.class);
+    }
+    
+    @Override
     public AuthenticationStatus validateRequest(
             HttpServletRequest request,
             HttpServletResponse response,
             HttpMessageContext httpMessageContext) throws AuthenticationException {
-    
+        
         if (!isValidFormPost(request)) {
             return AuthenticationStatus.NOT_DONE;
         }
         
         String login = request.getParameter("j_username");
         String password = request.getParameter("j_password");
-        
-        CredentialValidationResult result = identityStoreHandler.validate(
+        CredentialValidationResult credentialValidationResult = identityStoreHandler.validate(
                 new UsernamePasswordCredential(login, password));
-    
-        if (result.getStatus().equals(CredentialValidationResult.Status.VALID)) {
-            try {
+        
+        try {
+            if (credentialValidationResult.getStatus().equals(CredentialValidationResult.Status.VALID)) {
+                AuthenticationStatus status =
+                        httpMessageContext.notifyContainerAboutLogin(credentialValidationResult);
                 userAccountService.restartFailedLoginsCounter(login);
-                response.sendRedirect(request.getContextPath());
-                return httpMessageContext.notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return AuthenticationStatus.NOT_DONE;
-            }
-        } else {
-            try {
+                if(isRedirectedFromLoginPage(request)) {
+                    response.sendRedirect(request.getContextPath());
+                }
+                return status;
+            } else {
+                logger.log(Level.WARNING, () -> "Failed attempt to authenticate for user login: " + login);
                 userAccountService.incrementFailedLoginsCounter(login);
-                response.sendRedirect(String.format("%s/login/error", request.getContextPath()));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return AuthenticationStatus.NOT_DONE;
+                response.sendRedirect(String.format("%s%s", request.getContextPath(), ERROR_PAGE));
+                return AuthenticationStatus.SEND_FAILURE;
             }
-            return AuthenticationStatus.SEND_FAILURE;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            try {
+                response.sendRedirect(String.format("%s%s", request.getContextPath(), ERROR_PAGE));
+            } catch (IOException io) {
+                logger.log(Level.SEVERE, io.getMessage(), io);
+            }
+            return AuthenticationStatus.NOT_DONE;
         }
     }
     
+    @Override
+    public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+        HttpAuthenticationMechanism.super.cleanSubject(request, response, httpMessageContext);
+    }
+    
     private static boolean isValidFormPost(HttpServletRequest request) {
-        return "POST".equals(request.getMethod()) && request.getRequestURI().endsWith("/j_security_check") && Utils.notNull(request.getParameter("j_username"), request.getParameter("j_password"));
+        return "POST".equals(request.getMethod())
+                && request.getRequestURI().endsWith("/j_security_check")
+                && Utils.notNull(request.getParameter("j_username"), request.getParameter("j_password"));
+    }
+    
+    private boolean isRedirectedFromLoginPage(HttpServletRequest request) {
+        return request.getHeader("referer").equals(request.getRequestURL().toString().replace(request.getRequestURI(), "") + request.getContextPath() + getLoginToContinue().loginPage());
     }
 }

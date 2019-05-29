@@ -8,7 +8,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.AuthenticationViewEntity;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 
 import javax.ejb.EJB;
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
@@ -17,7 +19,8 @@ import javax.security.enterprise.identitystore.IdentityStore;
 /**
  * Klasa wykonująca walidację danych podanych w formularzu logowania
  */
-@ApplicationScoped
+@Singleton
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AuthenticationViewIdentityStore implements IdentityStore {
     
     @EJB(beanName = "MOKAuthenticationViewEntityRepositoryLocalImpl")
