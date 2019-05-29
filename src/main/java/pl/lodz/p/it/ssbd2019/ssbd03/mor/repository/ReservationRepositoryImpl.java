@@ -43,7 +43,7 @@ public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation
     }
 
     @Override
-    @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
     public Optional<Reservation> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
