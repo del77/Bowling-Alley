@@ -1,16 +1,19 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import org.hibernate.Hibernate;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.AccountAccessLevel;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.PreviousUserPassword;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountPasswordNotUniqueException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AccessLevelDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -25,7 +28,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
-import javax.xml.registry.infomodel.User;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,10 +162,29 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @PermitAll
     public List<UserAccount> getAllByNameOrLastName(String name) {
         List<UserAccount> users = userAccountRepositoryLocal.findAllByNameOrLastName(name);
-        for(UserAccount user : users) {
+        for (UserAccount user : users) {
             Hibernate.initialize(user.getAccountAccessLevels());
         }
         return users;
+    }
+
+    @Override
+    @PermitAll
+    public void registerSuccessfulLoginDate(String login) throws SsbdApplicationException {
+        UserAccount account = getByLogin(login);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        account.setLastSuccessfulLogin(timestamp);
+        userAccountRepositoryLocal.editWithoutMerge(account);
+    }
+
+    @Override
+    @PermitAll
+    public void registerFailedLoginDate(String login) throws SsbdApplicationException {
+
+        UserAccount account = getByLogin(login);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        account.setLastFailedLogin(timestamp);
+        userAccountRepositoryLocal.editWithoutMerge(account);
     }
 
     /**

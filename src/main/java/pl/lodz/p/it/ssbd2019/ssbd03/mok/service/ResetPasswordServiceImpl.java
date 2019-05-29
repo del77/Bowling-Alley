@@ -1,31 +1,33 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ResetPasswordTokenRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ResetPasswordToken;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.TokenExpiredException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EmailDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ResetPasswordTokenRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.mvc.Models;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import java.sql.Timestamp;
 
-@Stateless
-public class ResetPasswordServiceImpl implements ResetPasswordService {
+@Stateful
+@Interceptors(InterceptorTracker.class)
+public class ResetPasswordServiceImpl extends TransactionTracker implements ResetPasswordService {
     @EJB(beanName = "MOKUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
 
@@ -104,7 +106,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      *
      * @param token Unikalny token
      * @return token
-     * @throws SsbdApplicationException w przypadku, gdy nie znajdzie zadanego tokena.
+     * @throws TokenNotFoundException w przypadku, gdy nie znajdzie zadanego tokena.
      */
     private ResetPasswordToken getToken(String token) throws TokenNotFoundException {
         return resetPasswordTokenRepositoryLocal.findByToken(token).orElseThrow(TokenNotFoundException::new);

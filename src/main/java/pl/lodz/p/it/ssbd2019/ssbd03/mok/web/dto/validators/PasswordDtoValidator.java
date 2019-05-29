@@ -1,17 +1,23 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
 public class PasswordDtoValidator {
 
+    @Inject
+    private LocalizedMessageProvider localization;
+
     public List<String> validatePassword(String password, String confirmPassword) {
         List<String> errors = new ArrayList<>();
 
         if (!areEqual(password, confirmPassword)) {
-            errors.add("Passwords don't match.");
+            errors.add(localization.get("validate.passwordMismatch"));
         }
 
         return errors;
@@ -21,7 +27,7 @@ public class PasswordDtoValidator {
         List<String> errors = new ArrayList<>();
 
         if (areEqual(currentPassword, newPassword)) {
-            errors.add("New and current password must be different.");
+            errors.add(localization.get("validate.differentOldAndNew"));
         }
 
         return errors;

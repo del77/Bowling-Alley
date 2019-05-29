@@ -82,10 +82,9 @@ public class ResetPasswordController {
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(RESET_PASSWORD_URL, null, Collections.singletonList(localization.get(e.getCode())));
         }
+
         FormData formData = new FormData();
-        formData.setInfos(
-                Collections.singletonList(localization.get("emailHasBeenSent"))
-        );
+        formData.setInfos(Collections.singletonList(localization.get("emailHasBeenSent")));
         return redirectUtil.redirect(RESET_PASSWORD_URL, formData);
     }
 
@@ -127,9 +126,7 @@ public class ResetPasswordController {
         }
 
         FormData formData = new FormData();
-        formData.setInfos(
-                Collections.singletonList(localization.get("passwordChangedSuccess"))
-        );
+        formData.setInfos(Collections.singletonList(localization.get("passwordChangedSuccess")));
         return redirectUtil.redirect(RESET_PASSWORD_URL, formData);
     }
 }

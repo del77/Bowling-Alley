@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.jacc;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
+import java.util.logging.Logger;
 
 
 /**
@@ -22,10 +24,12 @@ import javax.security.enterprise.identitystore.IdentityStore;
 @Singleton
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AuthenticationViewIdentityStore implements IdentityStore {
-    
+
+    private static final Logger logger = Logger.getLogger(AuthenticationViewIdentityStore.class.getName());
+
     @EJB(beanName = "MOKAuthenticationViewEntityRepositoryLocalImpl")
     AuthenticationViewEntityRepositoryLocal authenticationViewEntityRepositoryLocal;
-    
+
     public CredentialValidationResult validate(UsernamePasswordCredential credential) {
         try {
             List<AuthenticationViewEntity> entities = authenticationViewEntityRepositoryLocal.findAllWithLogin(credential.getCaller());
@@ -44,8 +48,8 @@ public class AuthenticationViewIdentityStore implements IdentityStore {
                     return CredentialValidationResult.NOT_VALIDATED_RESULT;
                 }
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
         }
         return CredentialValidationResult.INVALID_RESULT;
     }
