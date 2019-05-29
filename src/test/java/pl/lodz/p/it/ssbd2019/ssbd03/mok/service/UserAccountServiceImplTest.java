@@ -70,28 +70,6 @@ public class UserAccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnRightUserOnGetUserById() throws SsbdApplicationException {
-        UserAccount userAccount = new UserAccount();
-        when(userAccountRepositoryLocal.findById(1L)).then((u) -> {
-            Long id = u.getArgument(0);
-            userAccount.setId(id);
-            return Optional.of(userAccount);
-        });
-        Assertions.assertEquals(userService.getUserById(1L), userAccount);
-    }
-
-    @Test
-    public void shouldReturnRightUserOnGetByLogin() throws SsbdApplicationException {
-        UserAccount userAccount = new UserAccount();
-        when(userAccountRepositoryLocal.findByLogin("login")).then((u) -> {
-            String login = u.getArgument(0);
-            userAccount.setLogin(login);
-            return Optional.of(userAccount);
-        });
-        Assertions.assertEquals(userService.getByLogin("login"), userAccount);
-    }
-
-    @Test
     public void shouldThrowEntityRetrievalExceptionWhenGetByLoginCatchesException() throws SsbdApplicationException {
         when(userAccountRepositoryLocal.findByLogin(any())).thenThrow(EntityRetrievalException.class);
         Assertions.assertThrows(EntityRetrievalException.class, () -> userService.getByLogin("login"));
