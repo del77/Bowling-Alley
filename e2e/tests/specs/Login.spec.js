@@ -3,9 +3,9 @@ import LoginPage from "../pageobjects/login.page";
 import { baseUrl, callTimeout } from "../constants";
 
 const ROLE_ADMIN = "Admin";
-const ROLE_EMPLOYEE = "Pracownik";
-const ROLE_CLIENT = "Klient";
-const LOGIN_FAILED_MSG = "Nieudane logowanie";
+const ROLE_EMPLOYEE = "Employee";
+const ROLE_CLIENT = "Client";
+const LOGIN_FAILED_MSG = "Login failed";
 
 describe("Login form", () => {
   describe("Error scenarios", () => {

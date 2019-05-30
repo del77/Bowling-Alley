@@ -44,6 +44,7 @@ public abstract class RegistrationController {
      */
     String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
+        errorMessages.clear();
         errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
 
