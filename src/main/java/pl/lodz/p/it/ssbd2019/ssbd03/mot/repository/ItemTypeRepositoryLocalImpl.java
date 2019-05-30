@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -11,25 +10,29 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
-public class UserAccountRepositoryImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
+public class ItemTypeRepositoryLocalImpl extends AbstractCruRepository<ItemType, Long> implements ItemTypeRepositoryLocal {
+    @PersistenceContext(unitName = "ssbd03motPU")
+    private EntityManager entityManager;
+
     @Override
     protected EntityManager getEntityManager() {
-        return null;
+        return entityManager;
     }
 
     @Override
-    protected Class<UserAccount> getTypeParameterClass() {
-        return null;
+    protected Class<ItemType> getTypeParameterClass() {
+        return ItemType.class;
     }
 
     @Override
-    @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
-    public Optional<UserAccount> findById(Long id) throws DataAccessException {
-        return super.findById(id);
+    @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
+    public Optional<ItemType> findByType(String type) {
+        throw new UnsupportedOperationException();
     }
 }

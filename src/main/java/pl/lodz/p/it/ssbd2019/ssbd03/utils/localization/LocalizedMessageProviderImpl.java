@@ -25,6 +25,7 @@ public class LocalizedMessageProviderImpl implements Serializable, LocalizedMess
      * @param key klucz, którego wartość chcemy pobrać
      * @return wartość zlokalizowana
      */
+
     @Override
     public String get(String key) {
         try {

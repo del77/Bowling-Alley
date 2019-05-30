@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.ItemType;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -11,12 +12,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
-public class ItemTypeRepositoryImpl extends AbstractCruRepository<ItemType, Long> implements ItemTypeRepositoryLocal {
+public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {
+
     @PersistenceContext(unitName = "ssbd03motPU")
     private EntityManager entityManager;
 
@@ -26,13 +27,13 @@ public class ItemTypeRepositoryImpl extends AbstractCruRepository<ItemType, Long
     }
 
     @Override
-    protected Class<ItemType> getTypeParameterClass() {
-        return ItemType.class;
+    protected Class<Reservation> getTypeParameterClass() {
+        return Reservation.class;
     }
 
     @Override
-    @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
-    public Optional<ItemType> findByType(String type) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed(MotRoles.ENTER_GAME_RESULT)
+    public void edit(Reservation reservation) throws DataAccessException {
+        super.edit(reservation);
     }
 }

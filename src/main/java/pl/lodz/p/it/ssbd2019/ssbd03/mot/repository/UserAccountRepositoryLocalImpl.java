@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
@@ -11,29 +11,25 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
-public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {
-
-    @PersistenceContext(unitName = "ssbd03motPU")
-    private EntityManager entityManager;
-
+public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
     @Override
     protected EntityManager getEntityManager() {
-        return entityManager;
+        return null;
     }
 
     @Override
-    protected Class<Reservation> getTypeParameterClass() {
-        return Reservation.class;
+    protected Class<UserAccount> getTypeParameterClass() {
+        return null;
     }
 
     @Override
-    @RolesAllowed(MotRoles.ENTER_GAME_RESULT)
-    public void edit(Reservation reservation) throws DataAccessException {
-        super.edit(reservation);
+    @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
+    public Optional<UserAccount> findById(Long id) throws DataAccessException {
+        return super.findById(id);
     }
 }
