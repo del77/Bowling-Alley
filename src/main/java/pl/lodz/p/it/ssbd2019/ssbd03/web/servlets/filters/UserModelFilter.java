@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
 
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRolesProvider;
 
 import javax.inject.Inject;
 import javax.mvc.Models;
@@ -23,9 +23,11 @@ import java.security.Principal;
  */
 @WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.FORWARD})
 public class UserModelFilter extends HttpFilter {
-    private final static String unconfirmedPage = "login/unconfirmed";
-    private final static String logoutPage = "logout";
+    private static final String unconfirmedPage = "login/unconfirmed";
+    private static final String logoutPage = "logout";
 
+    @Inject
+    private AppRolesProvider appRolesProvider;
 
     @Inject
     private Models models;
@@ -35,9 +37,9 @@ public class UserModelFilter extends HttpFilter {
             throws IOException, ServletException {
         Principal userPrincipal = request.getUserPrincipal();
         boolean isLoggedIn = userPrincipal != null;
-        boolean isAdmin = request.isUserInRole(AppRoles.ADMIN);
-        boolean isEmployee = request.isUserInRole(AppRoles.EMPLOYEE);
-        boolean isClient = request.isUserInRole(AppRoles.CLIENT);
+        boolean isAdmin = request.isUserInRole(appRolesProvider.getAdmin());
+        boolean isEmployee = request.isUserInRole(appRolesProvider.getEmployee());
+        boolean isClient = request.isUserInRole(appRolesProvider.getClient());
 
         models.put("isAdmin", isAdmin);
         models.put("loggedIn", isLoggedIn);
@@ -63,7 +65,7 @@ public class UserModelFilter extends HttpFilter {
      */
     private boolean shouldRedirectToUnconfirmed(HttpServletRequest request) {
         String path = request.getRequestURI().substring(request.getContextPath().length()+1);
-        return (request.isUserInRole(AppRoles.UNCONFIRMED) &&
+        return (request.isUserInRole(appRolesProvider.getUnconfirmed()) &&
                 !path.startsWith("static") &&
                 !path.startsWith("confirm-account") &&
                 !path.endsWith(unconfirmedPage) &&

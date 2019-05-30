@@ -33,6 +33,10 @@
     <role-name>UNCONFIRMED</role-name>
   </security-role>
 
+  <security-role>
+    <description/>
+    <role-name>UnconfirmedAccount</role-name>
+  </security-role>
 
   <security-role>
     <description/>
