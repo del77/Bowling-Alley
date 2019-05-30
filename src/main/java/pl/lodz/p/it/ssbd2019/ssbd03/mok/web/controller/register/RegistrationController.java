@@ -42,7 +42,7 @@ public abstract class RegistrationController {
      * @param accessLevelNames poziomy dostepu konta
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      */
-    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed) {
+    String registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames) {
         models.put("data", basicAccountDto);
         errorMessages.addAll(validator.validate(basicAccountDto));
         errorMessages.addAll(passwordValidator.validatePassword(basicAccountDto.getPassword(), basicAccountDto.getConfirmPassword()));
@@ -52,7 +52,7 @@ public abstract class RegistrationController {
         }
 
             try {
-                registrationService.registerAccount(basicAccountDto, accessLevelNames, isConfirmed);
+                registrationService.registerAccount(basicAccountDto, accessLevelNames);
             } catch (SsbdApplicationException e) {
                 errorMessages.add(localization.get(e.getCode()));
             }

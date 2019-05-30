@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.SessionScoped;
 import javax.mvc.Controller;
 import javax.ws.rs.GET;
@@ -34,4 +37,10 @@ public class LoginController implements Serializable {
     public String errorPage() {
         return "accounts/login/error.hbs";
     }
+
+    @GET
+    @Path("unconfirmed")
+    @RolesAllowed(AppRoles.UNCONFIRMED)
+    @Produces(MediaType.TEXT_HTML)
+    public String unconfirmedPage() { return "accounts/login/unconfirmed.hbs"; }
 }

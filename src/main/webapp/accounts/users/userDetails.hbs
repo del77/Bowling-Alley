@@ -34,13 +34,13 @@
                                 <h6 class="mb-1">{{lang.roles}}</h6>
                             </div>
                             <div class="mb-1">
-                                {{#if clientActive}}
+                                {{#if this.user.clientRoleSelected}}
                                     <span class="badge badge-info">{{lang.client}}</span>
                                 {{/if}}
-                                {{#if employeeActive}}
+                                {{#if this.user.employeeRoleSelected}}
                                     <span class="badge badge-warning">{{lang.employee}}</span>
                                 {{/if}}
-                                {{#if adminActive}}
+                                {{#if this.user.adminRoleSelected}}
                                     <span class="badge badge-danger">{{lang.admin}}</span>
                                 {{/if}}
                             </div>

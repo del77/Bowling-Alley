@@ -5,7 +5,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.validators.PhoneNumberFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -84,21 +83,10 @@ public class UserAccount {
     @Column(name = "active", nullable = false)
     @ToString.Exclude
     private boolean accountActive;
-    
-    @Column(name="failed_logins_counter")
-    private Integer failedLoginsCounter;
 
     @OneToMany(cascade={CascadeType.MERGE})
     @JoinColumn(name="user_id", referencedColumnName = "id", nullable = false)
     private List<PreviousUserPassword> previousUserPasswords;
-
-    @Column(name = "last_successful_login")
-    @ToString.Exclude
-    private Timestamp lastSuccessfulLogin;
-
-    @Column(name = "last_failed_login")
-    @ToString.Exclude
-    private Timestamp lastFailedLogin;
 
     /**
      * Ta lista tworzy rekurencyjną relację - w przypadku odczytywaniu z bazy nie ma problemu,

@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.UserAccountHelpers;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
@@ -75,8 +76,10 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
 
+        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        retrieveRolesFromUserAccount(userAccount, accountDetailsDto);
 
-        return modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        return accountDetailsDto;
     }
 
 
@@ -105,6 +108,8 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
         AccountDetailsDto account = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        retrieveRolesFromUserAccount(userAccount, account);
+
         return account;
     }
 
@@ -153,6 +158,34 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
             Hibernate.initialize(user.getAccountAccessLevels());
         }
         return users;
+    }
+
+    @Override
+    public void activateAccountByToken(String token) throws SsbdApplicationException {
+        ConfirmationToken tokenEntity = confirmationTokenRepository
+                .findByToken(token)
+                .orElseThrow(() -> new TokenNotFoundException("Couldn't find token with provided value."));
+        @NotNull UserAccount userAccount = tokenEntity.getUserAccount();
+        if (UserAccountHelpers.isUserAccountConfirmed(userAccount)) {
+            throw new AccountAlreadyConfirmedException("Account already confirmed.");
+        }
+        deactivateUnconfirmedAccessLevel(userAccount);
+        activateClientAccessLevel(userAccount);
+        confirmationTokenRepository.edit(tokenEntity);
+
+        messenger.sendMessage(
+                userAccount.getEmail(),
+                localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
+                localization.get("accountConfirmed")
+        );
+    }
+
+    private void retrieveRolesFromUserAccount(UserAccount userAccount, AccountDetailsDto userAccountDto) {
+        for(AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
+            if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.CLIENT)) { userAccountDto.setClientRoleSelected(true); }
+            else if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.EMPLOYEE)) { userAccountDto.setEmployeeRoleSelected(true); }
+            else if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.ADMIN)) { userAccountDto.setAdminRoleSelected(true); }
+        }
     }
 
     /**
@@ -236,37 +269,36 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     }
 
     /**
-     * Sprawdza czy użytkownik należy do grupy administratorów
-     *
-     * @param userAccount encja użytkownika
-     * @return wynik sprawdzenia
+     * Metoda deaktywująca poziom dostępu oznaczający niepotwierdzone konto.
+     * @param userAccount Obiekt konta użytkownika.
      */
-    private boolean isUserAnAdmin(UserAccount userAccount) {
-        return userAccount.getAccountAccessLevels()
-                .stream()
-                .map(aal -> aal.getAccessLevel().getName())
-                .collect(Collectors.toList())
-                .contains(AppRoles.ADMIN);
+    private void deactivateUnconfirmedAccessLevel(UserAccount userAccount) {
+        userAccount.getAccountAccessLevels().stream()
+                .filter(x -> x.getAccessLevel().getName().equals(AppRoles.UNCONFIRMED))
+                .findFirst().get()
+                .setActive(false);
     }
 
-    @Override
-    public void activateAccountByToken(String token) throws SsbdApplicationException {
-        ConfirmationToken tokenEntity = confirmationTokenRepository
-                .findByToken(token)
-                .orElseThrow(() -> new TokenNotFoundException("Couldn't find token with provided value."));
-        @NotNull UserAccount userAccount = tokenEntity.getUserAccount();
-        if (userAccount.isAccountConfirmed()) {
-            throw new AccountAlreadyConfirmedException("Account already confirmed.");
+    /**
+     * Metoda aktywująca dla konta poziom dostępu "klient"
+     * @param userAccount obiekt konta użytkownika
+     */
+    private void activateClientAccessLevel(UserAccount userAccount) {
+        AccountAccessLevel clientAccountAccessLevel = userAccount.getAccountAccessLevels().stream()
+                .filter(x -> x.getAccessLevel().getName().equals(AppRoles.CLIENT))
+                .findFirst()
+                .orElse(null);
+
+        if(clientAccountAccessLevel == null) {
+            AccessLevel clientAccessLevel = accessLevelRepositoryLocal.findByName(AppRoles.CLIENT).get();
+            clientAccountAccessLevel = AccountAccessLevel.builder()
+                    .accessLevel(clientAccessLevel)
+                    .account(userAccount)
+                    .active(true)
+                    .build();
+            userAccount.getAccountAccessLevels().add(clientAccountAccessLevel);
+        } else {
+            clientAccountAccessLevel.setActive(true);
         }
-        userAccount.setAccountConfirmed(true);
-        confirmationTokenRepository.editWithoutMerge(tokenEntity);
-
-        messenger.sendMessage(
-                userAccount.getEmail(),
-                localization.get("bowlingAlley") + " - " + localization.get("accountStatusChanged"),
-                localization.get("accountConfirmed")
-        );
     }
-
-
 }

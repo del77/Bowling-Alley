@@ -2,9 +2,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,6 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
      * Wykonuje merge na istniejącym obiekcie encji.
      * @param entity Obiekt encji
      * @throws DataAccessException rzucony, gdy edycja się nie powiedzie
-     * @return edytowany obiekt
      */
     @Override
     public void edit(T entity) throws DataAccessException {
@@ -89,6 +90,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
 
     /**
      * Zwraca listę wszystkich encji w bazie danych.
+     * @throws EntityRetrievalException gdy nie uda się pobrać obiektów
      * @return Lista wszystkich encji
      */
     @Override
@@ -98,7 +100,7 @@ public abstract class AbstractCruRepository<T, ID> implements CruRepository<T, I
             cq.select(cq.from(getTypeParameterClass()));
             return getEntityManager().createQuery(cq).getResultList();
         } catch (PersistenceException e) {
-            throw new EntityRetrievalException("Could not retrieve users list", e);
+            throw new EntityRetrievalException("Could not retrieve entities", e);
         }
     }
 

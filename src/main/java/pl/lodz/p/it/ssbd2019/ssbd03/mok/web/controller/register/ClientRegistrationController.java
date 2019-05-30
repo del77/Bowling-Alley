@@ -71,7 +71,7 @@ public class ClientRegistrationController extends RegistrationController impleme
         } catch (RecaptchaValidationException e) {
             errorMessages.add(localization.get(e.getCode()));
         }
-        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.CLIENT), false);
+        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.UNCONFIRMED));
     }
 
     @Override

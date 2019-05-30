@@ -13,6 +13,10 @@
         <role-name>CLIENT</role-name>
         <group-name>CLIENT</group-name>
     </security-role-mapping>
+    <security-role-mapping>
+        <role-name>UNCONFIRMED</role-name>
+        <group-name>UNCONFIRMED</group-name>
+    </security-role-mapping>
 
     <!-- MOK -->
     <security-role-mapping>
