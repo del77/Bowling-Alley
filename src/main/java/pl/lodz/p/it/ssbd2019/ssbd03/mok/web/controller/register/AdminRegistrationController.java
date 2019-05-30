@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.ComplexAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.mappers.DtoMapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -50,8 +51,9 @@ public class AdminRegistrationController extends RegistrationController implemen
     @Path("/success")
     @Produces(MediaType.TEXT_HTML)
     public String viewRegistrationSuccessPage() {
-        models.put("infos", Collections.singletonList(localization.get("accountCreated")));
-        return this.getSuccessViewUrl();
+        FormData formData = new FormData();
+        formData.setInfos(Collections.singletonList(localization.get("accountCreated")));
+        return redirectUtil.redirect("admin/register", formData);
     }
 
     /**
@@ -65,6 +67,7 @@ public class AdminRegistrationController extends RegistrationController implemen
     @Produces(MediaType.TEXT_HTML)
     public String registerAccount(@BeanParam ComplexAccountDto complexAccountDto,
                                   @QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         return super.registerAccount(
                 complexAccountDto,
                 dtoMapper.getListOfAccessLevels(complexAccountDto)
