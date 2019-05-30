@@ -7,7 +7,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.mappers.DtoMapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.rolesretriever.UserRolesRetriever;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -274,7 +273,6 @@ public class UserAdminController implements Serializable {
         try {
             AccountDetailsDto user = userAccountService.getUserById(id);
             models.put("user", user);
-            UserRolesRetriever.putAccessLevelsIntoModel(user, models);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("userCouldntRetrieve"));
         }

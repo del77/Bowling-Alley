@@ -6,7 +6,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountPasswordNotUniqueException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AccessLevelDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ChangePasswordException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
@@ -18,7 +21,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.UserAccountHelpers;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRolesProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MokRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -55,6 +58,9 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Inject
     private LocalizedMessageProvider localization;
+
+    @Inject
+    private AppRolesProvider appRolesProvider;
 
     private ModelMapper modelMapper = new ModelMapper();
 
@@ -166,7 +172,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 .findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException("Couldn't find token with provided value."));
         @NotNull UserAccount userAccount = tokenEntity.getUserAccount();
-        if (UserAccountHelpers.isUserAccountConfirmed(userAccount)) {
+        if (UserAccountHelpers.isUserAccountConfirmed(userAccount, appRolesProvider.getUnconfirmed())) {
             throw new AccountAlreadyConfirmedException("Account already confirmed.");
         }
         deactivateUnconfirmedAccessLevel(userAccount);
@@ -182,9 +188,10 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     private void retrieveRolesFromUserAccount(UserAccount userAccount, AccountDetailsDto userAccountDto) {
         for(AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
-            if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.CLIENT)) { userAccountDto.setClientRoleSelected(true); }
-            else if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.EMPLOYEE)) { userAccountDto.setEmployeeRoleSelected(true); }
-            else if(accountAccessLevel.getAccessLevel().getName().equals(AppRoles.ADMIN)) { userAccountDto.setAdminRoleSelected(true); }
+            if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getClient())) { userAccountDto.setClientRoleSelected(true); }
+            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getEmployee())) { userAccountDto.setEmployeeRoleSelected(true); }
+            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getAdmin())) { userAccountDto.setAdminRoleSelected(true); }
+            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getUnconfirmed())) { userAccountDto.setConfirmed(false); }
         }
     }
 
@@ -274,7 +281,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
      */
     private void deactivateUnconfirmedAccessLevel(UserAccount userAccount) {
         userAccount.getAccountAccessLevels().stream()
-                .filter(x -> x.getAccessLevel().getName().equals(AppRoles.UNCONFIRMED))
+                .filter(x -> x.getAccessLevel().getName().equals(appRolesProvider.getUnconfirmed()))
                 .findFirst().get()
                 .setActive(false);
     }
@@ -285,12 +292,12 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
      */
     private void activateClientAccessLevel(UserAccount userAccount) {
         AccountAccessLevel clientAccountAccessLevel = userAccount.getAccountAccessLevels().stream()
-                .filter(x -> x.getAccessLevel().getName().equals(AppRoles.CLIENT))
+                .filter(x -> x.getAccessLevel().getName().equals(appRolesProvider.getClient()))
                 .findFirst()
                 .orElse(null);
 
         if(clientAccountAccessLevel == null) {
-            AccessLevel clientAccessLevel = accessLevelRepositoryLocal.findByName(AppRoles.CLIENT).get();
+            AccessLevel clientAccessLevel = accessLevelRepositoryLocal.findByName(appRolesProvider.getClient()).get();
             clientAccountAccessLevel = AccountAccessLevel.builder()
                     .accessLevel(clientAccessLevel)
                     .account(userAccount)

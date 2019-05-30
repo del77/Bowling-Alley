@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaValidationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.RecaptchaValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRolesProvider;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.SessionScoped;
@@ -26,6 +26,9 @@ public class ClientRegistrationController extends RegistrationController impleme
 
     @Inject
     private RecaptchaValidator recaptchaValidator;
+
+    @Inject
+    private AppRolesProvider appRolesProvider;
 
     private static final String REGISTER_VIEW_URL = "accounts/register/registerClient.hbs";
     private static final String SUCCESS_VIEW_URL = "accounts/register/register-success.hbs";
@@ -71,7 +74,7 @@ public class ClientRegistrationController extends RegistrationController impleme
         } catch (RecaptchaValidationException e) {
             errorMessages.add(localization.get(e.getCode()));
         }
-        return super.registerAccount(basicAccountDto, Collections.singletonList(AppRoles.UNCONFIRMED));
+        return super.registerAccount(basicAccountDto, Collections.singletonList(appRolesProvider.getUnconfirmed()));
     }
 
     @Override

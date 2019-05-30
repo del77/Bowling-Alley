@@ -7,7 +7,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.UserIdDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.AccessLevelRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.ConfirmationTokenRepositoryLocal;
@@ -17,7 +16,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRolesProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
@@ -55,6 +54,9 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
     private LocalizedMessageProvider localization;
 
     @Inject
+    private AppRolesProvider appRolesProvider;
+
+    @Inject
     private Models models;
 
     @Context
@@ -81,7 +83,7 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
 
-        if(accessLevelNames.contains(AppRoles.UNCONFIRMED)) {
+        if(accessLevelNames.contains(appRolesProvider.getUnconfirmed())) {
             createNewTokenForAccount(userAccount);
         }
     }

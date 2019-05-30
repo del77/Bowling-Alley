@@ -20,6 +20,11 @@
 
     <!-- MOK -->
     <security-role-mapping>
+        <role-name>UnconfirmedAccount</role-name>
+        <group-name>UNCONFIRMED</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>CreateAccount</role-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
