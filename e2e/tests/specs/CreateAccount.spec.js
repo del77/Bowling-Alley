@@ -8,13 +8,13 @@ import uuidv4 from "uuid";
 
 const LOGIN_EXTSTS_ERROR = "Podany login jest już używany.";
 const MAIL_EXISTS_ERROR = "Podany email jest już używany.";
-const PASSWORDS_DONT_MATCH = "Passwords don't match.";
+const PASSWORDS_DONT_MATCH = "Podane hasła są różne.";
 
-const CREATE_ACCOUNT_SUCCESS = "Konto zostało utworzone.";
+const CREATE_ACCOUNT_SUCCESS = "Konto zostało utworzone";
 
 const TAKEN_USERNAME = "testEmployee";
-const USERNAME = "unikalnyLoginDoTestow";
-const TAKEN_MAIL = "testEmployee@mail.com";
+const USERNAME = "asef324esfedff";
+const TAKEN_MAIL = "testClientowsky@mail.com";
 const MAIL = "hashbardzoskomplikowany@mail.com";
 const PASSWORD = "testEmployee";
 const OTHER_PASSWORD = "tsetMeployee";

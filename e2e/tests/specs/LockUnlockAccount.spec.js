@@ -6,10 +6,9 @@ const TEST_USER_MAIL = "testLockUnlock@mail.com";
 
 const TEST_USER = "testLockUnlock";
 const TEST_USER_PASSWORD = "testLockUnlock";
-//TODO: change after bugfix
-const SUCCESS_LOCK_MESSAGE = `Odblokowano użytkownika ${TEST_USER}`;
-const SUCCESS_UNLOCK_MESSAGE = `Odblokowano użytkownika ${TEST_USER}`;
-const LOGIN_ERROR = `Nieudane logowanie`;
+const SUCCESS_LOCK_MESSAGE = `Zablokowano użytkownika`;
+const SUCCESS_UNLOCK_MESSAGE = `Odblokowano użytkownika`;
+const LOGIN_ERROR = `Login failed`;
 
 describe("User list", () => {
   describe("Success scenarios", () => {
