@@ -49,7 +49,7 @@ class CreateAccountPage extends Page {
   }
 
   get success() {
-    return $("div.alert-success>p");
+    return $("div.alert-success > div");
   }
 }
 
