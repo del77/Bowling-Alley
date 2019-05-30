@@ -17,7 +17,7 @@ import java.util.Optional;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
-public class ReservationRepositoryImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {
+public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {
 
     @PersistenceContext(unitName = "ssbd03morPU")
     private EntityManager entityManager;

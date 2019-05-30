@@ -37,7 +37,7 @@ public class LanguageMapFactoryImpl implements Serializable, LanguageMapFactory 
      *                                 w obiekcie localeConfig.
      */
     @Override
-    public Hashtable<Object, Object> getLanguageMap(LocaleConfig localeConfig) throws PropertiesLoadException {
+    public synchronized Hashtable<Object, Object> getLanguageMap(LocaleConfig localeConfig) throws PropertiesLoadException {
         if (this.loadedData.contains(localeConfig)) {
             this.lastLoaded = localeConfig;
             return this.loadedData.get(localeConfig);
