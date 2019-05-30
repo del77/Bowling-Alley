@@ -83,19 +83,9 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
 
-        if(accessLevelNames.contains(appRolesProvider.getUnconfirmed())) {
+        if (accessLevelNames.contains(appRolesProvider.getUnconfirmed())) {
             createNewTokenForAccount(userAccount);
         }
-    }
-
-    @Override
-    public void confirmAccount(long accountId) throws SsbdApplicationException {
-        Optional<UserAccount> accountOptional = userAccountRepositoryLocal.findById(accountId);
-        UserAccount account = accountOptional
-                .orElseThrow(() -> new UserIdDoesNotExistException("Account with id '" + accountId + "' does not exist."));
-        account.setAccountConfirmed(true);
-
-        userAccountRepositoryLocal.editWithoutMerge(account);
     }
 
     private String encodePassword(String password) throws SsbdApplicationException {
@@ -137,8 +127,7 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
      * @param userAccount konto użytkownika.
      * @throws SsbdApplicationException w przypadku gdy użytkownik nie istnieje, nie uda się utrwalić encji ConfirmationToken
      */
-    @Override
-    public void createNewTokenForAccount(UserAccount userAccount) throws SsbdApplicationException {
+    private void createNewTokenForAccount(UserAccount userAccount) throws SsbdApplicationException {
         ConfirmationToken confirmationToken = this.buildTokenForUser(userAccount);
         String url = getActivationUrl(confirmationToken.getToken());
 

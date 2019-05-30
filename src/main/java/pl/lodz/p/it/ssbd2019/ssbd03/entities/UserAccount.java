@@ -75,11 +75,6 @@ public class UserAccount {
     private String password;
 
     @NotNull
-    @Column(name = "confirmed", nullable = false)
-    @ToString.Exclude
-    private boolean accountConfirmed;
-
-    @NotNull
     @Column(name = "active", nullable = false)
     @ToString.Exclude
     private boolean accountActive;

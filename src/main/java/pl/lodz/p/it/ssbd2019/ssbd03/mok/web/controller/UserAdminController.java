@@ -89,7 +89,7 @@ public class UserAdminController implements Serializable {
             @QueryParam("idCache") Long id,
             @DefaultValue("") @QueryParam("name") String name) {
         redirectUtil.injectFormDataToModels(id, models);
-        List<UserAccount> userAccounts = new ArrayList<>();
+        List<AccountDetailsDto> userAccounts = new ArrayList<>();
         try {
             if (name.equals("") || name == null) {
                 userAccounts = userAccountService.getAllUsers();

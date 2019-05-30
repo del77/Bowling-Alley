@@ -15,7 +15,10 @@ import javax.ws.rs.FormParam;
 @NoArgsConstructor
 public class AccountDetailsDto {
     protected Long id;
-    
+
+    @Size(max = 16, message = "{validate.loginShorterThanSixteen}")
+    protected String login;
+
     @NotNull(message = "{validate.firstNameNotNull}")
     @NotBlank(message = "{validate.firstNameNotBlank}")
     @Size(max = 32, message = "{validate.firstNameShorterThanThirtyTwo}")

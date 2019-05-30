@@ -37,6 +37,7 @@ import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Context;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,8 +72,14 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Override
     @RolesAllowed(MokRoles.GET_ALL_USERS_LIST)
-    public List<UserAccount> getAllUsers() throws SsbdApplicationException {
-        return userAccountRepositoryLocal.findAll();
+    public List<AccountDetailsDto> getAllUsers() throws SsbdApplicationException {
+        List<UserAccount> allAccounts = userAccountRepositoryLocal.findAll();
+        List<AccountDetailsDto> allUsers = new ArrayList<>();
+        for (UserAccount account : allAccounts) {
+
+            allUsers.add(modelMapper.map(account, AccountDetailsDto.class));
+        }
+        return allUsers;
     }
 
     @Override
@@ -158,12 +165,17 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     @Override
     @PermitAll
-    public List<UserAccount> getAllByNameOrLastName(String name) {
+    public List<AccountDetailsDto> getAllByNameOrLastName(String name) {
         List<UserAccount> users = userAccountRepositoryLocal.findAllByNameOrLastName(name);
         for (UserAccount user : users) {
             Hibernate.initialize(user.getAccountAccessLevels());
         }
-        return users;
+        List<AccountDetailsDto> allUsers = new ArrayList<>();
+        for (UserAccount user : users) {
+
+            allUsers.add(modelMapper.map(user, AccountDetailsDto.class));
+        }
+        return allUsers;
     }
 
     @Override
@@ -277,6 +289,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     /**
      * Metoda deaktywująca poziom dostępu oznaczający niepotwierdzone konto.
+     *
      * @param userAccount Obiekt konta użytkownika.
      */
     private void deactivateUnconfirmedAccessLevel(UserAccount userAccount) {
@@ -288,6 +301,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     /**
      * Metoda aktywująca dla konta poziom dostępu "klient"
+     *
      * @param userAccount obiekt konta użytkownika
      */
     private void activateClientAccessLevel(UserAccount userAccount) {
