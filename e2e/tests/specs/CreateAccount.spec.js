@@ -91,13 +91,6 @@ describe("Create account page", () => {
       CreateAccountPage.phoneNumber.setValue(PHONE_NUMBER);
       CreateAccountPage.submitBtn.click();
       browser.acceptAlert();
-      browser.waitUntil(
-        () => {
-          return browser.getUrl() == baseUrl + "admin/register/success";
-        },
-        callTimeout,
-        `Should create new account and redirect to '${baseUrl}admin/register/success'`
-      );
 
       expect(CreateAccountPage.success.getText()).to.equal(CREATE_ACCOUNT_SUCCESS);
     });
