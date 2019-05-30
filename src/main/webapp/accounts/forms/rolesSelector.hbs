@@ -5,7 +5,7 @@
             <div class="input-group-prepend">
                 <div class="input-group-text">
                     <input type="checkbox" aria-label="client checkbox" name="clientSelected"
-                           id="clientSelected" value="true" autofocus {{#if clientActive}} checked {{/if}}>
+                           id="clientSelected" value="true" autofocus {{#if this.editedAccount.clientRoleSelected}} checked {{/if}}>
                 </div>
             </div>
             <span class="input-group-text">{{lang.client}}</span>
@@ -14,7 +14,7 @@
             <div class="input-group-prepend">
                 <div class="input-group-text">
                     <input type="checkbox" aria-label="employee checkbox" name="employeeSelected"
-                           id="adminSelected" value="true" autofocus {{#if employeeActive}} checked {{/if}}>
+                           id="adminSelected" value="true" autofocus {{#if this.editedAccount.employeeRoleSelected}} checked {{/if}}>
                 </div>
             </div>
             <span class="input-group-text">{{lang.employee}}</span>
@@ -23,7 +23,7 @@
             <div class="input-group-prepend">
                 <div class="input-group-text">
                     <input type="checkbox" aria-label="admin checkbox" name="adminSelected"
-                           id="adminSelected" value="true" autofocus {{#if adminActive}} checked {{/if}}>
+                           id="adminSelected" value="true" autofocus {{#if this.editedAccount.adminRoleSelected}} checked {{/if}}>
                 </div>
             </div>
             <span class="input-group-text">{{lang.admin}}</span>

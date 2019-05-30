@@ -67,8 +67,7 @@ public class AdminRegistrationController extends RegistrationController implemen
                                   @QueryParam("idCache") Long id) {
         return super.registerAccount(
                 complexAccountDto,
-                dtoMapper.getListOfAccessLevels(complexAccountDto),
-                true
+                dtoMapper.getListOfAccessLevels(complexAccountDto)
         );
     }
 

@@ -23,12 +23,12 @@ import java.security.Principal;
  */
 @WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.FORWARD})
 public class UserModelFilter extends HttpFilter {
+    private final static String unconfirmedPage = "login/unconfirmed";
+    private final static String logoutPage = "logout";
+
 
     @Inject
     private Models models;
-
-    @Inject
-    private LoginStat loginStat;
 
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -46,12 +46,27 @@ public class UserModelFilter extends HttpFilter {
 
         if (isLoggedIn) {
             String userName = userPrincipal.getName();
-            loginStat.tryFillModelsWithLoginStat(userName, models);
             models.put("userName", userName);
+            if(shouldRedirectToUnconfirmed(request)) {
+                response.sendRedirect(request.getContextPath()+ "/" + unconfirmedPage);
+            }
         }
 
         models.put("webContextPath", request.getContextPath());
         models.put("page", request.getRequestURI());
         chain.doFilter(request, response);
+    }
+
+    /**
+     * Metoda określająca czy użytkownik powinien zostać przekierowany na stronę dla użytkownikow
+     * z niepotwierdzonym kontem.
+     */
+    private boolean shouldRedirectToUnconfirmed(HttpServletRequest request) {
+        String path = request.getRequestURI().substring(request.getContextPath().length()+1);
+        return (request.isUserInRole(AppRoles.UNCONFIRMED) &&
+                !path.startsWith("static") &&
+                !path.startsWith("confirm-account") &&
+                !path.endsWith(unconfirmedPage) &&
+                !path.endsWith(logoutPage));
     }
 }

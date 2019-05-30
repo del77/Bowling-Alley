@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.TokenUtils;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.AppRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
@@ -63,13 +64,12 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
     private Messenger messenger;
 
     @Override
-    public void registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames, boolean isConfirmed)
+    public void registerAccount(BasicAccountDto basicAccountDto, List<String> accessLevelNames)
             throws SsbdApplicationException {
         UserAccount userAccount = UserAccount
                 .builder()
                 .login(basicAccountDto.getLogin())
                 .password(basicAccountDto.getPassword())
-                .accountConfirmed(isConfirmed)
                 .accountActive(true)
                 .email(basicAccountDto.getEmail())
                 .firstName(basicAccountDto.getFirstName())
@@ -80,8 +80,10 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
         userAccount.setPassword(encodePassword(userAccount.getPassword()));
         userAccount.setAccountAccessLevels(createAccountAccessLevels(userAccount, accessLevelNames));
         createUser(userAccount);
-        createNewTokenForAccount(
-                userAccount);
+
+        if(accessLevelNames.contains(AppRoles.UNCONFIRMED)) {
+            createNewTokenForAccount(userAccount);
+        }
     }
 
     @Override
@@ -152,13 +154,6 @@ public class RegistrationServiceImpl extends TransactionTracker implements Regis
                 .token(TokenUtils.generate())
                 .build();
         return confirmationTokenRepository.create(confirmationToken);
-    }
-
-    private UserAccount retrieveUser(String userName) throws DataAccessException {
-        Optional<UserAccount> userAccount =
-                userAccountRepositoryLocal.findByLogin(userName);
-        return userAccount
-                .orElseThrow(() -> new LoginDoesNotExistException("No user account with that login"));
     }
 
     private String getActivationUrl(String token) {
