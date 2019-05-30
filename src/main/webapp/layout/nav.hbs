@@ -20,7 +20,7 @@
                     {{> "layout/menus/admin"}}
                 </ul>
                 <div class="mr-2">
-                    <a href="{{page}}">
+                    <div style="cursor: pointer;">
                         {{#if lang.PL}}
                             <img src="{{webContextPath}}/static/img/united-kingdom.png"
                                  aria-label="English" alt="English" onclick="changeLang('en')" width="30px"
@@ -31,21 +31,26 @@
                                  aria-label="Polish" alt="Polski" onclick="changeLang('pl')" width="30px"
                                  height="20px">
                         {{/if}}
-                    </a>
+                    </div>
                 </div>
                 {{> "layout/menus/user"}}
                 <script>
                     function changeLang(lang) {
-                        try {
-                            const response = fetch('{{webContextPath}}/lang/' + lang, {
-                                method: 'post'
-                            });
-                            if (response) {
-                                window.location = self.location;
-                            }
-                        } catch (err) {
-                            console.error(`Error: ${err}`);
-                        }
+                        fetch('{{webContextPath}}/lang/' + lang, {
+                            method: 'post'
+                        }).then(
+                                (succResult) => {
+                                    if (succResult) {
+                                        window.location = self.location;
+                                    } else {
+                                        console.error(`Error during language check.`);
+                                    }
+
+                                },
+                                (errResult) => {
+                                    console.error(`Error: ${errResult}`);
+                                }
+                        )
                     }
                 </script>
             </div>
