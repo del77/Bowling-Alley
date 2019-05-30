@@ -200,10 +200,17 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
 
     private void retrieveRolesFromUserAccount(UserAccount userAccount, AccountDetailsDto userAccountDto) {
         for(AccountAccessLevel accountAccessLevel : userAccount.getAccountAccessLevels()) {
-            if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getClient())) { userAccountDto.setClientRoleSelected(true); }
-            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getEmployee())) { userAccountDto.setEmployeeRoleSelected(true); }
-            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getAdmin())) { userAccountDto.setAdminRoleSelected(true); }
-            else if(accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getUnconfirmed())) { userAccountDto.setConfirmed(false); }
+            if(accountAccessLevel.isActive()) {
+                if (accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getClient())) {
+                    userAccountDto.setClientRoleSelected(true);
+                } else if (accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getEmployee())) {
+                    userAccountDto.setEmployeeRoleSelected(true);
+                } else if (accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getAdmin())) {
+                    userAccountDto.setAdminRoleSelected(true);
+                } else if (accountAccessLevel.getAccessLevel().getName().equals(appRolesProvider.getUnconfirmed())) {
+                    userAccountDto.setConfirmed(false);
+                }
+            }
         }
     }
 
