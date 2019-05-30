@@ -17,7 +17,7 @@ public interface UserAccountService {
      * @return Lista encji użytkownika.
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkownika z bazy danych.
      */
-    List<UserAccount> getAllUsers() throws SsbdApplicationException;
+    List<AccountDetailsDto> getAllUsers() throws SsbdApplicationException;
 
     /**
      * Metoda pobiera z bazy danych uzytkownika o podanym id.
@@ -88,7 +88,7 @@ public interface UserAccountService {
      * @throws SsbdApplicationException w wypadku gdy nie powiedzie się pobieranie użytkowników z bazy danych,
      * bądź gdy nie znajdzie żadnego użytkownika.
      */
-    List<UserAccount> getAllByNameOrLastName(String name) throws SsbdApplicationException;
+    List<AccountDetailsDto> getAllByNameOrLastName(String name) throws SsbdApplicationException;
 
     /**
      * Metoda służy do potwierdzenia konta na bazie podanego tokena.

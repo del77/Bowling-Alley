@@ -50,7 +50,7 @@ public class ResetPasswordServiceImpl  extends TransactionTracker implements Res
 
     @Override
     @PermitAll
-    public ResetPasswordToken requestResetPassword(String email) throws SsbdApplicationException {
+    public void requestResetPassword(String email) throws SsbdApplicationException {
         UserAccount userAccount = getUserByEmail(email);
         String token = TokenUtils.generate();
         Timestamp validity = TokenUtils.getValidity(24);
@@ -70,13 +70,11 @@ public class ResetPasswordServiceImpl  extends TransactionTracker implements Res
                 localization.get("bowlingAlley") + " - " + localization.get("resetPassword"),
                 url
         );
-
-        return resetPasswordToken;
     }
 
     @Override
     @PermitAll
-    public UserAccount resetPassword(String token, String newPassword) throws SsbdApplicationException {
+    public void resetPassword(String token, String newPassword) throws SsbdApplicationException {
         ResetPasswordToken resetPasswordToken = getToken(token);
         UserAccount userAccount = resetPasswordToken.getUserAccount();
         String newPasswordHash = SHA256Provider.encode(newPassword);
@@ -88,8 +86,6 @@ public class ResetPasswordServiceImpl  extends TransactionTracker implements Res
         userAccount.setPassword(newPasswordHash);
         resetPasswordToken.setValidity(new Timestamp(System.currentTimeMillis() - 1));
         userAccountRepositoryLocal.editWithoutMerge(userAccount);
-
-        return userAccount;
     }
 
     /**
