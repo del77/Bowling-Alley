@@ -1,20 +1,39 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.mvc.Controller;
+import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.Collections;
 
 @SessionScoped
 @Controller
 @Path("alleys")
 public class AlleyController implements Serializable {
-
+    
+    private static final String ERROR = "errors";
+    private static final String ALLEY_LIST_VIEW = "alleys/alleysList.hbs";
+    
+    @Inject
+    private Models models;
+    
+    @EJB
+    private AlleyService alleyService;
+    
+    @Inject
+    private LocalizedMessageProvider localization;
+    
     /**
      * Pobiera widok dodawania toru.
      * @return Widok umożliwiający dodanie toru.
@@ -100,6 +119,16 @@ public class AlleyController implements Serializable {
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     @Produces(MediaType.TEXT_HTML)
     public String getAllAlleys() {
-        throw new UnsupportedOperationException();
+        try {
+            models.put("alleys", alleyService.getAllAlleys());
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("alleysListError"));
+        }
+        return ALLEY_LIST_VIEW;
+    }
+    
+    
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
     }
 }
