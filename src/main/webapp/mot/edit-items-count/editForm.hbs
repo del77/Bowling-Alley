@@ -1,0 +1,31 @@
+{{#block "phoneInput"}}
+    <aside class="my-3">
+        <div class="input-group mb-3 mx-0">
+            <table class="table">
+                <thead class="bg-primary">
+                <tr>
+                    <th scope="col">{{lang.itemSize}}</th>
+                    <th scope="col">{{lang.itemCount}}*</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each this.items}}
+                    <tr>
+                        <td>{{size}}</td>
+                        <td>
+                            <input id="size" name="size"  type="hidden" value="{{size}}">
+                        <input class="form-control" type="number" aria-label="Quantity input"
+                               aria-describedby="basic-addon1" name="count" id="count" placeholder="{{lang.itemCount}}"
+                               required autofocus min="0" max="9223372036854775807" value="{{count}}"></td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+                <span class="form-text text-muted">
+                  * {{lang.requiredFields}}
+                </span>
+        </div>
+    </aside>
+{{/block}}

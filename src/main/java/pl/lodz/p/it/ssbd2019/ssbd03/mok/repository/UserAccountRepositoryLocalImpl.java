@@ -16,6 +16,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,18 +81,25 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     public UserAccount create(UserAccount userAccount) throws DataAccessException {
         try {
             return super.create(userAccount);
+        } catch (ConstraintViolationException e) {
+            if(e.getMessage().contains("phone")) {
+                throw new PhoneLengthConstraintViolationException("Given phone length: " + userAccount.getPhone().length()
+                + " is invalid.");
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during user creation", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
-            Throwable t2 = t.getCause();
-            if ((t2 instanceof PSQLException) && t2.getMessage().contains("email")) {
-                throw new NotUniqueEmailException("Could not create account with email '" + userAccount.getEmail() +
-                        "' because it was already in use.", e);
-            } else if ((t2 instanceof PSQLException) && t2.getMessage().contains("login")) {
-                throw new NotUniqueLoginException("Could not create account with login '" + userAccount.getLogin() +
-                        "' because it was already in use.", e);
-            } else {
-                throw new EntityUpdateException("Could not perform create operation.", e);
+            if(t!= null && (t.getCause() instanceof PSQLException)) {
+                String message = t.getCause().getMessage();
+                if (message.contains("email")) {
+                    throw new NotUniqueEmailException("Could not create account with email '" + userAccount.getEmail() +
+                            "' because it was already in use.", e);
+                } else if (message.contains("login")) {
+                    throw new NotUniqueLoginException("Could not create account with login '" + userAccount.getLogin() +
+                            "' because it was already in use.", e);
+                }
             }
+            throw new EntityUpdateException("Could not perform create operation.", e);
         }
     }
 
@@ -103,14 +111,22 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             super.edit(userAccount);
         } catch (OptimisticLockException e) {
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
+        } catch (ConstraintViolationException e) {
+            if(e.getMessage().contains("phone")) {
+                throw new PhoneLengthConstraintViolationException("Given phone length: " + userAccount.getPhone().length()
+                        + " is invalid.");
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during user editing", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
-            if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
-                throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.", e);
-            } else {
-                throw new EntityUpdateException("Could not perform update operation.", e);
+            if(t!= null && (t.getCause() instanceof PSQLException)) {
+                String message = t.getCause().getMessage();
+                if (message.contains("email")) {
+                    throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
+                            "' because it was already in use.", e);
+                }
             }
+            throw new EntityUpdateException("Could not perform update operation.", e);
         }
     }
 
@@ -121,14 +137,22 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             return super.editWithoutMerge(userAccount);
         } catch (OptimisticLockException e) {
             throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
+        } catch (ConstraintViolationException e) {
+            if(e.getMessage().contains("phone")) {
+                throw new PhoneLengthConstraintViolationException("Given phone length: " + userAccount.getPhone().length()
+                        + " is invalid.");
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during user editing", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
-            if (t != null && (t.getCause() instanceof PSQLException) && t.getCause().getMessage().contains("email")) {
-                throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
-                        "' because it was already in use.", e);
-            } else {
-                throw new EntityUpdateException("Could not perform update operation.",e);
+            if(t!= null && (t.getCause() instanceof PSQLException)) {
+                String message = t.getCause().getMessage();
+                if (message.contains("email")) {
+                    throw new NotUniqueEmailException("Could not update email to '" + userAccount.getEmail() +
+                            "' because it was already in use.", e);
+                }
             }
+            throw new EntityUpdateException("Could not perform update operation.", e);
         }
     }
 

@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Item;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -10,10 +10,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
 
-@Stateless
+@Stateless(name = "MOTItemRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ItemRepositoryLocalImpl extends AbstractCruRepository<Item, Long> implements ItemRepositoryLocal {
@@ -34,6 +35,24 @@ public class ItemRepositoryLocalImpl extends AbstractCruRepository<Item, Long> i
     @Override
     @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
     public void edit(Item item) throws DataAccessException {
-        super.edit(item);
+        try {
+            super.edit(item);
+        } catch (OptimisticLockException e) {
+            throw new ItemOptimisticLockException("Item has been updated before these changes were made", e);
+        } catch (ConstraintViolationException e) {
+            if(e.getMessage().contains("count")) {
+                throw new ItemCountConstraintViolationException("Given count: " + item.getCount() + " is invalid.");
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during item editing", e);
+        } catch (PersistenceException e) {
+            throw new EntityUpdateException("Could not perform edit operation.", e);
+        }
+    }
+
+    @Override
+    @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
+    public List<Item> findAllByItemType(String itemType) {
+        TypedQuery<Item> namedQuery = this.createNamedQuery("Item.findByItemType");
+        return namedQuery.getResultList();
     }
 }
