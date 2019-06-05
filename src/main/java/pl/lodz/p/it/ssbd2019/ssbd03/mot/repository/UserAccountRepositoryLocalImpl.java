@@ -27,7 +27,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     protected EntityManager getEntityManager() {
-        return entityManager;
+        return this.entityManager;
     }
 
     @Override

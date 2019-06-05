@@ -3,7 +3,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 public interface AlleyService {
@@ -13,6 +15,9 @@ public interface AlleyService {
      * return Lista obiektów encji reprezentująca tory
      */
     List<AlleyDto> getAllAlleys() throws SsbdApplicationException;
+
+    @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
+    AlleyDto getById(Long id) throws SsbdApplicationException;
 
     /**
      * Tworzy tor o danych zawartych w podanym w obiekcie.

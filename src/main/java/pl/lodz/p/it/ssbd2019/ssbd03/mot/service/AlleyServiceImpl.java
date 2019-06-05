@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyDto;
@@ -35,6 +36,16 @@ public class AlleyServiceImpl extends TransactionTracker implements AlleyService
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     public List<AlleyDto> getAllAlleys() throws SsbdApplicationException {
         return Mapper.mapAll(alleyRepositoryLocal.findAll(), AlleyDto.class);
+    }
+
+
+    @Override
+    @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
+    public AlleyDto getById(Long id) throws SsbdApplicationException {
+        return Mapper.map(
+                alleyRepositoryLocal.findById(id).orElseThrow(NotFoundException::new),
+                AlleyDto.class
+        );
     }
 
     @Override

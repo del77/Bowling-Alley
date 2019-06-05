@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller.register;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.RegistrationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.BasicAccountDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;

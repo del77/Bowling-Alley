@@ -1,10 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.controller;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.mappers.DtoMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
