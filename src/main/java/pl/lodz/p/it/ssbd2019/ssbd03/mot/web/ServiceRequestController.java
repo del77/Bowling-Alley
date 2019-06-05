@@ -25,7 +25,7 @@ import java.util.List;
 
 @SessionScoped
 @Controller
-@Path("employee/servicerequests")
+@Path("service-requests")
 public class ServiceRequestController implements Serializable {
     private static final String ERROR = "errors";
     private static final String INFO = "infos";
