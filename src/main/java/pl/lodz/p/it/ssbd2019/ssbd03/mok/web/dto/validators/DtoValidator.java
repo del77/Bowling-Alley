@@ -23,4 +23,12 @@ public class DtoValidator {
         }
         return errors;
     }
+
+    public <T> List<String> validateAll(List<T> dtos) {
+        List<String> errors = new ArrayList<>();
+        for(T dto : dtos) {
+            errors.addAll(validate(dto));
+        }
+        return errors;
+    }
 }
