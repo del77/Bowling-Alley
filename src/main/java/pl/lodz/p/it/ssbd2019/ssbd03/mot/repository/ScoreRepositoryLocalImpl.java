@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Stateless
+@Stateless(name = "MOTScoreRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ScoreRepositoryLocalImpl extends AbstractCruRepository<Score, Long> implements ScoreRepositoryLocal {

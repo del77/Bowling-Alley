@@ -14,11 +14,8 @@ import javax.ws.rs.FormParam;
 @ToString
 public class ScoreDto {
 
-    // todo
-    private Long reservation_id;
-
-    // todo
-    private Long user_id;
+    @FormParam("login")
+    private String login;
 
     @FormParam("score")
     @Min(value = 0, message = "{validate.scoreMin}")

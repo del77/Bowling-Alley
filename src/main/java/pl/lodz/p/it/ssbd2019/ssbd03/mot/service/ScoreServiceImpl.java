@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ScoreRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
@@ -38,7 +39,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @RolesAllowed(MotRoles.ADD_SCORE)
-    public void addNewScore(ScoreDto score) {
+    public void addNewScore(Long reservation_id, ScoreDto score) throws SsbdApplicationException {
         // todo
     }
 }
