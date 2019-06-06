@@ -68,8 +68,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
             Throwable t = e.getCause();
             Throwable t2 = t.getCause();
             if ((t2 instanceof PSQLException) && t2.getMessage().contains("number")) {
-                throw new NotUniqueAlleyNumberException("Could not create account with email '" + alley.getNumber() +
-                        "' because it was already in use.", e);
+                throw new NotUniqueAlleyNumberException(String.format("There is an alley with the number %d already.",alley.getNumber()), e);
             } else {
                 throw new EntityUpdateException("Could not perform create operation.", e);
             }
