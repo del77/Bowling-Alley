@@ -2,9 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueAlleyNumberException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -16,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +59,11 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     public Alley create(Alley alley) throws DataAccessException {
         try {
             return super.create(alley);
+        } catch (ConstraintViolationException e) {
+            if (e.getMessage().contains("number")) {
+                throw new AlleyNumberLessThanOneException(String.format("Given alley number %d is invalid.", alley.getNumber()));
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during alley creation", e);
         } catch (PersistenceException e) {
             Throwable t = e.getCause();
             Throwable t2 = t.getCause();
