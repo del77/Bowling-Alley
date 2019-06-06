@@ -23,7 +23,7 @@ import java.util.Collections;
 public class AlleyController implements Serializable {
     
     private static final String ERROR = "errors";
-    private static final String ALLEY_LIST_VIEW = "alleys/alleysList.hbs";
+    private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
     
     @Inject
     private Models models;

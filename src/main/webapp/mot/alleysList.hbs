@@ -1,0 +1,59 @@
+{{#partial "content"}}
+    <table class="table table-light table-striped table-hover">
+        <thead class="thead-light">
+            <tr class="d-flex">
+                <th scope="col" class="col-2">{{lang.alleysNumber}}</th>
+                <th scope="col" class="col-2 text-center">{{lang.isActive}}</th>
+                {{#if isEmployee}}
+                    <th scope="col" class="col-3  text-center">{{lang.gamesHistory}}</th>
+                    <th scope="col" class="col-2  text-center">{{lang.maxScore}}</th>
+                    <th scope="col" class="col-3  text-center">{{lang.serviceRequest}}</th>
+                {{else}}
+                    <th scope="col" class="col-4  text-center">{{lang.gamesHistory}}</th>
+                    <th scope="col" class="col-4  text-center">{{lang.maxScore}}</th>
+                {{/if}}
+            </tr>
+        </thead>
+        {{#each alleys}}
+            <tbody>
+                <tr class="d-flex">
+                    <td class="col-2">
+                        {{this.number}}
+                    </td>
+                    <td class="col-2 text-center">
+                        {{#if this.active}}
+                            <img src="{{webContextPath}}/static/img/tick.png"
+                                 alt="true"
+                                 width="30px"
+                                 height="30px">
+                        {{else}}
+                            <img src="{{webContextPath}}/static/img/cross.png"
+                                 alt="false"
+                                 width="30px"
+                                 height="30px">
+                        {{/if}}
+                    </td>
+            {{#if isEmployee}}
+                    <td class="col-3 text-center">
+                        <a href="#" class="btn btn-primary btn-sm" role="button">{{lang.showGamesHistory}}</a>
+                    </td>
+                    <td class="col-2 text-center">
+                        <a href="#" class="btn btn-success btn-sm" role="button">{{lang.showMaxScore}}</a>
+                    </td>
+                    <td class="col-3 text-center">
+                        <a href="#" class="btn btn-danger btn-sm" role="button">{{lang.addServiceRequest}}</a>
+                    </td>
+            {{else}}
+                <td class="col-4 text-center">
+                    <a href="#" class="btn btn-secondary" role="button">{{lang.showGamesHistory}}</a>
+                </td>
+                <td class="col-4 text-center">
+                    <a href="#" class="btn btn-primary" role="button">{{lang.showMaxScore}}</a>
+                </td>
+            {{/if}}
+                </tr>
+            </tbody>
+        {{/each}}
+    </table>
+{{/partial}}
+{{> layout }}

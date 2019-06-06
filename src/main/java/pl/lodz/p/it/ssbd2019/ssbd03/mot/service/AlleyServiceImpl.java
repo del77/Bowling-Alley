@@ -1,10 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
-import org.modelmapper.ModelMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -17,7 +17,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateful
@@ -28,16 +27,10 @@ public class AlleyServiceImpl extends TransactionTracker implements AlleyService
     @EJB(beanName = "MOTAlleyRepository")
     private AlleyRepositoryLocal alleyRepositoryLocal;
     
-    private ModelMapper modelMapper = new ModelMapper();
-    
     @Override
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     public List<AlleyDto> getAllAlleys() throws SsbdApplicationException {
-        return alleyRepositoryLocal
-                .findAll()
-                .stream()
-                .map(alley -> modelMapper.map(alley, AlleyDto.class))
-                .collect(Collectors.toList());
+        return Mapper.mapAll(alleyRepositoryLocal.findAll(), AlleyDto.class);
     }
 
     @Override
