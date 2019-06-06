@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 
 import java.util.List;
 
@@ -15,9 +17,9 @@ public interface AlleyService {
     /**
      * Tworzy tor o danych zawartych w podanym w obiekcie.
      *
-     * @param alley Obiekt klasy Alley, który ma zostać dodany do bazy danych.
+     * @param alleyDto DTO toru, który ma zostać dodany do bazy danych.
      */
-    void addAlley(Alley alley);
+    void addAlley(AlleyCreationDto alleyDto) throws SsbdApplicationException;
 
     /**
      * Zmienia flagę zablokowania toru z podanym id

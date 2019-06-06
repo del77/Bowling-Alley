@@ -1,19 +1,32 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 import java.util.List;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Stateful
 @DenyAll
-public class AlleyServiceImpl implements AlleyService {
+@Interceptors(InterceptorTracker.class)
+public class AlleyServiceImpl extends TransactionTracker implements AlleyService {
+
+    @EJB(beanName = "MOTAlleyRepository")
+    AlleyRepositoryLocal alleyRepositoryLocal;
+
+
     @Override
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     public List<Alley> getAllAlleys() {
@@ -22,15 +35,21 @@ public class AlleyServiceImpl implements AlleyService {
 
     @Override
     @RolesAllowed(MotRoles.ADD_ALLEY)
-    public void addAlley(Alley alley) {
-        throw new UnsupportedOperationException();
-
+    public void addAlley(AlleyCreationDto alleyDto) throws SsbdApplicationException {
+        Alley alley = Alley
+                .builder()
+                .number(alleyDto.getNumber())
+                .maxScore(0)
+                .active(true)
+                .version(0L)
+                .build();
+        alleyRepositoryLocal.create(alley);
     }
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
     public void updateLockStatusOnAlleyById(Long id, boolean isActive) {
         throw new UnsupportedOperationException();
-
     }
+
 }

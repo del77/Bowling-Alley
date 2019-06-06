@@ -1,7 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
+import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueAlleyNumberException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -12,10 +15,11 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 
-@Stateless
+@Stateless(name = "MOTAlleyRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long> implements AlleyRepositoryLocal {
@@ -54,6 +58,17 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     @Override
     @RolesAllowed(MotRoles.ADD_ALLEY)
     public Alley create(Alley alley) throws DataAccessException {
-        return super.create(alley);
+        try {
+            return super.create(alley);
+        } catch (PersistenceException e) {
+            Throwable t = e.getCause();
+            Throwable t2 = t.getCause();
+            if ((t2 instanceof PSQLException) && t2.getMessage().contains("number")) {
+                throw new NotUniqueAlleyNumberException("Could not create account with email '" + alley.getNumber() +
+                        "' because it was already in use.", e);
+            } else {
+                throw new EntityUpdateException("Could not perform create operation.", e);
+            }
+        }
     }
 }

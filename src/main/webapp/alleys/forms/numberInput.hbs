@@ -1,0 +1,12 @@
+{{#block "numberInput"}}
+    <aside class="my-3">
+        <div class="input-group mb-3 mx-0">
+            <div class="input-group-prepend">
+                <span class="input-group-text">{{lang.alleyNumber}} *: </span>
+            </div>
+            <input class="form-control" type="text" aria-label="Number input"
+                   aria-describedby="basic-addon1" name="number" id="number" placeholder="Number" pattern="^[0-9]*$"
+                   required autofocus min="1" value="{{number}}">
+        </div>
+    </aside>
+{{/block}}
