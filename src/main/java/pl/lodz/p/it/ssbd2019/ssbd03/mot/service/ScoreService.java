@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 
 import java.util.List;
 
@@ -15,8 +16,16 @@ public interface ScoreService {
 
     /**
      * Wyświetla najlepszy wynik osiągnięty na wybranym torze
+     *
      * @param id identyfikator toru
      * @return Obiekt encji reprezentujący najlepszy wynik dla toru
      */
     Score getBestScoreForAlley(Long id);
+
+    /**
+     * Dodaje nowy wynik
+     *
+     * @param score Dto zawierające wynik do dodania
+     */
+    void addNewScore(ScoreDto score);
 }
