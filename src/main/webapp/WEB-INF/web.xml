@@ -102,6 +102,11 @@
 
   <security-role>
     <description/>
+    <role-name>AddScore</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
     <role-name>EnableDisableAlley</role-name>
   </security-role>
 
@@ -314,8 +319,6 @@
   </security-constraint>
 
 
-
-
   <!-- MOT -->
   <security-constraint>
     <display-name>AlleysConstr</display-name>
@@ -337,6 +340,19 @@
       <web-resource-name>AddAlley</web-resource-name>
       <description/>
       <url-pattern>/alleys/new</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>AddScoreConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>AddScore</web-resource-name>
+      <description/>
+      <url-pattern>/scores/new</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -660,7 +676,6 @@
       <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
-
 
 
   <security-constraint>

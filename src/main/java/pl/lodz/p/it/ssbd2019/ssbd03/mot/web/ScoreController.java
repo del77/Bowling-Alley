@@ -46,6 +46,7 @@ public class ScoreController implements Serializable {
      * @return Formularz dodawania nowego wyniku
      */
     @GET
+    @Path("new")
     @RolesAllowed(MotRoles.ADD_SCORE)
     @Produces(MediaType.TEXT_HTML)
     public String addScore(@QueryParam("idCache") Long idCache) {
