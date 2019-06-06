@@ -48,6 +48,7 @@ public class ItemsController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować liczbę kul
+     * @param idCache identyfikator zapamiętanego stanu formularza w cache
      * @return Widok z formularzem wypełnionym aktualnymi danymi
      */
     @GET
@@ -62,16 +63,20 @@ public class ItemsController implements Serializable {
     }
 
     /**
-     * Aktualizuje liczbę wszystkich kól
+     * Aktualizuje liczbę wszystkich kul
+     * @param sizes lista rozmiarów kul
+     * @param counts lista liczebności kul
+     * @param idCache identyfikator zapamiętanego stanu formularza w cache
+     * @return widok prezentujący rezultat operacji
      */
     @POST
     @Path("balls")
     @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
     @Produces(MediaType.TEXT_HTML)
-    public String editBallsCount(@FormParam("size") List<Integer> sizes, @FormParam("count") List<Integer> count, @QueryParam("idCache") Long idCache) {
+    public String editBallsCount(@FormParam("size") List<Integer> sizes, @FormParam("count") List<Integer> counts, @QueryParam("idCache") Long idCache) {
         List<ItemDto> balls = new ArrayList<>();
         for(int i=0;i<sizes.size();i++) {
-            balls.add(new ItemDto(sizes.get(i), count.get(i)));
+            balls.add(new ItemDto(sizes.get(i), counts.get(i)));
         }
         List<String> errorMessages = validator.validateAll(balls);
 

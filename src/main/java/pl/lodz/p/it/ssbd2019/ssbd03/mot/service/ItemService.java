@@ -5,6 +5,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ItemDto;
 
 import java.util.List;
 
+/**
+ * Interfejs udostępniający metody związane z operacjami na encji Item
+ */
 public interface ItemService {
     /**
      * Aktualizuje ilość wybranych przedmiotów
