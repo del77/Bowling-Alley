@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mok.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.UserRolesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.SHA256Provider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.UserAccountHelpers;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
@@ -63,8 +64,6 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     @Inject
     private AppRolesProvider appRolesProvider;
 
-    private ModelMapper modelMapper = new ModelMapper();
-
     private UserAccount userAccount;
 
     @Context
@@ -76,8 +75,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         List<UserAccount> allAccounts = userAccountRepositoryLocal.findAll();
         List<AccountDetailsDto> allUsers = new ArrayList<>();
         for (UserAccount account : allAccounts) {
-
-            allUsers.add(modelMapper.map(account, AccountDetailsDto.class));
+            allUsers.add(Mapper.map(account, AccountDetailsDto.class));
         }
         return allUsers;
     }
@@ -89,7 +87,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
 
-        AccountDetailsDto accountDetailsDto = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        AccountDetailsDto accountDetailsDto = Mapper.map(this.userAccount, AccountDetailsDto.class);
         retrieveRolesFromUserAccount(userAccount, accountDetailsDto);
 
         return accountDetailsDto;
@@ -120,7 +118,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
         Hibernate.initialize(this.userAccount.getAccountAccessLevels());
-        AccountDetailsDto account = modelMapper.map(this.userAccount, AccountDetailsDto.class);
+        AccountDetailsDto account = Mapper.map(this.userAccount, AccountDetailsDto.class);
         retrieveRolesFromUserAccount(userAccount, account);
 
         return account;
@@ -173,7 +171,7 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
         List<AccountDetailsDto> allUsers = new ArrayList<>();
         for (UserAccount user : users) {
 
-            allUsers.add(modelMapper.map(user, AccountDetailsDto.class));
+            allUsers.add(Mapper.map(user, AccountDetailsDto.class));
         }
         return allUsers;
     }

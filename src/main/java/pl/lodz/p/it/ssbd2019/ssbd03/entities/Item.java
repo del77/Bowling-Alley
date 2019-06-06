@@ -15,6 +15,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "Item.findByItemType", query = "SELECT i FROM Item i JOIN i.itemType it WHERE it.name='ball'"),
+        }
+)
 public class Item {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
