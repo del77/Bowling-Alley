@@ -21,11 +21,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 @SessionScoped
 @Controller
-@Path("service-requests")
+@Path("employee/servicerequests")
 public class ServiceRequestController implements Serializable {
     private static final String ERROR = "errors";
     private static final String INFO = "infos";

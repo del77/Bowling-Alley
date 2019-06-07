@@ -1,10 +1,11 @@
 {{#partial "content"}}
-    <div class="card">
-        <div class="card-header">
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">{{lang.addServiceRequestForAlley}} {{alleyNumber}} </h5>
-            <form action="{{webContextPath}}/employee/servicerequests/new/{{alleyId}}" method="post">
+    {{#if alley}}
+        <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{lang.addServiceRequestForAlley}} {{alley}} </h5>
+                <form action="{{webContextPath}}/employee/servicerequests/new" method="post">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{lang.fillContentLabel}}</span>
@@ -12,8 +13,9 @@
                     <textarea name="content" class="form-control" aria-label="{{lang.content}}"></textarea>
                 </div>
                 <input type="submit" class="btn btn-primary" value="{{lang.addServiceRequest}}">
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
+    {{/if}}
 {{/partial}}
 {{> layout }}
