@@ -192,6 +192,7 @@
 
     <security-role-mapping>
         <role-name>GetReservationsForUser</role-name>
+        <group-name>ADMIN</group-name>
         <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
