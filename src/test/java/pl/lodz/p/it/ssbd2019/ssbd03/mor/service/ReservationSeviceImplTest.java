@@ -57,11 +57,11 @@ public class ReservationSeviceImplTest {
 
         List<ReservationDto> dtos = reservationService.getReservationsForUser(12L);
         assertEquals(2, dtos.size());
-        assertEquals(timestamp1, reservations.get(0).getStartDate());
-        assertEquals(timestamp2, reservations.get(1).getStartDate());
-        assertEquals(timestamp2, reservations.get(0).getEndDate());
-        assertEquals(timestamp3, reservations.get(1).getEndDate());
-        assertTrue(reservations.get(0).isActive());
-        assertFalse(reservations.get(1).isActive());
+        assertEquals(timestamp1, dtos.get(0).getStartDate());
+        assertEquals(timestamp2, dtos.get(1).getStartDate());
+        assertEquals(timestamp2, dtos.get(0).getEndDate());
+        assertEquals(timestamp3, dtos.get(1).getEndDate());
+        assertTrue(dtos.get(0).isActive());
+        assertFalse(dtos.get(1).isActive());
     }
 }
