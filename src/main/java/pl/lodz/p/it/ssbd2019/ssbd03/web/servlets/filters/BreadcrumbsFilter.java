@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.breadcrumbs.Breadcrumb;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.servlet.annotation.WebFilter;
 import javax.inject.Inject;
@@ -15,12 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Klasa odpowiedzialna za budowanie modelu do wyświetlania lokalizacji użytkownika na stronie.
  */
 @WebFilter(value = "/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.FORWARD})
 public class BreadcrumbsFilter extends HttpFilter {
+
+    private static final Logger logger = Logger.getLogger(TransactionTracker.class.getName());
 
     @Inject
     private Models models;
@@ -40,6 +44,7 @@ public class BreadcrumbsFilter extends HttpFilter {
         }
 
         String relativePath = removeContextPathFromUri(request.getRequestURI());
+        logger.info("relative path: " + relativePath);
 
         ArrayList<Breadcrumb> model = new ArrayList<>();
         addBreadcrumbToModel(model, "home", "/", false);
@@ -80,8 +85,15 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "resetPassword", "#", true);
         } else if (relativePath.matches("/alleys")) {
             addBreadcrumbToModel(model, "alleys", "#", true);
+        } else if (relativePath.matches("/reservations/user/\\d+")) {
+            logger.info("weszlo do metody 1");
+            addBreadcrumbToModel(model, "accounts", "#", false);
+            addBreadcrumbToModel(model, "reservations", "#", true);
         }
 
+        for (Breadcrumb breadcrumb : model) {
+            logger.info("label" + breadcrumb.getLabel());
+        }
         models.put("breadcrumbs", model);
         chain.doFilter(request, response);
     }
