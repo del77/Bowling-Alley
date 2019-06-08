@@ -87,7 +87,7 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "alleys", "#", true);
         } else if (relativePath.matches("/reservations/user/\\d+")) {
             logger.info("weszlo do metody 1");
-            addBreadcrumbToModel(model, "accounts", "#", false);
+            addBreadcrumbToModel(model, "accounts", "#", true);
             addBreadcrumbToModel(model, "reservations", "#", true);
         }
 
