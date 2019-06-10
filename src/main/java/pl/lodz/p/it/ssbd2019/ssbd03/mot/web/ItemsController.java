@@ -164,10 +164,10 @@ public class ItemsController implements Serializable {
     }
 
     /**
-     * Metoda pomocnicza tworząca listę Dto na podstawie danych otrzymanych z formularza
+     * Metoda pomocnicza tworząca listę obiektów Dto na podstawie danych otrzymanych z formularza
      * @param sizes rozmiary przedmiotów
      * @param counts liczebności przedmiotów
-     * @return lista Dto przedmiotów
+     * @return lista obiektów Dto przedmiotów
      */
     private List<ItemDto>getItemDtoListFromFormParams(List<Integer> sizes, List<Integer> counts) {
         List<ItemDto> items = new ArrayList<>();
