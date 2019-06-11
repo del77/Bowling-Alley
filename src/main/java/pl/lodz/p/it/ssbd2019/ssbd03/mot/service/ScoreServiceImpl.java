@@ -1,11 +1,14 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
+import org.hibernate.Hibernate;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.AddScoreException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ScoreRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.UserAccountRepositoryLocal;
@@ -20,6 +23,7 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -37,6 +41,9 @@ public class ScoreServiceImpl implements ScoreService {
     @EJB(beanName = "MOTUserRepository")
     UserAccountRepositoryLocal userAccountRepositoryLocal;
 
+    @EJB(beanName = "MOTAlleyRepository")
+    AlleyRepositoryLocal alleyRepositoryLocal;
+
     @Override
     @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
     public List<Score> getScoresForUser(Long id) {
@@ -51,8 +58,8 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @RolesAllowed(MotRoles.ADD_SCORE)
-    public void addNewScore(Long reservation_id, ScoreDto scoreDto) throws SsbdApplicationException {
-        Reservation reservation = reservationRepositoryLocal.findById(reservation_id).orElseThrow(ReservationDoesNotExistException::new);
+    public void addNewScore(Long reservationId, ScoreDto scoreDto) throws SsbdApplicationException {
+        Reservation reservation = reservationRepositoryLocal.findById(reservationId).orElseThrow(ReservationDoesNotExistException::new);
         UserAccount userAccount = userAccountRepositoryLocal.findByLogin(scoreDto.getLogin()).orElseThrow(LoginDoesNotExistException::new);
 
         Score score = Score.builder()
@@ -61,8 +68,20 @@ public class ScoreServiceImpl implements ScoreService {
                 .score(scoreDto.getScore())
                 .build();
 
-        scoreRepositoryLocal.create(score);
+        try {
+            scoreRepositoryLocal.create(score);
+            updateMaxScore(reservation.getAlley(), score.getScore());
+        } catch (ConstraintViolationException e) {
+            throw new ScoreConstraintViolationException();
+        } catch (Exception e) {
+            throw new AddScoreException();
+        }
+    }
 
-        // todo: zaktualizuj najwyższy wynik na torze
+    private void updateMaxScore(Alley alley, int score) throws DataAccessException {
+        if (alley.getMaxScore() < score) {
+            alley.setMaxScore(score);
+            alleyRepositoryLocal.edit(alley);
+        }
     }
 }
