@@ -11,9 +11,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
@@ -53,12 +50,10 @@ public class ItemRepositoryLocalImpl extends AbstractCruRepository<Item, Long> i
     }
 
     @Override
-    @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
+    @RolesAllowed({MotRoles.EDIT_BALLS_COUNT, MotRoles.EDIT_SHOES_COUNT})
     public List<Item> findAllByItemType(String itemType) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = builder.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        query.orderBy(builder.asc(root.get("size")));
-        return entityManager.createQuery(query).getResultList();
+        TypedQuery<Item> namedQuery = this.createNamedQuery("Item.findByItemType");
+        namedQuery.setParameter("itemType", itemType);
+        return namedQuery.getResultList();
     }
 }
