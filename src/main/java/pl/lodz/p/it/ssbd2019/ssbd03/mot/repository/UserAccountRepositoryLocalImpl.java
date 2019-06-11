@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
@@ -20,14 +21,18 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
+
+    @PersistenceContext(unitName = "ssbd03motPU")
+    private EntityManager entityManager;
+
     @Override
     protected EntityManager getEntityManager() {
-        return null;
+        return entityManager;
     }
 
     @Override
     protected Class<UserAccount> getTypeParameterClass() {
-        return null;
+        return UserAccount.class;
     }
 
     @Override

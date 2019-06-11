@@ -58,7 +58,7 @@ public class ScoreController implements Serializable {
     @Path("/new/{reservation_id}")
     @RolesAllowed(MotRoles.ADD_SCORE)
     @Produces(MediaType.TEXT_HTML)
-    public String addScore(@QueryParam("idCache") Long idCache) {
+    public String addScore(@PathParam("reservation_id") Long reservation_id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         return ADD_SCORE_VIEW;
     }
