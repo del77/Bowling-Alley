@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyDto;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ public interface AlleyService {
      *
      * return Lista obiektów encji reprezentująca tory
      */
-    List<Alley> getAllAlleys();
+    List<AlleyDto> getAllAlleys() throws SsbdApplicationException;
 
     /**
      * Tworzy tor o danych zawartych w podanym w obiekcie.
