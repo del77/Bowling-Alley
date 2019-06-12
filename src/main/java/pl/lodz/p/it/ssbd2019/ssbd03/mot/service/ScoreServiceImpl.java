@@ -78,6 +78,13 @@ public class ScoreServiceImpl implements ScoreService {
         }
     }
 
+    /**
+     * Aktualizuje najwyższy wynik na torze
+     *
+     * @param alley tor dla którego aktualizujemy wynik
+     * @param score wynik
+     * @throws DataAccessException wyjątek rzucany w przypadku błędu dostępu do danych
+     */
     private void updateMaxScore(Alley alley, int score) throws DataAccessException {
         if (alley.getMaxScore() < score) {
             alley.setMaxScore(score);

@@ -52,6 +52,8 @@ public class ScoreController implements Serializable {
     private LocalizedMessageProvider localization;
 
     /**
+     * @param reservation_id ID rezerwacji
+     * @param idCache        identyfikator zapamiętanego stanu formularza w cache
      * @return Formularz dodawania nowego wyniku
      */
     @GET
@@ -63,10 +65,12 @@ public class ScoreController implements Serializable {
         return ADD_SCORE_VIEW;
     }
 
+
     /**
-     * Dodaje nowy wynik
+     * Dodanie nowego wyniku
      *
-     * @param score obiekt zawierający informacje o wyniku
+     * @param reservation_id ID rezerwacji
+     * @param score          DTO zawierające wynik
      * @return rezultat operacji
      */
     @POST
@@ -84,8 +88,6 @@ public class ScoreController implements Serializable {
             scoreService.addNewScore(reservation_id, score);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(ADD_SCORE_URL + "/" + reservation_id, null, Collections.singletonList(localization.get(e.getCode())));
-        } catch (Exception e) {
-            return redirectUtil.redirectError(ADD_SCORE_URL + "/" + reservation_id, null, Collections.singletonList(e.getLocalizedMessage()));
         }
 
         FormData formData = new FormData();

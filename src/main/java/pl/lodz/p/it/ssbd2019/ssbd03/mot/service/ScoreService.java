@@ -23,10 +23,13 @@ public interface ScoreService {
      */
     Score getBestScoreForAlley(Long id);
 
+
     /**
-     * Dodaje nowy wynik
+     * Dodaje nowy wynik i aktualizuje najwyższy wynik na torze
      *
-     * @param score Dto zawierające wynik do dodania
+     * @param reservation_id ID rezerwacji do której dopisany jest wynik
+     * @param score          DTO zawierające wynik oraz login użytkownika
+     * @throws SsbdApplicationException wyjątek rzucany w prztpadku błędu przy dodawaniu wyniku
      */
     void addNewScore(Long reservation_id, ScoreDto score) throws SsbdApplicationException;
 }
