@@ -68,7 +68,7 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "createAccount", "/admin/register", true);
         } else if (relativePath.matches("/account/edit-password(/success)?")) {
             addBreadcrumbToModel(model, "editPassword", "/account/edit-password", true);
-        }else if (relativePath.matches("/account/edit")) {
+        } else if (relativePath.matches("/account/edit")) {
             addBreadcrumbToModel(model, "profile", "/account/details", false);
             addBreadcrumbToModel(model, "editOwnAccount", "/account/edit", true);
         } else if (relativePath.matches("/login")) {
@@ -87,6 +87,8 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "editBallsCount", "/items/balls", true);
         } else if (relativePath.matches("/items/shoes")) {
             addBreadcrumbToModel(model, "editShoesCount", "/items/shoes", true);
+        } else if (relativePath.matches("/scores/new/\\d+")) {
+            addBreadcrumbToModel(model, "addNewScore", "#", true);
         }
 
         models.put("breadcrumbs", model);

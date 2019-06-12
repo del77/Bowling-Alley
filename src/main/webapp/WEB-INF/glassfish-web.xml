@@ -102,6 +102,11 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>AddScore</role-name>
+        <group-name>EMPLOYEE</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>EnableDisableAlley</role-name>
         <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
