@@ -1,19 +1,40 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.mvc.Controller;
+import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.Collections;
 
 @SessionScoped
 @Controller
 @Path("reservations")
 public class EmployeeReservationController implements Serializable {
+
+    private static final String ERROR = "errors";
+    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
+
+    @Inject
+    private Models models;
+
+    @EJB
+    private ReservationService reservationService;
+
+    @Inject
+    private LocalizedMessageProvider localization;
+
+
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
      * @return Widok z formularzem.
@@ -74,7 +95,12 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        try {
+            models.put("reservations", reservationService.getReservationsForUser(id));
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("reservationListError"));
+        }
+        return RESERVATION_LIST_VIEW;
     }
 
     /**
@@ -143,5 +169,8 @@ public class EmployeeReservationController implements Serializable {
         throw new UnsupportedOperationException();
     }
 
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
+    }
 
 }

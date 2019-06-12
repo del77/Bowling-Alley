@@ -80,6 +80,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "resetPassword", "#", true);
         } else if (relativePath.matches("/alleys")) {
             addBreadcrumbToModel(model, "alleys", "#", true);
+        } else if (relativePath.matches("/reservations/user/\\d+")) {
+            addBreadcrumbToModel(model, "accounts", "#", true);
+            addBreadcrumbToModel(model, "reservations", "#", true);
         } else if (relativePath.matches("/items/balls")) {
             addBreadcrumbToModel(model, "editBallsCount", "/items/balls", true);
         } else if (relativePath.matches("/items/shoes")) {
