@@ -2,12 +2,13 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public interface ReservationService {
     /**
      * Tworzy rezerwację
@@ -34,10 +35,11 @@ public interface ReservationService {
     /**
      * Pobiera rezerwacje wybranego użytkownika
      *
-     * @param userLogin login użytkownika
+     * @param userId id użytkownika
      * @return Lista rezerwacji użytkownika
+     *
      */
-    List<Reservation> getReservationsForUser(String userLogin);
+    List<ReservationDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
 
     /**
      * Pobiera wszystkie rezerwacje dla podanego toru

@@ -1,7 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -10,11 +13,18 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionRolledbackLocalException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 
-@Stateless
+@Stateless(name = "MORReservationRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {
@@ -49,5 +59,17 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
     @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
     public Optional<Reservation> findById(Long id) throws DataAccessException {
         return super.findById(id);
+    }
+
+    @Override
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
+    public List<Reservation> findReservationsForUser(Long userId) throws DataAccessException {
+        try {
+            TypedQuery<Reservation> namedQuery = this.createNamedQuery("Reservation.findReservationsForUser");
+            namedQuery.setParameter("userId", userId);
+            return namedQuery.getResultList();
+        } catch (TransactionRolledbackLocalException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }
