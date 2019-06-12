@@ -88,7 +88,7 @@ public class ScoreServiceImpl implements ScoreService {
     private void updateMaxScore(Alley alley, int score) throws DataAccessException {
         if (alley.getMaxScore() < score) {
             alley.setMaxScore(score);
-            alleyRepositoryLocal.edit(alley);
+            alleyRepositoryLocal.editWithoutMerge(alley);
         }
     }
 }
