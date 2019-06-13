@@ -106,7 +106,7 @@ public class EmployeeReservationController implements Serializable {
         } catch (Exception e) {
             displayError(e.getMessage());
         }
-        models.put("reservations", reservations);
+        models.put("reservationsList", reservations);
         return RESERVATION_LIST_VIEW;
     }
 
