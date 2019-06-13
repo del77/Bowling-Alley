@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -15,7 +16,9 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @SessionScoped
 @Controller
@@ -95,11 +98,13 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
+        List<ReservationDto> reservations = new ArrayList<>();
         try {
-            models.put("reservations", reservationService.getReservationsForUser(id));
+            reservations = reservationService.getReservationsForUser(id);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
+        models.put("reservations", reservations);
         return RESERVATION_LIST_VIEW;
     }
 
