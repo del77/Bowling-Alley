@@ -103,8 +103,6 @@ public class EmployeeReservationController implements Serializable {
             reservations = reservationService.getReservationsForUser(id);
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
-        } catch (Exception e) {
-            displayError(e.getMessage());
         }
         models.put("reservationsList", reservations);
         return RESERVATION_LIST_VIEW;
