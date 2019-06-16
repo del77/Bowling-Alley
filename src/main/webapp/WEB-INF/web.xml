@@ -581,6 +581,7 @@
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
+      <role-name>ADMIN</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -646,20 +647,6 @@
     </web-resource-collection>
     <auth-constraint>
       <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetReservationsForUserConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetReservationsForUser</web-resource-name>
-      <description/>
-      <url-pattern>/reservations/*/details</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
       <role-name>EMPLOYEE</role-name>
     </auth-constraint>
   </security-constraint>
