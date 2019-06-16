@@ -46,4 +46,10 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
             throw new LoginDoesNotExistException("Could not find entity with given login", e);
         }
     }
+
+    @Override
+    @RolesAllowed({MotRoles.SHOW_USER_SCORE_HISTORY})
+    public Optional<UserAccount> findById(Long id) throws DataAccessException {
+        return super.findById(id);
+    }
 }

@@ -1,0 +1,31 @@
+{{#partial "content"}}
+    {{#if scoresList}}
+        <h2>{{lang.userScoresList}}: {{scoresList.[0].login}}</h2>
+        <div class="question-card card mb-4">
+            <div class="card-body">
+                <div class="list-group">
+                    {{#each scoresList}}
+                        <a href="{{webContextPath}}/reservations/user/{{this.reservationId}}/details">
+                            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div class="mb-1">
+                                        <img src="{{webContextPath}}/static/img/bowling_pins.png"
+                                             alt="score"
+                                             width="30px"
+                                             height="30px">
+                                        <span>{{this.score}}</span>
+                                    </div>
+                                    <p class="mb-1">{{this.date}}</p>
+                                </div>
+                            </div>
+                        </a>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <h2>{{lang.scoresNotFound}}</h2>
+    {{/if}}
+
+{{/partial}}
+{{> layout }}

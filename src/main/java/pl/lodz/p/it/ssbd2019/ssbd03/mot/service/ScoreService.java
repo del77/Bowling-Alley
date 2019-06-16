@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AddScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 
 import java.util.List;
@@ -11,9 +12,10 @@ public interface ScoreService {
      * Pobiera wyniki osiągnięte przez użytkownika
      *
      * @param id identyfikator użytkownika
+     * @throws SsbdApplicationException gdy nie uda sie pobrać wyników użytkownika
      * @return lista wyników użytkownika
      */
-    List<Score> getScoresForUser(Long id);
+    List<ScoreDto> getScoresForUser(Long id) throws SsbdApplicationException;
 
     /**
      * Wyświetla najlepszy wynik osiągnięty na wybranym torze
@@ -31,5 +33,5 @@ public interface ScoreService {
      * @param score          DTO zawierające wynik oraz login użytkownika
      * @throws SsbdApplicationException wyjątek rzucany w prztpadku błędu przy dodawaniu wyniku
      */
-    void addNewScore(Long reservation_id, ScoreDto score) throws SsbdApplicationException;
+    void addNewScore(Long reservation_id, AddScoreDto score) throws SsbdApplicationException;
 }

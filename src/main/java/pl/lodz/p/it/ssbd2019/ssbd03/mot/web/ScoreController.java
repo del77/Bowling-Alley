@@ -1,21 +1,15 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.SsbdApplication;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.ResetPasswordService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.EmailDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ScoreService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ItemDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AddScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -34,6 +28,8 @@ import java.util.List;
 public class ScoreController implements Serializable {
 
     private static final String ADD_SCORE_VIEW = "mot/score/new.hbs";
+    private static final String USER_SCORES_LIST_VIEW = "mot/score/scoreslist.hbs";
+
     private static final String ADD_SCORE_URL = "/scores/new";
 
     @EJB
@@ -77,7 +73,7 @@ public class ScoreController implements Serializable {
     @Path("/new/{reservation_id}")
     @RolesAllowed(MotRoles.ADD_SCORE)
     @Produces(MediaType.TEXT_HTML)
-    public String addScore(@PathParam("reservation_id") Long reservation_id, @BeanParam ScoreDto score) {
+    public String addScore(@PathParam("reservation_id") Long reservation_id, @BeanParam AddScoreDto score) {
         List<String> errorMessages = validator.validate(score);
 
         if (!errorMessages.isEmpty()) {
@@ -93,5 +89,32 @@ public class ScoreController implements Serializable {
         FormData formData = new FormData();
         formData.setInfos(Collections.singletonList(localization.get("addScoreSuccess")));
         return redirectUtil.redirect(ADD_SCORE_URL + "/" + reservation_id, formData);
+    }
+
+    /**
+     * Pobiera historię wyników wybranego uzytkownika
+     * @param userId identyfikator użytkownika
+     * @return widok z listą wyników użytkownika
+     */
+    @GET
+    @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
+    @Produces(MediaType.TEXT_HTML)
+    @Path("user/{user_id}")
+    public String showUserScores(@PathParam("user_id") Long userId) {
+        try {
+            List<ScoreDto> userScores = scoreService.getScoresForUser(userId);
+            models.put("scoresList", userScores);
+        } catch (SsbdApplicationException e) {
+            displayError(e.getCode());
+        }
+        return USER_SCORES_LIST_VIEW;
+    }
+
+    /**
+     * metoda pomocnicza przekazująca do widoku wiadomość o błędzie
+     * @param s wiadomość do wyświetlenia
+     */
+    private void displayError(String s) {
+        models.put("errors", Collections.singletonList(s));
     }
 }
