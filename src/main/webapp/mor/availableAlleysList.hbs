@@ -1,0 +1,17 @@
+{{#partial "content"}}
+    <form class="form-horizontal" method="post">
+        <h2 class="mb-3">
+            W jakim przedziale czasowym zarezerwowac?
+        </h2>
+        <div class="form-group justify-content-between">
+            <label for="startDate">godzina rozpoczecia</label>
+            <input name="startDate" type="text" class="form-input" value="{{this.startDate}}"/>
+        </div>
+        <div class="form-group justify-content-between">
+            <label for="numberOfHours">dlugosc rezerwacji w godzinach</label>
+            <input name="numberOfHours" type="text" class="form-input" value="{{this.numberOfHours}}"/>
+        </div>
+        <input type="submit" class="btn btn-secondary" value="wyswietl dostepne tory"/>
+    </form>
+{{/partial}}
+{{> layout }}

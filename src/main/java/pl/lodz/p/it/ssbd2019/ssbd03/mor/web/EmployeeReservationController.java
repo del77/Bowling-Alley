@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.TimeRangeDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -16,6 +17,8 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +30,7 @@ public class EmployeeReservationController implements Serializable {
 
     private static final String ERROR = "errors";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
+    private static final String AVAILABLE_ALLEYS_VIEW = "mor/availableAlleysList.hbs";
 
     @Inject
     private Models models;
@@ -38,31 +42,25 @@ public class EmployeeReservationController implements Serializable {
     private LocalizedMessageProvider localization;
 
 
-    /**
-     * Pobiera widok pozwalający pracownikowi dodać rezerwację
-     *
-     * @return Widok z formularzem.
-     */
     @GET
-    @Path("new")
+    @Path("available-alleys")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String createReservation() {
-        throw new UnsupportedOperationException();
+        models.put("startDate", Timestamp.from(Instant.now()));
+        models.put("numberOfHours", 1);
+        return AVAILABLE_ALLEYS_VIEW;
     }
 
-    /**
-     * Dodaje nową rezerwację
-     *
-     * @param reservation Dodawana rezerwacja
-     * @return rezultat operacji
-     */
+
     @POST
-    @Path("new")
+    @Path("available-alleys")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
-    public String createReservation(Reservation reservation) {
-        throw new UnsupportedOperationException();
+    public String createReservation(TimeRangeDto timeRangeDto) {
+        models.put("startDate", timeRangeDto.getStartDate());
+        models.put("numberOfHours", timeRangeDto.getNumberOfHours() + 3);
+        return AVAILABLE_ALLEYS_VIEW;
     }
 
     /**
