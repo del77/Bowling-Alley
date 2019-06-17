@@ -352,7 +352,7 @@
     <web-resource-collection>
       <web-resource-name>AddScore</web-resource-name>
       <description/>
-      <url-pattern>/scores/new</url-pattern>
+      <url-pattern>/scores/new/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
