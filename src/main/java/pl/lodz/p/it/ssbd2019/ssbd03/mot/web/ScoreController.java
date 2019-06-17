@@ -105,7 +105,7 @@ public class ScoreController implements Serializable {
             List<ScoreDto> userScores = scoreService.getScoresForUser(userId);
             models.put("scoresList", userScores);
         } catch (SsbdApplicationException e) {
-            displayError(e.getCode());
+            displayError(localization.get(e.getCode()));
         }
         return USER_SCORES_LIST_VIEW;
     }
