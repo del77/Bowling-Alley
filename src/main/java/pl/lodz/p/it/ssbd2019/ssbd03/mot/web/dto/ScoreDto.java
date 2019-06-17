@@ -14,5 +14,7 @@ import java.sql.Timestamp;
 @SuperBuilder
 public class ScoreDto extends AddScoreDto {
     private Long reservationId;
+
+    @ToString.Exclude
     private Timestamp date;
 }
