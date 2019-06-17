@@ -484,7 +484,7 @@
     <web-resource-collection>
       <web-resource-name>ShowUserScoreHistory</web-resource-name>
       <description/>
-      <url-pattern>/accounts/*/history</url-pattern>
+      <url-pattern>/scores/user/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>

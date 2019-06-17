@@ -92,6 +92,9 @@ public class UserAccount {
     @ToString.Exclude
     private List<AccountAccessLevel> accountAccessLevels;
 
+    @OneToMany(mappedBy = "userAccount")
+    private List<Score> scores;
+
     @Version
     @NotNull
     @Min(0)

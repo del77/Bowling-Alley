@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
-import org.hibernate.Hibernate;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
@@ -12,7 +11,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ScoreRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AddScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 
@@ -46,8 +47,10 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
-    public List<Score> getScoresForUser(Long id) {
-        throw new UnsupportedOperationException();
+    public List<ScoreDto> getScoresForUser(Long id) throws SsbdApplicationException{
+        UserAccount userAccount = userAccountRepositoryLocal.findById(id).orElseThrow(
+                () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
+        return Mapper.mapAll(userAccount.getScores(), ScoreDto.class);
     }
 
     @Override
@@ -58,14 +61,14 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @RolesAllowed(MotRoles.ADD_SCORE)
-    public void addNewScore(Long reservationId, ScoreDto scoreDto) throws SsbdApplicationException {
+    public void addNewScore(Long reservationId, AddScoreDto addScoreDto) throws SsbdApplicationException {
         Reservation reservation = reservationRepositoryLocal.findById(reservationId).orElseThrow(ReservationDoesNotExistException::new);
-        UserAccount userAccount = userAccountRepositoryLocal.findByLogin(scoreDto.getLogin()).orElseThrow(LoginDoesNotExistException::new);
+        UserAccount userAccount = userAccountRepositoryLocal.findByLogin(addScoreDto.getLogin()).orElseThrow(LoginDoesNotExistException::new);
 
         Score score = Score.builder()
                 .reservation(reservation)
                 .userAccount(userAccount)
-                .score(scoreDto.getScore())
+                .score(addScoreDto.getScore())
                 .build();
 
         try {

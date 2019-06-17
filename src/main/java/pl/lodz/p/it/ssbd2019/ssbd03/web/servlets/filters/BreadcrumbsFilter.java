@@ -89,6 +89,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "editShoesCount", "/items/shoes", true);
         } else if (relativePath.matches("/scores/new/\\d+")) {
             addBreadcrumbToModel(model, "addNewScore", "#", true);
+        } else if (relativePath.matches("/scores/user/\\d+")) {
+            addBreadcrumbToModel(model, "accounts", "/accounts", false);
+            addBreadcrumbToModel(model, "scoresHistory", "#", true);
         }
 
         models.put("breadcrumbs", model);

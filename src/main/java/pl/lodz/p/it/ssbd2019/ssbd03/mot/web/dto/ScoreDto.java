@@ -1,24 +1,20 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.ws.rs.FormParam;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ScoreDto {
+@SuperBuilder
+public class ScoreDto extends AddScoreDto {
+    private Long reservationId;
 
-    @FormParam("login")
-    private String login;
-
-    @FormParam("score")
-    @Min(value = 0, message = "{validate.scoreMin}")
-    @Max(value = 300, message = "{validate.scoreMax}")
-    private int score;
+    @ToString.Exclude
+    private Timestamp date;
 }
