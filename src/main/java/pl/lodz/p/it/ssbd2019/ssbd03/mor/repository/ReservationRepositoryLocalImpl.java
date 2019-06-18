@@ -72,4 +72,16 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    @Override
+    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_ALLEY})
+    public List<Reservation> findReservationsForAlley(Long alleyId) throws DataAccessException {
+        try {
+            TypedQuery<Reservation> namedQuery = this.createNamedQuery("Reservation.findReservationsForAlley");
+            namedQuery.setParameter("alleyId", alleyId);
+            return namedQuery.getResultList();
+        } catch (TransactionRolledbackLocalException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

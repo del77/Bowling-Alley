@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 
 import javax.ejb.TransactionAttribute;
@@ -14,7 +15,7 @@ public interface ReservationService {
      * Tworzy rezerwację
      *
      * @param reservation Obiekt rezerwacji.
-     * @param userLogin Login użytkownika dla którego ma być dokonana rezerwacja.
+     * @param userLogin   Login użytkownika dla którego ma być dokonana rezerwacja.
      */
     void addReservation(Reservation reservation, String userLogin);
 
@@ -37,7 +38,6 @@ public interface ReservationService {
      *
      * @param userId id użytkownika
      * @return Lista rezerwacji użytkownika
-     *
      */
     List<ReservationDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
 
@@ -47,7 +47,7 @@ public interface ReservationService {
      * @param alleyId identyfikator toru
      * @return Lista rezerwacji dla danego toru
      */
-    List<Reservation> getReservationsForAlley(Long alleyId);
+    List<ReservationDto> getReservationsForAlley(Long alleyId) throws SsbdApplicationException;
 
     /**
      * Pobiera wybraną rezerwację
@@ -60,7 +60,7 @@ public interface ReservationService {
     /**
      * Dodaje komentarz do zakończonej rezerwacji
      *
-     * @param id reservationId
+     * @param id      reservationId
      * @param comment Obiekt komentarza
      */
     void addCommentForReservation(Long id, Comment comment);
