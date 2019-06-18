@@ -13,7 +13,21 @@ import java.util.Optional;
 @Local
 public interface ReservationRepositoryLocal extends CruRepository<Reservation, Long> {
 
-    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
+    /**
+     * Zwraca rezerwacje dla zadanego użytkownika
+     *
+     * @param userId id użytkownika
+     * @return lista rezerwacji
+     * @throws DataAccessException błąd w dostępie do danych
+     */
     List<Reservation> findReservationsForUser(Long userId) throws DataAccessException;
 
+    /**
+     * Zwraca rezerwacje dla zadanego toru
+     *
+     * @param alleyId id toru
+     * @return lista rezerwacji
+     * @throws DataAccessException błąd w dostępie do danych
+     */
+    List<Reservation> findReservationsForAlley(Long alleyId) throws DataAccessException;
 }

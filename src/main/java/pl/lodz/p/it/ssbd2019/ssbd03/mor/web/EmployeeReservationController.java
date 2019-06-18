@@ -40,6 +40,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -52,6 +53,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Dodaje nową rezerwację
+     *
      * @param reservation Dodawana rezerwacja
      * @return rezultat operacji
      */
@@ -65,6 +67,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający pracownikowi edytować własną rezerwację
+     *
      * @param id identyfikator edytowanej rezerwacji
      * @return Widok z formularzem.
      */
@@ -78,6 +81,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pozwala pracownikowi anulować rezerwację
+     *
      * @param id identyfikator rezerwacji do anulowania
      * @return rezulat operacji
      */
@@ -90,6 +94,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera rezerwacje wybranego klienta
+     *
      * @param id identyfikator klienta
      * @return Widok z rezultatem.
      */
@@ -105,24 +110,38 @@ public class EmployeeReservationController implements Serializable {
             displayError(localization.get("reservationListError"));
         }
         models.put("reservationsList", reservations);
+        models.put("reservationListHeading", localization.get("userReservationList"));
         return RESERVATION_LIST_VIEW;
     }
 
     /**
      * Pobiera rezerwacje wybranego toru
+     *
      * @param id identyfikator toru
      * @return Widok z rezultatem.
      */
     @GET
-    @Path("alleys/{id}")
+    @Path("alley/{id}")
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        List<ReservationDto> reservations = new ArrayList<>();
+
+        try {
+            reservations = reservationService.getReservationsForAlley(id);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("reservationListError"));
+        }
+
+        models.put("reservationsList", reservations);
+        models.put("reservationListHeading", localization.get("alleyReservationList"));
+
+        return RESERVATION_LIST_VIEW;
     }
 
     /**
      * Pobiera widok pozwalający pracownikowi przejrzeć szegóły wybranej rezererwacji
+     *
      * @param id identyfikator rezerwacji
      * @return Widok z rezultatem.
      */
@@ -137,6 +156,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Aktualizuje rezerwację
+     *
      * @param reservation obiekt zaktualizowanej rezerwacji
      * @return rezultat operacji
      */
@@ -150,6 +170,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * edytuje wybrany komentarz do rezerwacji
+     *
      * @param id wybrana komentarza
      * @return Widok z rezultatem.
      */
@@ -163,6 +184,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Blokuje wybrany komentarz do rezerwacji
+     *
      * @param id wybrana komentarza
      * @return Widok z rezultatem.
      */

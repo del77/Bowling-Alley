@@ -60,8 +60,9 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
-    public List<Reservation> getReservationsForAlley(Long alleyId) {
-        throw new UnsupportedOperationException();
+    public List<ReservationDto> getReservationsForAlley(Long alleyId) throws DataAccessException {
+        List<Reservation> reservations = reservationRepositoryLocal.findReservationsForAlley(alleyId);
+        return Mapper.mapAll(reservations, ReservationDto.class);
     }
 
     @Override
