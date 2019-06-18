@@ -16,6 +16,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
@@ -104,6 +105,15 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .stream()
                 .map(reservation -> Mapper.map(reservation, ReservationFullDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @RolesAllowed(MorRoles.GET_OWN_RESERVATIONS)
+    public List<ReservationFullDto> getReservationsByUserLogin(String login) throws DataAccessException {
+        List<Reservation> reservations = userAccountRepositoryLocal.findByLogin(login)
+                .orElseThrow(LoginDoesNotExistException::new)
+                .getReservations();
+        return Mapper.mapAll(reservations, ReservationFullDto.class);
     }
 
     @Override

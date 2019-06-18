@@ -6,7 +6,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <a href="{{webContextPath}}/reservations/details/{{this.id}}" class="btn btn-primary">
+                            <a href="{{webContextPath}}/{{reservationContext}}/details/{{this.id}}" class="btn btn-primary">
                                 {{lang.seeDetails}}
                             </a>
                         </div>
@@ -39,17 +39,17 @@
                             <h6 class="mb-1">{{lang.activeReservation}}: </h6>
                             {{#if this.active}}
                                 <img
-                                    src="{{webContextPath}}/static/img/tick.png"
-                                    alt="true"
-                                    width="20px"
-                                    height="20px"
+                                        src="{{webContextPath}}/static/img/tick.png"
+                                        alt="true"
+                                        width="20px"
+                                        height="20px"
                                 >
                             {{else}}
                                 <img
-                                    src="{{webContextPath}}/static/img/cross.png"
-                                    alt="false"
-                                    width="20px"
-                                    height="20px"
+                                        src="{{webContextPath}}/static/img/cross.png"
+                                        alt="false"
+                                        width="20px"
+                                        height="20px"
                                 >
                             {{/if}}
                         </div>
@@ -62,6 +62,10 @@
                     </li>
                 </ul>
             </div>
+        </div>
+    {{else}}
+        <div class="d-flex justify-content-center m-3">
+            {{lang.emptyReservationList}}
         </div>
     {{/each}}
 {{/partial}}

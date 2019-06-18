@@ -27,8 +27,8 @@ import java.util.List;
 public class EmployeeReservationController implements Serializable {
 
     private static final String ERROR = "errors";
-    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
+    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
 
     @Inject
     private Models models;
@@ -105,14 +105,14 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
-        List<ReservationFullDto> reservations = new ArrayList<>();
         try {
-            reservations = reservationService.getReservationsForUser(id);
+            List<ReservationFullDto> reservations = reservationService.getReservationsForUser(id);
+            models.put("reservationsList", reservations);
+            models.put("reservationListHeading", localization.get("userReservationList"));
+            models.put("reservationContext", "reservations");
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
-        models.put("reservationsList", reservations);
-        models.put("reservationListHeading", localization.get("userReservationList"));
         return RESERVATION_LIST_VIEW;
     }
 
@@ -127,17 +127,14 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
-        List<ReservationFullDto> reservations = new ArrayList<>();
-
         try {
-            reservations = reservationService.getReservationsForAlley(id);
+            List<ReservationFullDto> reservations = reservationService.getReservationsForAlley(id);
+            models.put("reservationsList", reservations);
+            models.put("reservationListHeading", localization.get("alleyReservationList"));
+            models.put("reservationContext", "reservations");
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
-
-        models.put("reservationsList", reservations);
-        models.put("reservationListHeading", localization.get("alleyReservationList"));
-
         return RESERVATION_LIST_VIEW;
     }
 

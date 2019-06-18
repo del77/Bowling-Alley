@@ -54,6 +54,15 @@ public interface ReservationService {
     List<ReservationFullDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
 
     /**
+     * Pobiera rezerwacje wybranego użytkownika
+     *
+     * @param login login użytkownika
+     * @return Lista rezerwacji użytkownika
+     *
+     */
+    List<ReservationFullDto> getReservationsByUserLogin(String login) throws SsbdApplicationException;
+
+    /**
      * Pobiera wszystkie rezerwacje dla podanego toru
      *
      * @param alleyId identyfikator toru

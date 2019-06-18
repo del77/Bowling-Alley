@@ -80,6 +80,8 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "resetPassword", "#", true);
         } else if (relativePath.matches("/alleys")) {
             addBreadcrumbToModel(model, "alleys", "#", true);
+        } else if (relativePath.matches("/myreservations")) {
+            addBreadcrumbToModel(model, "ownReservationList", "#", true);
         } else if (relativePath.matches("/alleys/new")) {
             addBreadcrumbToModel(model, "alleys", "/alleys", false);
             addBreadcrumbToModel(model, "addAlley", "#", true);
@@ -115,7 +117,6 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/reservations/details/\\d+")) {
             addBreadcrumbToModel(model, "reservationDetails", "#", true);
         }
-
         models.put("breadcrumbs", model);
         chain.doFilter(request, response);
     }

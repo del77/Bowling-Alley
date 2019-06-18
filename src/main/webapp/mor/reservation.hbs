@@ -49,6 +49,10 @@
                             <p class="mb-0">{{this.content}}</p>
                         </li>
                     {{/if}}
+                {{else}}
+                    <div class="d-flex justify-content-center m-3">
+                        {{lang.emptyCommentList}}
+                    </div>
                 {{/each}}
             </ul>
         </div>
