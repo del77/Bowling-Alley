@@ -16,6 +16,7 @@ public class LocalizedMessageProviderImpl implements Serializable, LocalizedMess
 
     @Inject
     private LanguageMapFactory languageMapFactory;
+
     @Inject
     private LanguageContext languageContext;
 
