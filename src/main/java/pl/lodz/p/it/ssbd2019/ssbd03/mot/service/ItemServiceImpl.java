@@ -26,8 +26,7 @@ import java.util.List;
 public class ItemServiceImpl extends TransactionTracker implements ItemService {
 
     @EJB(beanName = "MOTItemRepository")
-    ItemRepositoryLocal itemRepositoryLocal;
-
+    private ItemRepositoryLocal itemRepositoryLocal;
 
     private List<Item> items;
 

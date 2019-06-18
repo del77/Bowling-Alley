@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
@@ -67,7 +68,7 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
 
     @Override
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
-    public List<ServiceRequest> getAllServiceRequests() {
-        throw new UnsupportedOperationException();
+    public List<ServiceRequest> getAllServiceRequests() throws DataAccessException {
+        return this.serviceRequestRepositoryLocal.findAll();
     }
 }

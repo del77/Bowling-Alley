@@ -27,5 +27,5 @@ public interface ServiceRequestService {
      *
      * @return Lista zgłoszeń serwiswoych
      */
-    List<ServiceRequest> getAllServiceRequests();
+    List<ServiceRequest> getAllServiceRequests() throws DataAccessException;
 }

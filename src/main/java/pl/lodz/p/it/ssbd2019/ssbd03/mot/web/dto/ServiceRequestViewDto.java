@@ -1,21 +1,23 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
 
 @Data
 @NoArgsConstructor
-public class ServiceRequestDto {
-    @NotNull(message = "{validate.serviceRequestNotNull}")
-    @Size(max = 255, message = "{validate.serviceRequestLength}")
-    @FormParam("content")
+@Builder
+@AllArgsConstructor
+public class ServiceRequestViewDto {
+    private Long id;
+    private int alleyNumber;
     private String content;
+    protected String userLogin;
 }

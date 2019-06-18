@@ -2,9 +2,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ServiceRequestService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -20,8 +22,8 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 @SessionScoped
@@ -32,6 +34,7 @@ public class ServiceRequestController implements Serializable {
     private static final String INFO = "infos";
     private static final String ADD_SERVICE_REQUEST_PAGE = "mot/sr/addsr.hbs";
     private static final String SERVICE_REQUEST_ENDPOINT_PATTERN = "employee/servicerequests/new/%d/";
+    public static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
 
     @Inject
     private Models models;
@@ -147,7 +150,30 @@ public class ServiceRequestController implements Serializable {
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     @Produces(MediaType.TEXT_HTML)
     public String getServiceRequests() {
-        throw new UnsupportedOperationException();
+        List<ServiceRequest> serviceRequests = new ArrayList<>();
+        try {
+            serviceRequests = this.serviceRequestService.getAllServiceRequests();
+        } catch (DataAccessException e) {
+            displayError(localization.get("serviceRequestRetrievalError"));
+        }
+        models.put("srs", this.mapToViewDto(serviceRequests));
+        return ALLEYS_LIST_VIEW;
+    }
+
+    private List<ServiceRequestViewDto> mapToViewDto(List<ServiceRequest> serviceRequests) {
+        List<ServiceRequestViewDto> viewDtos = new ArrayList<>();
+        for (ServiceRequest sr : serviceRequests) {
+            viewDtos.add(
+                    ServiceRequestViewDto
+                            .builder()
+                            .id(sr.getId())
+                            .alleyNumber((sr.getAlley() != null ? sr.getAlley().getNumber() : -1))
+                            .content(sr.getContent())
+                            .userLogin((sr.getUserAccount() != null ? sr.getUserAccount().getLogin() : ""))
+                            .build()
+            );
+        }
+        return viewDtos;
     }
 
     private void displayError(String s) {
