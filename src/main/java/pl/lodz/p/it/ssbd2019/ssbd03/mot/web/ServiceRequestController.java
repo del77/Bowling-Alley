@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ServiceRequestService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.ValidatorConfig;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -15,6 +16,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
@@ -24,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 @SessionScoped
@@ -35,6 +38,10 @@ public class ServiceRequestController implements Serializable {
     private static final String ADD_SERVICE_REQUEST_PAGE = "mot/sr/addsr.hbs";
     private static final String SERVICE_REQUEST_ENDPOINT_PATTERN = "employee/servicerequests/new/%d/";
     public static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
+
+    private Long alleyIdToFetch;
+
+    private String alleyNumber;
 
     @Inject
     private Models models;
@@ -56,6 +63,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Zwraca widok pozwalający dodać nowe zgłoszenie serwisowe
+     *
      * @return Widok z formularzem pozwalającym dodać zgłoszenie-
      */
     @GET
@@ -81,6 +89,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Dodaje nowe zgłoszenie serwisowe
+     *
      * @param serviceRequest obiekt zawierający informacje o zgłoszeniu serwisowym
      */
     @POST
@@ -119,6 +128,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować zgłoszenie serwisowe
+     *
      * @param id identyfikator zgłoszenia serwisowego
      * @return Widok z formularzem wypełnionym aktualnymi danymi
      */
@@ -132,6 +142,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Aktualizuje zgłoszenie serwisowe
+     *
      * @param serviceRequest obiekt zawierający informacje o zaktualizowanym zgłoszeniu serwisowym
      */
     @POST
@@ -144,6 +155,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Pobiera zgłoszenia serwisowe
+     *
      * @return Widok ze zgłoszeniami serwisowymi
      */
     @GET
@@ -170,6 +182,7 @@ public class ServiceRequestController implements Serializable {
                             .alleyNumber((sr.getAlley() != null ? sr.getAlley().getNumber() : -1))
                             .content(sr.getContent())
                             .userLogin((sr.getUserAccount() != null ? sr.getUserAccount().getLogin() : ""))
+                            .resolved(sr.isResolved())
                             .build()
             );
         }

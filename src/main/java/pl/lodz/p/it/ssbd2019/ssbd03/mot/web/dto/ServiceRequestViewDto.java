@@ -19,5 +19,6 @@ public class ServiceRequestViewDto {
     private Long id;
     private int alleyNumber;
     private String content;
-    protected String userLogin;
+    private boolean resolved;
+    private String userLogin;
 }

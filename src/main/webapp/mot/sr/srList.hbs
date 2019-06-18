@@ -7,6 +7,11 @@
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">{{lang.userAccount}}: {{this.userLogin}}</h4>
+                    {{#if this.resolved }}
+                        <span class="alert alert-success">{{lang.resolved}}</span>
+                    {{else}}
+                        <span class="alert alert-danger">{{lang.notResolved}}</span>
+                    {{/if}}
                     <hr>
                     <h5 class="card-title">{{lang.content}}:</h5>
                     <p class="card-text">{{this.content}}</p>
