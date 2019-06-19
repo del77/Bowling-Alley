@@ -46,10 +46,10 @@ public class Comment {
     @ToString.Exclude
     private Timestamp date;
 
-//    @NotNull
-//    @Column(name = "active", nullable = false)
-//    @ToString.Exclude
-//    private boolean active;
+    @NotNull
+    @Column(name = "active", nullable = false)
+    @ToString.Exclude
+    private boolean active;
 
     @Version
     @Min(0)
