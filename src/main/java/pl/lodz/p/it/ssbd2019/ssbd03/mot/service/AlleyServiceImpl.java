@@ -21,7 +21,7 @@ import javax.interceptor.Interceptors;
 import java.util.List;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Stateful
+@Stateful(name = "MOTAlleyService")
 @DenyAll
 @Interceptors(InterceptorTracker.class)
 public class AlleyServiceImpl extends TransactionTracker implements AlleyService {

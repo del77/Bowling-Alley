@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface ServiceRequestService {
     /**
      * Pobiera wszystkie zgłoszenia serwisowe
      *
-     * @return Lista zgłoszeń serwiswoych
+     * @return Lista zgłoszeń serwiswoych w postaci DTO
      */
-    List<ServiceRequest> getAllServiceRequests() throws DataAccessException;
+    List<ServiceRequestViewDto> getAllServiceRequests() throws SsbdApplicationException;
 }

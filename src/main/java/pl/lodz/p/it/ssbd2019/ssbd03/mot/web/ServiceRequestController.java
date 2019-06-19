@@ -2,13 +2,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ServiceRequestService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.ValidatorConfig;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -16,7 +14,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.mvc.Controller;
@@ -26,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 @SessionScoped
@@ -45,10 +41,10 @@ public class ServiceRequestController implements Serializable {
     @Inject
     private LocalizedMessageProvider localization;
 
-    @EJB
+    @EJB(beanName = "MOTServiceRequestService")
     private ServiceRequestService serviceRequestService;
 
-    @EJB
+    @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
 
     @Inject
@@ -158,33 +154,15 @@ public class ServiceRequestController implements Serializable {
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     @Produces(MediaType.TEXT_HTML)
     public String getServiceRequests() {
-        List<ServiceRequest> serviceRequests = new ArrayList<>();
+        List<ServiceRequestViewDto> serviceRequests = new ArrayList<>();
         try {
             serviceRequests = this.serviceRequestService.getAllServiceRequests();
-        } catch (DataAccessException e) {
-            displayError(localization.get("serviceRequestRetrievalError"));
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("serviceRequestRetrievalError") + ". " + localization.get(e.getCode()));
         }
-        models.put("srs", this.mapToViewDto(serviceRequests));
+        models.put("srs", serviceRequests);
         return ALLEYS_LIST_VIEW;
     }
-
-    private List<ServiceRequestViewDto> mapToViewDto(List<ServiceRequest> serviceRequests) {
-        List<ServiceRequestViewDto> viewDtos = new ArrayList<>();
-        for (ServiceRequest sr : serviceRequests) {
-            viewDtos.add(
-                    ServiceRequestViewDto
-                            .builder()
-                            .id(sr.getId())
-                            .alleyNumber((sr.getAlley() != null ? sr.getAlley().getNumber() : -1))
-                            .content(sr.getContent())
-                            .userLogin((sr.getUserAccount() != null ? sr.getUserAccount().getLogin() : ""))
-                            .resolved(sr.isResolved())
-                            .build()
-            );
-        }
-        return viewDtos;
-    }
-
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
