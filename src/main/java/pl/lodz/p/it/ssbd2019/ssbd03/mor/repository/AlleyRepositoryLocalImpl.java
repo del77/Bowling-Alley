@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -41,14 +42,14 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public List<Alley> getAvailableAlleysForTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException {
+    public List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException {
         try {
             TypedQuery<Alley> namedQuery = this.createNamedQuery("Alley.findAlleysNotReservedBetweenTimes");
             namedQuery.setParameter("startTime", startTime);
             namedQuery.setParameter("endTime", endTime);
             return namedQuery.getResultList();
         } catch (Exception e) {
-            throw new DataAccessException(e.getMessage());
+            throw new EntityRetrievalException(e.getMessage());
         }
     }
 }

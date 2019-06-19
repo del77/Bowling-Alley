@@ -18,5 +18,5 @@ public interface AlleyRepositoryLocal extends CruRepository<Alley, Long> {
      * @return tory
      * @throws DataAccessException
      */
-    List<Alley> getAvailableAlleysForTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException;
+    List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException;
 }

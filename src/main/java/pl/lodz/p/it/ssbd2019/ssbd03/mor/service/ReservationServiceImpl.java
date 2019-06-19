@@ -16,7 +16,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.DateConverter;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
@@ -50,10 +50,10 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public List<AvailableAlleyDto> getAvailableAlleysForTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException {
-        Timestamp startTime = DateConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
-        Timestamp endTime = DateConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
-        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysForTimeRange(startTime, endTime);
+    public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException {
+        Timestamp startTime = StringToTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = StringToTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(startTime, endTime);
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
     
@@ -62,8 +62,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     public void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException {
         Alley alley = alleyRepositoryLocal.findById(alleyId).orElseThrow(AlleyDoesNotExistException::new);
         UserAccount userAccount = userAccountRepositoryLocal.findByLogin(userLogin).orElseThrow(LoginDoesNotExistException::new);
-        Timestamp startTime = DateConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
-        Timestamp endTime = DateConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp startTime = StringToTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = StringToTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
         Reservation newReservation = Reservation.builder()
                 .userAccount(userAccount)
                 .startDate(startTime)

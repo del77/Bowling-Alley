@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AvailableAlleyDto {
-    
-    @FormParam("id")
+
     private Long id;
     
     @FormParam("alleyNumber")

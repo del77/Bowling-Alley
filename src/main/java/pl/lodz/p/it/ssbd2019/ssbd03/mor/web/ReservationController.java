@@ -64,7 +64,7 @@ public class ReservationController implements Serializable {
 
 
     /**
-     * Pobiera widok pozwalający klientowi dokonać rezerwacji.
+     * Pobiera widok pozwalający klientowi stworzyć rezerwację.
      *
      * @return Widok z formularzem.
      */
@@ -97,7 +97,7 @@ public class ReservationController implements Serializable {
         }
 
         try {
-            List<AvailableAlleyDto> availableAlleys = reservationService.getAvailableAlleysForTimeRange(newReservationDto);
+            List<AvailableAlleyDto> availableAlleys = reservationService.getAvailableAlleysInTimeRange(newReservationDto);
             this.newReservationDto = newReservationDto;
 
             newReservationAllForm.setAvailableAlleys(availableAlleys);

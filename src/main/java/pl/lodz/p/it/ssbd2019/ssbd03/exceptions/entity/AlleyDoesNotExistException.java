@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
-public class AlleyDoesNotExistException extends EntityRetrievalException {
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
+
+public class AlleyDoesNotExistException extends NotFoundException {
 
     private static String code = "alleyDoesNotExist";
 

@@ -17,7 +17,7 @@ public interface ReservationService {
      * @return lista torów
      * @throws SsbdApplicationException
      */
-    List<AvailableAlleyDto> getAvailableAlleysForTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
 
     /**
      * Dokonuje rezerwacji.
