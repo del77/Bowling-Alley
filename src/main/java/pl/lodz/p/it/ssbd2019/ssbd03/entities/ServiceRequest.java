@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ServiceRequest {
 
     @Id

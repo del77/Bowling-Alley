@@ -62,7 +62,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     }
 
     @Override
-    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY})
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY, MotRoles.ADD_SERVICE_REQUEST})
     public Optional<Alley> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }

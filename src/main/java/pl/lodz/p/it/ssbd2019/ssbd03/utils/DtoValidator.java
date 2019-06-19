@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators;
+package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.ValidatorConfig;
 

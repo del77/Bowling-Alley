@@ -1,0 +1,19 @@
+{{#partial "content"}}
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{lang.addServiceRequestForAlley}} {{alleyNumber}} </h5>
+            <form action="{{webContextPath}}/employee/servicerequests/new/{{alleyId}}" method="post">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{lang.fillContentLabel}}</span>
+                    </div>
+                    <textarea name="content" class="form-control" aria-label="{{lang.content}}"></textarea>
+                </div>
+                <input type="submit" class="btn btn-primary" value="{{lang.addServiceRequest}}">
+            </form>
+        </div>
+    </div>
+{{/partial}}
+{{> layout }}
