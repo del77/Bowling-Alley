@@ -10,6 +10,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ public class ReservationSeviceImplTest {
         when(alley.getNumber()).thenReturn(2);
         when(repositoryLocal.findReservationsForUser(12L)).thenReturn(reservations);
 
-        List<ReservationDto> dtos = reservationService.getReservationsForUser(12L);
+        List<ReservationFullDto> dtos = reservationService.getReservationsForUser(12L);
         assertEquals(2, dtos.size());
         assertEquals(timestamp1, dtos.get(0).getStartDate());
         assertEquals(timestamp2, dtos.get(1).getStartDate());

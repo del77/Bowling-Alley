@@ -7,8 +7,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
@@ -16,10 +16,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -99,19 +98,19 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS})
-    public List<ReservationDto> getReservationsForUser(Long userId) throws DataAccessException {
+    public List<ReservationFullDto> getReservationsForUser(Long userId) throws DataAccessException {
         return reservationRepositoryLocal
                 .findReservationsForUser(userId)
                 .stream()
-                .map(reservation -> Mapper.map(reservation, ReservationDto.class))
+                .map(reservation -> Mapper.map(reservation, ReservationFullDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
-    public List<ReservationDto> getReservationsForAlley(Long alleyId) throws DataAccessException {
+    public List<ReservationFullDto> getReservationsForAlley(Long alleyId) throws DataAccessException {
         List<Reservation> reservations = reservationRepositoryLocal.findReservationsForAlley(alleyId);
-        return Mapper.mapAll(reservations, ReservationDto.class);
+        return Mapper.mapAll(reservations, ReservationFullDto.class);
     }
 
     @Override

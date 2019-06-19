@@ -42,6 +42,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -54,6 +55,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Dodaje nową rezerwację
+     *
      * @param reservation Dodawana rezerwacja
      * @return rezultat operacji
      */
@@ -103,7 +105,7 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
-        List<ReservationDto> reservations = new ArrayList<>();
+        List<ReservationFullDto> reservations = new ArrayList<>();
         try {
             reservations = reservationService.getReservationsForUser(id);
         } catch (SsbdApplicationException e) {
@@ -125,7 +127,7 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
-        List<ReservationDto> reservations = new ArrayList<>();
+        List<ReservationFullDto> reservations = new ArrayList<>();
 
         try {
             reservations = reservationService.getReservationsForAlley(id);

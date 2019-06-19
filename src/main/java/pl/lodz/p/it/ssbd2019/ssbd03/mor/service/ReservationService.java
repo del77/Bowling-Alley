@@ -51,7 +51,7 @@ public interface ReservationService {
      * @param userId id użytkownika
      * @return Lista rezerwacji użytkownika
      */
-    List<ReservationDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
+    List<ReservationFullDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
 
     /**
      * Pobiera wszystkie rezerwacje dla podanego toru
@@ -59,7 +59,7 @@ public interface ReservationService {
      * @param alleyId identyfikator toru
      * @return Lista rezerwacji dla danego toru
      */
-    List<ReservationDto> getReservationsForAlley(Long alleyId) throws SsbdApplicationException;
+    List<ReservationFullDto> getReservationsForAlley(Long alleyId) throws SsbdApplicationException;
 
     /**
      * Pobiera wybraną rezerwację
