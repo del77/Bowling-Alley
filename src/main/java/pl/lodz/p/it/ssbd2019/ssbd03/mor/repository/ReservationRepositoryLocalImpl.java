@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -16,11 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionRolledbackLocalException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,13 +49,13 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
     }
 
     @Override
-    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CREATE_RESERVATION})
     public Optional<Reservation> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
 
     @Override
-    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.GET_OWN_RESERVATIONS})
     public List<Reservation> findReservationsForUser(Long userId) throws DataAccessException {
         try {
             TypedQuery<Reservation> namedQuery = this.createNamedQuery("Reservation.findReservationsForUser");

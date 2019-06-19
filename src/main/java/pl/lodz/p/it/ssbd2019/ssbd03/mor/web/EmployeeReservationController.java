@@ -40,7 +40,6 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
-     *
      * @return Widok z formularzem.
      */
     @GET
@@ -53,7 +52,6 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Dodaje nową rezerwację
-     *
      * @param reservation Dodawana rezerwacja
      * @return rezultat operacji
      */

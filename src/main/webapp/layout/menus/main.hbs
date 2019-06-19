@@ -1,10 +1,10 @@
 {{#block "main"}}
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            {{lang.createAReservation}}
-        </a>
-    </li>
     {{#if isClient }}
+        <li class="nav-item">
+            <a class="nav-link" href="{{webContextPath}}/myreservations/new">
+                {{lang.createAReservation}}
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="{{webContextPath}}/alleys">
                 {{lang.alleysList}}

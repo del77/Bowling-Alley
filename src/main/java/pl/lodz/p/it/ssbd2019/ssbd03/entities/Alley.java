@@ -16,6 +16,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(
+                        name = "Alley.findAlleysNotReservedBetweenTimes", 
+                        query = "select a from Alley a where a.id not in (select distinct a.id from Alley a, Reservation r where a.id = r.alley.id and ((r.startDate <= :startTime and :startTime <= r.endDate) or (r.startDate <= :endTime and :endTime <= r.endDate)))"
+                )
+        }
+)
 public class Alley {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
