@@ -13,14 +13,18 @@
                         <div class="dropdown-menu">
                             {{#if isEmployee}}
                                 <a href="#" class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
-                                <a href="#" class="dropdown-item btn-success">{{lang.showMaxScore}}</a>
+                                <a title="{{lang.maxScore}}"
+                                   onclick="getMaxScore({{this.id}}, {{this.number}})"
+                                   href="#" class="dropdown-item btn-success">{{lang.showMaxScore}}</a>
                                 <a href="{{webContextPath}}/reservations/alley/{{this.id}}"
                                    class="dropdown-item btn-info">{{lang.showReservations}}</a>
                                 <a href="{{webContextPath}}/employee/servicerequests/new/{{this.id}}"
                                    class="dropdown-item btn-danger">{{lang.addServiceRequest}}</a>
                             {{else}}
                                 <a href="#" class="dropdown-item btn-secondary">{{lang.showGamesHistory}}</a>
-                                <a href="#" class="dropdown-item btn-primary">{{lang.showMaxScore}}</a>
+                                <a href="#"
+                                   onclick="getMaxScore({{this.id}}, {{this.number}})"
+                                   class="dropdown-item btn-primary">{{lang.showMaxScore}}</a>
                             {{/if}}
                         </div>
                     </div>
@@ -41,6 +45,34 @@
                 </div>
             </li>
         {{/each}}
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{lang.bestScore}}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal_body_p"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{lang.close}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function getMaxScore(alleyId, alleyNumber) {
+                fetch('{{webContextPath}}/alleys/' + alleyId + '/best-score')
+                        .then(resp => resp.json(), e => {
+                            console.log(e);
+                        })
+                        .then( resp => {
+                            const mp = document.getElementById('modal_body_p');
+                            mp.innerHTML = '{{lang.bestScoreForAlley}} ' + alleyNumber + ' {{lang.is}} ' + resp.score;
+                            $('#myModal').modal();
+                        })
+            }
+        </script>
     </ul>
 {{/partial}}
 {{> layout }}

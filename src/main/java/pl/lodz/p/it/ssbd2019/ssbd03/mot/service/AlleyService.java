@@ -10,13 +10,21 @@ import java.util.List;
 
 public interface AlleyService {
     /**
-     * Wyświetla listę wszystkich torów
+     * Zwraca listę wszystkich torów
      *
-     * return Lista obiektów encji reprezentująca tory
+     * @return Lista obiektów encji reprezentująca tory
      */
     List<AlleyDto> getAllAlleys() throws SsbdApplicationException;
 
-    @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
+
+    /**
+     *
+     * Zwraca tor na podstawie jego ID.
+     *
+     * @param id Identyfikator toru.
+     * @return DTO dla obiektu toru,
+     * @throws SsbdApplicationException W przypadku błędu dostępu do danych.
+     */
     AlleyDto getById(Long id) throws SsbdApplicationException;
 
     /**
