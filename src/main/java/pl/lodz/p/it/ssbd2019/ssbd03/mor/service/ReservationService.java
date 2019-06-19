@@ -4,10 +4,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
 public interface ReservationService {
@@ -55,7 +54,16 @@ public interface ReservationService {
      * @param id identyfikator rezerwacji
      * @return obiekt wybranej rezerwacji
      */
-    List<Reservation> getReservationsById(Long id);
+    ReservationFullDto getReservationById(Long id) throws DataAccessException;
+
+    /**
+     * Pobiera wybraną rezerwację dla użytkownika
+     *
+     * @param id    identyfikator rezerwacji
+     * @param login login użytkownika
+     * @return obiekt wybranej rezerwacji
+     */
+    ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException;
 
     /**
      * Dodaje komentarz do zakończonej rezerwacji

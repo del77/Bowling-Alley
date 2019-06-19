@@ -2,20 +2,43 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.mvc.Controller;
+import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.Collections;
 
 @SessionScoped
 @Controller
+@Path("myreservations")
 public class ReservationController implements Serializable {
+
+    private static final String ERROR = "errors";
+    private static final String RESERVATION_VIEW = "mor/reservation.hbs";
+
+    @EJB(name = "MORReservationService")
+    private ReservationService reservationService;
+
+    @Inject
+    private Models models;
+
+    @Inject
+    private LocalizedMessageProvider localization;
+
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -28,6 +51,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający klientowi dodać rezerwację
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -51,6 +75,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -75,6 +100,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Pozwala klientowi anulować rezerwację
+     *
      * @param id identyfikator rezerwacji do anulowania
      * @return rezulat operacji
      */
@@ -88,18 +114,29 @@ public class ReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
+     *
      * @return Widok z rezultatem.
      */
     @GET
-    @Path("myreservations/{id}/details")
+    @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_OWN_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String getOwnReservationDetails(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        String login = (String) models.get("userName");
+
+        try {
+            ReservationFullDto reservation = reservationService.getUserReservationById(id, login);
+            models.put("reservation", reservation);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+        }
+
+        return RESERVATION_VIEW;
     }
 
     /**
      * Widok pozwalający klientowi dodać komentarz do rezerwacji
+     *
      * @param id wybrana rezerwacja
      * @return Widok z formularzem.
      */
@@ -113,7 +150,8 @@ public class ReservationController implements Serializable {
 
     /**
      * Dodaje komentarz do rezerwacji
-     * @param id wybrana rezerwacja
+     *
+     * @param id      wybrana rezerwacja
      * @param comment komentarz do dodania
      * @return Widok z rezultatem.
      */
@@ -127,6 +165,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Widok pozwalający klientowi edytowac własny komentarz do rezerwacji
+     *
      * @param id wybrany komentarz
      * @return Widok z formularzem.
      */
@@ -140,7 +179,8 @@ public class ReservationController implements Serializable {
 
     /**
      * Dodaje komentarz do rezerwacji
-     * @param id wybrana rezerwacja
+     *
+     * @param id      wybrana rezerwacja
      * @param comment komentarz do dodania
      * @return Widok z rezultatem.
      */
@@ -152,5 +192,7 @@ public class ReservationController implements Serializable {
         throw new UnsupportedOperationException();
     }
 
-
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
+    }
 }

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+
 /**
  * Klasa reprezentująca komentarze do rezerwacji.
  */
@@ -19,7 +20,7 @@ import java.sql.Timestamp;
 @Builder
 public class Comment {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
     private Long id;
@@ -39,11 +40,16 @@ public class Comment {
     @Column(name = "content", nullable = false, length = 256)
     @ToString.Exclude
     private String content;
-    
+
     @NotNull
     @Column(name = "date", nullable = false)
     @ToString.Exclude
     private Timestamp date;
+
+//    @NotNull
+//    @Column(name = "active", nullable = false)
+//    @ToString.Exclude
+//    private boolean active;
 
     @Version
     @Min(0)

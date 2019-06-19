@@ -630,7 +630,7 @@
     <web-resource-collection>
       <web-resource-name>GetOwnReservationDetails</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/*/details</url-pattern>
+      <url-pattern>/myreservations/details/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -643,11 +643,12 @@
     <web-resource-collection>
       <web-resource-name>GetReservationDetails</web-resource-name>
       <description/>
-      <url-pattern>/reservations/*/details</url-pattern>
+      <url-pattern>/reservations/details/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
+      <role-name>ADMIN</role-name>
     </auth-constraint>
   </security-constraint>
 

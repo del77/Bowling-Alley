@@ -3,8 +3,10 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
@@ -18,17 +20,18 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Stateful
+@Stateful(name = "MORReservationService")
 @Interceptors(InterceptorTracker.class)
 @DenyAll
 public class ReservationServiceImpl extends TransactionTracker implements ReservationService {
 
     @EJB(beanName = "MORReservationRepository")
     private ReservationRepositoryLocal reservationRepositoryLocal;
+
+    private Reservation reservation;
 
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
@@ -66,11 +69,26 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     }
 
     @Override
-    @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
-    public List<Reservation> getReservationsById(Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS})
+    public ReservationFullDto getReservationById(Long id) throws DataAccessException {
+        reservation = reservationRepositoryLocal.findById(id)
+                .orElseThrow(ReservationDoesNotExistException::new);
+
+        return Mapper.map(reservation, ReservationFullDto.class);
     }
 
+    @Override
+    @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS})
+    public ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException {
+        Reservation reservation = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
+
+        if (!reservation.getUserAccount().getLogin().equals(login)) {
+            throw new ReservationDoesNotExistException();
+        }
+
+        this.reservation = reservation;
+        return Mapper.map(reservation, ReservationFullDto.class);
+    }
 
     @Override
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)

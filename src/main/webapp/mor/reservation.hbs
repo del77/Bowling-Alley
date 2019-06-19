@@ -1,0 +1,56 @@
+{{#partial "content"}}
+    {{#if reservation}}
+        <h2 class="mb-3">
+            {{lang.reservationDetails}}
+        </h2>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.reservationId}}:</h6>
+                <p class="mb-0">{{reservation.id}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.userId}}:</h6>
+                <p class="mb-0">{{reservation.userId}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.startReservationDate}}:</h6>
+                <p class="mb-0">{{reservation.startDate}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.endReservationDate}}:</h6>
+                <p class="mb-0">{{reservation.endDate}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.reservationPlayersCount}}:</h6>
+                <p class="mb-0">{{reservation.playersCount}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.alleyNumber}}:</h6>
+                <p class="mb-0">{{reservation.alleyNumber}}</p>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{lang.activeReservation}}:</h6>
+                {{#if reservation.active}}
+                    <img src="{{webContextPath}}/static/img/tick.png" alt="true" width="20px" height="20px">
+                {{else}}
+                    <img src="{{webContextPath}}/static/img/cross.png" alt="false" width="20px" height="20px">
+                {{/if}}
+            </li>
+        </ul>
+        <div>
+            <h3 class="my-3">
+                {{lang.comments}}:
+            </h3>
+            <ul class="list-group">
+                {{#each reservation.comments}}
+                    <li class="list-group-item list-group-item-action">
+                        <h6 class="mb-1">{{this.date}}</h6>
+                        <p class="mb-0">{{this.content}}</p>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
+{{/partial}}
+
+{{> layout }}

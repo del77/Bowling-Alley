@@ -214,6 +214,7 @@
     <security-role-mapping>
         <role-name>GetReservationDetails</role-name>
         <group-name>EMPLOYEE</group-name>
+        <group-name>ADMIN</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
