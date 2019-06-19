@@ -1,0 +1,42 @@
+{{#partial "content"}}
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{lang.editServiceRequestForAlley}} {{alleyNumber}} </h5>
+            <form action="{{webContextPath}}/employee/servicerequests/edit/{{sr.id}}" method="post">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{lang.fillContentLabel}}</span>
+                    </div>
+                    <textarea name="content" class="form-control"
+                              aria-label="{{lang.content}}">{{sr.content}}</textarea>
+                    <input id="resolved" name="resolved" type="hidden" value="{{sr.resolved}}">
+                    <br>
+                    <div>
+                        <input class="form-control"
+                               type="checkbox" data-toggle="toggle" data-offstyle="danger"
+                               data-onstyle="success" aria-label="toggle-lock"
+                               data-on="{{lang.resolved}}" data-off="{{lang.notResolved}}"
+                               data-size="normal" onchange="resolveChange()"
+                               name="activeToggle" id="activeToggle" data-width="150" {{#if sr.resolved}}
+                               checked {{/if}}/>
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary" value="{{lang.edit}}">
+            </form>
+        </div>
+    </div>
+    <script>
+        function resolveChange() {
+            const isChecked = document.getElementById('activeToggle').checked;
+            const resolvedBox = document.getElementById('resolved');
+            if (isChecked) {
+                resolvedBox.value = 'true';
+            } else {
+                resolvedBox.value = 'false';
+            }
+        }
+    </script>
+{{/partial}}
+{{> layout }}
