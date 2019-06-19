@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Stateless
+@Stateless(name = "MOTServiceRequestRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ServiceRequestRepositoryLocalImpl extends AbstractCruRepository<ServiceRequest, Long> implements ServiceRequestRepositoryLocal {

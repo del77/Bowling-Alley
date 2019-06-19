@@ -4,12 +4,12 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.breadcrumbs.Breadcrumb;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
+import javax.servlet.annotation.WebFilter;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +80,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "resetPassword", "#", true);
         } else if (relativePath.matches("/alleys")) {
             addBreadcrumbToModel(model, "alleys", "#", true);
+        } else if (relativePath.matches("/alleys/new")) {
+            addBreadcrumbToModel(model, "alleys", "/alleys", false);
+            addBreadcrumbToModel(model, "addAlley", "#", true);
         } else if (relativePath.matches("/reservations/user/\\d+")) {
             addBreadcrumbToModel(model, "accounts", "/accounts", false);
             addBreadcrumbToModel(model, "reservations", "#", true);
@@ -96,6 +99,14 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/reservations/alley/\\d+")) {
             addBreadcrumbToModel(model, "alleys", "/alleys", false);
             addBreadcrumbToModel(model, "reservations", "#", true);
+        } else if (relativePath.matches("/employee/servicerequests/new/\\d+")) {
+            addBreadcrumbToModel(model, "serviceRequest", "/employee/servicerequests/", false);
+            addBreadcrumbToModel(model, "addServiceRequest", "#", true);
+        } else if (relativePath.matches("/employee/servicerequests/new/\\d+")) {
+            addBreadcrumbToModel(model, "serviceRequest", "/employee/servicerequests/", false);
+            addBreadcrumbToModel(model, "addServiceRequest", "#", true);
+        } else if (relativePath.matches("/employee/servicerequests(/)?")) {
+            addBreadcrumbToModel(model, "serviceRequest", "#", true);
         }
 
         models.put("breadcrumbs", model);

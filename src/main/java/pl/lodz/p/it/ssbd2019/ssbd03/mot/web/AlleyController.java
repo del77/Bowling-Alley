@@ -1,9 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -15,48 +18,86 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @SessionScoped
 @Controller
 @Path("alleys")
 public class AlleyController implements Serializable {
-    
-    private static final String ERROR = "errors";
-    private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
-    
+
     @Inject
-    private Models models;
-    
+    protected Models models;
+
+    @Inject
+    protected LocalizedMessageProvider localization;
+
+    @Inject
+    private DtoValidator validator;
+
+    @Inject
+    protected RedirectUtil redirectUtil;
+
     @EJB
     private AlleyService alleyService;
-    
-    @Inject
-    private LocalizedMessageProvider localization;
-    
+
+    private static final String NEW_ALLEY_URL = "alleys/new";
+    private static final String ADD_ALLEY_VIEW_URL = "alleys/new/newAlley.hbs";
+
+    private List<String> errorMessages = new ArrayList<>();
+
+    private static final String ERROR = "errors";
+    private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
     /**
      * Pobiera widok dodawania toru.
+     *
      * @return Widok umożliwiający dodanie toru.
      */
     @GET
     @Path("new")
     @RolesAllowed(MotRoles.ADD_ALLEY)
     @Produces(MediaType.TEXT_HTML)
-    public String addAlley() {
-        throw new UnsupportedOperationException();
+    public String addAlley(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
+        return ADD_ALLEY_VIEW_URL;
     }
+
 
     /**
      * Dodaje nowy tor
-     * @param alley obiekt zawierający informacje o torze
+     *
+     * @param alleyDto obiekt zawierający informacje o torze
      * @return rezultat operacji
      */
     @POST
     @Path("new")
     @RolesAllowed(MotRoles.ADD_ALLEY)
     @Produces(MediaType.TEXT_HTML)
-    public String addAlley(@BeanParam Alley alley) {
-        throw new UnsupportedOperationException();
+    public String addAlley(@BeanParam AlleyCreationDto alleyDto) {
+        models.put("data", alleyDto);
+        errorMessages.clear();
+        errorMessages.addAll(validator.validate(alleyDto));
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError("/alleys/new", alleyDto, errorMessages);
+        }
+        try {
+            alleyService.addAlley(alleyDto);
+        } catch (SsbdApplicationException e) {
+            errorMessages.add(localization.get(e.getCode()));
+        }
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError("/alleys/new", alleyDto, errorMessages);
+        }
+
+        FormData formData = FormData.builder()
+                .data(null)
+                .infos(Collections.singletonList(String.format(
+                        "%s",
+                        localization.get("alleySuccessfullyCreated"))
+                ))
+                .build();
+        return redirectUtil.redirect(NEW_ALLEY_URL, formData);
     }
 
     /**
@@ -100,6 +141,7 @@ public class AlleyController implements Serializable {
 
     /**
      * Wyświetla najlepszy wynik dla toru
+     *
      * @param id identyfikator toru
      * @return Widok z najlepszym wynikiem dla toru
      */
@@ -113,6 +155,7 @@ public class AlleyController implements Serializable {
 
     /**
      * Pobiera wszystkie tory
+     *
      * @return Widok ze wszystkimi torami
      */
     @GET

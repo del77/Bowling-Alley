@@ -5,7 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.validation.RecaptchaVali
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.service.UserAccountService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.AccountDetailsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.NewPasswordWithConfirmationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.PasswordDtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.RecaptchaValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;

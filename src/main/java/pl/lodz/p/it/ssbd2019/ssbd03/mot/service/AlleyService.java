@@ -1,9 +1,11 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 public interface AlleyService {
@@ -14,12 +16,15 @@ public interface AlleyService {
      */
     List<AlleyDto> getAllAlleys() throws SsbdApplicationException;
 
+    @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
+    AlleyDto getById(Long id) throws SsbdApplicationException;
+
     /**
      * Tworzy tor o danych zawartych w podanym w obiekcie.
      *
-     * @param alley Obiekt klasy Alley, który ma zostać dodany do bazy danych.
+     * @param alleyDto DTO toru, który ma zostać dodany do bazy danych.
      */
-    void addAlley(Alley alley);
+    void addAlley(AlleyCreationDto alleyDto) throws SsbdApplicationException;
 
     /**
      * Zmienia flagę zablokowania toru z podanym id

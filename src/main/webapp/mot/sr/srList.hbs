@@ -1,0 +1,25 @@
+{{#partial "content"}}
+    <div>
+        {{#each srs}}
+            <div class="card">
+                <div class="card-header">
+                    <h6>{{lang.alleysNumber}}: {{this.alleyNumber}}</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">{{lang.userAccount}}: {{this.userLogin}}</h4>
+                    {{#if this.resolved }}
+                        <span class="alert alert-success">{{lang.resolved}}</span>
+                    {{else}}
+                        <span class="alert alert-danger">{{lang.notResolved}}</span>
+                    {{/if}}
+                    <hr>
+                    <h5 class="card-title">{{lang.content}}:</h5>
+                    <p class="card-text">{{this.content}}</p>
+                    <hr>
+                    <a href="edit/{{this.id}}" class="btn btn-primary">{{lang.edit}}</a>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+{{/partial}}
+{{> layout }}

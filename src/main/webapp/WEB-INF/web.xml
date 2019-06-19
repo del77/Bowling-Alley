@@ -318,8 +318,6 @@
     </auth-constraint>
   </security-constraint>
 
-
-  <!-- MOT -->
   <security-constraint>
     <display-name>AlleysConstr</display-name>
     <web-resource-collection>
@@ -492,7 +490,6 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- MOR -->
   <security-constraint>
     <display-name>CreateReservationConstr</display-name>
     <web-resource-collection>

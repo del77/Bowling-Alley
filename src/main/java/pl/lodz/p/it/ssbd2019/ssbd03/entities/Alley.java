@@ -23,7 +23,7 @@ public class Alley {
     @EqualsAndHashCode.Exclude
     private Long id;
 
-    @Min(0)
+    @Min(1)
     @NotNull
     @Column(name = "number", nullable = false, unique = true)
     @ToString.Exclude

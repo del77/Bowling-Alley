@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
+import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
@@ -14,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -59,7 +62,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     }
 
     @Override
-    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY})
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY, MotRoles.GET_BEST_SCORE_FOR_ALLEY, MotRoles.ADD_SERVICE_REQUEST})
     public Optional<Alley> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
@@ -67,6 +70,21 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     @Override
     @RolesAllowed(MotRoles.ADD_ALLEY)
     public Alley create(Alley alley) throws DataAccessException {
-        return super.create(alley);
+        try {
+            return super.create(alley);
+        } catch (ConstraintViolationException e) {
+            if (e.getMessage().contains("number")) {
+                throw new AlleyNumberLessThanOneException(String.format("Given alley number %d is invalid.", alley.getNumber()));
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during alley creation", e);
+        } catch (PersistenceException e) {
+            Throwable t = e.getCause();
+            Throwable t2 = t.getCause();
+            if ((t2 instanceof PSQLException) && t2.getMessage().contains("number")) {
+                throw new NotUniqueAlleyNumberException(String.format("There is an alley with the number %d already.",alley.getNumber()), e);
+            } else {
+                throw new EntityUpdateException("Could not perform create operation.", e);
+            }
+        }
     }
 }
