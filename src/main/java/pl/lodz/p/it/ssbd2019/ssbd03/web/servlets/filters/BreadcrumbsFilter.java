@@ -105,6 +105,9 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/employee/servicerequests/new/\\d+")) {
             addBreadcrumbToModel(model, "serviceRequest", "/employee/servicerequests/", false);
             addBreadcrumbToModel(model, "addServiceRequest", "#", true);
+        } else if (relativePath.matches("/employee/servicerequests/edit/\\d+")) {
+            addBreadcrumbToModel(model, "serviceRequest", "/employee/servicerequests/", false);
+            addBreadcrumbToModel(model, "editServiceRequest", "#", true);
         } else if (relativePath.matches("/employee/servicerequests(/)?")) {
             addBreadcrumbToModel(model, "serviceRequest", "#", true);
         }

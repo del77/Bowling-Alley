@@ -2,11 +2,14 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ServiceRequestService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestEditDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -33,6 +36,8 @@ public class ServiceRequestController implements Serializable {
     private static final String INFO = "infos";
     private static final String ADD_SERVICE_REQUEST_PAGE = "mot/sr/addsr.hbs";
     private static final String SERVICE_REQUEST_ENDPOINT_PATTERN = "employee/servicerequests/new/%d/";
+    private static final String EDIT_SERVICE_REQUEST_PAGE = "mot/sr/editsr.hbs";
+    private static final String SERVICE_REQUEST_EDIT_ENDPOINT_PATTERN = "employee/servicerequests/edit/%d";
     private static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
 
     @Inject
@@ -56,6 +61,7 @@ public class ServiceRequestController implements Serializable {
     /**
      * Zwraca widok pozwalający dodać nowe zgłoszenie serwisowe
      *
+     * @param alleyId Identyfikator toru, dla którego dodać chcemy zgłoszenie.
      * @return Widok z formularzem pozwalającym dodać zgłoszenie-
      */
     @GET
@@ -79,16 +85,19 @@ public class ServiceRequestController implements Serializable {
         return ADD_SERVICE_REQUEST_PAGE;
     }
 
+
     /**
-     * Dodaje nowe zgłoszenie serwisowe
-     *
-     * @param serviceRequest obiekt zawierający informacje o zgłoszeniu serwisowym
+     * @param serviceRequest Obiekt DTO z informacjami dotyczącymi zgłoszenia serwisowego.
+     * @param alleyId Identyfikator toru.
+     * @return Widok dodawania nowego zgłoszenia serwisowego dla toru.
+     * @throws NotFoundException w przypadku, gyd tor nie zostanie znaleziony.
+     * @return Widok zgłoszenia z informacją na temat statusu.
      */
     @POST
     @Path("new/{alleyId}")
     @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
-    public String addServiceRequest(@BeanParam ServiceRequestDto serviceRequest, @PathParam("alleyId") Long alleyId) {
+    public String addServiceRequest(@BeanParam ServiceRequestDto serviceRequest, @PathParam("alleyId") Long alleyId) throws NotFoundException {
         List<String> validateResult = dtoValidator.validate(serviceRequest);
         if (validateResult != null && !validateResult.isEmpty()) {
             return redirectUtil.redirect(
@@ -107,6 +116,8 @@ public class ServiceRequestController implements Serializable {
                                 Collections.emptyList())
                 );
             }
+        } else {
+            throw new NotFoundException();
         }
         return redirectUtil.redirect(
                 String.format(SERVICE_REQUEST_ENDPOINT_PATTERN, alleyId),
@@ -121,32 +132,86 @@ public class ServiceRequestController implements Serializable {
     /**
      * Zwraca widok pozwalający edytować zgłoszenie serwisowe
      *
-     * @param id identyfikator zgłoszenia serwisowego
-     * @return Widok z formularzem wypełnionym aktualnymi danymi
+     * @param id Identyfikator zgłoszenia serwisowego.
+     * @return Widok z formularzem wypełnionym aktualnymi danymi.
      */
     @GET
-    @Path("{id}/edit")
+    @Path("edit/{id}")
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
-    public String editServiceRequest(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    public String editServiceRequest(
+            @QueryParam("idCache") Long idCache,
+            @PathParam("id") Long id) {
+        redirectUtil.injectFormDataToModels(idCache, models);
+
+        ServiceRequestViewDto serviceRequest = null;
+        try {
+            serviceRequest = this.serviceRequestService.getById(id);
+        } catch (Exception e) {
+            displayError(localization.get("serviceRequestRetrievalError"));
+        }
+
+        if (serviceRequest != null) {
+            ServiceRequestEditDto dto = Mapper.map(serviceRequest, ServiceRequestEditDto.class);
+            this.models.put("sr", dto);
+            this.models.put("alleyNumber", serviceRequest.getAlleyNumber());
+        } else {
+            throw new NotFoundException();
+        }
+
+        return EDIT_SERVICE_REQUEST_PAGE;
     }
 
     /**
-     * Aktualizuje zgłoszenie serwisowe
+     * Aktualizuje zgłoszenie serwisowe o podanym id w URL.
      *
-     * @param serviceRequest obiekt zawierający informacje o zaktualizowanym zgłoszeniu serwisowym
+     * @param serviceRequest Obiekt zawierający informacje o zaktualizowanym zgłoszeniu serwisowym.
+     * @param id Identyfikator dla edytowanego zgłoszenia.
+     * @throws NotFoundException W przypadku gdy nie podane id jest puste.
+     * @return Widok edycji zgłoszenia z informację na temat statusu.
      */
     @POST
-    @Path("edit")
+    @Path("edit/{id}")
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     @Produces(MediaType.TEXT_HTML)
-    public String editServiceRequest(@BeanParam ServiceRequest serviceRequest) {
-        throw new UnsupportedOperationException();
+    public String editServiceRequest(
+            @BeanParam ServiceRequestEditDto serviceRequest,
+            @PathParam("id") Long id) throws NotFoundException {
+        List<String> validateResult = dtoValidator.validate(serviceRequest);
+        if (validateResult != null && !validateResult.isEmpty()) {
+            return redirectUtil.redirect(
+                    String.format(SERVICE_REQUEST_EDIT_ENDPOINT_PATTERN, id),
+                    new FormData(serviceRequest, validateResult,
+                            Collections.emptyList())
+            );
+        }
+        if (id != null) {
+            try {
+                serviceRequest.setId(id);
+                serviceRequestService.updateServiceRequest(serviceRequest);
+            } catch (SsbdApplicationException e) {
+                return redirectUtil.redirect(
+                        String.format(SERVICE_REQUEST_EDIT_ENDPOINT_PATTERN, id),
+                        new FormData(serviceRequest, Collections.singletonList(localization.get(e.getCode())),
+                                Collections.emptyList())
+                );
+            }
+        } else {
+            throw new NotFoundException();
+        }
+
+        return redirectUtil.redirect(
+                String.format(SERVICE_REQUEST_EDIT_ENDPOINT_PATTERN, id),
+                new FormData(
+                        null,
+                        Collections.emptyList(),
+                        Collections.singletonList(localization.get("serviceRequestEditSuccess"))
+                )
+        );
     }
 
     /**
-     * Pobiera zgłoszenia serwisowe
+     * Pobiera zgłoszenia serwisowe oraz wyświetla je użytkownikowi. W przypadku braku, zostanie zwrócona pusta lista.
      *
      * @return Widok ze zgłoszeniami serwisowymi
      */
@@ -163,6 +228,7 @@ public class ServiceRequestController implements Serializable {
         models.put("srs", serviceRequests);
         return ALLEYS_LIST_VIEW;
     }
+
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
