@@ -34,7 +34,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     }
 
     @Override
-    @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
+    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_ALLEY, MorRoles.CREATE_RESERVATION})
     public Optional<Alley> findById(Long id) throws DataAccessException {
         return super.findById(id);
     }
