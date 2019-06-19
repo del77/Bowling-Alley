@@ -13,7 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
-@Stateless
+@Stateless(name = "MORAlleyRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long> implements AlleyRepositoryLocal {
 
