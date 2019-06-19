@@ -37,7 +37,7 @@ public class ReservationController implements Serializable {
     private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
 
-    @EJB(name = "MORReservationService")
+    @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject

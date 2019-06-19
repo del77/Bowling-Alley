@@ -33,7 +33,7 @@ public class EmployeeReservationController implements Serializable {
     @Inject
     private Models models;
 
-    @EJB(name = "MORReservationService")
+    @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject
