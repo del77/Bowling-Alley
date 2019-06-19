@@ -12,7 +12,7 @@ import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Stateful
+@Stateful(name = "MOTReservationService")
 @DenyAll
 public class ReservationServiceImpl implements ReservationService {
     @Override

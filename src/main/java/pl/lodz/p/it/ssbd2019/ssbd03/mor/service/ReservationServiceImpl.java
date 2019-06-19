@@ -1,10 +1,22 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.DateConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
@@ -17,23 +29,56 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Stateful
+@Stateful(name = "MORReservationService")
 @Interceptors(InterceptorTracker.class)
 @DenyAll
 public class ReservationServiceImpl extends TransactionTracker implements ReservationService {
 
     @EJB(beanName = "MORReservationRepository")
     private ReservationRepositoryLocal reservationRepositoryLocal;
+    
+    @EJB(beanName = "MORAlleyRepository")
+    private AlleyRepositoryLocal alleyRepositoryLocal;
+    
+    @EJB(beanName = "MORUserAccountRepository")
+    private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public void addReservation(Reservation reservation, String userLogin) {
-        throw new UnsupportedOperationException();
+    public List<AvailableAlleyDto> getAvailableAlleysForTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException {
+        Timestamp startTime = DateConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = DateConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysForTimeRange(startTime, endTime);
+        return Mapper.mapAll(alleys, AvailableAlleyDto.class);
+    }
+    
+    @Override
+    @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
+    public void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException {
+        Alley alley = alleyRepositoryLocal.findById(alleyId).orElseThrow(AlleyDoesNotExistException::new);
+        UserAccount userAccount = userAccountRepositoryLocal.findByLogin(userLogin).orElseThrow(LoginDoesNotExistException::new);
+        Timestamp startTime = DateConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = DateConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        Reservation newReservation = Reservation.builder()
+                .userAccount(userAccount)
+                .startDate(startTime)
+                .endDate(endTime)
+                .playersCount(newReservationDto.getNumberOfPlayers())
+                .active(true)
+                .alley(alley)
+                .build();
+        try {
+            reservationRepositoryLocal.create(newReservation);
+        } catch (DataAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CreateRegistrationException(e.getMessage());
+        }
     }
 
     @Override

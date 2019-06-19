@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
-@Stateless
+@Stateless(name = "MORUserAccountRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {

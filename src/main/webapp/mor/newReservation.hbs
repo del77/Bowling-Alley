@@ -1,0 +1,51 @@
+{{#partial "content"}}
+    <form class="form-horizontal" method="post">
+        <h2 class="mb-3">
+            {{lang.newReservationQuestion}}
+        </h2>
+        <div class="form-group justify-content-between">
+            <label for="startDay">{{lang.newReservationStartDay}}: </label>
+            <input name="startDay" type="text" class="datepicker" value="{{this.data.newReservationDto.startDay}}" autofocus required>
+        </div>
+        <div class="form-group justify-content-between">
+            <label for="startHour">{{lang.newReservationStartHour}}: </label>
+            <input name="startHour" type="text" class="starttimepicker" value="{{this.data.newReservationDto.startHour}}" autofocus required/>
+        </div>
+        <div class="form-group justify-content-between">
+            <label for="endHour">{{lang.newReservationEndHour}}: </label>
+            <input name="endHour" type="text" class="endtimepicker" value="{{this.data.newReservationDto.endHour}}" autofocus required/>
+        </div>
+        <div class="form-group justify-content-between">
+            <label for="numbeOfPlayers">{{lang.newReservationNumberOfPlayers}}: </label>
+            <input name="numberOfPlayers" type="number" min="1" class="form-input" value="{{this.data.newReservationDto.numberOfPlayers}}" autofocus required/>
+        </div>
+        <input type="submit" class="btn btn-secondary" value="{{lang.newReservationShowAvailableAlleysButton}}"/>
+    </form>
+    {{#if this.data.availableAlleys}}
+        <div style="max-width: 400px">
+            <table class="table table-light table-striped table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">{{lang.newReservationAlleyNumber}}</th>
+                    <th scope="col">{{lang.newReservationReserveButton}}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {{#each this.data.availableAlleys}}
+                    <tr>
+                        <td>
+                            {{this.alleyNumber}}
+                        </td>
+                        <td>
+                            <a href="{{webContextPath}}/myreservations/new/{{this.id}}" class="btn btn-success btn-sm"
+                               role="button">{{lang.newReservationReserveButton}}</a>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    {{/if}}
+{{/partial}}
+{{> layout }}

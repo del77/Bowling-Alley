@@ -24,6 +24,7 @@ target/*
 /dist/
 /nbdist/
 /.nb-gradle/
+nb-configuration.xml
 
 ### E2E tests ###
 node_modules/
