@@ -141,6 +141,7 @@
         <role-name>GetBestScoreForAlley</role-name>
         <group-name>EMPLOYEE</group-name>
         <group-name>CLIENT</group-name>
+        <group-name>ADMIN</group-name>
     </security-role-mapping>
 
     <security-role-mapping>
