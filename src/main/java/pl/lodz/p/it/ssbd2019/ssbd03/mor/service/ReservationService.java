@@ -11,8 +11,21 @@ import java.util.List;
 
 public interface ReservationService {
 
+    /**
+     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     * @param newReservationDto przedział czasu
+     * @return lista torów
+     * @throws SsbdApplicationException
+     */
     List<AvailableAlleyDto> getAvailableAlleysForTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
-    
+
+    /**
+     * Dokonuje rezerwacji.
+     * @param newReservationDto dane rezerwacji
+     * @param alleyId numer toru
+     * @param userLogin login użytkownika
+     * @throws SsbdApplicationException
+     */
     void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
 
     /**

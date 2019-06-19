@@ -63,6 +63,11 @@ public class ReservationController implements Serializable {
     }
 
 
+    /**
+     * Pobiera widok pozwalający klientowi dokonać rezerwacji.
+     *
+     * @return Widok z formularzem.
+     */
     @GET
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
@@ -72,6 +77,11 @@ public class ReservationController implements Serializable {
         return NEW_RESERVATION_VIEW;
     }
 
+    /**
+     * Pobiera dostępne tory w zadanym przedziale czasowym.
+     * @param newReservationDto dane rezerwacji
+     * @return widok z dostępnymi torami
+     */
     @POST
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
@@ -98,6 +108,11 @@ public class ReservationController implements Serializable {
         }
     }
 
+    /**
+     * Tworzy rezerwacje
+     * @param alleyId
+     * @return informacja o wyniku rezerwacji
+     */
     @GET
     @Path("new/{alley_id}")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)

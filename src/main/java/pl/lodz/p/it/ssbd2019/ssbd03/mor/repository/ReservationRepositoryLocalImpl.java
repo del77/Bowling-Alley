@@ -55,7 +55,7 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
     }
 
     @Override
-    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER})
+    @RolesAllowed({MorRoles.GET_RESERVATION_DETAILS, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.GET_OWN_RESERVATIONS})
     public List<Reservation> findReservationsForUser(Long userId) throws DataAccessException {
         try {
             TypedQuery<Reservation> namedQuery = this.createNamedQuery("Reservation.findReservationsForUser");

@@ -11,5 +11,12 @@ import java.util.List;
 @Local
 public interface AlleyRepositoryLocal extends CruRepository<Alley, Long> {
 
+    /**
+     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     * @param startTime czas początku przedziału
+     * @param endTime czas końca przedziału
+     * @return tory
+     * @throws DataAccessException
+     */
     List<Alley> getAvailableAlleysForTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException;
 }
