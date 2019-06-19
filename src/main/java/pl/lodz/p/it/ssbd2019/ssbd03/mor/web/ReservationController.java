@@ -3,11 +3,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mok.web.dto.validators.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationAllForm;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -120,7 +120,7 @@ public class ReservationController implements Serializable {
         try {
             String login = (String) models.get("userName");
             reservationService.addReservation(newReservationDto, alleyId, login);
-            formData.setInfos(Arrays.asList(localization.get("reservationCreatedMessage")));
+            formData.setInfos(Arrays.asList(localization.get("newReservationCreated")));
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
         } catch (SsbdApplicationException e) {
             formData.setErrors(Arrays.asList(localization.get(e.getCode())));
