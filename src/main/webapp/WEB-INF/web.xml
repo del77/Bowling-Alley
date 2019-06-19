@@ -102,6 +102,11 @@
 
   <security-role>
     <description/>
+    <role-name>AddScore</role-name>
+  </security-role>
+
+  <security-role>
+    <description/>
     <role-name>EnableDisableAlley</role-name>
   </security-role>
 
@@ -314,8 +319,6 @@
   </security-constraint>
 
 
-
-
   <!-- MOT -->
   <security-constraint>
     <display-name>AlleysConstr</display-name>
@@ -337,6 +340,19 @@
       <web-resource-name>AddAlley</web-resource-name>
       <description/>
       <url-pattern>/alleys/new</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description/>
+      <role-name>EMPLOYEE</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <display-name>AddScoreConstr</display-name>
+    <web-resource-collection>
+      <web-resource-name>AddScore</web-resource-name>
+      <description/>
+      <url-pattern>/scores/new/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -468,7 +484,7 @@
     <web-resource-collection>
       <web-resource-name>ShowUserScoreHistory</web-resource-name>
       <description/>
-      <url-pattern>/accounts/*/history</url-pattern>
+      <url-pattern>/scores/user/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -565,6 +581,7 @@
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
+      <role-name>ADMIN</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -635,20 +652,6 @@
   </security-constraint>
 
   <security-constraint>
-    <display-name>GetReservationsForUserConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetReservationsForUser</web-resource-name>
-      <description/>
-      <url-pattern>/reservations/*/details</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
     <display-name>AddCommentForReservationConstr</display-name>
     <web-resource-collection>
       <web-resource-name>AddCommentForReservation</web-resource-name>
@@ -660,7 +663,6 @@
       <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
-
 
 
   <security-constraint>
@@ -743,4 +745,5 @@
   <error-page>
     <location>/ErrorServlet</location>
   </error-page>
+
 </web-app>

@@ -51,6 +51,7 @@ public class LanguageFilter extends HttpFilter {
             if (languageContext.isPreffered()) {
                 return i18nManager.getLanguageMap(languageContext.getCurrent());
             }
+            languageContext.setCurrent(localeConfig);
             return i18nManager.getLanguageMap(localeConfig);
         } catch (PropertiesLoadException e) {
             throw new IOException("Could not load properties", e);

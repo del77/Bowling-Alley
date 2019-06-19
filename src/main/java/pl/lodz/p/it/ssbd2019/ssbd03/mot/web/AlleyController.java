@@ -47,6 +47,8 @@ public class AlleyController implements Serializable {
 
     private List<String> errorMessages = new ArrayList<>();
 
+    private static final String ERROR = "errors";
+    private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
     /**
      * Pobiera widok dodawania toru.
      *
@@ -160,6 +162,16 @@ public class AlleyController implements Serializable {
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     @Produces(MediaType.TEXT_HTML)
     public String getAllAlleys() {
-        throw new UnsupportedOperationException();
+        try {
+            models.put("alleys", alleyService.getAllAlleys());
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("alleysListError"));
+        }
+        return ALLEY_LIST_VIEW;
+    }
+    
+    
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
     }
 }

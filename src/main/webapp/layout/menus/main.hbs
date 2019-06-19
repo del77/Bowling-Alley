@@ -1,12 +1,22 @@
 {{#block "main"}}
-  <li class="nav-item">
-    <a class="nav-link" href="#">
-      {{lang.createAReservation}}
-    </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">
-      {{lang.bestScores}}
-    </a>
-  </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            {{lang.createAReservation}}
+        </a>
+    </li>
+    {{#if isClient }}
+        <li class="nav-item">
+            <a class="nav-link" href="{{webContextPath}}/alleys">
+                {{lang.alleysList}}
+            </a>
+        </li>
+    {{else}}
+        {{#if isEmployee}}
+            <li class="nav-item">
+                <a class="nav-link" href="{{webContextPath}}/alleys">
+                    {{lang.alleysList}}
+                </a>
+            </li>
+        {{/if}}
+    {{/if}}
 {{/block}}

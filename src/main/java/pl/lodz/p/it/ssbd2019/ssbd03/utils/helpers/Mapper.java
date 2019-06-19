@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +12,15 @@ import java.util.stream.Collectors;
 public class Mapper {
     private static ModelMapper modelMapper = new ModelMapper();
 
-    private Mapper() {}
+    static {
+        //ScoreDto
+        TypeMap<Score, ScoreDto> scoreTypeMap = modelMapper.createTypeMap(Score.class, ScoreDto.class);
+        scoreTypeMap.addMappings(mapper -> {
+            mapper.map(src -> src.getReservation().getId(), ScoreDto::setReservationId);
+            mapper.map(src -> src.getReservation().getStartDate(), ScoreDto::setDate);
+            mapper.map(src -> src.getUserAccount().getLogin(), ScoreDto::setLogin);
+        });
+    }
 
     /**
      * Mapuje jeden obiekt na drugi

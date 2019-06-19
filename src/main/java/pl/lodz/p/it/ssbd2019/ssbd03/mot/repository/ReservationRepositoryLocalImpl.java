@@ -13,7 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Stateless
+@Stateless(name = "MOTReservationRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reservation, Long> implements ReservationRepositoryLocal {

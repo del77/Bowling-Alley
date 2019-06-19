@@ -19,6 +19,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "Reservation.findReservationsForUser", query = "select r from Reservation r where r.userAccount.id = :userId"),
+                @NamedQuery(name = "Reservation.findReservationsForAlley", query = "select r from Reservation r where r.alley.id = :alleyId")
+        }
+)
 @ValidReservationDates
 public class Reservation {
     @Id

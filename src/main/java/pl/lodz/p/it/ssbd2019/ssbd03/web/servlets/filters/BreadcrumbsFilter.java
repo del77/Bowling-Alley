@@ -4,12 +4,12 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.breadcrumbs.Breadcrumb;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
-import javax.servlet.annotation.WebFilter;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,7 +68,7 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "createAccount", "/admin/register", true);
         } else if (relativePath.matches("/account/edit-password(/success)?")) {
             addBreadcrumbToModel(model, "editPassword", "/account/edit-password", true);
-        }else if (relativePath.matches("/account/edit")) {
+        } else if (relativePath.matches("/account/edit")) {
             addBreadcrumbToModel(model, "profile", "/account/details", false);
             addBreadcrumbToModel(model, "editOwnAccount", "/account/edit", true);
         } else if (relativePath.matches("/login")) {
@@ -83,6 +83,22 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/alleys/new")) {
             addBreadcrumbToModel(model, "alleys", "/alleys", false);
             addBreadcrumbToModel(model, "addAlley", "#", true);
+        } else if (relativePath.matches("/reservations/user/\\d+")) {
+            addBreadcrumbToModel(model, "accounts", "/accounts", false);
+            addBreadcrumbToModel(model, "reservations", "#", true);
+        } else if (relativePath.matches("/items/balls")) {
+            addBreadcrumbToModel(model, "editBallsCount", "/items/balls", true);
+        } else if (relativePath.matches("/items/shoes")) {
+            addBreadcrumbToModel(model, "editShoesCount", "/items/shoes", true);
+        } else if (relativePath.matches("/scores/new/\\d+")) {
+            addBreadcrumbToModel(model, "accounts", "/accounts", false);
+            addBreadcrumbToModel(model, "addNewScore", "#", true);
+        } else if (relativePath.matches("/scores/user/\\d+")) {
+            addBreadcrumbToModel(model, "accounts", "/accounts", false);
+            addBreadcrumbToModel(model, "scoresHistory", "#", true);
+        } else if (relativePath.matches("/reservations/alley/\\d+")) {
+            addBreadcrumbToModel(model, "alleys", "/alleys", false);
+            addBreadcrumbToModel(model, "reservations", "#", true);
         }
         models.put("breadcrumbs", model);
         chain.doFilter(request, response);
