@@ -37,11 +37,7 @@ public class ServiceRequestController implements Serializable {
     private static final String INFO = "infos";
     private static final String ADD_SERVICE_REQUEST_PAGE = "mot/sr/addsr.hbs";
     private static final String SERVICE_REQUEST_ENDPOINT_PATTERN = "employee/servicerequests/new/%d/";
-    public static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
-
-    private Long alleyIdToFetch;
-
-    private String alleyNumber;
+    private static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
 
     @Inject
     private Models models;

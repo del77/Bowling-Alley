@@ -1,11 +1,10 @@
 {{#partial "content"}}
-    {{#if alley}}
         <div class="card">
             <div class="card-header">
             </div>
             <div class="card-body">
-                <h5 class="card-title">{{lang.addServiceRequestForAlley}} {{alley}} </h5>
-                <form action="{{webContextPath}}/employee/servicerequests/new" method="post">
+                <h5 class="card-title">{{lang.addServiceRequestForAlley}} {{alleyNumber}} </h5>
+                <form action="{{webContextPath}}/employee/servicerequests/new/{{alleyId}}" method="post">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{lang.fillContentLabel}}</span>
@@ -16,6 +15,5 @@
                 </form>
             </div>
         </div>
-    {{/if}}
 {{/partial}}
 {{> layout }}

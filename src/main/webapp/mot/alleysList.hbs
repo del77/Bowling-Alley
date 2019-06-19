@@ -1,63 +1,46 @@
 {{#partial "content"}}
-    <table class="table table-light table-striped table-hover">
-        <thead class="thead-light">
-            <tr class="d-flex">
-                <th scope="col" class="col-2">{{lang.alleysNumber}}</th>
-                <th scope="col" class="col-2 text-center">{{lang.isActive}}</th>
-                {{#if isEmployee}}
-                    <th scope="col" class="col-3  text-center">{{lang.gamesHistory}}</th>
-                    <th scope="col" class="col-2  text-center">{{lang.maxScore}}</th>
-                    <th scope="col" class="col-3  text-center">{{lang.serviceRequest}}</th>
-                {{else}}
-                    <th scope="col" class="col-4  text-center">{{lang.gamesHistory}}</th>
-                    <th scope="col" class="col-4  text-center">{{lang.maxScore}}</th>
-                {{/if}}
-            </tr>
-        </thead>
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-dark">{{lang.alleysList}}</li>
         {{#each alleys}}
-            <tbody>
-                <tr class="d-flex">
-                    <td class="col-2">
-                        {{this.number}}
-                    </td>
-                    <td class="col-2 text-center">
-                        {{#if this.active}}
-                            <img src="{{webContextPath}}/static/img/tick.png"
-                                 alt="true"
-                                 width="30px"
-                                 height="30px">
-                        {{else}}
-                            <img src="{{webContextPath}}/static/img/cross.png"
-                                 alt="false"
-                                 width="30px"
-                                 height="30px">
-                        {{/if}}
-                    </td>
-            {{#if isEmployee}}
-                    <td class="col-3 text-center">
-                        <a href="#" class="btn btn-primary btn-sm" role="button">{{lang.showGamesHistory}}</a>
-                    </td>
-                    <td class="col-2 text-center">
-                        <a href="#" class="btn btn-success btn-sm" role="button">{{lang.showMaxScore}}</a>
-                    </td>
-                    <td class="col-2 text-center">
-                        <a href="{{webContextPath}}/reservations/alley/{{this.id}}" class="btn btn-info btn-sm" role="button">{{lang.showReservations}}</a>
-                    </td>
-                    <td class="col-3 text-center">
-                        <a href="{{webContextPath}}/employee/servicerequests/new/{{this.id}}"
-                           class="btn btn-danger btn-sm" role="button">{{lang.addServiceRequest}}</a>
-                    </td>
-            {{else}}
-                <td class="col-4 text-center">
-                    <a href="#" class="btn btn-secondary" role="button">{{lang.showGamesHistory}}</a>
-                </td>
-                <td class="col-4 text-center">
-                    <a href="#" class="btn btn-primary" role="button">{{lang.showMaxScore}}</a>
-                </td>
-            {{/if}}
-                </tr>
-            </tbody>
+            <li class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{lang.alleysNumber}}: {{this.number}}</h5>
+                    <div class="btn-group mb-1">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </button>
+                        <div class="dropdown-menu">
+                            {{#if isEmployee}}
+                                <a href="#" class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
+                                <a href="#" class="dropdown-item btn-success">{{lang.showMaxScore}}</a>
+                                <a href="{{webContextPath}}/reservations/alley/{{this.id}}"
+                                   class="dropdown-item btn-info">{{lang.showReservations}}</a>
+                                <a href="{{webContextPath}}/employee/servicerequests/new/{{this.id}}"
+                                   class="dropdown-item btn-danger">{{lang.addServiceRequest}}</a>
+                            {{else}}
+                                <a href="#" class="dropdown-item btn-secondary">{{lang.showGamesHistory}}</a>
+                                <a href="#" class="dropdown-item btn-primary">{{lang.showMaxScore}}</a>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h6 class="text-muted">{{lang.isActive}}: </h6>
+                    {{#if this.active}}
+                        <img src="{{webContextPath}}/static/img/tick.png"
+                             alt="true"
+                             width="30px"
+                             height="30px" style="display: inline-block; ">
+                    {{else}}
+                        <img src="{{webContextPath}}/static/img/cross.png"
+                             alt="false"
+                             width="30px"
+                             height="30px" style="display: inline-block; ">
+                    {{/if}}
+                </div>
+            </li>
         {{/each}}
-    </table>
+    </ul>
 {{/partial}}
 {{> layout }}
