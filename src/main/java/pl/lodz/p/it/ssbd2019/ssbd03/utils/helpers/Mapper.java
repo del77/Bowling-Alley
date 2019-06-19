@@ -26,7 +26,7 @@ public class Mapper {
         //ReservationFullDto
         TypeMap<Reservation, ReservationFullDto> reservationFullTypeMap = modelMapper.createTypeMap(Reservation.class, ReservationFullDto.class);
         reservationFullTypeMap.addMappings(mapper -> {
-            mapper.map(src -> src.getUserAccount().getId(), ReservationFullDto::setUserId);
+            mapper.map(src -> src.getUserAccount().getLogin(), ReservationFullDto::setUserLogin);
             mapper.map(Reservation::getComments, ReservationFullDto::setComments);
         });
     }

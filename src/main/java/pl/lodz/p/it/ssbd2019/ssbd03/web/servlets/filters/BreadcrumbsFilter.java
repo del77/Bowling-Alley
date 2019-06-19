@@ -107,6 +107,8 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "addServiceRequest", "#", true);
         } else if (relativePath.matches("/employee/servicerequests(/)?")) {
             addBreadcrumbToModel(model, "serviceRequest", "#", true);
+        } else if (relativePath.matches("/reservations/details/\\d+")) {
+            addBreadcrumbToModel(model, "reservationDetails", "#", true);
         }
 
         models.put("breadcrumbs", model);

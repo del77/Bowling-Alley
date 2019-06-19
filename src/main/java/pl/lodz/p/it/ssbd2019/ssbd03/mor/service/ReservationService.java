@@ -53,8 +53,9 @@ public interface ReservationService {
      *
      * @param id identyfikator rezerwacji
      * @return obiekt wybranej rezerwacji
+     * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
-    ReservationFullDto getReservationById(Long id) throws DataAccessException;
+    ReservationFullDto getReservationById(Long id) throws SsbdApplicationException;
 
     /**
      * Pobiera wybraną rezerwację dla użytkownika
@@ -62,8 +63,9 @@ public interface ReservationService {
      * @param id    identyfikator rezerwacji
      * @param login login użytkownika
      * @return obiekt wybranej rezerwacji
+     * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
-    ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException;
+    ReservationFullDto getUserReservationById(Long id, String login) throws SsbdApplicationException;
 
     /**
      * Dodaje komentarz do zakończonej rezerwacji
