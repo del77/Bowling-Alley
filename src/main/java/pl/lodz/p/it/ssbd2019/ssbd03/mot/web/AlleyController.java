@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyMaxScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -39,7 +40,7 @@ public class AlleyController implements Serializable {
     @Inject
     protected RedirectUtil redirectUtil;
 
-    @EJB
+    @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
 
     private static final String NEW_ALLEY_URL = "alleys/new";
@@ -136,20 +137,6 @@ public class AlleyController implements Serializable {
     @Path("{id}/history")
     @Produces(MediaType.TEXT_HTML)
     public String showGamesHistoryForAlley() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Wyświetla najlepszy wynik dla toru
-     *
-     * @param id identyfikator toru
-     * @return Widok z najlepszym wynikiem dla toru
-     */
-    @GET
-    @RolesAllowed(MotRoles.GET_BEST_SCORE_FOR_ALLEY)
-    @Path("{id}/best-score")
-    @Produces(MediaType.TEXT_HTML)
-    public String getBestScoreForAlley(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
 

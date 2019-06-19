@@ -496,6 +496,7 @@
       <web-resource-name>CreateReservation</web-resource-name>
       <description/>
       <url-pattern>/myreservations/new</url-pattern>
+      <url-pattern>/myreservations/new/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>

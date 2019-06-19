@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
 
-@Stateless
+@Stateless(name = "MORUserAccountRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAccount, Long> implements UserAccountRepositoryLocal {
@@ -33,7 +33,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS, MorRoles.EDIT_OWN_RESERVATION})
+    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS, MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION})
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);

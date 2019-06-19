@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ServiceRequestRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestEditDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -63,8 +64,12 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
 
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
-    public void updateServiceRequest(ServiceRequest serviceRequest) {
-        throw new UnsupportedOperationException();
+    public void updateServiceRequest(ServiceRequestEditDto serviceRequest) throws SsbdApplicationException {
+        Optional<ServiceRequest> byId = this.serviceRequestRepositoryLocal.findById(serviceRequest.getId());
+        ServiceRequest sr = byId.orElseThrow(NotFoundException::new);
+        sr.setResolved(serviceRequest.getResolved());
+        sr.setContent(serviceRequest.getContent());
+        this.serviceRequestRepositoryLocal.edit(sr);
     }
 
     @Override
@@ -73,20 +78,30 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
         return this.mapToViewDto(this.serviceRequestRepositoryLocal.findAll());
     }
 
+    @Override
+    @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
+    public ServiceRequestViewDto getById(Long id) throws SsbdApplicationException {
+        return this.mapSingle(this.serviceRequestRepositoryLocal.findById(id).orElseThrow(NotFoundException::new));
+    }
+
     private List<ServiceRequestViewDto> mapToViewDto(List<ServiceRequest> serviceRequests) {
         List<ServiceRequestViewDto> viewDtos = new ArrayList<>();
         for (ServiceRequest sr : serviceRequests) {
             viewDtos.add(
-                    ServiceRequestViewDto
-                            .builder()
-                            .id(sr.getId())
-                            .alleyNumber((sr.getAlley() != null ? sr.getAlley().getNumber() : -1))
-                            .content(sr.getContent())
-                            .userLogin((sr.getUserAccount() != null ? sr.getUserAccount().getLogin() : ""))
-                            .resolved(sr.isResolved())
-                            .build()
+                    this.mapSingle(sr)
             );
         }
         return viewDtos;
+    }
+
+    private ServiceRequestViewDto mapSingle(ServiceRequest sr) {
+        return ServiceRequestViewDto
+                        .builder()
+                        .id(sr.getId())
+                        .alleyNumber((sr.getAlley() != null ? sr.getAlley().getNumber() : -1))
+                        .content(sr.getContent())
+                        .userLogin((sr.getUserAccount() != null ? sr.getUserAccount().getLogin() : ""))
+                        .resolved(sr.isResolved())
+                        .build();
     }
 }

@@ -40,7 +40,7 @@ public class AlleyServiceImpl extends TransactionTracker implements AlleyService
 
 
     @Override
-    @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
+    @RolesAllowed({MotRoles.ADD_SERVICE_REQUEST, MotRoles.GET_ALLEYS_LIST, MotRoles.GET_BEST_SCORE_FOR_ALLEY})
     public AlleyDto getById(Long id) throws SsbdApplicationException {
         return Mapper.map(
                 alleyRepositoryLocal.findById(id).orElseThrow(NotFoundException::new),

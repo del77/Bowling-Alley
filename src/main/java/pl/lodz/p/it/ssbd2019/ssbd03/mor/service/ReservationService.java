@@ -3,20 +3,33 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import java.util.List;
 
 public interface ReservationService {
+
     /**
-     * Tworzy rezerwację
+     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
      *
-     * @param reservation Obiekt rezerwacji.
-     * @param userLogin   Login użytkownika dla którego ma być dokonana rezerwacja.
+     * @param newReservationDto przedział czasu
+     * @return lista torów
+     * @throws SsbdApplicationException
      */
-    void addReservation(Reservation reservation, String userLogin);
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
+
+    /**
+     * Dokonuje rezerwacji.
+     *
+     * @param newReservationDto dane rezerwacji
+     * @param alleyId           numer toru
+     * @param userLogin         login użytkownika
+     * @throws SsbdApplicationException
+     */
+    void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
 
     /**
      * Wprowadza dane dotyczące zakończonej rozgrywki.
