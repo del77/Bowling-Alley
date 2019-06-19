@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ServiceRequestService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ServiceRequestViewDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -20,6 +21,7 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class ServiceRequestController implements Serializable {
     private static final String INFO = "infos";
     private static final String ADD_SERVICE_REQUEST_PAGE = "mot/sr/addsr.hbs";
     private static final String SERVICE_REQUEST_ENDPOINT_PATTERN = "employee/servicerequests/new/%d/";
+    private static final String ALLEYS_LIST_VIEW = "mot/sr/srList.hbs";
 
     @Inject
     private Models models;
@@ -38,10 +41,10 @@ public class ServiceRequestController implements Serializable {
     @Inject
     private LocalizedMessageProvider localization;
 
-    @EJB
+    @EJB(beanName = "MOTServiceRequestService")
     private ServiceRequestService serviceRequestService;
 
-    @EJB
+    @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
 
     @Inject
@@ -52,6 +55,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Zwraca widok pozwalający dodać nowe zgłoszenie serwisowe
+     *
      * @return Widok z formularzem pozwalającym dodać zgłoszenie-
      */
     @GET
@@ -77,6 +81,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Dodaje nowe zgłoszenie serwisowe
+     *
      * @param serviceRequest obiekt zawierający informacje o zgłoszeniu serwisowym
      */
     @POST
@@ -115,6 +120,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować zgłoszenie serwisowe
+     *
      * @param id identyfikator zgłoszenia serwisowego
      * @return Widok z formularzem wypełnionym aktualnymi danymi
      */
@@ -128,6 +134,7 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Aktualizuje zgłoszenie serwisowe
+     *
      * @param serviceRequest obiekt zawierający informacje o zaktualizowanym zgłoszeniu serwisowym
      */
     @POST
@@ -140,15 +147,22 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Pobiera zgłoszenia serwisowe
+     *
      * @return Widok ze zgłoszeniami serwisowymi
      */
     @GET
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     @Produces(MediaType.TEXT_HTML)
     public String getServiceRequests() {
-        throw new UnsupportedOperationException();
+        List<ServiceRequestViewDto> serviceRequests = new ArrayList<>();
+        try {
+            serviceRequests = this.serviceRequestService.getAllServiceRequests();
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("serviceRequestRetrievalError") + ". " + localization.get(e.getCode()));
+        }
+        models.put("srs", serviceRequests);
+        return ALLEYS_LIST_VIEW;
     }
-
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }

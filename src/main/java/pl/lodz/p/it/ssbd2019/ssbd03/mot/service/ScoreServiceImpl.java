@@ -34,16 +34,16 @@ import java.util.List;
 public class ScoreServiceImpl implements ScoreService {
 
     @EJB(beanName = "MOTScoreRepository")
-    ScoreRepositoryLocal scoreRepositoryLocal;
+    private ScoreRepositoryLocal scoreRepositoryLocal;
 
     @EJB(beanName = "MOTReservationRepository")
-    ReservationRepositoryLocal reservationRepositoryLocal;
+    private ReservationRepositoryLocal reservationRepositoryLocal;
 
     @EJB(beanName = "MOTUserRepository")
-    UserAccountRepositoryLocal userAccountRepositoryLocal;
+    private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
     @EJB(beanName = "MOTAlleyRepository")
-    AlleyRepositoryLocal alleyRepositoryLocal;
+    private AlleyRepositoryLocal alleyRepositoryLocal;
 
     @Override
     @RolesAllowed(MotRoles.SHOW_USER_SCORE_HISTORY)
