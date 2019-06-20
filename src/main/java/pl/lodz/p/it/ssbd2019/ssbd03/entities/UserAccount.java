@@ -93,6 +93,9 @@ public class UserAccount {
     private List<AccountAccessLevel> accountAccessLevels;
 
     @OneToMany(mappedBy = "userAccount")
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "userAccount")
     private List<Score> scores;
 
     @Version
