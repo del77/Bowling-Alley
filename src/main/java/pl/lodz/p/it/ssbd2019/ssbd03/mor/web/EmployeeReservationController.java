@@ -18,7 +18,6 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,9 +27,9 @@ import java.util.List;
 public class EmployeeReservationController implements Serializable {
 
     private static final String ERROR = "errors";
-    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String RESERVATION_DETAILS_PATH = "/reservations/details/";
+    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
 
     @Inject
     private Models models;
@@ -110,14 +109,14 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
-        List<ReservationFullDto> reservations = new ArrayList<>();
         try {
-            reservations = reservationService.getReservationsForUser(id);
+            List<ReservationFullDto> reservations = reservationService.getReservationsForUser(id);
+            models.put("reservationsList", reservations);
+            models.put("reservationListHeading", localization.get("userReservationList"));
+            models.put("reservationContext", "reservations");
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
-        models.put("reservationsList", reservations);
-        models.put("reservationListHeading", localization.get("userReservationList"));
         return RESERVATION_LIST_VIEW;
     }
 
@@ -132,17 +131,14 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
-        List<ReservationFullDto> reservations = new ArrayList<>();
-
         try {
-            reservations = reservationService.getReservationsForAlley(id);
+            List<ReservationFullDto> reservations = reservationService.getReservationsForAlley(id);
+            models.put("reservationsList", reservations);
+            models.put("reservationListHeading", localization.get("alleyReservationList"));
+            models.put("reservationContext", "reservations");
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
-
-        models.put("reservationsList", reservations);
-        models.put("reservationListHeading", localization.get("alleyReservationList"));
-
         return RESERVATION_LIST_VIEW;
     }
 
@@ -204,10 +200,10 @@ public class EmployeeReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("details/{reservationId}/disable-comment/{id}")
+    @Path("details/disable-comment/{id}")
     @RolesAllowed(MorRoles.DISABLE_COMMENT)
     @Produces(MediaType.TEXT_HTML)
-    public String disableComment(@PathParam("reservationId") Long reservationId, @PathParam("id") Long id) {
+    public String disableComment(@FormParam("reservationId") Long reservationId, @PathParam("id") Long id) {
         try {
             reservationService.disableComment(id);
             FormData formData = new FormData();

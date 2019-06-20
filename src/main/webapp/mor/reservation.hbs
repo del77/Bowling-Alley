@@ -50,17 +50,25 @@
                                     <span class="mb-1">{{this.date}}</span>
                                     <p class="mb-0">{{this.content}}</p>
                                 </div>
+                                {{#ifb (or isAdmin isEmployee)}}
                                 <div class="col-2">
                                     <form class="form-inline" data-form-confirm role="form" method="post"
-                                          action="{{webContextPath}}/reservations/details/{{reservation.id}}/disable-comment/{{this.id}}">
+                                          action="{{webContextPath}}/reservations/details/disable-comment/{{this.id}}">
                                         <button type="submit" class="btn btn-primary">
                                             {{lang.disableComment}}
                                         </button>
+                                        <input type="hidden" id="reservationId" name="reservationId" readonly
+                                               value="{{reservation.id}}" aria-label="reservationId">
                                     </form>
                                 </div>
+                                {{/ifb}}
                             </div>
                         </li>
                     {{/if}}
+                {{else}}
+                    <div class="d-flex justify-content-center m-3">
+                        {{lang.emptyCommentList}}
+                    </div>
                 {{/each}}
             </ul>
         </div>

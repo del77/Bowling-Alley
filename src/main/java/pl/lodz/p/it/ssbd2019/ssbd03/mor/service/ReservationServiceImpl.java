@@ -108,6 +108,15 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     }
 
     @Override
+    @RolesAllowed(MorRoles.GET_OWN_RESERVATIONS)
+    public List<ReservationFullDto> getReservationsByUserLogin(String login) throws DataAccessException {
+        List<Reservation> reservations = userAccountRepositoryLocal.findByLogin(login)
+                .orElseThrow(LoginDoesNotExistException::new)
+                .getReservations();
+        return Mapper.mapAll(reservations, ReservationFullDto.class);
+    }
+
+    @Override
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     public List<ReservationFullDto> getReservationsForAlley(Long alleyId) throws DataAccessException {
         List<Reservation> reservations = reservationRepositoryLocal.findReservationsForAlley(alleyId);

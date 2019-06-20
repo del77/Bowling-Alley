@@ -429,7 +429,7 @@
     <web-resource-collection>
       <web-resource-name>EnterGameResult</web-resource-name>
       <description/>
-      <url-pattern>/reservations/*/enter-result</url-pattern>
+      <url-pattern>/reservations/enter-result/</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -522,7 +522,7 @@
     <web-resource-collection>
       <web-resource-name>EditOwnReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/*/edit</url-pattern>
+      <url-pattern>/myreservations/edit/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -535,7 +535,7 @@
     <web-resource-collection>
       <web-resource-name>EditReservationForUser</web-resource-name>
       <description/>
-      <url-pattern>/reservations/*/edit</url-pattern>
+      <url-pattern>/reservations/edit/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -548,7 +548,7 @@
     <web-resource-collection>
       <web-resource-name>CancelOwnReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations</url-pattern>
+      <url-pattern>/myreservations/cancel</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -602,7 +602,7 @@
     <web-resource-collection>
       <web-resource-name>CancelOwnReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations</url-pattern>
+      <url-pattern>/myreservations/own</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -655,7 +655,7 @@
     <web-resource-collection>
       <web-resource-name>AddCommentForReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/*/add-comment</url-pattern>
+      <url-pattern>/myreservations/add-comment/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -669,7 +669,7 @@
     <web-resource-collection>
       <web-resource-name>EditCommentForReservation</web-resource-name>
       <description/>
-      <url-pattern>/reservations/*/edit-comment</url-pattern>
+      <url-pattern>/reservations/edit-comment/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -683,7 +683,7 @@
     <web-resource-collection>
       <web-resource-name>EditCommentForOwnReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/*/edit-comment</url-pattern>
+      <url-pattern>/myreservations/edit-comment/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -696,7 +696,7 @@
     <web-resource-collection>
       <web-resource-name>DisableComment</web-resource-name>
       <description/>
-      <url-pattern>/reservations/*/details</url-pattern>
+      <url-pattern>/reservations/details/disable-comment/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>

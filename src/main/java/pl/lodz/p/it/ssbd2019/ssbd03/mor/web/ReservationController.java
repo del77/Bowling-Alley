@@ -33,6 +33,7 @@ import java.util.List;
 public class ReservationController implements Serializable {
 
     private static final String ERROR = "errors";
+    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
@@ -57,15 +58,23 @@ public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
      *
-     * @return Widok z formularzem.
+     * @return Widok z listą rezerwacji.
      */
     @GET
     @RolesAllowed(MorRoles.GET_OWN_RESERVATIONS)
     @Produces(MediaType.TEXT_HTML)
     public String getOwnReservations() {
-        throw new UnsupportedOperationException();
+        try {
+            String login = (String) models.get("userName");
+            List<ReservationFullDto> reservations = reservationService.getReservationsByUserLogin(login);
+            models.put("reservationsList", reservations);
+            models.put("reservationListHeading", localization.get("ownReservationList"));
+            models.put("reservationContext", "myreservations");
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get("reservationListError"));
+        }
+        return RESERVATION_LIST_VIEW;
     }
-
 
     /**
      * Pobiera widok pozwalający klientowi stworzyć rezerwację.

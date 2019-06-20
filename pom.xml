@@ -113,6 +113,11 @@
             <artifactId>handlebars</artifactId>
             <version>4.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.beryx</groupId>
+            <artifactId>handlebars-java-helpers</artifactId>
+            <version>0.4.1</version>
+        </dependency>
         <!-- MISC -->
         <!-- VALIDATION -->
         <dependency>
