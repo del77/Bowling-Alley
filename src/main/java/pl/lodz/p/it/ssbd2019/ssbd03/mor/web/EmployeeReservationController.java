@@ -4,8 +4,10 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -17,7 +19,6 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,16 +30,19 @@ public class EmployeeReservationController implements Serializable {
     private static final String ERROR = "errors";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
-
-    @Inject
-    private Models models;
+    private static final String RESERVATION_DETAILS_PATH = "reservations/details/";
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject
+    private Models models;
+
+    @Inject
     private LocalizedMessageProvider localization;
 
+    @Inject
+    private RedirectUtil redirectUtil;
 
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
@@ -78,19 +82,6 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Pozwala pracownikowi anulować rezerwację
-     *
-     * @param id identyfikator rezerwacji do anulowania
-     * @return rezulat operacji
-     */
-    @POST
-    @RolesAllowed(MorRoles.CANCEL_RESERVATION_FOR_USER)
-    @Produces(MediaType.TEXT_HTML)
-    public String cancelReservation(Long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -141,17 +132,23 @@ public class EmployeeReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający pracownikowi przejrzeć szegóły wybranej rezererwacji
      *
-     * @param id identyfikator rezerwacji
+     * @param reservationId identyfikator rezerwacji
+     * @param idCache opcjonalny identyfikator do obsługi przekierowań
      * @return Widok z rezultatem.
      */
     @GET
     @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
-    public String getReservationDetails(@PathParam("id") Long id) {
+    public String getReservationDetails(@PathParam("id") Long reservationId,  @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         try {
-            ReservationFullDto reservation = reservationService.getReservationById(id);
+            ReservationFullDto reservation = reservationService.getReservationById(reservationId);
+            boolean isExpired =  ReservationValidator.isExpired(reservation);
+            Boolean isCancelable = !isExpired && reservation.isActive();
             models.put("reservation", reservation);
+            models.put("isExpired", isExpired);
+            models.put("isCancelable", isCancelable);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
@@ -159,6 +156,31 @@ public class EmployeeReservationController implements Serializable {
         return RESERVATION_VIEW;
     }
 
+    /**
+     * Pozwala pracownikowi anulować rezerwację
+     *
+     * @param reservationId identyfikator rezerwacji
+     * @return rezulat operacji
+     */
+    @POST
+    @Path("details/{id}")
+    @RolesAllowed(MorRoles.CANCEL_RESERVATION_FOR_USER)
+    @Produces(MediaType.TEXT_HTML)
+    public String cancelReservation(@PathParam("id") Long reservationId) {
+        try {
+            reservationService.cancelReservation(reservationId);
+            FormData formData = new FormData();
+            String message = localization.get("reservationCancelSuccess");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    RESERVATION_DETAILS_PATH + reservationId,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()))
+            );
+        }
+    }
 
     /**
      * Aktualizuje rezerwację

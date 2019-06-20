@@ -14,6 +14,14 @@ $buttons.forEach(function ($button) {
   $button.addEventListener('click', confirmChoice, true);
 });
 
+$(function () {
+    $('[data-toggle="popover"]').popover()
+});
+
+$('.popover-dismiss').popover({
+    trigger: 'focus'
+});
+
 $('input.starttimepicker').timepicker({
     timeFormat: 'HH:mm',
     interval: 30,
