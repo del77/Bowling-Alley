@@ -1,9 +1,13 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ScoreService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyMaxScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -42,6 +46,12 @@ public class AlleyController implements Serializable {
 
     @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
+
+    @EJB(beanName = "MOTReservationService")
+    private ReservationService reservationService;
+
+    @EJB(beanName = "MOTScoreService")
+    private ScoreService scoreService;
 
     private static final String NEW_ALLEY_URL = "alleys/new";
     private static final String ADD_ALLEY_VIEW_URL = "alleys/new/newAlley.hbs";
@@ -136,8 +146,13 @@ public class AlleyController implements Serializable {
     @RolesAllowed(MotRoles.GET_ALLEY_GAMES_HISTORY)
     @Path("{id}/history")
     @Produces(MediaType.TEXT_HTML)
-    public String showGamesHistoryForAlley() {
-        throw new UnsupportedOperationException();
+    public String showGamesHistoryForAlley(@BeanParam Long id) {
+        List<ReservationDto> res = reservationService.getFinishedReservationsForAlley(id);
+        List<ScoreDto> scoreDtos = new ArrayList<>();
+        for(ReservationDto r : res) {
+            scoreDtos.addAll(scoreService.getScoresForReservation(r.get));
+        }
+        models.put("scores", scoreDtos);
     }
 
     /**

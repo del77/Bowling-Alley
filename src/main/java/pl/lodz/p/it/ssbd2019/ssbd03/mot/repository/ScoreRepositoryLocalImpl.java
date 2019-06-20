@@ -9,6 +9,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Stateless(name = "MOTScoreRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -26,5 +28,12 @@ public class ScoreRepositoryLocalImpl extends AbstractCruRepository<Score, Long>
     @Override
     protected Class<Score> getTypeParameterClass() {
         return Score.class;
+    }
+
+    @Override
+    public List<Score> getScoresByReservation(Long id) {
+        TypedQuery<Score> namedQuery = this.createNamedQuery("Score.findScoresForReservation");
+        namedQuery.setParameter("reservationId", id);
+        return namedQuery.getResultList();
     }
 }

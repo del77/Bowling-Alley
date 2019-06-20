@@ -16,6 +16,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "Score.findScoresForReservation", query = "select s from Score s where s.reservation.id = :reservationId"),
+        }
+)
 public class Score {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

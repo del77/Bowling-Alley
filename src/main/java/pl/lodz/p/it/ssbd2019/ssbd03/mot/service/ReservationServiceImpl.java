@@ -2,10 +2,14 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -15,10 +19,14 @@ import java.util.List;
 @Stateful(name = "MOTReservationService")
 @DenyAll
 public class ReservationServiceImpl implements ReservationService {
+
+    @EJB(beanName = "MOTReservationRepository")
+    private ReservationRepositoryLocal reservationRepository;
+
     @Override
     @RolesAllowed(MotRoles.GET_ALLEY_GAMES_HISTORY)
-    public List<Reservation> getFinishedReservationsForAlley(Long alleyId) {
-        throw new UnsupportedOperationException();
+    public List<ReservationDto> getFinishedReservationsForAlley(Long alleyId) {
+        reservationRepository.
     }
 
     @Override

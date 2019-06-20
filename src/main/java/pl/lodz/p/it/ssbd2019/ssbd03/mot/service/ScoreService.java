@@ -18,6 +18,15 @@ public interface ScoreService {
     List<ScoreDto> getScoresForUser(Long id) throws SsbdApplicationException;
 
     /**
+     * Pobiera wyniki osiągnięte podczas danej zarezerwowanej rozgrywki
+     *
+     * @param id identyfkator rezerwacji
+     * @throws SsbdApplicationException gdy nie uda się pobrać wyników dla rezerwacji
+     * @retun lista wyników dla rezerwacji
+     */
+    List<ScoreDto> getScoresForReservation(Long id);
+
+    /**
      * Wyświetla najlepszy wynik osiągnięty na wybranym torze
      *
      * @param id identyfikator toru

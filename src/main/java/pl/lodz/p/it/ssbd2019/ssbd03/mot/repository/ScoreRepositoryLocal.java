@@ -4,8 +4,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
+import java.util.List;
 
 @Local
 public interface ScoreRepositoryLocal extends CruRepository<Score, Long> {
-
+    List<Score> getScoresByReservation(Long id);
 }
