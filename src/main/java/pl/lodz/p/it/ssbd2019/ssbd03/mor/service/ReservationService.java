@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public interface ReservationService {
 
     /**
      * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     *
      * @param newReservationDto przedział czasu
      * @return lista torów
      * @throws SsbdApplicationException
@@ -21,9 +23,10 @@ public interface ReservationService {
 
     /**
      * Dokonuje rezerwacji.
+     *
      * @param newReservationDto dane rezerwacji
-     * @param alleyId numer toru
-     * @param userLogin login użytkownika
+     * @param alleyId           numer toru
+     * @param userLogin         login użytkownika
      * @throws SsbdApplicationException
      */
     void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
@@ -48,7 +51,7 @@ public interface ReservationService {
      * @param userId id użytkownika
      * @return Lista rezerwacji użytkownika
      */
-    List<ReservationDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
+    List<ReservationFullDto> getReservationsForUser(Long userId) throws SsbdApplicationException;
 
     /**
      * Pobiera wszystkie rezerwacje dla podanego toru
@@ -56,15 +59,26 @@ public interface ReservationService {
      * @param alleyId identyfikator toru
      * @return Lista rezerwacji dla danego toru
      */
-    List<ReservationDto> getReservationsForAlley(Long alleyId) throws SsbdApplicationException;
+    List<ReservationFullDto> getReservationsForAlley(Long alleyId) throws SsbdApplicationException;
 
     /**
      * Pobiera wybraną rezerwację
      *
      * @param id identyfikator rezerwacji
      * @return obiekt wybranej rezerwacji
+     * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
-    List<Reservation> getReservationsById(Long id);
+    ReservationFullDto getReservationById(Long id) throws SsbdApplicationException;
+
+    /**
+     * Pobiera wybraną rezerwację dla użytkownika
+     *
+     * @param id    identyfikator rezerwacji
+     * @param login login użytkownika
+     * @return obiekt wybranej rezerwacji
+     * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
+     */
+    ReservationFullDto getUserReservationById(Long id, String login) throws SsbdApplicationException;
 
     /**
      * Dodaje komentarz do zakończonej rezerwacji

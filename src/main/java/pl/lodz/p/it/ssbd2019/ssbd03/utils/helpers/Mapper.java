@@ -2,7 +2,9 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 
 import java.util.Collection;
@@ -20,11 +22,19 @@ public class Mapper {
             mapper.map(src -> src.getReservation().getStartDate(), ScoreDto::setDate);
             mapper.map(src -> src.getUserAccount().getLogin(), ScoreDto::setLogin);
         });
+
+        //ReservationFullDto
+        TypeMap<Reservation, ReservationFullDto> reservationFullTypeMap = modelMapper.createTypeMap(Reservation.class, ReservationFullDto.class);
+        reservationFullTypeMap.addMappings(mapper -> {
+            mapper.map(src -> src.getUserAccount().getLogin(), ReservationFullDto::setUserLogin);
+            mapper.map(Reservation::getComments, ReservationFullDto::setComments);
+        });
     }
 
     /**
      * Mapuje jeden obiekt na drugi
-     * @param source obiekt wejściowy
+     *
+     * @param source           obiekt wejściowy
      * @param destinationClass klasa obiektu wyjściowego
      * @return zmapowany obiekt
      */
@@ -34,7 +44,8 @@ public class Mapper {
 
     /**
      * Mapuje jedną listę do drugiej
-     * @param sourceList lista obiektów wejściowych
+     *
+     * @param sourceList       lista obiektów wejściowych
      * @param destinationClass klasa obiektów w liście wyjściowej
      * @return lista zmapowanych obiektów
      */
@@ -46,7 +57,8 @@ public class Mapper {
 
     /**
      * Mapuje jeden obiekt na drugi.
-     * @param source obiekt wejściowy.
+     *
+     * @param source      obiekt wejściowy.
      * @param destination obiekt wyjściowy.
      */
     public static <S, D> D map(final S source, D destination) {

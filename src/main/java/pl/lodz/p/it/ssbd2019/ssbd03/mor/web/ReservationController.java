@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationAllForm;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -23,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SessionScoped
@@ -30,24 +32,26 @@ import java.util.List;
 @Path("myreservations")
 public class ReservationController implements Serializable {
 
+    private static final String ERROR = "errors";
+    private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
-
-    @Inject
-    private Models models;
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject
-    private RedirectUtil redirectUtil;
+    private Models models;
 
     @Inject
     private LocalizedMessageProvider localization;
 
     @Inject
+    private RedirectUtil redirectUtil;
+
+    @Inject
     private DtoValidator validator;
-    
+
     private transient NewReservationDto newReservationDto;
 
     /**
@@ -79,6 +83,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Pobiera dostępne tory w zadanym przedziale czasowym.
+     *
      * @param newReservationDto dane rezerwacji
      * @return widok z dostępnymi torami
      */
@@ -110,6 +115,7 @@ public class ReservationController implements Serializable {
 
     /**
      * Tworzy rezerwacje
+     *
      * @param alleyId
      * @return informacja o wyniku rezerwacji
      */
@@ -189,11 +195,20 @@ public class ReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @GET
-    @Path("{id}/details")
+    @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_OWN_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String getOwnReservationDetails(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        String login = (String) models.get("userName");
+
+        try {
+            ReservationFullDto reservation = reservationService.getUserReservationById(id, login);
+            models.put("reservation", reservation);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+        }
+
+        return RESERVATION_VIEW;
     }
 
     /**
@@ -254,5 +269,7 @@ public class ReservationController implements Serializable {
         throw new UnsupportedOperationException();
     }
 
-
+    private void displayError(String s) {
+        models.put(ERROR, Collections.singletonList(s));
+    }
 }

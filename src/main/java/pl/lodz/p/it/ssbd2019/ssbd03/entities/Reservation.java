@@ -9,6 +9,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Klasa reprezentująca rezerwacje.
@@ -28,25 +29,25 @@ import java.sql.Timestamp;
 @ValidReservationDates
 public class Reservation {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @EqualsAndHashCode.Exclude
     private Long id;
 
-    @ManyToOne(cascade=CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @NotNull
     @JoinColumn(name = "user_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk__reservations__users", value = ConstraintMode.CONSTRAINT))
     @ToString.Exclude
     private UserAccount userAccount;
-    
+
     @NotNull
     @Column(name = "start_date", nullable = false)
     @FutureOrPresent
     @ToString.Exclude
     private Timestamp startDate;
-    
+
     @NotNull
     @Column(name = "end_date", nullable = false)
     @Future
@@ -58,7 +59,7 @@ public class Reservation {
     @Column(name = "players_count", nullable = false)
     @ToString.Exclude
     private int playersCount;
-    
+
     @NotNull
     @Column(name = "active", nullable = false)
     @ToString.Exclude
@@ -71,6 +72,9 @@ public class Reservation {
             foreignKey = @ForeignKey(name = "fk__reservations__alleys", value = ConstraintMode.CONSTRAINT))
     @ToString.Exclude
     private Alley alley;
+
+    @OneToMany(mappedBy = "reservation")
+    private List<Comment> comments;
 
     @Version
     @NotNull

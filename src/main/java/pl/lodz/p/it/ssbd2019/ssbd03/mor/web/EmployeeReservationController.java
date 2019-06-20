@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
@@ -27,11 +28,12 @@ public class EmployeeReservationController implements Serializable {
 
     private static final String ERROR = "errors";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
+    private static final String RESERVATION_VIEW = "mor/reservation.hbs";
 
     @Inject
     private Models models;
 
-    @EJB
+    @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject
@@ -40,6 +42,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający pracownikowi dodać rezerwację
+     *
      * @return Widok z formularzem.
      */
     @GET
@@ -52,6 +55,7 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Dodaje nową rezerwację
+     *
      * @param reservation Dodawana rezerwacja
      * @return rezultat operacji
      */
@@ -101,7 +105,7 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForUser(@PathParam("id") Long id) {
-        List<ReservationDto> reservations = new ArrayList<>();
+        List<ReservationFullDto> reservations = new ArrayList<>();
         try {
             reservations = reservationService.getReservationsForUser(id);
         } catch (SsbdApplicationException e) {
@@ -123,7 +127,7 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.GET_RESERVATIONS_FOR_ALLEY)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationsForAlley(@PathParam("id") Long id) {
-        List<ReservationDto> reservations = new ArrayList<>();
+        List<ReservationFullDto> reservations = new ArrayList<>();
 
         try {
             reservations = reservationService.getReservationsForAlley(id);
@@ -144,11 +148,18 @@ public class EmployeeReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @GET
-    @Path("reservations/{id}/details")
+    @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
     public String getReservationDetails(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        try {
+            ReservationFullDto reservation = reservationService.getReservationById(id);
+            models.put("reservation", reservation);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+        }
+
+        return RESERVATION_VIEW;
     }
 
 
