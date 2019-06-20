@@ -5,7 +5,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import java.util.List;
@@ -87,4 +86,11 @@ public interface ReservationService {
      * @param comment Obiekt komentarza
      */
     void addCommentForReservation(Long id, Comment comment);
+
+    /**
+     * Blokuje wybrany komentarz
+     * @param id identyfikator komentarza
+     * @throws SsbdApplicationException gdy zablokowanie komentarza się nie powiedzie
+     */
+    void disableComment(Long id) throws SsbdApplicationException;
 }

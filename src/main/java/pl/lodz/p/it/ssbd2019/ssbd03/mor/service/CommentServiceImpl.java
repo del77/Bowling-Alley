@@ -23,9 +23,5 @@ public class CommentServiceImpl extends TransactionTracker implements CommentSer
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    @RolesAllowed(MorRoles.DISABLE_COMMENT)
-    public void disableComment(Long id) {
-        throw new UnsupportedOperationException();
-    }
+
 }

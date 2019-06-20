@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
@@ -139,5 +140,20 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
     public void addCommentForReservation(Long id, Comment comment) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @RolesAllowed(MorRoles.DISABLE_COMMENT)
+    public void disableComment(Long id) throws SsbdApplicationException {
+        Comment comment = reservation.getComments().stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if(comment == null) {
+            throw new NotFoundException("There is no comment with id: " + id);
+        }
+        comment.setActive(false);
+        reservationRepositoryLocal.edit(reservation);
     }
 }

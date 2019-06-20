@@ -45,8 +45,20 @@
                 {{#each reservation.comments}}
                     {{#if this.active}}
                         <li class="list-group-item list-group-item-action">
-                            <h6 class="mb-1">{{this.date}}</h6>
-                            <p class="mb-0">{{this.content}}</p>
+                            <div class="row">
+                                <div class="col-10">
+                                    <span class="mb-1">{{this.date}}</span>
+                                    <p class="mb-0">{{this.content}}</p>
+                                </div>
+                                <div class="col-2">
+                                    <form class="form-inline" data-form-confirm role="form" method="post"
+                                          action="{{webContextPath}}/reservations/details/{{reservation.id}}/disable-comment/{{this.id}}">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{lang.disableComment}}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </li>
                     {{/if}}
                 {{/each}}

@@ -43,7 +43,7 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
 
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER,
-            MorRoles.ADD_COMMENT_FOR_RESERVATION})
+            MorRoles.ADD_COMMENT_FOR_RESERVATION, MorRoles.DISABLE_COMMENT})
     public void edit(Reservation reservation) throws DataAccessException {
         super.edit(reservation);
     }

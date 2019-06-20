@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDto {
+    private Long id;
     private String content;
     private Timestamp date;
     private boolean active;

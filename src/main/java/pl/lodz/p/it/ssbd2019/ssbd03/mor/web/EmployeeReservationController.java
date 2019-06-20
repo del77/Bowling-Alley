@@ -4,8 +4,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +30,7 @@ public class EmployeeReservationController implements Serializable {
     private static final String ERROR = "errors";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
+    private static final String RESERVATION_DETAILS_PATH = "/reservations/details/";
 
     @Inject
     private Models models;
@@ -38,6 +40,9 @@ public class EmployeeReservationController implements Serializable {
 
     @Inject
     private LocalizedMessageProvider localization;
+
+    @Inject
+    private RedirectUtil redirectUtil;
 
 
     /**
@@ -151,7 +156,8 @@ public class EmployeeReservationController implements Serializable {
     @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
-    public String getReservationDetails(@PathParam("id") Long id) {
+    public String getReservationDetails(@PathParam("id") Long id, @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         try {
             ReservationFullDto reservation = reservationService.getReservationById(id);
             models.put("reservation", reservation);
@@ -198,11 +204,23 @@ public class EmployeeReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("{id}/disable")
+    @Path("details/{reservationId}/disable-comment/{id}")
     @RolesAllowed(MorRoles.DISABLE_COMMENT)
     @Produces(MediaType.TEXT_HTML)
-    public String disableComment(Long id) {
-        throw new UnsupportedOperationException();
+    public String disableComment(@PathParam("reservationId") Long reservationId, @PathParam("id") Long id) {
+        try {
+            reservationService.disableComment(id);
+            FormData formData = new FormData();
+            String message = localization.get("commentDisabled");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    RESERVATION_DETAILS_PATH + reservationId,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()))
+            );
+        }
     }
 
     private void displayError(String s) {
