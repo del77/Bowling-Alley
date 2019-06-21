@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationAllForm;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -37,6 +38,7 @@ public class ReservationController implements Serializable {
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
+    private static final String RESERVATION_DETAILS_PATH = "/myreservations/details/";
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
@@ -183,41 +185,58 @@ public class ReservationController implements Serializable {
         throw new UnsupportedOperationException();
     }
 
-
-    /**
-     * Pozwala klientowi anulować rezerwację
-     *
-     * @param id identyfikator rezerwacji do anulowania
-     * @return rezulat operacji
-     */
-    @POST
-    @Path("myreservations")
-    @RolesAllowed(MorRoles.CANCEL_OWN_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String cancelReservation(@BeanParam Long id) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
      *
+     * @param reservationId identyfikator rezerwacji
+     * @param idCache       opcjonalny identyfikator do obsługi przekierowań
      * @return Widok z rezultatem.
      */
     @GET
     @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_OWN_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
-    public String getOwnReservationDetails(@PathParam("id") Long id) {
+    public String getOwnReservationDetails(@PathParam("id") Long reservationId,
+                                           @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
         String login = (String) models.get("userName");
-
         try {
-            ReservationFullDto reservation = reservationService.getUserReservationById(id, login);
+            ReservationFullDto reservation = reservationService.getUserReservationById(reservationId, login);
+            boolean isExpired = ReservationValidator.isExpired(reservation);
+            Boolean isCancelable = !isExpired && reservation.isActive();
             models.put("reservation", reservation);
+            models.put("isExpired", isExpired);
+            models.put("isCancelable", isCancelable);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
-
         return RESERVATION_VIEW;
+    }
+
+    /**
+     * Pozwala klientowi anulować własną rezerwację
+     *
+     * @param reservationId identyfikator rezerwacji
+     * @return rezulat operacji
+     */
+    @POST
+    @Path("details/{id}")
+    @RolesAllowed(MorRoles.CANCEL_OWN_RESERVATION)
+    @Produces(MediaType.TEXT_HTML)
+    public String cancelReservation(@PathParam("id") Long reservationId) {
+        try {
+            reservationService.cancelReservation(reservationId);
+            FormData formData = new FormData();
+            String message = localization.get("reservationCancelSuccess");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    RESERVATION_DETAILS_PATH + reservationId,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()))
+            );
+        }
     }
 
     /**

@@ -42,7 +42,7 @@ public interface ReservationService {
      *
      * @param id identyfikator rezerwacji do odwołoania
      */
-    void cancelReservation(Long id);
+    void cancelReservation(Long id) throws SsbdApplicationException;
 
     /**
      * Pobiera rezerwacje wybranego użytkownika

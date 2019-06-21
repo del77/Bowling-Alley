@@ -82,6 +82,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "alleys", "#", true);
         } else if (relativePath.matches("/myreservations")) {
             addBreadcrumbToModel(model, "ownReservationList", "#", true);
+        } else if (relativePath.matches("/myreservations/details/\\d+")) {
+            addBreadcrumbToModel(model, "ownReservationList", "/myreservations", false);
+            addBreadcrumbToModel(model, "reservationDetails", "#", true);
         } else if (relativePath.matches("/alleys/new")) {
             addBreadcrumbToModel(model, "alleys", "/alleys", false);
             addBreadcrumbToModel(model, "addAlley", "#", true);
@@ -133,6 +136,10 @@ public class BreadcrumbsFilter extends HttpFilter {
 
     private String removeLastUriSection(String uri) {
         return uri.substring(0, uri.lastIndexOf('/'));
+    }
+
+    private String getLastUriSection(String uri) {
+        return uri.substring(uri.lastIndexOf('/'));
     }
 
     private String removeContextPathFromUri(String uri) {

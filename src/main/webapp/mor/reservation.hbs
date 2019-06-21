@@ -1,8 +1,26 @@
 {{#partial "content"}}
     {{#if reservation}}
-        <h2 class="mb-3">
-            {{lang.reservationDetails}}
-        </h2>
+        <div class="d-flex justify-content-between">
+            <h2 class="mb-3">
+                {{lang.reservationDetails}}
+                {{#if isExpired}}
+                    <span class="badge badge-secondary ml-2 rounded">{{lang.reservationExpired}}</span>
+                {{else}}
+                    <span class="badge badge-success ml-2 rounded">{{lang.reservationPending}}</span>
+                {{/if}}
+            </h2>
+            <form class="form-inline" role="form" method="post" data-form-confirm>
+                <div class="form-group">
+                    {{#if isCancelable}}
+                        <button class="form-control btn btn-warning" type="submit">{{lang.cancelReservation}}</button>
+                    {{else}}
+                        <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus" data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
+                             <button class="btn btn-secondary" style="pointer-events: none;" type="button" disabled>{{lang.cancelReservation}}</button>
+                        </span>
+                    {{/if}}
+                </div>
+            </form>
+        </div>
         <ul class="list-group">
             <li class="list-group-item list-group-item-action">
                 <h6 class="mb-1">{{lang.reservationId}}:</h6>

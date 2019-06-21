@@ -5,6 +5,8 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationAlreadyInactiveException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
@@ -93,8 +95,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER})
-    public void cancelReservation(Long id) {
-        throw new UnsupportedOperationException();
+    public void cancelReservation(Long id) throws DataAccessException, StateConflictedException {
+        if(!reservation.isActive()){
+            throw new ReservationAlreadyInactiveException();
+        }
+        reservation.setActive(false);
+        reservationRepositoryLocal.edit(reservation);
     }
 
     @Override
