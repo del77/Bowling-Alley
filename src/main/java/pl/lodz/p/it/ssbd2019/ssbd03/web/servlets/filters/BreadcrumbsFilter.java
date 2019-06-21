@@ -119,6 +119,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "newReservation", "#", true);
         } else if (relativePath.matches("/reservations/details/\\d+")) {
             addBreadcrumbToModel(model, "reservationDetails", "#", true);
+        } else if (relativePath.matches("/comments/add/\\d+")) {
+            addBreadcrumbToModel(model, "reservationDetails", "/myreservations/details" + getLastUriSection(relativePath), false);
+            addBreadcrumbToModel(model, "addComment", "#", true);
         }
         models.put("breadcrumbs", model);
         chain.doFilter(request, response);

@@ -13,7 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Stateless
+@Stateless(name = "MORCommentRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @DenyAll
 public class CommentRepositoryLocalImpl extends AbstractCruRepository<Comment, Long> implements CommentRepositoryLocal {

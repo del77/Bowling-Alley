@@ -152,10 +152,10 @@ public class ReservationController implements Serializable {
         try {
             String login = (String) models.get("userName");
             reservationService.addReservation(newReservationDto, alleyId, login);
-            formData.setInfos(Arrays.asList(localization.get("newReservationCreated")));
+            formData.setInfos(Collections.singletonList(localization.get("newReservationCreated")));
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
         } catch (SsbdApplicationException e) {
-            formData.setErrors(Arrays.asList(localization.get(e.getCode())));
+            formData.setErrors(Collections.singletonList(localization.get(e.getCode())));
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
         }
     }
@@ -202,7 +202,7 @@ public class ReservationController implements Serializable {
         String login = (String) models.get("userName");
         try {
             ReservationFullDto reservation = reservationService.getUserReservationById(reservationId, login);
-            boolean isExpired = ReservationValidator.isExpired(reservation);
+            boolean isExpired = ReservationValidator.isExpired(reservation.getStartDate());
             Boolean isCancelable = !isExpired && reservation.isActive();
             models.put("reservation", reservation);
             models.put("isExpired", isExpired);

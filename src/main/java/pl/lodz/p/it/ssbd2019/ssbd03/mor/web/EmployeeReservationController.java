@@ -144,7 +144,7 @@ public class EmployeeReservationController implements Serializable {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
             ReservationFullDto reservation = reservationService.getReservationById(reservationId);
-            boolean isExpired =  ReservationValidator.isExpired(reservation);
+            boolean isExpired =  ReservationValidator.isExpired(reservation.getStartDate());
             Boolean isCancelable = !isExpired && reservation.isActive();
             models.put("reservation", reservation);
             models.put("isExpired", isExpired);

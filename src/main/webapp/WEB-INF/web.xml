@@ -655,7 +655,7 @@
     <web-resource-collection>
       <web-resource-name>AddCommentForReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/add-comment/*</url-pattern>
+      <url-pattern>/comments/add/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>

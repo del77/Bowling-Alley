@@ -23,6 +23,7 @@ $('.popover-dismiss').popover({
 });
 
 $('input.starttimepicker').timepicker({
+    autoShow: false,
     timeFormat: 'HH:mm',
     interval: 30,
     minTime: '10',
@@ -34,6 +35,7 @@ $('input.starttimepicker').timepicker({
 });
 
 $('input.endtimepicker').timepicker({
+    autoShow: false,
     timeFormat: 'HH:mm',
     interval: 30,
     minTime: '10:30am',
@@ -45,7 +47,7 @@ $('input.endtimepicker').timepicker({
 });
 
 $('input.datepicker').datepicker({
-  autoShow: 'true',
+  autoShow: false,
   format: 'dd-mm-yyyy',
   startDate: 'today'
 });

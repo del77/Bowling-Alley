@@ -57,7 +57,6 @@ public interface ReservationService {
      *
      * @param login login użytkownika
      * @return Lista rezerwacji użytkownika
-     *
      */
     List<ReservationFullDto> getReservationsByUserLogin(String login) throws SsbdApplicationException;
 
@@ -87,14 +86,6 @@ public interface ReservationService {
      * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
     ReservationFullDto getUserReservationById(Long id, String login) throws SsbdApplicationException;
-
-    /**
-     * Dodaje komentarz do zakończonej rezerwacji
-     *
-     * @param id      reservationId
-     * @param comment Obiekt komentarza
-     */
-    void addCommentForReservation(Long id, Comment comment);
 
     /**
      * Blokuje wybrany komentarz
