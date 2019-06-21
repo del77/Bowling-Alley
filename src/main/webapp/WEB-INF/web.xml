@@ -561,7 +561,7 @@
     <web-resource-collection>
       <web-resource-name>CancelReservationForUser</web-resource-name>
       <description/>
-      <url-pattern>/reservations</url-pattern>
+      <url-pattern>/reservations/details/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -602,7 +602,7 @@
     <web-resource-collection>
       <web-resource-name>CancelOwnReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/own</url-pattern>
+      <url-pattern>/myreservations/details/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
