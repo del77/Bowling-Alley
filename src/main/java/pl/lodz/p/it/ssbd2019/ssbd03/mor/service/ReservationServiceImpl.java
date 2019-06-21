@@ -134,7 +134,6 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     public ReservationFullDto getReservationById(Long id) throws DataAccessException {
         reservation = reservationRepositoryLocal.findById(id)
                 .orElseThrow(ReservationDoesNotExistException::new);
-
         return Mapper.map(reservation, ReservationFullDto.class);
     }
 
@@ -149,12 +148,6 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
         this.reservation = reservation;
         return Mapper.map(reservation, ReservationFullDto.class);
-    }
-
-    @Override
-    @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
-    public void addCommentForReservation(Long id, Comment comment) {
-        throw new UnsupportedOperationException();
     }
 
     @Override

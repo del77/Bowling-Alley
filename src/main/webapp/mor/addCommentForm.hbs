@@ -1,0 +1,13 @@
+{{#partial "content"}}
+    <form class="form-horizontal" method="post" data-form-confirm>
+        <h2 class="mb-3">
+            {{lang.addNewCommentHeader}}
+        </h2>
+        <div class="form-group justify-content-between">
+            <label for="content">{{lang.commentContent}}: </label>
+            <textarea class="form-control" aria-label="content" cols="80" rows="4" name="content" autofocus required maxlength="256"></textarea>
+        </div>
+        <input type="submit" class="btn btn-secondary" value="{{lang.addNewCommentBtn}}"/>
+    </form>
+{{/partial}}
+{{> layout}}
