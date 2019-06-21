@@ -18,7 +18,6 @@ public class Mapper {
         //ScoreDto
         TypeMap<Score, ScoreDto> scoreTypeMap = modelMapper.createTypeMap(Score.class, ScoreDto.class);
         scoreTypeMap.addMappings(mapper -> {
-            mapper.map(src -> src.getReservation().getId(), ScoreDto::setReservationId);
             mapper.map(src -> src.getReservation().getStartDate(), ScoreDto::setDate);
             mapper.map(src -> src.getUserAccount().getLogin(), ScoreDto::setLogin);
         });

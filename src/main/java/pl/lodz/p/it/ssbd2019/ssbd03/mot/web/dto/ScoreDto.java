@@ -13,7 +13,6 @@ import java.sql.Timestamp;
 @ToString
 @SuperBuilder
 public class ScoreDto extends AddScoreDto {
-    private Long reservationId;
 
     @ToString.Exclude
     private Timestamp date;

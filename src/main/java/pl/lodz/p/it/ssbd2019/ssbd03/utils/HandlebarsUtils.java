@@ -38,6 +38,7 @@ public class HandlebarsUtils {
 
         public CompiledTemplate compile(String viewUnparsed) throws IOException {
             final Handlebars handlebars = new Handlebars(templateLoader);
+            org.beryx.hbs.Helpers.register(handlebars);
             final Template template = handlebars.compileInline(viewUnparsed);
             return new CompiledTemplate(template, models);
         }

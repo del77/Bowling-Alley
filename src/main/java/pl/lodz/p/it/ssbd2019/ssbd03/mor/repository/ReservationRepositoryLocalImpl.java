@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
-import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityUpdateException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.NotUniqueEmailException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationOptimisticLockException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
@@ -15,7 +12,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionRolledbackLocalException;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
 
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER,
-            MorRoles.ADD_COMMENT_FOR_RESERVATION})
+            MorRoles.ADD_COMMENT_FOR_RESERVATION, MorRoles.DISABLE_COMMENT})
     public void edit(Reservation reservation) throws DataAccessException {
         try{
             super.edit(reservation);

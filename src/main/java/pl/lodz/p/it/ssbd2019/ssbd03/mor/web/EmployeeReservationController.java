@@ -217,11 +217,23 @@ public class EmployeeReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("{id}/disable")
+    @Path("details/disable-comment/{id}")
     @RolesAllowed(MorRoles.DISABLE_COMMENT)
     @Produces(MediaType.TEXT_HTML)
-    public String disableComment(Long id) {
-        throw new UnsupportedOperationException();
+    public String disableComment(@FormParam("reservationId") Long reservationId, @PathParam("id") Long id) {
+        try {
+            reservationService.disableComment(id);
+            FormData formData = new FormData();
+            String message = localization.get("commentDisabled");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    RESERVATION_DETAILS_PATH + reservationId,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()))
+            );
+        }
     }
 
     private void displayError(String s) {

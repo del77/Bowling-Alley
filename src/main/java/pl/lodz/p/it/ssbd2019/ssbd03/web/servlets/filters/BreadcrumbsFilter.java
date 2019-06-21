@@ -4,12 +4,12 @@ package pl.lodz.p.it.ssbd2019.ssbd03.web.servlets.filters;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.breadcrumbs.Breadcrumb;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 
-import javax.servlet.annotation.WebFilter;
 import javax.inject.Inject;
 import javax.mvc.Models;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

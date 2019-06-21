@@ -10,9 +10,5 @@ public interface CommentService {
      */
     void editComment(Comment comment);
 
-    /**
-     * Blokuje wybrany komentarz
-     * @param id identyfikator komentarza
-     */
-    void disableComment(Long id);
+
 }
