@@ -42,7 +42,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException {
+    public List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws EntityRetrievalException {
         try {
             TypedQuery<Alley> namedQuery = this.createNamedQuery("Alley.findAlleysNotReservedBetweenTimes");
             namedQuery.setParameter("startTime", startTime);
@@ -51,5 +51,13 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
         } catch (Exception e) {
             throw new EntityRetrievalException(e.getMessage());
         }
+    }
+
+    @Override
+    @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
+    public boolean isAvailableAlleyInTimeRange(Timestamp startTime, Timestamp endTime, Long alleyId) throws EntityRetrievalException {
+        return getAvailableAlleysInTimeRange(startTime, endTime).stream()
+                .filter(alley -> alley.getId().equals(alleyId))
+                .count() == 1;
     }
 }

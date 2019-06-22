@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.AlleyNotAvailableException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
@@ -66,10 +67,14 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
     public void addReservation(ClientNewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException {
-        Alley alley = alleyRepositoryLocal.findById(alleyId).orElseThrow(AlleyDoesNotExistException::new);
-        UserAccount userAccount = userAccountRepositoryLocal.findByLogin(userLogin).orElseThrow(LoginDoesNotExistException::new);
         Timestamp startTime = StringToTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
         Timestamp endTime = StringToTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        if (!alleyRepositoryLocal.isAvailableAlleyInTimeRange(startTime, endTime, alleyId)) {
+            throw new AlleyNotAvailableException();
+        }
+
+        Alley alley = alleyRepositoryLocal.findById(alleyId).orElseThrow(AlleyDoesNotExistException::new);
+        UserAccount userAccount = userAccountRepositoryLocal.findByLogin(userLogin).orElseThrow(LoginDoesNotExistException::new);
         Reservation newReservation = Reservation.builder()
                 .userAccount(userAccount)
                 .startDate(startTime)
