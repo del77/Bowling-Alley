@@ -24,7 +24,7 @@ public interface ScoreService {
      * @throws SsbdApplicationException gdy nie uda się pobrać wyników dla rezerwacji
      * @retun lista wyników dla rezerwacji
      */
-    List<ScoreDto> getScoresForReservation(Long id);
+    List<ScoreDto> getScoresForReservation(Long id) throws SsbdApplicationException;
 
     /**
      * Wyświetla najlepszy wynik osiągnięty na wybranym torze

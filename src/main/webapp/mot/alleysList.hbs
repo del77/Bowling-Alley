@@ -12,7 +12,7 @@
                         </button>
                         <div class="dropdown-menu">
                             {{#if isEmployee}}
-                                <a href="#" class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
+                                <a href="{{webContextPath}}/history/{{this.id}}" class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
                                 <a title="{{lang.maxScore}}"
                                    onclick="getMaxScore({{this.id}}, {{this.number}})"
                                    href="#" class="dropdown-item btn-success">{{lang.showMaxScore}}</a>

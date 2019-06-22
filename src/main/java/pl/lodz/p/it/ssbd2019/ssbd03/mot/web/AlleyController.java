@@ -1,12 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ScoreService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyMaxScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -55,6 +55,8 @@ public class AlleyController implements Serializable {
 
     private static final String NEW_ALLEY_URL = "alleys/new";
     private static final String ADD_ALLEY_VIEW_URL = "alleys/new/newAlley.hbs";
+
+    private static final String ALLEY_HISTORY_VIEW = "mot/history/history.hbs";
 
     private List<String> errorMessages = new ArrayList<>();
 
@@ -140,19 +142,35 @@ public class AlleyController implements Serializable {
     /**
      * Wyświetla historię rozgrywek na torze.
      *
-     * @return Widok z hustorią rozgrywek dla toru.
+     * @return Widok z historią rozgrywek dla toru.
      */
     @GET
     @RolesAllowed(MotRoles.GET_ALLEY_GAMES_HISTORY)
-    @Path("{id}/history")
+    @Path("history/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public String showGamesHistoryForAlley(@BeanParam Long id) {
-        List<ReservationDto> res = reservationService.getFinishedReservationsForAlley(id);
+    public String showGamesHistoryForAlley(@PathParam("id") Long id) {
+        List<ReservationFullDto> res;
         List<ScoreDto> scoreDtos = new ArrayList<>();
-        for(ReservationDto r : res) {
-            scoreDtos.addAll(scoreService.getScoresForReservation(r.get));
+        try {
+            res = reservationService.getFinishedReservationsForAlley(id);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+            models.put("scores",scoreDtos);
+            return ALLEY_HISTORY_VIEW;
+        }
+
+        try {
+            if(res.size() > 0) {
+                for(ReservationFullDto r : res) {
+                    scoreDtos.addAll(scoreService.getScoresForReservation(r.getId()));
+                }
+            }
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
         }
         models.put("scores", scoreDtos);
+        return ALLEY_HISTORY_VIEW;
+
     }
 
     /**

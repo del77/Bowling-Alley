@@ -1,0 +1,37 @@
+{{#partial "content"}}
+    <h2>{{lang.scoresHistory}}</h2>
+    {{#each scores}}
+        <div class="question-card card mb-4">
+            <!--Card content-->
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{lang.reservationId}}</h6>
+                        </div>
+                        <p class="mb-1">{{this.reservationId}}</p>
+                    </li>
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{lang.player}}</h6>
+                        </div>
+                        <p class="mb-1">{{this.login}}</p>
+                    </li>
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{lang.score}}</h6>
+                        </div>
+                        <p class="mb-1">{{this.score}}</p>
+                    </li>
+                    <li class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{lang.date}}</h6>
+                        </div>
+                        <p class="mb-1">{{this.date}}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {{/each}}
+{{/partial}}
+{{> layout }}
