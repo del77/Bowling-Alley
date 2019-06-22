@@ -1,0 +1,8 @@
+{{#partial "content"}}
+    <form class="form-horizontal" method="post" data-form-confirm>
+        {{> mor/newReservation/components/basicNewReservationForm}}
+        <input type="submit" class="btn btn-secondary" value="{{lang.newReservationShowAvailableAlleysButton}}"/>
+    </form>
+    {{> mor/newReservation/components/availableAlleysList }}
+{{/partial}}
+{{> layout }}

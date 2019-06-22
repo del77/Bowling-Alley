@@ -36,7 +36,7 @@ public class ReservationController implements Serializable {
     private static final String ERROR = "errors";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
-    private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
+    private static final String NEW_RESERVATION_VIEW = "mor/newReservation/clientNewReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
     private static final String RESERVATION_DETAILS_PATH = "/myreservations/details/";
 
