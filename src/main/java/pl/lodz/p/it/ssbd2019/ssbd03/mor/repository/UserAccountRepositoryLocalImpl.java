@@ -33,7 +33,7 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
     }
 
     @Override
-    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS, MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION})
+    @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS, MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
     public Optional<UserAccount> findByLogin(String login) {
         TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
         namedQuery.setParameter("login", login);

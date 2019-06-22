@@ -15,21 +15,21 @@ import javax.ws.rs.FormParam;
 @NoArgsConstructor
 @EndTimeAfterStartTime(message = "{validate.endTimeAfterStartTime}")
 @StartDateAfterPresent(message = "{validate.startDateBeforePresent}")
-public class NewReservationDto {
+public class ClientNewReservationDto {
 
     @NotEmpty(message = "{validate.startDateIsNull}")
     @FormParam("startDay")
-    private String startDay;
+    protected String startDay;
     
     @NotEmpty(message = "{validate.startHourIsEmpty}")
     @FormParam("startHour")
-    private String startHour;
+    protected String startHour;
 
     @NotEmpty(message = "{validate.endHourIsEmpty}")
     @FormParam("endHour")
-    private String endHour;
+    protected String endHour;
     
     @Min(value = 1, message = "{validate.playersCountBelow1}")
     @FormParam("numberOfPlayers")
-    private int numberOfPlayers;
+    protected int numberOfPlayers;
 }

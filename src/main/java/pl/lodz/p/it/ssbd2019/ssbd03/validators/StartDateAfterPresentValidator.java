@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.validators;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
 
 import javax.validation.ConstraintValidator;
@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
 
-public class StartDateAfterPresentValidator implements ConstraintValidator<StartDateAfterPresent, NewReservationDto> {
+public class StartDateAfterPresentValidator implements ConstraintValidator<StartDateAfterPresent, ClientNewReservationDto> {
 
     @Override
-    public boolean isValid(NewReservationDto newReservationDto, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(ClientNewReservationDto newReservationDto, ConstraintValidatorContext constraintValidatorContext) {
         if (hasNullDataFields(newReservationDto)) {
             return false;
         }
@@ -26,7 +26,7 @@ public class StartDateAfterPresentValidator implements ConstraintValidator<Start
         }
     }
 
-    private boolean hasNullDataFields(NewReservationDto newReservationDto) {
+    private boolean hasNullDataFields(ClientNewReservationDto newReservationDto) {
         return newReservationDto.getEndHour() == null || newReservationDto.getStartDay() == null || newReservationDto.getStartHour() == null;
     }
 }

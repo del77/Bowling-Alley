@@ -510,6 +510,7 @@
       <web-resource-name>CreateReservationForUser</web-resource-name>
       <description/>
       <url-pattern>/reservations/new</url-pattern>
+      <url-pattern>/reservations/new/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
