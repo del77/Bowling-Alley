@@ -1,0 +1,11 @@
+{{#block "alleyNumberInput"}}
+    <div class="input-group mb-3 mx-0">
+        <div class="input-group-prepend">
+            <span class="input-group-text">{{lang.alleyNumber}} {{#if isRequired}}*{{/if}}</span>
+        </div>
+        <input class="form-control" type="number" aria-label="alleyNumber"
+               aria-describedby="basic-addon1" name="alleyNumber" id="alleyNumber"
+               autofocus min="0" value="{{value}}"
+            {{#if isRequired}}required {{/if}} />
+    </div>
+{{/block}}

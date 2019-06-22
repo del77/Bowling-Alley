@@ -26,7 +26,7 @@ $('input.starttimepicker').timepicker({
     autoShow: false,
     timeFormat: 'HH:mm',
     interval: 30,
-    minTime: '10',
+    minTime: '10:00am',
     maxTime: '11:00pm',
     startTime: '10:00',
     dynamic: false,

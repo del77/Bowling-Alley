@@ -73,6 +73,7 @@ public class Reservation {
     @ToString.Exclude
     private Alley alley;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.MERGE)
     private List<Comment> comments;
 

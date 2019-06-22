@@ -1,8 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationOptimisticLockException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
@@ -12,10 +11,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionRolledbackLocalException;
-import javax.persistence.EntityManager;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,10 +44,19 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER,
             MorRoles.ADD_COMMENT_FOR_RESERVATION, MorRoles.DISABLE_COMMENT})
     public void edit(Reservation reservation) throws DataAccessException {
-        try{
+        try {
             super.edit(reservation);
-        } catch(OptimisticLockException e){
-            throw new ReservationOptimisticLockException("Reservation has been updated before these changes were made", e);
+        } catch (OptimisticLockException e) {
+            throw new ReservationOptimisticLockException(e);
+        } catch (ConstraintViolationException e) {
+            if (e.getMessage().contains("present") || e.getMessage().contains("future")) {
+                throw new DatesNotInPresentOrFuture(e);
+            } else if (e.getMessage().contains("date")) {
+                throw new DatesConstraintViolationException(e);
+            }
+            throw new DatabaseConstraintViolationException("Violated constraint during item editing", e);
+        } catch (PersistenceException e) {
+            throw new EntityUpdateException("Could not perform edit operation.", e);
         }
     }
 

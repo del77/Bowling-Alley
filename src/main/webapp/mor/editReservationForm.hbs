@@ -1,0 +1,20 @@
+{{#partial "content"}}
+    <form class="form-horizontal" role="form" method="post" data-form-confirm>
+        <h2>
+            {{lang.reservationEdit}}
+        </h2>
+        {{> mor/inputs/alleyNumberInput isRequired=true value=data.alleyNumber}}
+        <div class="form-group row mx-0 mb-0">
+            {{> mor/inputs/dateTimeInput label=lang.startReservationDate id="start" dateValue=data.startDay timeValue=data.startHour isRequired=true extremum="start"}}
+            {{> mor/inputs/dateTimeInput label=lang.endReservationDate id="end" dateValue=data.endDay timeValue=data.endHour isRequired=true extremum="end"}}
+        </div>
+        {{> mor/inputs/playerCountInput isRequired=true value=data.numberOfPlayers}}
+        <div class="form-group">
+            <input type="hidden" class="form-control" id="active" name="active" value="{{data.active}}"/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+            {{lang.update}}
+        </button>
+    </form>
+{{/partial}}
+{{> layout }}

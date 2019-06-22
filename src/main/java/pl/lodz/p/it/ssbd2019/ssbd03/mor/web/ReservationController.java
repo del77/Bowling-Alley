@@ -1,13 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationAllForm;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -24,7 +21,6 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,27 +30,37 @@ import java.util.List;
 public class ReservationController implements Serializable {
 
     private static final String ERROR = "errors";
+    private static final String DATA = "data";
+    private static final String USERNAME = "userName";
+    
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
+    private static final String RESERVATION_LIST_URL = "/myreservations";
+    
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
+    
     private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
+    
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
     private static final String RESERVATION_DETAILS_PATH = "/myreservations/details/";
+    
+    private static final String EDIT_RESERVATION_VIEW = "mor/editReservationForm.hbs";
+    private static final String EDIT_OWN_RESERVATION_URL = "myreservations/edit/";
+    
+    @Inject
+    private Models models;
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
 
     @Inject
-    private Models models;
+    private RedirectUtil redirectUtil;
 
     @Inject
     private LocalizedMessageProvider localization;
 
     @Inject
-    private RedirectUtil redirectUtil;
-
-    @Inject
     private DtoValidator validator;
-
+    
     private transient NewReservationDto newReservationDto;
 
     /**
@@ -67,7 +73,7 @@ public class ReservationController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String getOwnReservations() {
         try {
-            String login = (String) models.get("userName");
+            String login = (String) models.get(USERNAME);
             List<ReservationFullDto> reservations = reservationService.getReservationsByUserLogin(login);
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("ownReservationList"));
@@ -84,7 +90,7 @@ public class ReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("new")
+    @Path("/new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
@@ -99,7 +105,7 @@ public class ReservationController implements Serializable {
      * @return widok z dostępnymi torami
      */
     @POST
-    @Path("new")
+    @Path("/new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@BeanParam NewReservationDto newReservationDto) {
@@ -120,14 +126,14 @@ public class ReservationController implements Serializable {
             FormData formData = FormData.builder().data(newReservationAllForm).build();
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, Arrays.asList(localization.get(e.getCode())));
+            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, Collections.singletonList(localization.get(e.getCode())));
         }
     }
 
     /**
      * Tworzy rezerwacje
      *
-     * @param alleyId
+     * @param alleyId identyfikator toru, na którym użytkownik chce utworzyć rezerwację
      * @return informacja o wyniku rezerwacji
      */
     @GET
@@ -150,7 +156,7 @@ public class ReservationController implements Serializable {
         FormData formData = new FormData();
         formData.setData(newReservationAllForm);
         try {
-            String login = (String) models.get("userName");
+            String login = (String) models.get(USERNAME);
             reservationService.addReservation(newReservationDto, alleyId, login);
             formData.setInfos(Collections.singletonList(localization.get("newReservationCreated")));
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
@@ -167,22 +173,54 @@ public class ReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("{id}/edit")
+    @Path("/edit/{id}")
     @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String editReservation() {
-        throw new UnsupportedOperationException();
+    public String editReservation(@PathParam("id") long id, @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
+        if (models.get(DATA) == null) {
+            try {
+                DetailedReservationDto dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
+                models.put(DATA, dto);
+            } catch (SsbdApplicationException e) {
+                return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
+            }
+        }
+        return EDIT_RESERVATION_VIEW;
     }
-
+    
     /**
-     * Dodaje nową rezerwację
+     * Edytuje rezerwację o podanym id
+     * @param id identyfikator rezerwacji
+     * @param reservation dto reprezentujące rezerwację
+     * @return widok ukończenia operacji
      */
     @POST
-    @Path("{id}/edit")
+    @Path("/edit/{id}")
     @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String editReservation(@BeanParam Reservation reservation) {
-        throw new UnsupportedOperationException();
+    public String editReservation(@PathParam("id") long id, @BeanParam DetailedReservationDto reservation) {
+        List<String> errorMessages = validator.validate(reservation);
+    
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(
+                    EDIT_OWN_RESERVATION_URL + id,
+                    reservation,
+                    errorMessages);
+        }
+        
+        try {
+            DetailedReservationDto resultDto = reservationService.updateReservation(reservation,(String) models.get(USERNAME));
+            FormData formData = FormData.builder()
+                    .data(resultDto)
+                    .infos(Collections.singletonList(localization.get("reservationUpdated")))
+                    .build();
+            return redirectUtil.redirect(EDIT_OWN_RESERVATION_URL + id, formData);
+        } catch (NotYourReservationException e) {
+            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(EDIT_OWN_RESERVATION_URL + id, reservation, Collections.singletonList(localization.get(e.getCode())));
+        }
     }
 
     /**
@@ -199,7 +237,7 @@ public class ReservationController implements Serializable {
     public String getOwnReservationDetails(@PathParam("id") Long reservationId,
                                            @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
-        String login = (String) models.get("userName");
+        String login = (String) models.get(USERNAME);
         try {
             ReservationFullDto reservation = reservationService.getUserReservationById(reservationId, login);
             boolean isExpired = ReservationValidator.isExpired(reservation.getStartDate());
@@ -246,7 +284,7 @@ public class ReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("{id}/add-comment")
+    @Path("/{id}/add-comment")
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String addCommentForReservation(@PathParam("id") Long id) {
@@ -261,7 +299,7 @@ public class ReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("{id}/add-comment")
+    @Path("/{id}/add-comment")
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String addCommentForReservation(@BeanParam Long id, Comment comment) {
@@ -275,7 +313,7 @@ public class ReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("{id}/edit-comment")
+    @Path("/{id}/edit-comment")
     @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String editCommentForOwnReservation(@PathParam("id") Long id) {
@@ -290,14 +328,16 @@ public class ReservationController implements Serializable {
      * @return Widok z rezultatem.
      */
     @POST
-    @Path("{id}/edit-comment")
+    @Path("/{id}/edit-comment")
     @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String editCommentForOwnReservation(@BeanParam Long id, Comment comment) {
         throw new UnsupportedOperationException();
     }
-
+    
+    
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
+
 }

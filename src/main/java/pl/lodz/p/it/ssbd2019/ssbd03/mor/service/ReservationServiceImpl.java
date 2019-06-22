@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
+import org.javatuples.Pair;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
@@ -7,21 +8,21 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationAlreadyInactiveException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.AlleyNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToAndFromTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -33,8 +34,10 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
+import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -42,6 +45,8 @@ import java.util.stream.Collectors;
 @Interceptors(InterceptorTracker.class)
 @DenyAll
 public class ReservationServiceImpl extends TransactionTracker implements ReservationService {
+    
+    private Reservation ownEditedReservation;
 
     @EJB(beanName = "MORReservationRepository")
     private ReservationRepositoryLocal reservationRepositoryLocal;
@@ -57,8 +62,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException {
-        Timestamp startTime = StringToTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
-        Timestamp endTime = StringToTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp startTime = StringToAndFromTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = StringToAndFromTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(startTime, endTime);
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
@@ -68,8 +73,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     public void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException {
         Alley alley = alleyRepositoryLocal.findById(alleyId).orElseThrow(AlleyDoesNotExistException::new);
         UserAccount userAccount = userAccountRepositoryLocal.findByLogin(userLogin).orElseThrow(LoginDoesNotExistException::new);
-        Timestamp startTime = StringToTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
-        Timestamp endTime = StringToTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp startTime = StringToAndFromTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
+        Timestamp endTime = StringToAndFromTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
         Reservation newReservation = Reservation.builder()
                 .userAccount(userAccount)
                 .startDate(startTime)
@@ -89,8 +94,27 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
-    public void updateReservation(Reservation reservation) {
-        throw new UnsupportedOperationException();
+    public DetailedReservationDto updateReservation(DetailedReservationDto reservationDto, String userLogin) throws SsbdApplicationException {
+        if (!doesReservationBelongToUser(this.ownEditedReservation, userLogin)) {
+            throw new NotYourReservationException();
+        }
+        ownEditedReservation.setAlley(alleyRepositoryLocal.findByNumber(
+                reservationDto.getAlleyNumber())
+                .orElseThrow(AlleyNotFoundException::new)
+        );
+        Timestamp startDate = StringToAndFromTimestampConverter.getTimestamp(
+                reservationDto.getStartDay(),
+                reservationDto.getStartHour()).orElseThrow(DataParseException::new
+        );
+        Timestamp endDate = StringToAndFromTimestampConverter.getTimestamp(
+                reservationDto.getEndDay(),
+                reservationDto.getEndHour()).orElseThrow(DataParseException::new
+        );
+        ownEditedReservation.setStartDate(startDate);
+        ownEditedReservation.setEndDate(endDate);
+        ownEditedReservation.setPlayersCount(reservationDto.getNumberOfPlayers());
+        reservationRepositoryLocal.edit(ownEditedReservation);
+        return reservationDto;
     }
 
     @Override
@@ -109,7 +133,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         return reservationRepositoryLocal
                 .findReservationsForUser(userId)
                 .stream()
-                .map(reservation -> Mapper.map(reservation, ReservationFullDto.class))
+                .map(res -> Mapper.map(res, ReservationFullDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -136,18 +160,48 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .orElseThrow(ReservationDoesNotExistException::new);
         return Mapper.map(reservation, ReservationFullDto.class);
     }
+    
+    @Override
+    @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS, MorRoles.EDIT_OWN_RESERVATION})
+    public DetailedReservationDto getOwnReservationById(Long reservationId, String userLogin) throws SsbdApplicationException {
+        try {
+            Reservation res = reservationRepositoryLocal.findById(reservationId).orElseThrow(EntityNotFoundException::new);
+            if (doesReservationBelongToUser(res, userLogin)) {
+                this.ownEditedReservation = res;
+            } else {
+                throw new NotYourReservationException();
+            }
+            Pair<Optional<String>, Optional<String>> startDateTime = StringToAndFromTimestampConverter.getDateAndTimeStrings(this.ownEditedReservation.getStartDate());
+            Pair<Optional<String>, Optional<String>> endDateTime = StringToAndFromTimestampConverter.getDateAndTimeStrings(this.ownEditedReservation.getEndDate());
+    
+            return DetailedReservationDto.builder()
+                    .startDay(startDateTime.getValue0().orElse(""))
+                    .startHour(startDateTime.getValue1().orElse(""))
+                    .endDay(endDateTime.getValue0().orElse(""))
+                    .endHour(endDateTime.getValue1().orElse(""))
+                    .active(this.ownEditedReservation.isActive())
+                    .numberOfPlayers(this.ownEditedReservation.getPlayersCount())
+                    .alleyNumber(this.ownEditedReservation.getAlley().getNumber())
+                    .build();
+        } catch (EntityNotFoundException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            throw new SsbdApplicationException(e);
+        }
+    }
+
 
     @Override
     @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS})
     public ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException {
-        Reservation reservation = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
+        Reservation res = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
 
-        if (!reservation.getUserAccount().getLogin().equals(login)) {
+        if (!res.getUserAccount().getLogin().equals(login)) {
             throw new ReservationDoesNotExistException();
         }
 
-        this.reservation = reservation;
-        return Mapper.map(reservation, ReservationFullDto.class);
+        this.reservation = res;
+        return Mapper.map(res, ReservationFullDto.class);
     }
 
     @Override
@@ -163,5 +217,13 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         }
         comment.setActive(false);
         reservationRepositoryLocal.edit(reservation);
+    }
+    
+    private boolean doesReservationBelongToUser(Reservation reservation, String userLogin) {
+        try {
+            return reservation.getUserAccount().getLogin().equals(userLogin);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 }
