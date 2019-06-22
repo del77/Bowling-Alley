@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Stateless(name = "MOTScoreRepository")
@@ -45,5 +46,18 @@ public class ScoreRepositoryLocalImpl extends AbstractCruRepository<Score, Long>
             throw new EntityRetrievalException("Couldn't retrieve scores for given reservation", e);
         }
 
+    }
+
+    @Override
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY})
+    public List<Score> getScoresByAlley(Long id) throws SsbdApplicationException {
+        try {
+            TypedQuery<Score> namedQuery = this.createNamedQuery("Score.findScoresForAlley");
+            namedQuery.setParameter("alleyId", id);
+            namedQuery.setParameter("endDate", new Timestamp(System.currentTimeMillis()));
+            return namedQuery.getResultList();
+        } catch (Exception e) {
+            throw new EntityRetrievalException("Couldn't retrieve scores for given alley", e);
+        }
     }
 }

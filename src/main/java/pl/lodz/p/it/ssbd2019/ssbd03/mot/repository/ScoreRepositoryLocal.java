@@ -19,4 +19,13 @@ public interface ScoreRepositoryLocal extends CruRepository<Score, Long> {
      * @throws SsbdApplicationException błąd w dostępie do danych
      */
     List<Score> getScoresByReservation(Long id) throws SsbdApplicationException;
+
+    /**
+     * Zwraca wyniki dla toru o podanym ID
+     *
+     * @param id ID rezerwacji
+     * @return lista wyników
+     * @throws SsbdApplicationException błąd w dostępie do danych
+     */
+    List<Score> getScoresByAlley(Long id) throws SsbdApplicationException;
 }

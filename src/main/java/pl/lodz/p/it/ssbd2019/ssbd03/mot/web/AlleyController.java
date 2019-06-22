@@ -62,6 +62,7 @@ public class AlleyController implements Serializable {
 
     private static final String ERROR = "errors";
     private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
+
     /**
      * Pobiera widok dodawania toru.
      *
@@ -149,22 +150,9 @@ public class AlleyController implements Serializable {
     @Path("history/{id}")
     @Produces(MediaType.TEXT_HTML)
     public String showGamesHistoryForAlley(@PathParam("id") Long id) {
-        List<ReservationFullDto> res;
         List<ScoreDto> scoreDtos = new ArrayList<>();
         try {
-            res = reservationService.getFinishedReservationsForAlley(id);
-        } catch (SsbdApplicationException e) {
-            displayError(localization.get(e.getCode()));
-            models.put("scores",scoreDtos);
-            return ALLEY_HISTORY_VIEW;
-        }
-
-        try {
-            if(res.size() > 0) {
-                for(ReservationFullDto r : res) {
-                    scoreDtos.addAll(scoreService.getScoresForReservation(r.getId()));
-                }
-            }
+            scoreDtos.addAll(scoreService.getScoresForAlley(id));
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
@@ -189,8 +177,8 @@ public class AlleyController implements Serializable {
         }
         return ALLEY_LIST_VIEW;
     }
-    
-    
+
+
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
