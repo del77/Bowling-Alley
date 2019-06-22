@@ -53,6 +53,11 @@ public class EmployeeReservationController implements Serializable {
 
     private transient EmployeeNewReservationDto newReservationDto;
 
+    /**
+     * Pobiera widok pozwalający klientowi stworzyć rezerwację.
+     *
+     * @return Widok z formularzem.
+     */
     @GET
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
@@ -62,6 +67,12 @@ public class EmployeeReservationController implements Serializable {
         return NEW_RESERVATION_VIEW;
     }
 
+    /**
+     * Pobiera dostępne tory w zadanym przedziale czasowym.
+     *
+     * @param newReservationDto dane rezerwacji
+     * @return widok z dostępnymi torami
+     */
     @POST
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
@@ -89,6 +100,12 @@ public class EmployeeReservationController implements Serializable {
         }
     }
 
+    /**
+     * Tworzy rezerwacje
+     *
+     * @param alleyId
+     * @return informacja o wyniku rezerwacji
+     */
     @GET
     @Path("new/{alley_id}")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)

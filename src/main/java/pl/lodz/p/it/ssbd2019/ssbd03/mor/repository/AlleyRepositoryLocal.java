@@ -21,7 +21,7 @@ public interface AlleyRepositoryLocal extends CruRepository<Alley, Long> {
     List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws EntityRetrievalException;
 
     /**
-     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     * Sprawdza czy tor w danym czasie nie jest zarezerwowany.
      * @param startTime czas początku przedziału
      * @param endTime czas końca przedziału
      * @param alleyId identyfikator toru
