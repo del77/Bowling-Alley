@@ -13,6 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
+import javax.persistence.PersistenceException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
 
 @Stateless(name = "MORUserAccountRepository")
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -34,9 +37,15 @@ public class UserAccountRepositoryLocalImpl extends AbstractCruRepository<UserAc
 
     @Override
     @RolesAllowed({MorRoles.GET_RESERVATIONS_FOR_USER, MorRoles.GET_OWN_RESERVATIONS, MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
-    public Optional<UserAccount> findByLogin(String login) {
-        TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
-        namedQuery.setParameter("login", login);
-        return Optional.of(namedQuery.getSingleResult());
+    public Optional<UserAccount> findByLogin(String login) throws EntityRetrievalException {
+        try {
+            TypedQuery<UserAccount> namedQuery = this.createNamedQuery("UserAccount.findByLogin");
+            namedQuery.setParameter("login", login);
+            return Optional.of(namedQuery.getSingleResult());
+        } catch (PersistenceException e) {
+            throw new LoginDoesNotExistException("Could not find entity with given login", e);
+        } catch (Exception e) {
+            throw new EntityRetrievalException();
+        }
     }
 }

@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
 import java.util.Optional;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 
 @Local
 public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, Long> {
@@ -13,5 +14,5 @@ public interface UserAccountRepositoryLocal extends CruRepository<UserAccount, L
      * @param login Login użytkownika
      * @return Encja reprezentująca konto użytkownika.
      */
-    Optional<UserAccount> findByLogin(String login);
+    Optional<UserAccount> findByLogin(String login) throws EntityRetrievalException;
 }
