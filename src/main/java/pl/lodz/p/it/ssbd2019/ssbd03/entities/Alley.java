@@ -20,7 +20,16 @@ import javax.validation.constraints.NotNull;
         value = {
                 @NamedQuery(
                         name = "Alley.findAlleysNotReservedBetweenTimes", 
-                        query = "select a from Alley a where a.id not in (select distinct a.id from Alley a, Reservation r where a.id = r.alley.id and ((r.startDate <= :startTime and :startTime <= r.endDate) or (r.startDate <= :endTime and :endTime <= r.endDate)))"
+                        query = "select a " +
+                                "from Alley a " +
+                                "where a.id not in (" +
+                                    "select distinct a.id " +
+                                    "from Alley a, Reservation r " +
+                                    "where a.id = r.alley.id and (" +
+                                        "((r.startDate < :startTime and :startTime < r.endDate) or (r.startDate < :endTime and :endTime < r.endDate)) or " +
+                                        "(:startTime <= r.startDate and r.endDate <= :endTime)" +
+                                    ")" +
+                                ")"
                 )
         }
 )
