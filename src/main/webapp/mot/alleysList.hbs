@@ -31,16 +31,36 @@
                 </div>
                 <div>
                     <h6 class="text-muted">{{lang.isActive}}: </h6>
-                    {{#if this.active}}
-                        <img src="{{webContextPath}}/static/img/tick.png"
-                             alt="true"
-                             width="30px"
-                             height="30px" style="display: inline-block; ">
+                    {{#if isEmployee}}
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="col-1">
+                                <form class="form-inline" role="form" method="post">
+                                    <div class="form-group">
+                                        <input class="form-control" type="checkbox" data-toggle="toggle"
+                                               data-offstyle="danger" data-onstyle="success" aria-label="toggle-lock"
+                                               data-on="<i class='fa fa-unlock'></i>"
+                                               data-off="<i class='fa fa-lock'></i>" data-size="mini"
+                                               onchange="submit()"
+                                               name="activeToggle" id="activeToggle" data-width="42" {{#if this.active}}
+                                               checked {{/if}}/>
+                                        <input type="hidden" id="alleyId" name="alleyId" readonly value="{{this.id}}"
+                                               aria-label="id">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     {{else}}
-                        <img src="{{webContextPath}}/static/img/cross.png"
-                             alt="false"
-                             width="30px"
-                             height="30px" style="display: inline-block; ">
+                        {{#if this.active}}
+                            <img src="{{webContextPath}}/static/img/tick.png"
+                                 alt="true"
+                                 width="30px"
+                                 height="30px" style="display: inline-block; ">
+                        {{else}}
+                            <img src="{{webContextPath}}/static/img/cross.png"
+                                 alt="false"
+                                 width="30px"
+                                 height="30px" style="display: inline-block; ">
+                        {{/if}}
                     {{/if}}
                 </div>
             </li>
@@ -63,14 +83,18 @@
         <script>
             function getMaxScore(alleyId, alleyNumber) {
                 fetch('{{webContextPath}}/alleys/' + alleyId + '/best-score')
-                        .then(resp => resp.json(), e => {
-                            console.log(e);
-                        })
-                        .then( resp => {
-                            const mp = document.getElementById('modal_body_p');
-                            mp.innerHTML = '{{lang.bestScoreForAlley}} ' + alleyNumber + ' {{lang.is}} ' + resp.score;
-                            $('#myModal').modal();
-                        })
+                        .then(resp = > resp.json(), e =
+            >
+                {
+                    console.log(e);
+                }
+            )
+            .
+                then(resp = > {
+                    const mp = document.getElementById('modal_body_p');
+                mp.innerHTML = '{{lang.bestScoreForAlley}} ' + alleyNumber + ' {{lang.is}} ' + resp.score;
+                $('#myModal').modal();
+            })
             }
         </script>
     </ul>

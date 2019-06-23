@@ -3,11 +3,10 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ScoreService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyLockDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -47,12 +46,10 @@ public class AlleyController implements Serializable {
     @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
 
-    @EJB(beanName = "MOTReservationService")
-    private ReservationService reservationService;
-
     @EJB(beanName = "MOTScoreService")
     private ScoreService scoreService;
 
+    private static final String BASE_PATH = "alleys";
     private static final String NEW_ALLEY_URL = "alleys/new";
     private static final String ADD_ALLEY_VIEW_URL = "alleys/new/newAlley.hbs";
 
@@ -115,29 +112,29 @@ public class AlleyController implements Serializable {
     }
 
     /**
-     * Wyświetla widok pozwalający odblokowac lub zablokowac tor
-     *
-     * @return Widok z listą torow oraz ich statusem zablokowania
-     */
-    @GET
-    @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    @Path("state")
-    @Produces(MediaType.TEXT_HTML)
-    public String updateLockStatusOnAlley() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Zmienia status zablokowania toru z podanym identyfikatorem
-     *
-     * @return Widok z listą torow oraz komunikatem o powodzeniu lub błędzie
+     * @param dto     dto z id toru, któremu należy zmienić flagę aktywności
+     * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
+     * @return Widok z listą torów oraz komunikatem o powodzeniu lub błędzie
      */
     @POST
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    @Path("state")
     @Produces(MediaType.TEXT_HTML)
-    public String updateLockStatusOnAlley(@BeanParam Long id, boolean state) {
-        throw new UnsupportedOperationException();
+    public String updateLockStatusOnAlley(@BeanParam AlleyLockDto dto, @QueryParam("idCache") Long idCache) {
+        boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
+        try {
+            alleyService.updateLockStatusOnAlleyById(dto.getId(), active);
+            FormData formData = new FormData();
+            String message = active ? localization.get("unlockedAlleySuccess") : localization.get("lockedAlleySuccess");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(BASE_PATH, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    BASE_PATH,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()) + "\n" + localization.get("couldntLockAlley"))
+            );
+        }
     }
 
     /**
@@ -169,7 +166,8 @@ public class AlleyController implements Serializable {
     @GET
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String getAllAlleys() {
+    public String getAllAlleys(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         try {
             models.put("alleys", alleyService.getAllAlleys());
         } catch (SsbdApplicationException e) {

@@ -40,6 +40,6 @@ public interface AlleyService {
      * @param id identyfikator toru
      * @param isActive nowa wartość flagi zablokowania
      */
-    void updateLockStatusOnAlleyById(Long id, boolean isActive);
+    void updateLockStatusOnAlleyById(Long id, boolean isActive) throws SsbdApplicationException;
 
 }
