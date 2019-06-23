@@ -23,11 +23,12 @@ $('.popover-dismiss').popover({
 });
 
 $('input.starttimepicker').timepicker({
+    zIndex: 10000,
     autoShow: false,
     timeFormat: 'HH:mm',
-    interval: 30,
-    minTime: '10:00am',
-    maxTime: '10:30pm',
+    interval: 60,
+    minTime: '11:00am',
+    maxTime: '11:00pm',
     startTime: '10:00',
     dynamic: false,
     dropdown: true,
@@ -35,11 +36,11 @@ $('input.starttimepicker').timepicker({
 });
 
 $('input.endtimepicker').timepicker({
+    zIndex: 10000,
     autoShow: false,
     timeFormat: 'HH:mm',
-    format: 'LT',
-    interval: 30,
-    minTime: '10:30am',
+    interval: 60,
+    minTime: '10:00am',
     maxTime: '11:00pm',
     startTime: '10:00',
     dynamic: false,

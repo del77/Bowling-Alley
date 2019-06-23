@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationItemRepositoryLoca
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationItemDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Interceptors(InterceptorTracker.class)
 @DenyAll
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class ReservationItemServiceImpl implements ReservationItemService {
+public class ReservationItemServiceImpl extends TransactionTracker implements ReservationItemService {
     
     @EJB(beanName = "MORReservationItemRepository")
     private ReservationItemRepositoryLocal reservationItemRepositoryLocal;

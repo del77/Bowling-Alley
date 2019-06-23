@@ -1,5 +1,5 @@
 {{#partial "content"}}
-    <form class="form-horizontal" role="form" method="post" data-form-confirm>
+    <form class="form-horizontal" role="form" method="post">
         <h2>
             {{lang.reservationEdit}}
         </h2>
@@ -13,7 +13,7 @@
             <input type="hidden" class="form-control" id="active" name="active" value="{{data.active}}"/>
         </div>
         {{> mor/inputs/itemTable }}
-        <button type="submit" class="btn btn-primary btn-block">
+        <button type="submit" class="btn btn-primary btn-block" onclick="form.method='post'; form.action='{{webContextPath}}/{{reservationContext}}/edit/{{idFromUri}}';">
             {{lang.update}}
         </button>
         <div class="form-group">

@@ -1,12 +1,12 @@
 {{#block "itemTable"}}
-    <aside class="my-3">
-        <div class="input-group mx-0 mt-3">
-            <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-block btn-sm btn-success my-2" onclick="addItem()">{{lang.add}}</button>
-                </div>
-                <div class="col-9"></div>
+    <aside class="mt-6 mb-3">
+        <div class="row">
+            <div class="col-3">
+                <button class="btn btn-block btn-sm btn-success my-2" onclick="addItem()">{{lang.addItem}}</button>
             </div>
+            <div class="col-9"></div>
+        </div>
+        <div class="input-group mx-0">
             <table class="table table-sm table-striped" id="itemTable">
                 <thead class="bg-primary">
                     <tr>
@@ -21,7 +21,7 @@
                             <td>{{this.size}}</td>
                             <td>
                                 <input id="size" name="size" type="hidden" value="{{this.size}}">
-                                <input class="form-control" type="number" aria-label="Quantity input"
+                                <input class="form-control input-sm" type="number" aria-label="Quantity input"
                                        aria-describedby="basic-addon1" name="count" id="count"
                                        required autofocus min="0" max="2147483647" value="{{this.count}}"></td>
                             <td>
@@ -37,8 +37,8 @@
         function addItem() {
             let table = document.getElementById("itemTable");
             let newRow = table.insertRow(table.rows.length);
-            newRow.insertCell(0).innerHTML = "<input id=\"size\" name=\"size\" type=\"number\">";
-            newRow.insertCell(1).innerHTML = "<input class=\"form-control\" type=\"number\" aria-label=\"Quantity input\" aria-describedby=\"basic-addon1\" name=\"count\" id=\"count\" required autofocus min=\"0\" max=\"2147483647\">";
+            newRow.insertCell(0).innerHTML = "<input class=\"form-control\" id=\"size\" name=\"size\" type=\"number\" required>";
+            newRow.insertCell(1).innerHTML = "<input class=\"form-control input-sm\" type=\"number\" aria-label=\"Quantity input\" aria-describedby=\"basic-addon1\" name=\"count\" id=\"count\" required autofocus min=\"0\" max=\"2147483647\">";
             newRow.insertCell(2).innerHTML = "<button class=\"btn btn-block btn-sm btn-danger\" onclick=\"deleteItem(getRowIndex(this))\">{{lang.delete}}</button>"
         }
 

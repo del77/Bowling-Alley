@@ -13,8 +13,8 @@
             {{/if}}
         </select>
         <div class="input-group-append">
-            <button type="submit" class="btn btn-block btn-primary btn-sm" style="z-index: -1"
-                onclick="form.action='{{webContextPath}}/{{reservationContext}}/available-alleys?redirectTo=update{{#if idFromUri}}&resId={{idFromUri}}{{/if}}';">
+            <button type="submit" class="btn btn-block btn-primary btn-sm"
+                onclick="form.method='post'; form.action='{{webContextPath}}/{{reservationContext}}/available-alleys?redirectTo=update{{#if idFromUri}}&resId={{idFromUri}}{{/if}}';">
                 {{lang.showAvailableAlleys}}
             </button>
         </div>

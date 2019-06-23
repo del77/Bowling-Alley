@@ -207,7 +207,9 @@ public class ReservationController implements Serializable {
     @Path("/edit/{id}")
     @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String editReservation(@PathParam("id") long id, @BeanParam DetailedReservationDto reservation) {
+    public String editReservation(
+            @PathParam("id") long id,
+            @BeanParam DetailedReservationDto reservation) {
         List<String> errorMessages = validator.validate(reservation);
     
         if (!errorMessages.isEmpty()) {
@@ -217,7 +219,7 @@ public class ReservationController implements Serializable {
                     errorMessages);
         }
     
-        System.out.println(newReservationDto.toString());
+        System.out.println(reservation.toString());
         
         try {
             DetailedReservationDto resultDto = reservationService.updateReservation(reservation, (String) models.get(USERNAME));
@@ -225,7 +227,7 @@ public class ReservationController implements Serializable {
                     .data(resultDto)
                     .infos(Collections.singletonList(localization.get("reservationUpdated")))
                     .build();
-            return redirectUtil.redirect(EDIT_OWN_RESERVATION_URL + id, formData);
+            return redirectUtil.redirect(RESERVATION_LIST_URL , formData);
         } catch (NotYourReservationException e) {
             return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
         } catch (SsbdApplicationException e) {
@@ -308,7 +310,8 @@ public class ReservationController implements Serializable {
                             .map(AvailableAlleyDto::getAlleyNumber)
                             .collect(Collectors.toList())
             );
-    
+            models.put(DATA, dto);
+            
             switch (redirectTo) {
                 case "create":
                     return getAvailableAlleys((Long) null);

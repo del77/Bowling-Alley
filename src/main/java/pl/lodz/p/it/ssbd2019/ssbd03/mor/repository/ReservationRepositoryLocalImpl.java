@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionRolledbackLocalException;
 import javax.persistence.*;
 import javax.validation.ConstraintViolationException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,6 +88,19 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
             return namedQuery.getResultList();
         } catch (TransactionRolledbackLocalException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+    
+    @Override
+    @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
+    public List<Reservation> getReservationsWithinTimeRange(Timestamp start, Timestamp end) throws DataAccessException {
+        try {
+            TypedQuery<Reservation> namedQuery = this.createNamedQuery("Reservation.getReservationsWithinTimeRange");
+            namedQuery.setParameter("startTime", start);
+            namedQuery.setParameter("endTime", end);
+            return namedQuery.getResultList();
+        } catch (Exception e) {
+            throw new EntityRetrievalException(e.getMessage());
         }
     }
 }

@@ -30,7 +30,7 @@ public class IdFilter extends HttpFilter {
             query = query.toLowerCase();
             int idIndex = query.indexOf("id");
             if (!isItIdCache(query, idIndex)) {
-                int start = query.indexOf('=', idIndex);
+                int start = query.indexOf('=', idIndex) + 1;
                 int end = query.indexOf('&', start);
                 if (end == -1) {
                     models.put(idKey, query.substring(start));

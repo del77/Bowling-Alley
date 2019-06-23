@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import javax.validation.ConstraintViolationException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Stateless(name = "MORReservationItemRepository")
@@ -65,6 +66,20 @@ public class ReservationItemRepositoryLocalImpl extends AbstractCruRepository<Re
             return namedQuery.getResultList();
         } catch (Exception e) {
             throw new EntityRetrievalException(e);
+        }
+    }
+    
+    @Override
+    @RolesAllowed({MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION,
+            MorRoles.CREATE_RESERVATION_FOR_USER, MorRoles.CREATE_RESERVATION})
+    public List<ReservationItem> getReservationItemsFromReservationsWithinTimeFrame(Timestamp startTime, Timestamp endTime) throws DataAccessException {
+        try {
+            TypedQuery<ReservationItem> namedQuery = this.createNamedQuery("ReservationItem.getItemsFromReservationInTimeFrame");
+            namedQuery.setParameter("startTime", startTime);
+            namedQuery.setParameter("endTime", endTime);
+            return namedQuery.getResultList();
+        } catch (Exception e) {
+            throw new EntityRetrievalException(e.getMessage());
         }
     }
 }

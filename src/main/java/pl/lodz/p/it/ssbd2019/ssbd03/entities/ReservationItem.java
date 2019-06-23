@@ -20,6 +20,17 @@ import javax.validation.constraints.NotNull;
         @NamedQuery(
                 name = "ReservationItem.getItemsForReservation",
                 query = "select i from ReservationItem i where i.reservation.id = :reservationId"
+        ),
+        @NamedQuery(
+                name = "ReservationItem.getItemsFromReservationInTimeFrame",
+                query = "SELECT i FROM ReservationItem i WHERE i.reservation.id IN (" +
+                            "SELECT DISTINCT r.id " +
+                            "FROM Reservation r " +
+                            "WHERE " +
+                            "(r.startDate < :startTime and :startTime < r.endDate) or " +
+                            "(r.startDate < :endTime and :endTime < r.endDate) or " +
+                            "(:startTime < r.startDate and r.endDate < :endTime)" +
+                        ")"
         )
 })
 public class ReservationItem {
