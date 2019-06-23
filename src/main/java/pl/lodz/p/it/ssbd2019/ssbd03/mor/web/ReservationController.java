@@ -60,6 +60,10 @@ public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
+     * 2. Użytkownik przechodzi na listę "Moje rezerwacje"
+     * 3. System wyświetla listę rezerwacji przypisanych do konta zalogowanego użytkownika, lista może być pusta.
+     *
      * @return Widok z listą rezerwacji.
      */
     @GET
