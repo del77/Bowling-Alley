@@ -26,6 +26,10 @@
                 </ul>
             </div>
         </div>
+    {{else}}
+        <div class="d-flex justify-content-center m-3">
+            {{lang.emptyAlleyHistoryList}}
+        </div>
     {{/each}}
 {{/partial}}
 {{> layout }}
