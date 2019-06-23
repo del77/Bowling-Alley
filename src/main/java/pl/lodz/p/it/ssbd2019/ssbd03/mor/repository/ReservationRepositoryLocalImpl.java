@@ -54,9 +54,9 @@ public class ReservationRepositoryLocalImpl extends AbstractCruRepository<Reserv
             } else if (e.getMessage().contains("date")) {
                 throw new DatesConstraintViolationException(e);
             }
-            throw new DatabaseConstraintViolationException("Violated constraint during item editing", e);
+            throw new DatabaseConstraintViolationException(e);
         } catch (PersistenceException e) {
-            throw new EntityUpdateException("Could not perform edit operation.", e);
+            throw new EntityUpdateException(e);
         }
     }
 

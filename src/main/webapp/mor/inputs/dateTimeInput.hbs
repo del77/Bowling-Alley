@@ -6,9 +6,7 @@
         <input class="form-control datepicker" type="text" aria-label="{{label}}"
                name="{{id}}Day" id="{{id}}Day" maxlength="10" minlength="10"
                value="{{dateValue}}" {{#if isRequired}}required{{/if}} />
-        <div class="input-group-append">
-            <input class="{{extremum}}timepicker" aria-label="{{label}}-time" type="text" name="{{id}}Hour" id="{{id}}Hour"
-               {{#if isRequired}}required{{/if}} value="{{timeValue}}"/>
-        </div>
+        <input class="{{extremum}}timepicker form-control" aria-label="{{label}}-time" type="text" name="{{id}}Hour" id="{{id}}Hour"
+           {{#if isRequired}}required{{/if}} value="{{timeValue}}" readonly/>
     </div>
 {{/block}}

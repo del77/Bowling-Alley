@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
-public class DatesNotInPresentOrFuture  extends DataAccessException {
+public class DatesNotInPresentOrFuture extends DataAccessException {
     private static final String CODE = "datesNotFutureViolation";
     
     public DatesNotInPresentOrFuture() {

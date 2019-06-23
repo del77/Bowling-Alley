@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StringToAndFromTimestampConverter {
+public class StringTimestampConverter {
 
-    private static Logger logger = Logger.getLogger(StringToAndFromTimestampConverter.class.getName());
+    private static Logger logger = Logger.getLogger(StringTimestampConverter.class.getName());
     private static SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
     public static Optional<Timestamp> getStartDate(NewReservationDto newReservationDto){

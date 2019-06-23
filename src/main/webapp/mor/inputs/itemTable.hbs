@@ -1,0 +1,26 @@
+{{#block "itemTable"}}
+    <aside class="my-3">
+        <div class="input-group mx-0">
+            <table class="table table-sm table-striped">
+                <thead class="bg-primary">
+                    <tr>
+                        <th scope="col">{{lang.itemSize}}</th>
+                        <th scope="col">{{lang.itemCount}}*</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                        <tr>
+                            <td>{{this.size}}</td>
+                            <td>
+                                <input id="size" name="size" type="hidden" value="{{this.size}}">
+                                <input class="form-control" type="number" aria-label="Quantity input"
+                                       aria-describedby="basic-addon1" name="count" id="count"
+                                       required autofocus min="0" max="2147483647" value="{{this.count}}"></td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </aside>
+{{/block}}

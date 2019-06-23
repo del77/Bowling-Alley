@@ -27,7 +27,7 @@ $('input.starttimepicker').timepicker({
     timeFormat: 'HH:mm',
     interval: 30,
     minTime: '10:00am',
-    maxTime: '11:00pm',
+    maxTime: '10:30pm',
     startTime: '10:00',
     dynamic: false,
     dropdown: true,
@@ -37,6 +37,7 @@ $('input.starttimepicker').timepicker({
 $('input.endtimepicker').timepicker({
     autoShow: false,
     timeFormat: 'HH:mm',
+    format: 'LT',
     interval: 30,
     minTime: '10:30am',
     maxTime: '11:00pm',

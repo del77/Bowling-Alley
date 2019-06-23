@@ -16,6 +16,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 @IdClass(ReservationItemId.class)
+@NamedQueries(value = {
+        @NamedQuery(
+                name = "ReservationItem.getItemsForReservation",
+                query = "select i from ReservationItem i where i.reservation.id = :reservationId"
+        )
+})
 public class ReservationItem {
     @Id
     @ManyToOne

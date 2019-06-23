@@ -1,8 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationItemService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SessionScoped
 @Controller
@@ -51,6 +52,9 @@ public class ReservationController implements Serializable {
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
+    
+    @EJB(beanName = "MORReservationItemService")
+    private ReservationItemService reservationItemService;
 
     @Inject
     private RedirectUtil redirectUtil;
@@ -77,7 +81,6 @@ public class ReservationController implements Serializable {
             List<ReservationFullDto> reservations = reservationService.getReservationsByUserLogin(login);
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("ownReservationList"));
-            models.put("reservationContext", "myreservations");
         } catch (SsbdApplicationException e) {
             displayError(localization.get("reservationListError"));
         }
@@ -170,7 +173,9 @@ public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
      *
-     * @return Widok z formularzem.
+     * @param id identyfikator rezerwacji
+     * @param idCache identyfikator cache
+     * @return Widok z formularzem edycji lub widok listy własnej rezerwacji, gdy nie udało się znaleźć rezerwacji o podanym id
      */
     @GET
     @Path("/edit/{id}")
@@ -181,7 +186,9 @@ public class ReservationController implements Serializable {
         if (models.get(DATA) == null) {
             try {
                 DetailedReservationDto dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
+                ReservationItemsDto items = reservationItemService.getItemsForReservation(id);
                 models.put(DATA, dto);
+                models.put("items", items);
             } catch (SsbdApplicationException e) {
                 return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
             }
@@ -191,9 +198,10 @@ public class ReservationController implements Serializable {
     
     /**
      * Edytuje rezerwację o podanym id
+     *
      * @param id identyfikator rezerwacji
      * @param reservation dto reprezentujące rezerwację
-     * @return widok ukończenia operacji
+     * @return widok ukończenia operacji lub widok listy własnej rezerwacji, gdy nie udało się znaleźć rezerwacji o podanym id
      */
     @POST
     @Path("/edit/{id}")
@@ -210,7 +218,7 @@ public class ReservationController implements Serializable {
         }
         
         try {
-            DetailedReservationDto resultDto = reservationService.updateReservation(reservation,(String) models.get(USERNAME));
+            DetailedReservationDto resultDto = reservationService.updateReservation(reservation, (String) models.get(USERNAME));
             FormData formData = FormData.builder()
                     .data(resultDto)
                     .infos(Collections.singletonList(localization.get("reservationUpdated")))
@@ -276,65 +284,41 @@ public class ReservationController implements Serializable {
             );
         }
     }
-
-    /**
-     * Widok pozwalający klientowi dodać komentarz do rezerwacji
-     *
-     * @param id wybrana rezerwacja
-     * @return Widok z formularzem.
-     */
-    @GET
-    @Path("/{id}/add-comment")
-    @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String addCommentForReservation(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Dodaje komentarz do rezerwacji
-     *
-     * @param id      wybrana rezerwacja
-     * @param comment komentarz do dodania
-     * @return Widok z rezultatem.
-     */
-    @POST
-    @Path("/{id}/add-comment")
-    @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String addCommentForReservation(@BeanParam Long id, Comment comment) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Widok pozwalający klientowi edytowac własny komentarz do rezerwacji
-     *
-     * @param id wybrany komentarz
-     * @return Widok z formularzem.
-     */
-    @GET
-    @Path("/{id}/edit-comment")
-    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String editCommentForOwnReservation(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Dodaje komentarz do rezerwacji
-     *
-     * @param id      wybrana rezerwacja
-     * @param comment komentarz do dodania
-     * @return Widok z rezultatem.
-     */
-    @POST
-    @Path("/{id}/edit-comment")
-    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String editCommentForOwnReservation(@BeanParam Long id, Comment comment) {
-        throw new UnsupportedOperationException();
-    }
     
+    /**
+     *
+     * @param
+     */
+    @POST
+    @Path("available-alleys")
+    @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION})
+    @Produces(MediaType.TEXT_HTML)
+    public String injectAvailableAlleys(
+            @BeanParam DetailedReservationDto dto,
+            @QueryParam("redirectTo") String redirectTo,
+            @QueryParam("resId") Long reservationId) {
+        
+        try {
+            models.put(
+                    "availableAlleyNumbers",
+                    reservationService.getAvailableAlleysInTimeRange(dto)
+                            .stream()
+                            .map(AvailableAlleyDto::getAlleyNumber)
+                            .collect(Collectors.toList())
+            );
+    
+            switch (redirectTo) {
+                case "create":
+                    return getAvailableAlleys((Long) null);
+                case "update":
+                    return editReservation(reservationId, (Long) null);
+                default:
+                    return getOwnReservations();
+            }
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
+        }
+    }
     
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));

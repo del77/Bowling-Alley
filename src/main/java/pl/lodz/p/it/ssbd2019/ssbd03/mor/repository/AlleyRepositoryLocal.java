@@ -22,10 +22,11 @@ public interface AlleyRepositoryLocal extends CruRepository<Alley, Long> {
     List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException;
     
     /**
-     * Looks for an alley with a given number
+     * Zwraca tor o podanym numerze
      *
-     * @param number alley's number
-     * @return entity with given number
+     * @param number numer toru
+     * @return encja toru o podanym numerze
+     * @throws DataAccessException Brak rekordu toru o podanym numerze
      */
-    Optional<Alley> findByNumber(int number);
+    Optional<Alley> findByNumber(int number) throws DataAccessException;
 }

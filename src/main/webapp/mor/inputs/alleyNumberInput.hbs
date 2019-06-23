@@ -3,9 +3,20 @@
         <div class="input-group-prepend">
             <span class="input-group-text">{{lang.alleyNumber}} {{#if isRequired}}*{{/if}}</span>
         </div>
-        <input class="form-control" type="number" aria-label="alleyNumber"
-               aria-describedby="basic-addon1" name="alleyNumber" id="alleyNumber"
-               autofocus min="0" value="{{value}}"
-            {{#if isRequired}}required {{/if}} />
+        <select class="custom-select" name="alleyNumber" id="alleyNumber" aria-label="alleyNumber" {{#if isRequired}}required{{/if}}>
+            {{#if availableAlleyNumbers}}
+                {{#each availableAlleyNumbers}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            {{else}}
+                <option value="{{value}}">{{value}}</option>
+            {{/if}}
+        </select>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-block btn-primary btn-sm" style="z-index: -1"
+                onclick="form.action='{{webContextPath}}/{{reservationContext}}/available-alleys?redirectTo=update{{#if idFromUri}}&resId={{idFromUri}}{{/if}}';">
+                {{lang.showAvailableAlleys}}
+            </button>
+        </div>
     </div>
 {{/block}}

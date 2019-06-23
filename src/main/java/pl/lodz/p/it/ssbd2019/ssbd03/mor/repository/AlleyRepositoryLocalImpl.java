@@ -56,9 +56,13 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     
     @Override
     @PermitAll
-    public Optional<Alley> findByNumber(int number) {
-        TypedQuery<Alley> namedQuery = this.createNamedQuery("Alley.findByNumber");
-        namedQuery.setParameter("number", number);
-        return Optional.of(namedQuery.getSingleResult());
+    public Optional<Alley> findByNumber(int number) throws DataAccessException {
+        try {
+            TypedQuery<Alley> namedQuery = this.createNamedQuery("Alley.findByNumber");
+            namedQuery.setParameter("number", number);
+            return Optional.of(namedQuery.getSingleResult());
+        } catch (Exception e) {
+            throw new EntityRetrievalException(e);
+        }
     }
 }
