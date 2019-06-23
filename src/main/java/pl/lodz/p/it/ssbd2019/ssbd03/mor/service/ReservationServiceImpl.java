@@ -140,7 +140,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     @Override
     @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS})
     public ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException {
-        Reservation reservation = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
+        reservation = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
 
         if (!reservation.getUserAccount().getLogin().equals(login)) {
             throw new ReservationDoesNotExistException();
