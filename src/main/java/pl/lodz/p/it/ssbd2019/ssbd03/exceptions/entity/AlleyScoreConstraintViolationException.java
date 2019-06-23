@@ -2,7 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity;
 
 public class AlleyScoreConstraintViolationException extends DataAccessException {
 
-        private static String code = "validate.alleyScoreConstraint";
+        private static String code = "alleyScoreConstraint";
 
         public AlleyScoreConstraintViolationException() {
             super();

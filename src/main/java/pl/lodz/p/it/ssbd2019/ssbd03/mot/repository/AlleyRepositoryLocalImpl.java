@@ -71,7 +71,7 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
         try {
             return super.editWithoutMerge(alley);
         } catch (OptimisticLockException e) {
-            throw new UserAccountOptimisticLockException("Account has been updated before these changes were made", e);
+            throw new AlleyOptimisticLockException("Alley has been updated before these changes were made", e);
         } catch (PersistenceException e) {
             throw new EntityUpdateException("Could not perform update operation.", e);
         } catch (ConstraintViolationException e) {
