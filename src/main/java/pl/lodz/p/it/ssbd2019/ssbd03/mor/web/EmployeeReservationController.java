@@ -149,6 +149,7 @@ public class EmployeeReservationController implements Serializable {
             models.put("reservation", reservation);
             models.put("isExpired", isExpired);
             models.put("isCancelable", isCancelable);
+            models.put("ownReservation", false);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
