@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.EndTimeAfterStartTime;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.StartDateAfterPresent;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 import java.util.List;
@@ -33,8 +32,8 @@ public class DetailedReservationDto extends NewReservationDto {
     private int alleyNumber;
     
     @FormParam("size")
-    private List<@Min(1) Integer> size;
+    private List<Integer> size;
     
     @FormParam("count")
-    private List<@Min(1) Integer> count;
+    private List<Integer> count;
 }

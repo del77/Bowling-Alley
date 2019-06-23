@@ -1,11 +1,18 @@
 {{#block "itemTable"}}
     <aside class="my-3">
-        <div class="input-group mx-0">
-            <table class="table table-sm table-striped">
+        <div class="input-group mx-0 mt-3">
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-block btn-sm btn-success my-2" onclick="addItem()">{{lang.add}}</button>
+                </div>
+                <div class="col-9"></div>
+            </div>
+            <table class="table table-sm table-striped" id="itemTable">
                 <thead class="bg-primary">
                     <tr>
                         <th scope="col">{{lang.itemSize}}</th>
                         <th scope="col">{{lang.itemCount}}*</th>
+                        <th scope="col">{{lang.delete}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,10 +24,36 @@
                                 <input class="form-control" type="number" aria-label="Quantity input"
                                        aria-describedby="basic-addon1" name="count" id="count"
                                        required autofocus min="0" max="2147483647" value="{{this.count}}"></td>
+                            <td>
+                                <button class="btn btn-block btn-sm btn-danger" onclick="deleteItem(getRowIndex(this))">{{lang.delete}}</button>
+                            </td>
                         </tr>
                     {{/each}}
                 </tbody>
             </table>
         </div>
     </aside>
+    <script>
+        function addItem() {
+            let table = document.getElementById("itemTable");
+            let newRow = table.insertRow(table.rows.length);
+            newRow.insertCell(0).innerHTML = "<input id=\"size\" name=\"size\" type=\"number\">";
+            newRow.insertCell(1).innerHTML = "<input class=\"form-control\" type=\"number\" aria-label=\"Quantity input\" aria-describedby=\"basic-addon1\" name=\"count\" id=\"count\" required autofocus min=\"0\" max=\"2147483647\">";
+            newRow.insertCell(2).innerHTML = "<button class=\"btn btn-block btn-sm btn-danger\" onclick=\"deleteItem(getRowIndex(this))\">{{lang.delete}}</button>"
+        }
+
+        function deleteItem(index) {
+            let table = document.getElementById("itemTable");
+            table.deleteRow(index);
+        }
+
+        function getRowIndex(el) {
+            while (el.nodeName.toLowerCase() !== 'tr') {
+                el = el.parentNode;
+            }
+
+            if (el)
+                return el.rowIndex;
+        }
+    </script>
 {{/block}}

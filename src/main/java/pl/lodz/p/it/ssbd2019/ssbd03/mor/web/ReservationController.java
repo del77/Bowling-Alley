@@ -186,7 +186,7 @@ public class ReservationController implements Serializable {
         if (models.get(DATA) == null) {
             try {
                 DetailedReservationDto dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
-                ReservationItemsDto items = reservationItemService.getItemsForReservation(id);
+                List<ReservationItemDto> items = reservationItemService.getItemsForReservation(id);
                 models.put(DATA, dto);
                 models.put("items", items);
             } catch (SsbdApplicationException e) {
@@ -216,6 +216,8 @@ public class ReservationController implements Serializable {
                     reservation,
                     errorMessages);
         }
+    
+        System.out.println(newReservationDto.toString());
         
         try {
             DetailedReservationDto resultDto = reservationService.updateReservation(reservation, (String) models.get(USERNAME));

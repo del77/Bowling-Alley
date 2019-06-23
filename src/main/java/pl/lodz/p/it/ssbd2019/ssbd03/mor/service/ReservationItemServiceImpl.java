@@ -1,9 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationItemRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationItemsDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationItemDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 
@@ -29,12 +28,14 @@ public class ReservationItemServiceImpl implements ReservationItemService {
     @Override
     @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER,
             MorRoles.GET_OWN_RESERVATION_DETAILS, MorRoles.GET_RESERVATION_DETAILS})
-    public ReservationItemsDto getItemsForReservation(long reservationId) throws SsbdApplicationException {
-        List<ReservationItem> reservationItems = reservationItemRepositoryLocal.getItemsForReservation(reservationId);
-        return ReservationItemsDto.builder()
-                .size(reservationItems.stream().map(ri -> ri.getItem().getSize()).collect(Collectors.toList()))
-                .count(reservationItems.stream().map(ReservationItem::getCount).collect(Collectors.toList()))
-                .build();
+    public List<ReservationItemDto> getItemsForReservation(long reservationId) throws SsbdApplicationException {
+        return reservationItemRepositoryLocal.getItemsForReservation(reservationId).stream()
+                .map(reservationItem -> ReservationItemDto.builder()
+                        .count(reservationItem.getCount())
+                        .size(reservationItem.getItem().getSize())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
     
 }

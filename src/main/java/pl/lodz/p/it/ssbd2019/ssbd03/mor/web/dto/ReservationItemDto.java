@@ -7,17 +7,18 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.ws.rs.FormParam;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReservationItemsDto {
+public class ReservationItemDto {
     
     @FormParam("size")
-    private List<@Min(1) Integer> size;
+    @Min(1)
+    private int size;
     
     @FormParam("count")
-    private List<@Min(1) Integer> count;
+    @Min(1)
+    private int count;
 }
