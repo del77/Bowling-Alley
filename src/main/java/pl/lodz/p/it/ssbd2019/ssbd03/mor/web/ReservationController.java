@@ -188,6 +188,11 @@ public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Client"
+     * 2. Użytkownik przechodzi na listę swoich rezerwacji
+     * 3. Użytkownik klika "Pokaż szczegóły"
+     * 4. System wyświetla szczegóły rezerwacji
+     *
      * @param reservationId identyfikator rezerwacji
      * @param idCache       opcjonalny identyfikator do obsługi przekierowań
      * @return Widok z rezultatem.
