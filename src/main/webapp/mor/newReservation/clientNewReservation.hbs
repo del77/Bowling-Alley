@@ -4,5 +4,10 @@
         <input type="submit" class="btn btn-secondary" value="{{lang.newReservationShowAvailableAlleysButton}}"/>
     </form>
     {{> mor/newReservation/components/availableAlleysList }}
+    <div class="form-group">
+        <small class="form-text text-muted">
+            * {{lang.requiredFields}}
+        </small>
+    </div>
 {{/partial}}
 {{> layout }}
