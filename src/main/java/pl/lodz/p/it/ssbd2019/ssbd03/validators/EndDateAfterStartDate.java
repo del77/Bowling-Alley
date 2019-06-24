@@ -5,7 +5,7 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = EndTimeAfterStartTimeValidator.class)
+@Constraint(validatedBy = EndDateAfterStartDateValidator.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EndDateAfterStartDate {

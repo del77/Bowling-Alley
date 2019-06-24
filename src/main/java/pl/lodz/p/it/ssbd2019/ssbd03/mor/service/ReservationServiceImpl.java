@@ -113,11 +113,11 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         }
         
         Timestamp startDate = StringTimestampConverter.getTimestamp(
-                reservationDto.getStartDay(),
+                reservationDto.getDay(),
                 reservationDto.getStartHour()).orElseThrow(DataParseException::new
         );
         Timestamp endDate = StringTimestampConverter.getTimestamp(
-                reservationDto.getEndDay(),
+                reservationDto.getDay(),
                 reservationDto.getEndHour()).orElseThrow(DataParseException::new
         );
         Alley alley = alleyRepositoryLocal.findByNumber(
@@ -196,9 +196,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         Pair<Optional<String>, Optional<String>> endDateTime = StringTimestampConverter.getDateAndTimeStrings(this.ownEditedReservation.getEndDate());
 
         return DetailedReservationDto.builder()
-                .startDay(startDateTime.getValue0().orElse(""))
+                .day(startDateTime.getValue0().orElse(""))
                 .startHour(startDateTime.getValue1().orElse(""))
-                .endDay(endDateTime.getValue0().orElse(""))
                 .endHour(endDateTime.getValue1().orElse(""))
                 .numberOfPlayers(this.ownEditedReservation.getPlayersCount())
                 .alleyNumber(this.ownEditedReservation.getAlley().getNumber())

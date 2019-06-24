@@ -8,7 +8,6 @@ import pl.lodz.p.it.ssbd2019.ssbd03.validators.EndDateAfterStartDate;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 import java.util.List;
 
@@ -20,16 +19,12 @@ import java.util.List;
 public class DetailedReservationDto {
     
     @NotEmpty(message = "{validate.startDateIsNull}")
-    @FormParam("startDay")
-    private String startDay;
+    @FormParam("Day")
+    private String day;
     
     @NotEmpty(message = "{validate.startHourIsEmpty}")
     @FormParam("startHour")
     private String startHour;
-    
-    @NotNull(message = "{validate.endDateIsNull}")
-    @FormParam("endDay")
-    private String endDay;
     
     @NotEmpty(message = "{validate.endHourIsEmpty}")
     @FormParam("endHour")

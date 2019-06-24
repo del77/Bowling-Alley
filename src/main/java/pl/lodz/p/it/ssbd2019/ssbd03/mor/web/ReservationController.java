@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SessionScoped
 @Controller
@@ -311,14 +312,15 @@ public class ReservationController implements Serializable {
             @QueryParam("redirectTo") String redirectTo,
             @QueryParam("resId") Long reservationId) {
         try {
-            Timestamp startTime = StringTimestampConverter.getTimestamp(dto.getStartDay(), dto.getStartHour()).orElseThrow(DataParseException::new);
-            Timestamp endTime = StringTimestampConverter.getTimestamp(dto.getEndDay(), dto.getEndHour()).orElseThrow(DataParseException::new);
+            Timestamp startTime = StringTimestampConverter.getTimestamp(dto.getDay(), dto.getStartHour()).orElseThrow(DataParseException::new);
+            Timestamp endTime = StringTimestampConverter.getTimestamp(dto.getDay(), dto.getEndHour()).orElseThrow(DataParseException::new);
             dto.setAvailableAlleyNumbers(
                     reservationService.getAvailableAlleysInTimeRangeExcludingOwnReservation(startTime, endTime)
                             .stream()
                             .map(AvailableAlleyDto::getAlleyNumber)
                             .collect(Collectors.toList())
             );
+            setItemsCollectionFromForm(dto);
             switch (redirectTo) {
                 case "create":
                     return getAvailableAlleys((Long) null); // unused yet
@@ -351,6 +353,18 @@ public class ReservationController implements Serializable {
                                 .build()
                 ) :
                 EDIT_RESERVATION_VIEW;
+    }
+    
+    private void setItemsCollectionFromForm(DetailedReservationDto dto) {
+        dto.setItems(
+                IntStream.range(0, dto.getSizes().size())
+                .boxed()
+                .map(i -> new ReservationItemDto(
+                        dto.getSizes().get(i),
+                        dto.getCounts().get(i)
+                ))
+                .collect(Collectors.toList())
+        );
     }
     
     private void displayError(String s) {

@@ -1,0 +1,20 @@
+{{#block "dateTimeInput"}}
+    <div class="input-group mb-3 mx-0">
+        <div class="input-group-prepend">
+            <span class="input-group-text">{{label}} {{#if isRequired}}*{{/if}}</span>
+        </div>
+
+        <span class="input-group-text text-secondary bg-light">{{startLabel}}</span>
+        <input class="starttimepicker form-control bg-white" aria-label="start-{{id}}-time" type="text" name="startHour" id="startHour"
+               {{#if isRequired}}required{{/if}} value="{{timeStartValue}}" readonly/>
+
+        <span class="input-group-text text-secondary bg-light">{{endLabel}}</span>
+        <input class="endtimepicker form-control bg-white" aria-label="end-{{id}}-time" type="text" name="endHour" id="endHour"
+               {{#if isRequired}}required{{/if}} value="{{timeEndValue}}" readonly/>
+
+        <span class="input-group-text text-secondary bg-light">{{dayLabel}}</span>
+        <input class="form-control datepicker bg-white" type="text" aria-label="{{label}}"
+               name="Day" id="Day" maxlength="10" minlength="10"
+               value="{{dateValue}}" {{#if isRequired}}required{{/if}} />
+    </div>
+{{/block}}

@@ -3,10 +3,9 @@
         <h2>
             {{lang.reservationEdit}}
         </h2>
-        <div class="form-group row mx-0 mb-0">
-            {{> mor/inputs/dateTimeInput label=lang.startReservationDate id="start" dateValue=data.startDay timeValue=data.startHour isRequired=true extremum="start"}}
-            {{> mor/inputs/dateTimeInput label=lang.endReservationDate id="end" dateValue=data.endDay timeValue=data.endHour isRequired=true extremum="end"}}
-        </div>
+        {{> mor/inputs/startEndWithinADayInput label=lang.reservationPeriod id="date"
+                dateValue=data.day timeStartValue=data.startHour timeEndValue=data.endHour isRequired=true
+                startLabel=lang.startHour endLabel=lang.endHour dayLabel=lang.date}}
         {{> mor/inputs/playerCountInput isRequired=true value=data.numberOfPlayers}}
         {{> mor/inputs/alleyNumberInput isRequired=true value=data.alleyNumber formType="update"}}
         {{> mor/inputs/itemTable header=lang.balls min=6 max=16 tableId="Balls"}}

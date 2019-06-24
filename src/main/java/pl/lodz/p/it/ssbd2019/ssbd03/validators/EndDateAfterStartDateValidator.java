@@ -16,12 +16,12 @@ public class EndDateAfterStartDateValidator implements ConstraintValidator<EndDa
             return false;
         }
         Optional<Timestamp> startDate = StringTimestampConverter.getTimestamp(
-                dto.getStartDay(),
+                dto.getDay(),
                 dto.getStartHour()
         );
         
         Optional<Timestamp> endDate = StringTimestampConverter.getTimestamp(
-                dto.getEndDay(),
+                dto.getDay(),
                 dto.getEndHour()
         );
         
@@ -33,6 +33,6 @@ public class EndDateAfterStartDateValidator implements ConstraintValidator<EndDa
     }
     
     private boolean hasNullDataFields(DetailedReservationDto dto) {
-        return dto.getEndHour() == null || dto.getStartDay() == null || dto.getStartHour() == null || dto.getEndDay() == null;
+        return dto.getEndHour() == null || dto.getDay() == null || dto.getStartHour() == null;
     }
 }
