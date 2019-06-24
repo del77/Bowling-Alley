@@ -78,7 +78,7 @@
                                     <span class="mb-1">{{this.date}}</span>
                                     <p class="mb-0">{{this.content}}</p>
                                 </div>
-                                {{#ifb (or isAdmin isEmployee)}}
+                                {{#ifb (and (not ownReservation) (or isAdmin isEmployee))}}
                                     <div class="col-2 d-flex justify-content-end">
                                         <form class="form-inline" data-form-confirm role="form" method="post"
                                               action="{{webContextPath}}/reservations/details/disable-comment/{{this.id}}">
