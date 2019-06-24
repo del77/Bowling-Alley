@@ -3,10 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 import org.javatuples.Pair;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AlleyAlreadyReservedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationAlreadyInactiveException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationItemCountLimitExceededException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
@@ -131,8 +128,6 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         }
     
         List<ReservationItem> items = this.getReservationItemsFromDto(reservationDto, this.ownEditedReservation);
-        Map<Integer, Integer> summedUpItems = sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startDate, endDate);
-        System.out.println("summed up: " + summedUpItems.toString());
         checkIfItemsAreAvailable(items, sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startDate, endDate));
     
         ownEditedReservation.setAlley(alley);
@@ -276,9 +271,9 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .collect(Collectors.toList());
     }
     
-    private List<ReservationItem> getReservationItemsFromDto(DetailedReservationDto dto, Reservation reservation) throws DataAccessException {
+    private List<ReservationItem> getReservationItemsFromDto(DetailedReservationDto dto, Reservation reservation) throws DataAccessException, ListSizesMismatchException {
         if (dto.getCounts().size() != dto.getSizes().size()) {
-            //throw something
+            throw new ListSizesMismatchException();
         }
     
         List<ReservationItem> result = new ArrayList<>();
@@ -300,8 +295,6 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         // get all reservations within time frame
         List<ReservationItem> alreadyReserved =
                 reservationItemRepositoryLocal.getReservationItemsFromReservationsWithinTimeFrame(startDate, endDate);
-    
-        System.out.println("already reserved items: " + alreadyReserved.toString());
         
         // sum up all possible items
         return alreadyReserved.stream()
@@ -316,10 +309,9 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     
     private void checkIfItemsAreAvailable(List<ReservationItem> newItems, Map<Integer, Integer> reservedItems) throws ReservationItemCountLimitExceededException {
         for (ReservationItem item : newItems) {
-            System.out.println("checking item: " + item.getItem().toString());
-            Integer reservedCount = reservedItems.get(item.getItem().getSize());
-            System.out.println("reserved count null?" + Boolean.toString(reservedCount == null));
-            if (reservedCount != null && item.getCount() + reservedCount > item.getItem().getCount()) {
+            Integer integer = reservedItems.get(item.getItem().getSize());
+            int reservedCount = integer == null ? 0 : integer;
+            if (item.getCount() + reservedCount > item.getItem().getCount()) {
                 throw new ReservationItemCountLimitExceededException();
             }
         }

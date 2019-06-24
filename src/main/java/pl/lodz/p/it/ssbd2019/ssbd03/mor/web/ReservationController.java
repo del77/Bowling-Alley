@@ -2,8 +2,6 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationItemService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
@@ -55,9 +53,6 @@ public class ReservationController implements Serializable {
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
-    
-    @EJB(beanName = "MORReservationItemService")
-    private ReservationItemService reservationItemService;
 
     @Inject
     private RedirectUtil redirectUtil;
@@ -234,10 +229,8 @@ public class ReservationController implements Serializable {
                     .infos(Collections.singletonList(localization.get("reservationUpdated")))
                     .build();
             return redirectUtil.redirect(RESERVATION_LIST_URL , formData);
-        } catch (NotYourReservationException e) {
-            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(EDIT_OWN_RESERVATION_URL + id, reservation, Collections.singletonList(localization.get(e.getCode())));
+            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
         }
     }
 
@@ -302,9 +295,12 @@ public class ReservationController implements Serializable {
     }
     
     /**
-     * Widok pozwalający klientowi dodać komentarz do rezerwacji
+     * kontroler pośredniczący w edycji rezerwacji, odpowiada za odświeżenie dostępnych torów
      *
-     * @param
+     * @param dto dto z wartościami z edycji
+     * @param redirectTo cel przekierowania, możliwe wartości `create` i `update`
+     * @param reservationId identyfikator rezerwacji, jeżeli jest edytowana
+     * @return odpowiedni widok z przekierowania
      */
     @POST
     @Path("available-alleys")
