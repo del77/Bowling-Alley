@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ServletContextTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
@@ -9,6 +11,8 @@ import javax.mvc.Models;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Klasa pomocnicza zawierająca logikę generowania template, korzystajaca ze wzorca fluent api.
@@ -38,6 +42,13 @@ public class HandlebarsUtils {
 
         public CompiledTemplate compile(String viewUnparsed) throws IOException {
             final Handlebars handlebars = new Handlebars(templateLoader);
+
+            handlebars.registerHelper("date", new Helper<Timestamp>() {
+                public CharSequence apply(Timestamp timestamp, Options options) {
+                    return new SimpleDateFormat("HH:mm, dd.MM.yyyy").format(timestamp);
+                }
+            });
+
             org.beryx.hbs.Helpers.register(handlebars);
             final Template template = handlebars.compileInline(viewUnparsed);
             return new CompiledTemplate(template, models);

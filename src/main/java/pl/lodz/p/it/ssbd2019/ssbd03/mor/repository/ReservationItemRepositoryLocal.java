@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.CruRepository;
 
 import javax.ejb.Local;
+import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -29,4 +30,12 @@ public interface ReservationItemRepositoryLocal extends CruRepository<Reservatio
      * @throws DataAccessException W przypadku błedu połączenia z bazą
      */
     List<ReservationItem> getReservationItemsFromReservationsWithinTimeFrame(Timestamp startTime, Timestamp endTime) throws DataAccessException;
+    
+    /**
+     * Usuwa z bazy zarezerwowany przedmiot
+     *
+     * @param item encja przedmiotu
+     * @throws DataAccessException nieznaleziony przedmiot lub błąd połączenia z bazą
+     */
+    void delete(ReservationItem item) throws DataAccessException;
 }

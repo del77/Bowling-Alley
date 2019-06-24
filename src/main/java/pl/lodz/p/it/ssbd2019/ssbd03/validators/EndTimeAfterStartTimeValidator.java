@@ -21,19 +21,10 @@ public class EndTimeAfterStartTimeValidator implements ConstraintValidator<EndTi
                 newReservationDto.getStartHour()
         );
         
-        Optional<Timestamp> endDate;
-        if (newReservationDto instanceof DetailedReservationDto) {
-            DetailedReservationDto reservationDto = (DetailedReservationDto)newReservationDto;
-            endDate = StringTimestampConverter.getTimestamp(
-                    reservationDto.getEndDay(),
-                    reservationDto.getEndHour()
-            );
-        } else {
-            endDate = StringTimestampConverter.getTimestamp(
+        Optional<Timestamp> endDate = StringTimestampConverter.getTimestamp(
                     newReservationDto.getStartDay(),
                     newReservationDto.getEndHour()
-            );
-        }
+        );
     
         if (startDate.isPresent() && endDate.isPresent()) {
             return endDate.get().after(startDate.get());

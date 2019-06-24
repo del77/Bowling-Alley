@@ -6,6 +6,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ReservationService {
@@ -18,7 +19,27 @@ public interface ReservationService {
      * @throws SsbdApplicationException w razie błędu
      */
     List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
-
+    
+    
+    /**
+     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     *
+     * @param start początek okresu
+     * @param end koniec okresu
+     * @return lista torów
+     * @throws SsbdApplicationException w razie błędu
+     */
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(Timestamp start, Timestamp end) throws SsbdApplicationException;
+    
+    /**
+     * Zwraca tory, które nie są zarezerwowane w podanym okresie nie uwzględniając własnej obecnie edytowanej rezerwacji
+     * @param start początek okresu
+     * @param end koniec okresu
+     * @return lista torów
+     * @throws SsbdApplicationException w razie błędu
+     */
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException;
+    
     /**
      * Dokonuje rezerwacji.
      *

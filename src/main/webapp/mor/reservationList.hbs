@@ -15,6 +15,10 @@
                                class="btn btn-success btn-sm waves-effect float-right mx-2">
                                 {{lang.seeDetails}}
                             </a>
+                            <a href="{{webContextPath}}/scores/new/{{this.id}}"
+                               class="btn btn-primary">
+                                {{lang.addNewScore}}
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -25,13 +29,13 @@
                     <li class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">{{lang.startReservationDate}}: </h6>
-                            <p class="mb-1">{{this.startDate}}</p>
+                            <p class="mb-1">{{date this.startDate}}</p>
                         </div>
                     </li>
                     <li class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">{{lang.endReservationDate}}: </h6>
-                            <p class="mb-1">{{this.endDate}}</p>
+                            <p class="mb-1">{{date this.endDate}}</p>
                         </div>
                     </li>
                     <li class="list-group-item list-group-item-action flex-column align-items-start">

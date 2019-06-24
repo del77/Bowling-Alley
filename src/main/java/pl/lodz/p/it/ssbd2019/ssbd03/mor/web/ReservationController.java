@@ -1,12 +1,14 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationItemService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -21,6 +23,7 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,13 +73,19 @@ public class ReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
+     * 2. Użytkownik przechodzi na listę "Moje rezerwacje"
+     * 3. System wyświetla listę rezerwacji przypisanych do konta zalogowanego użytkownika, lista może być pusta.
+     *
+     * @param idCache identyfikator cache
      * @return Widok z listą rezerwacji.
      */
     @GET
     @RolesAllowed(MorRoles.GET_OWN_RESERVATIONS)
     @Produces(MediaType.TEXT_HTML)
-    public String getOwnReservations() {
+    public String getOwnReservations(@QueryParam("idCache") Long idCache) {
         try {
+            redirectUtil.injectFormDataToModels(idCache, models);
             String login = (String) models.get(USERNAME);
             List<ReservationFullDto> reservations = reservationService.getReservationsByUserLogin(login);
             models.put("reservationsList", reservations);
@@ -93,7 +102,7 @@ public class ReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("/new")
+    @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
@@ -108,7 +117,7 @@ public class ReservationController implements Serializable {
      * @return widok z dostępnymi torami
      */
     @POST
-    @Path("/new")
+    @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@BeanParam NewReservationDto newReservationDto) {
@@ -135,6 +144,15 @@ public class ReservationController implements Serializable {
 
     /**
      * Tworzy rezerwacje
+     *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     *     2) System wyświetla wybór godziny
+     *     3) Użytkownik wybiera godzinę
+     *     4) System wyświetla dostępne tory
+     *     5) Użytkownik wybiera tor
+     *     6) Użytkownik klika zatwierdź
+     *     7) System przekierowuje na stronę rezerwacji
      *
      * @param alleyId identyfikator toru, na którym użytkownik chce utworzyć rezerwację
      * @return informacja o wyniku rezerwacji
@@ -183,17 +201,7 @@ public class ReservationController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(@PathParam("id") long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
-        if (models.get(DATA) == null) {
-            try {
-                DetailedReservationDto dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
-                List<ReservationItemDto> items = reservationItemService.getItemsForReservation(id);
-                models.put(DATA, dto);
-                models.put("items", items);
-            } catch (SsbdApplicationException e) {
-                return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
-            }
-        }
-        return EDIT_RESERVATION_VIEW;
+        return getEditView(id, null, false);
     }
     
     /**
@@ -218,8 +226,6 @@ public class ReservationController implements Serializable {
                     reservation,
                     errorMessages);
         }
-    
-        System.out.println(reservation.toString());
         
         try {
             DetailedReservationDto resultDto = reservationService.updateReservation(reservation, (String) models.get(USERNAME));
@@ -237,6 +243,11 @@ public class ReservationController implements Serializable {
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
+     *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Client"
+     * 2. Użytkownik przechodzi na listę swoich rezerwacji
+     * 3. Użytkownik klika "Pokaż szczegóły"
+     * 4. System wyświetla szczegóły rezerwacji
      *
      * @param reservationId identyfikator rezerwacji
      * @param idCache       opcjonalny identyfikator do obsługi przekierowań
@@ -257,6 +268,7 @@ public class ReservationController implements Serializable {
             models.put("reservation", reservation);
             models.put("isExpired", isExpired);
             models.put("isCancelable", isCancelable);
+            models.put("ownReservation", true);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }
@@ -290,43 +302,62 @@ public class ReservationController implements Serializable {
     }
     
     /**
+     * Widok pozwalający klientowi dodać komentarz do rezerwacji
      *
      * @param
      */
     @POST
     @Path("available-alleys")
-    @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.CREATE_RESERVATION})
+    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String injectAvailableAlleys(
             @BeanParam DetailedReservationDto dto,
             @QueryParam("redirectTo") String redirectTo,
             @QueryParam("resId") Long reservationId) {
-        
         try {
-            models.put(
-                    "availableAlleyNumbers",
-                    reservationService.getAvailableAlleysInTimeRange(dto)
+            Timestamp startTime = StringTimestampConverter.getTimestamp(dto.getStartDay(), dto.getStartHour()).orElseThrow(DataParseException::new);
+            Timestamp endTime = StringTimestampConverter.getTimestamp(dto.getEndDay(), dto.getEndHour()).orElseThrow(DataParseException::new);
+            dto.setAvailableAlleyNumbers(
+                    reservationService.getAvailableAlleysInTimeRangeExcludingOwnReservation(startTime, endTime)
                             .stream()
                             .map(AvailableAlleyDto::getAlleyNumber)
                             .collect(Collectors.toList())
             );
-            models.put(DATA, dto);
-            
             switch (redirectTo) {
                 case "create":
-                    return getAvailableAlleys((Long) null);
+                    return getAvailableAlleys((Long) null); // unused yet
                 case "update":
-                    return editReservation(reservationId, (Long) null);
+                    return getEditView(reservationId, dto, true);
                 default:
-                    return getOwnReservations();
+                    return getOwnReservations(null);
             }
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
         }
     }
     
+    private String getEditView(Long id, DetailedReservationDto dto, boolean isRedirected) {
+        try {
+            if (models.get(DATA) == null && !isRedirected) {
+                dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
+            }
+            if (dto != null) {
+                models.put(DATA, dto);
+            }
+        } catch(SsbdApplicationException e) {
+            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
+        }
+        return isRedirected ?
+                redirectUtil.redirect(
+                        EDIT_OWN_RESERVATION_URL + id,
+                        FormData.builder()
+                                .data(dto)
+                                .build()
+                ) :
+                EDIT_RESERVATION_VIEW;
+    }
+    
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }
-
 }

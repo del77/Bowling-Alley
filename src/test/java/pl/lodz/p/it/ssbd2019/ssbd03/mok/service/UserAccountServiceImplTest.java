@@ -167,7 +167,7 @@ public class UserAccountServiceImplTest {
 //            return list.stream().filter((UserAccount a) -> a.getFirstName().equals("a")).collect(Collectors.toList());
 //        });
 //        List<UserAccount> result = userAccountRepositoryLocal.findAllByNameOrLastName("a");
-//        Assert.assertEquals(1,result.size());
+//        Assert.assertEquals(1,result.sizes());
 //    }
 //
 //    @Test

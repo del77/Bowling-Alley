@@ -10,13 +10,13 @@
             <table class="table table-sm table-striped" id="itemTable">
                 <thead class="bg-primary">
                     <tr>
-                        <th scope="col">{{lang.itemSize}}</th>
+                        <th scope="col">{{lang.itemSize}}*</th>
                         <th scope="col">{{lang.itemCount}}*</th>
                         <th scope="col">{{lang.delete}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each items}}
+                    {{#each data.items}}
                         <tr>
                             <td>{{this.size}}</td>
                             <td>

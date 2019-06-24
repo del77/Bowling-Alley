@@ -1,39 +1,51 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.EndTimeAfterStartTime;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.StartDateAfterPresent;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@StartDateAfterPresent(message = "{validate.startDateBeforePresent}")
-@EndTimeAfterStartTime(message = "{validate.endTimeAfterStartTime}")
-public class DetailedReservationDto extends NewReservationDto {
+public class DetailedReservationDto {
+    
+    @NotEmpty(message = "{validate.startDateIsNull}")
+    @FormParam("startDay")
+    private String startDay;
+    
+    @NotEmpty(message = "{validate.startHourIsEmpty}")
+    @FormParam("startHour")
+    private String startHour;
     
     @NotNull(message = "{validate.endDateIsNull}")
     @FormParam("endDay")
     private String endDay;
     
-    @FormParam("active")
-    private boolean active;
+    @NotEmpty(message = "{validate.endHourIsEmpty}")
+    @FormParam("endHour")
+    private String endHour;
+    
+    @Min(value = 1, message = "{validate.playersCountBelow1}")
+    @FormParam("numberOfPlayers")
+    private int numberOfPlayers;
     
     @FormParam("alleyNumber")
     private int alleyNumber;
     
     @FormParam("size")
-    private List<Integer> size;
+    private List<@Min(1) Integer> sizes;
     
     @FormParam("count")
-    private List<Integer> count;
+    private List<@Min(1) Integer> counts;
+    
+    private List<Integer> availableAlleyNumbers;
+    
+    private List<ReservationItemDto> items;
 }

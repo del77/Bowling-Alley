@@ -88,6 +88,13 @@ public class EmployeeReservationController implements Serializable {
     /**
      * Pobiera rezerwacje wybranego klienta
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Admin".
+     *     2) System wyświetla listę Clientów
+     *     3) Użytkownik wyszukuje Clienta na liście
+     *     4) Użytkownik przechodzi na listę rezerwacji Clienta klikając przycisk "Rezerwacje" na pozycji listy
+     *     5) System wyświetla listę rezerwacji Clienta, lista może być pusta.
+     *
      * @param id identyfikator klienta
      * @return Widok z rezultatem.
      */
@@ -109,6 +116,11 @@ public class EmployeeReservationController implements Serializable {
 
     /**
      * Pobiera rezerwacje wybranego toru
+     *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. System wyświetla listę torów
+     * 3. Użytkownik klika przycisk "Pokaż rezerwację"
+     * 4. System wyświetla listę rezerwacji powiązaną z torem
      *
      * @param id identyfikator toru
      * @return Widok z rezultatem.
@@ -132,23 +144,29 @@ public class EmployeeReservationController implements Serializable {
     /**
      * Pobiera widok pozwalający pracownikowi przejrzeć szegóły wybranej rezererwacji
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Admin"
+     * 2. Użytkownik przechodzi na listę rezerwacji
+     * 3. Użytkownik klika "Pokaż szczegóły"
+     * 4. System wyświetla szczegóły rezerwacji
+     *
      * @param reservationId identyfikator rezerwacji
-     * @param idCache opcjonalny identyfikator do obsługi przekierowań
+     * @param idCache       opcjonalny identyfikator do obsługi przekierowań
      * @return Widok z rezultatem.
      */
     @GET
     @Path("details/{id}")
     @RolesAllowed(MorRoles.GET_RESERVATION_DETAILS)
     @Produces(MediaType.TEXT_HTML)
-    public String getReservationDetails(@PathParam("id") Long reservationId,  @QueryParam("idCache") Long idCache) {
+    public String getReservationDetails(@PathParam("id") Long reservationId, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
         try {
             ReservationFullDto reservation = reservationService.getReservationById(reservationId);
-            boolean isExpired =  ReservationValidator.isExpired(reservation.getStartDate());
+            boolean isExpired = ReservationValidator.isExpired(reservation.getStartDate());
             Boolean isCancelable = !isExpired && reservation.isActive();
             models.put("reservation", reservation);
             models.put("isExpired", isExpired);
             models.put("isCancelable", isCancelable);
+            models.put("ownReservation", false);
         } catch (SsbdApplicationException e) {
             displayError(localization.get(e.getCode()));
         }

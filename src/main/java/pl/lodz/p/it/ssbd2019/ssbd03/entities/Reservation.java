@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidReservationDates;
 
 import javax.persistence.*;
@@ -28,10 +29,10 @@ import java.util.List;
                         name = "Reservation.getReservationsWithinTimeRange",
                         query = "SELECT DISTINCT r " +
                                 "FROM Reservation r " +
-                                "WHERE " +
+                                "WHERE r.active = true and " +
                                     "(r.startDate < :startTime and :startTime < r.endDate) or " +
                                     "(r.startDate < :endTime and :endTime < r.endDate) or " +
-                                    "(:startTime < r.startDate and r.endDate < :endTime)"
+                                    "(:startTime < r.startDate and r.endDate < :endTime) "
                 )
         }
 )
@@ -86,6 +87,10 @@ public class Reservation {
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.MERGE)
     private List<Comment> comments;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "reservation", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private List<ReservationItem> reservationItems;
+    
     @Version
     @NotNull
     @Min(0)

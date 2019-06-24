@@ -7,20 +7,14 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AlleyAlreadyReservedExce
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationAlreadyInactiveException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.ReservationItemCountLimitExceededException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.StateConflictedException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.LoginDoesNotExistException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CreateRegistrationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.AlleyNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
@@ -40,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -67,13 +60,27 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
     private Reservation reservation;
-
+    
     @Override
-    @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
+    @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException {
         Timestamp startTime = StringTimestampConverter.getStartDate(newReservationDto).orElseThrow(DataParseException::new);
         Timestamp endTime = StringTimestampConverter.getEndDate(newReservationDto).orElseThrow(DataParseException::new);
-        List<Alley> alleys = getAvailableAlleysInTimeRange(startTime, endTime);
+        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(startTime, endTime);
+        return Mapper.mapAll(alleys, AvailableAlleyDto.class);
+    }
+    
+    @Override
+    @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
+    public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(Timestamp start, Timestamp end) throws SsbdApplicationException {
+        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(start, end);
+        return Mapper.mapAll(alleys, AvailableAlleyDto.class);
+    }
+    
+    @Override
+    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
+    public List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException {
+        List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRangeExcludingReservation(start, end, this.ownEditedReservation.getId());
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
 
@@ -122,18 +129,18 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         if (!isAlleyAvailable(alley.getNumber(), startDate, endDate, this.ownEditedReservation)) {
             throw new AlleyAlreadyReservedException();
         }
-        
+    
         List<ReservationItem> items = this.getReservationItemsFromDto(reservationDto, this.ownEditedReservation);
+        Map<Integer, Integer> summedUpItems = sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startDate, endDate);
+        System.out.println("summed up: " + summedUpItems.toString());
         checkIfItemsAreAvailable(items, sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startDate, endDate));
-        
+    
         ownEditedReservation.setAlley(alley);
         ownEditedReservation.setStartDate(startDate);
         ownEditedReservation.setEndDate(endDate);
         ownEditedReservation.setPlayersCount(reservationDto.getNumberOfPlayers());
+        updateItems(items, this.ownEditedReservation);
         reservationRepositoryLocal.edit(ownEditedReservation);
-        for (ReservationItem item : items) {
-            reservationItemRepositoryLocal.create(item);
-        }
         return reservationDto;
     }
 
@@ -198,9 +205,18 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .startHour(startDateTime.getValue1().orElse(""))
                 .endDay(endDateTime.getValue0().orElse(""))
                 .endHour(endDateTime.getValue1().orElse(""))
-                .active(this.ownEditedReservation.isActive())
                 .numberOfPlayers(this.ownEditedReservation.getPlayersCount())
                 .alleyNumber(this.ownEditedReservation.getAlley().getNumber())
+                .availableAlleyNumbers(this.getAvailableAlleyNumbersInTimeRangeForReservation(
+                        this.ownEditedReservation.getStartDate(),
+                        this.ownEditedReservation.getEndDate(),
+                        this.ownEditedReservation
+                ))
+                .items(this.ownEditedReservation.getReservationItems()
+                        .stream()
+                        .map(ri -> new ReservationItemDto(ri.getItem().getSize(), ri.getCount()))
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 
@@ -241,10 +257,6 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         }
     }
     
-    private List<Alley> getAvailableAlleysInTimeRange(Timestamp start, Timestamp end) throws DataAccessException {
-        return alleyRepositoryLocal.getAvailableAlleysInTimeRange(start, end);
-    }
-    
     private boolean isAlleyAvailable(int number, Timestamp startDate, Timestamp endDate, Reservation reservation) throws DataAccessException {
         return !reservationRepositoryLocal.getReservationsWithinTimeRange(startDate, endDate)
                 .stream()
@@ -254,24 +266,33 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .contains(number);
     }
     
+    private List<Integer> getAvailableAlleyNumbersInTimeRangeForReservation(
+            Timestamp start,
+            Timestamp end,
+            Reservation reservation) throws DataAccessException {
+        return alleyRepositoryLocal.getAvailableAlleysInTimeRangeExcludingReservation(start, end, reservation.getId())
+                .stream()
+                .map(Alley::getNumber)
+                .collect(Collectors.toList());
+    }
+    
     private List<ReservationItem> getReservationItemsFromDto(DetailedReservationDto dto, Reservation reservation) throws DataAccessException {
-        if (dto.getCount().size() != dto.getSize().size()) {
+        if (dto.getCounts().size() != dto.getSizes().size()) {
             //throw something
         }
     
         List<ReservationItem> result = new ArrayList<>();
         
-        for (int i = 0; i < dto.getCount().size(); ++i) {
+        for (int i = 0; i < dto.getCounts().size(); ++i) {
             result.add(
                     ReservationItem.builder()
                             .reservation(reservation)
-                            .count(dto.getCount().get(i))
-                            .item(itemRepositoryLocal.findBySize(dto.getSize().get(i)).orElseThrow(DataAccessException::new))
+                            .count(dto.getCounts().get(i))
+                            .item(itemRepositoryLocal.findBySize(dto.getSizes().get(i)).orElseThrow(ReservationItemDoesNotExistException::new))
                             .version(0L)
                             .build()
             );
         }
-        
         return result;
     }
     
@@ -279,6 +300,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         // get all reservations within time frame
         List<ReservationItem> alreadyReserved =
                 reservationItemRepositoryLocal.getReservationItemsFromReservationsWithinTimeFrame(startDate, endDate);
+    
+        System.out.println("already reserved items: " + alreadyReserved.toString());
         
         // sum up all possible items
         return alreadyReserved.stream()
@@ -286,17 +309,51 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(
-                        (Function<Map.Entry<Integer, List<ReservationItem>>, Integer>) Map.Entry::getKey,
+                        Map.Entry::getKey,
                         (Map.Entry<Integer, List<ReservationItem>> entry) -> entry.getValue().stream().mapToInt(ReservationItem::getCount).sum()
                 ));
     }
     
     private void checkIfItemsAreAvailable(List<ReservationItem> newItems, Map<Integer, Integer> reservedItems) throws ReservationItemCountLimitExceededException {
         for (ReservationItem item : newItems) {
+            System.out.println("checking item: " + item.getItem().toString());
             Integer reservedCount = reservedItems.get(item.getItem().getSize());
+            System.out.println("reserved count null?" + Boolean.toString(reservedCount == null));
             if (reservedCount != null && item.getCount() + reservedCount > item.getItem().getCount()) {
                 throw new ReservationItemCountLimitExceededException();
             }
+        }
+    }
+    
+    private void updateItems(List<ReservationItem> newItems, Reservation reservation) throws DataAccessException {
+        List<Long> newIds = newItems.stream()
+                .map(ri ->ri.getItem().getId())
+                .collect(Collectors.toList());
+        
+        List<ReservationItem> toUpdate = reservation.getReservationItems().stream()
+                .filter(ri -> newIds.contains(ri.getItem().getId()))
+                .collect(Collectors.toList());
+        List<Long> idsToUpdate = toUpdate.stream()
+                .map(ri -> ri.getItem().getId())
+                .collect(Collectors.toList());
+        List<ReservationItem> toDelete = reservation.getReservationItems().stream()
+                .filter(ri -> !idsToUpdate.contains(ri.getItem().getId()))
+                .collect(Collectors.toList());
+        List<ReservationItem> toCreate = newItems.stream()
+                .filter(ri -> !idsToUpdate.contains(ri.getItem().getId()))
+                .collect(Collectors.toList());
+        
+        for (ReservationItem item : toDelete) {
+            reservationItemRepositoryLocal.delete(item);
+            reservation.getReservationItems().remove(item);
+        }
+        for (ReservationItem item : toCreate) {
+            reservation.getReservationItems().add(item);
+        }
+        for (ReservationItem item : toUpdate) {
+            Long id = item.getItem().getId();
+            int index = newIds.indexOf(id);
+            item.setCount(newItems.get(index).getCount());
         }
     }
 }

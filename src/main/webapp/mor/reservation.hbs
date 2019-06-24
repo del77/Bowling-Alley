@@ -34,11 +34,11 @@
             </li>
             <li class="list-group-item list-group-item-action">
                 <h6 class="mb-1">{{lang.startReservationDate}}:</h6>
-                <p class="mb-0">{{reservation.startDate}}</p>
+                <p class="mb-0">{{date reservation.startDate}}</p>
             </li>
             <li class="list-group-item list-group-item-action">
                 <h6 class="mb-1">{{lang.endReservationDate}}:</h6>
-                <p class="mb-0">{{reservation.endDate}}</p>
+                <p class="mb-0">{{date reservation.endDate}}</p>
             </li>
             <li class="list-group-item list-group-item-action">
                 <h6 class="mb-1">{{lang.reservationPlayersCount}}:</h6>
@@ -75,10 +75,10 @@
                         <li class="list-group-item list-group-item-action">
                             <div class="row">
                                 <div class="col-10">
-                                    <span class="mb-1">{{this.date}}</span>
+                                    <span class="mb-1">{{date this.date}}</span>
                                     <p class="mb-0">{{this.content}}</p>
                                 </div>
-                                {{#ifb (or isAdmin isEmployee)}}
+                                {{#ifb (and (not ownReservation) (or isAdmin isEmployee))}}
                                     <div class="col-2 d-flex justify-content-end">
                                         <form class="form-inline" data-form-confirm role="form" method="post"
                                               action="{{webContextPath}}/reservations/details/disable-comment/{{this.id}}">

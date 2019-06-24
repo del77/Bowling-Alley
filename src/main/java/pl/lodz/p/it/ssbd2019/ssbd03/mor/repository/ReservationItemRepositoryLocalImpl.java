@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -80,6 +81,16 @@ public class ReservationItemRepositoryLocalImpl extends AbstractCruRepository<Re
             return namedQuery.getResultList();
         } catch (Exception e) {
             throw new EntityRetrievalException(e.getMessage());
+        }
+    }
+    
+    @Override
+    @RolesAllowed({MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION})
+    public void delete(ReservationItem item) throws DataAccessException {
+        try {
+            entityManager.remove(entityManager.contains(item) ? item : entityManager.merge(item));
+        } catch (EJBTransactionRolledbackException e) {
+            throw new ReservationItemDoesNotExistException(e);
         }
     }
 }

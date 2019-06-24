@@ -22,6 +22,16 @@ public interface AlleyRepositoryLocal extends CruRepository<Alley, Long> {
     List<Alley> getAvailableAlleysInTimeRange(Timestamp startTime, Timestamp endTime) throws DataAccessException;
     
     /**
+     * Zwraca tory, które nie są zarezerwowane dla zadanego okresu pomijając jedną z nich.
+     * @param startTime czas początku przedziału
+     * @param endTime czas końca przedziału
+     * @param reservationId identyfikator rezerwacji, która ma nie być brana pod uwagę
+     * @return tory
+     * @throws DataAccessException Nieudana kwerenda
+     */
+    List<Alley> getAvailableAlleysInTimeRangeExcludingReservation(Timestamp startTime, Timestamp endTime, Long reservationId) throws DataAccessException;
+    
+    /**
      * Zwraca tor o podanym numerze
      *
      * @param number numer toru

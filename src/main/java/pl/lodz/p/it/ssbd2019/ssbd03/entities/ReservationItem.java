@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
                 query = "SELECT i FROM ReservationItem i WHERE i.reservation.id IN (" +
                             "SELECT DISTINCT r.id " +
                             "FROM Reservation r " +
-                            "WHERE " +
+                            "WHERE r.active = true and " +
                             "(r.startDate < :startTime and :startTime < r.endDate) or " +
                             "(r.startDate < :endTime and :endTime < r.endDate) or " +
                             "(:startTime < r.startDate and r.endDate < :endTime)" +
@@ -44,7 +44,7 @@ public class ReservationItem {
 
     @Id
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id",
             updatable = false,
             nullable = false,
