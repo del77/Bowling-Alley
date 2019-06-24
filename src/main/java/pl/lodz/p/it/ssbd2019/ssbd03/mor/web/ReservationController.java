@@ -127,6 +127,15 @@ public class ReservationController implements Serializable {
     /**
      * Tworzy rezerwacje
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     *     2) System wyświetla wybór godziny
+     *     3) Użytkownik wybiera godzinę
+     *     4) System wyświetla dostępne tory
+     *     5) Użytkownik wybiera tor
+     *     6) Użytkownik klika zatwierdź
+     *     7) System przekierowuje na stronę rezerwacji
+     *
      * @param alleyId
      * @return informacja o wyniku rezerwacji
      */
