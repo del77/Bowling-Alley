@@ -88,6 +88,13 @@ public class EmployeeReservationController implements Serializable {
     /**
      * Pobiera rezerwacje wybranego klienta
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Admin".
+     *     2) System wyświetla listę Clientów
+     *     3) Użytkownik wyszukuje Clienta na liście
+     *     4) Użytkownik przechodzi na listę rezerwacji Clienta klikając przycisk "Rezerwacje" na pozycji listy
+     *     5) System wyświetla listę rezerwacji Clienta, lista może być pusta.
+     *
      * @param id identyfikator klienta
      * @return Widok z rezultatem.
      */
