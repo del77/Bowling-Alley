@@ -1,5 +1,6 @@
 let $forms = document.querySelectorAll('[data-form-confirm]');
 let $buttons = document.querySelectorAll('[data-button-confirm]');
+let $a = document.querySelectorAll('[data-button-confirm]');
 
 function confirmChoice(event) {
   const flag = confirm('Do you really want to submit the form?');
@@ -12,6 +13,10 @@ $forms.forEach(function ($form) {
 
 $buttons.forEach(function ($button) {
   $button.addEventListener('click', confirmChoice, true);
+});
+
+$buttons.forEach(function ($button) {
+    $button.addEventListener('click', confirmChoice, true);
 });
 
 $(function () {
