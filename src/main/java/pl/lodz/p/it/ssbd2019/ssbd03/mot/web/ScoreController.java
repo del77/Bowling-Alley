@@ -48,6 +48,12 @@ public class ScoreController implements Serializable {
     private LocalizedMessageProvider localization;
 
     /**
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. System wyświetla listę rezerwacji.
+     * 3. Użytkownik klika przycisk "Dodaj wynik rozgrywki" przy wybranej rezerwacji
+     * 4. Użytkownik podaje wynik oraz login gracza
+     * 5. System tworzy nowy obiekt reprezentujący wynik gracza podczas danej rezerwacji
+     *
      * @param reservation_id ID rezerwacji
      * @param idCache        identyfikator zapamiętanego stanu formularza w cache
      * @return Formularz dodawania nowego wyniku
@@ -93,6 +99,7 @@ public class ScoreController implements Serializable {
 
     /**
      * Pobiera historię wyników wybranego uzytkownika
+     *
      * @param userId identyfikator użytkownika
      * @return widok z listą wyników użytkownika
      */
@@ -112,6 +119,7 @@ public class ScoreController implements Serializable {
 
     /**
      * metoda pomocnicza przekazująca do widoku wiadomość o błędzie
+     *
      * @param s wiadomość do wyświetlenia
      */
     private void displayError(String s) {
