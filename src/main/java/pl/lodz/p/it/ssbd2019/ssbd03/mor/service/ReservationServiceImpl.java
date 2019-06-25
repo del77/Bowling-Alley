@@ -124,7 +124,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         List<ReservationItem> items = this.getReservationItemsFromDto(newReservationDto, newReservation);
         checkIfItemsAreAvailable(items, sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startTime, endTime));
 
-        reservation.setReservationItems(items);
+        newReservation.setReservationItems(items);
         try {
             reservationRepositoryLocal.create(newReservation);
         } catch (DataAccessException e) {
