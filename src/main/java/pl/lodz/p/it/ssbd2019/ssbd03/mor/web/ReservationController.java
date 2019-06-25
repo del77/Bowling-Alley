@@ -4,7 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.HelperDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.DtoHelper;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.NewReservationAllForm;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
@@ -120,7 +120,7 @@ public class ReservationController implements Serializable {
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@BeanParam ClientNewReservationDto newReservationDto) {
-        HelperDto.postProcess(newReservationDto);
+        DtoHelper.postProcess(newReservationDto);
         List<String> errorMessages = validator.validate(newReservationDto);
 
         NewReservationAllForm newReservationAllForm = new NewReservationAllForm();

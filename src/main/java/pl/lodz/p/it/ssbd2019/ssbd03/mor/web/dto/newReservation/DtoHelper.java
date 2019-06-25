@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelperDto {
+public class DtoHelper {
     public static void postProcess(ClientNewReservationDto dto) {
         List<Integer> shoesSize = dto.getShoesSize();
         List<Integer> shoesNumber = dto.getShoesNumber();
