@@ -18,6 +18,10 @@ import javax.validation.constraints.NotNull;
 @NamedQueries(
         value = {
                 @NamedQuery(name = "Item.findByItemType", query = "SELECT i FROM Item i JOIN i.itemType it WHERE it.name = :itemType order by i.size"),
+                @NamedQuery(
+                        name = "Item.findBySize",
+                        query = "SELECT i FROM Item i WHERE i.size = :size"
+                )
         }
 )
 public class Item {

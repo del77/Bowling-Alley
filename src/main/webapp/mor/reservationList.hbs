@@ -6,14 +6,17 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <a
-                                href="{{webContextPath}}/{{reservationContext}}/details/{{this.id}}"
-                                class="btn btn-primary"
-                            >
+                            <a href="{{webContextPath}}/{{reservationContext}}/edit/{{this.id}}"
+                               class="btn btn-primary btn-sm waves-effect float-right mx-2">
+                                <span>{{lang.edit}}</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                            <a href="{{webContextPath}}/{{reservationContext}}/details/{{this.id}}"
+                               class="btn btn-success btn-sm waves-effect float-right mx-2">
                                 {{lang.seeDetails}}
                             </a>
                             {{#if isEmployee}}
-                                <a href="{{webContextPath}}/scores/new/{{this.id}}" class="btn btn-primary">
+                                <a href="{{webContextPath}}/scores/new/{{this.id}}" class="btn btn-info btn-sm waves-effect float-right mx-2">
                                     {{lang.addNewScore}}
                                 </a>
                             {{/if}}

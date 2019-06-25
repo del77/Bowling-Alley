@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.validators;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringToTimestampConverter;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -17,13 +17,9 @@ public class StartDateAfterPresentValidator implements ConstraintValidator<Start
             return false;
         }
 
-        Optional<Timestamp> startDateOptional = StringToTimestampConverter.getStartDate(newReservationDto);
-
-        if (startDateOptional.isPresent()) {
-            return startDateOptional.get().after(Timestamp.from(Instant.now()));
-        } else {
-            return false;
-        }
+        Optional<Timestamp> startDateOptional = StringTimestampConverter.getStartDate(newReservationDto);
+    
+        return startDateOptional.map(timestamp -> timestamp.after(Timestamp.from(Instant.now()))).orElse(false);
     }
 
     private boolean hasNullDataFields(NewReservationDto newReservationDto) {

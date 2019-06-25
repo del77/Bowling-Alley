@@ -1,0 +1,11 @@
+{{#block "alleyNumberInput"}}
+    <div class="input-group mb-3 mx-0">
+        <div class="input-group-prepend">
+            <span class="input-group-text">{{lang.playerCount}} {{#if isRequired}}*{{/if}}</span>
+        </div>
+        <input class="form-control" type="number" aria-label="playersCount"
+               aria-describedby="basic-addon1" name="numberOfPlayers" id="numberOfPlayers"
+               autofocus min="1" value="{{value}}"
+               {{#if isRequired}}required {{/if}} />
+    </div>
+{{/block}}

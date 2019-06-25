@@ -1,12 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ReservationService {
@@ -16,26 +16,49 @@ public interface ReservationService {
      *
      * @param newReservationDto przedział czasu
      * @return lista torów
-     * @throws SsbdApplicationException
+     * @throws SsbdApplicationException w razie błędu
      */
     List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
-
+    
+    
+    /**
+     * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
+     *
+     * @param start początek okresu
+     * @param end koniec okresu
+     * @return lista torów
+     * @throws SsbdApplicationException w razie błędu
+     */
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(Timestamp start, Timestamp end) throws SsbdApplicationException;
+    
+    /**
+     * Zwraca tory, które nie są zarezerwowane w podanym okresie nie uwzględniając własnej obecnie edytowanej rezerwacji
+     * @param start początek okresu
+     * @param end koniec okresu
+     * @return lista torów
+     * @throws SsbdApplicationException w razie błędu
+     */
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException;
+    
     /**
      * Dokonuje rezerwacji.
      *
      * @param newReservationDto dane rezerwacji
      * @param alleyId           numer toru
      * @param userLogin         login użytkownika
-     * @throws SsbdApplicationException
+     * @throws SsbdApplicationException w razię błędu
      */
     void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
 
     /**
      * Wprowadza dane dotyczące zakończonej rozgrywki.
      *
-     * @param reservation Obiekt rezerwacji przechowujący zaktualizowane dane.
+     * @param reservationDto Obiekt rezerwacji przechowujący zaktualizowane dane.
+     * @param userLogin login użytkownika
+     * @return Dto edytowanej encji
+     * @throws SsbdApplicationException w razie błędu
      */
-    void updateReservation(Reservation reservation);
+    DetailedReservationDto updateReservation(DetailedReservationDto reservationDto, String userLogin)  throws SsbdApplicationException;
 
     /**
      * Odwołuje wybraną rezerwację
@@ -86,6 +109,16 @@ public interface ReservationService {
      * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
     ReservationFullDto getUserReservationById(Long id, String login) throws SsbdApplicationException;
+    
+    /**
+     * Pobiera wybraną rezerwację dla użytkownika
+     *
+     * @param reservationId identyfikator rezerwacji
+     * @param userLogin login użytkownika
+     * @return encja rezerwacji
+     * @throws SsbdApplicationException nie udało się uzyskać dostępu, rezerwacja nie istnieje lub nie należy do podanego użytkownika
+     */
+    DetailedReservationDto getOwnReservationById(Long reservationId, String userLogin) throws SsbdApplicationException;
 
     /**
      * Blokuje wybrany komentarz
