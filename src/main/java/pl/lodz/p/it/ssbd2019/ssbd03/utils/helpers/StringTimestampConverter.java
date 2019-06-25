@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.javatuples.Pair;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
