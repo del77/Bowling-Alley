@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 

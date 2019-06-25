@@ -1,0 +1,41 @@
+{{#block "shoesTable"}}
+    <div style="max-width: 400px">
+        <h4 class="mb-3">
+            {{lang.chosenShoes}}:
+        </h4>
+        <table class="table table-light table-striped table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">{{lang.itemSize}}</th>
+                <th scope="col">{{lang.itemCount}}</th>
+            </tr>
+            </thead>
+            <tbody id="shoesTable">
+            {{#each this.data.newReservationDto.shoes}}
+                <tr>
+                    <td>
+                        <input name="shoesSize" type="number" value="{{this.size}}" min="38" max="45" required/>
+                    </td>
+                    <td>
+                        <input name="shoesNumber" type="number" value="{{this.number}}" min="1" max="2147483647"
+                               required/>
+                    </td>
+                </tr>
+            {{/each}}
+
+            </tbody>
+        </table>
+        <input type="button" onClick="addShoesRow()" class="btn btn-secondary" value="{{lang.addShoes}}"/>
+        <div class="row mt-3"></div>
+        <script>
+            function addShoesRow() {
+                $('#shoesTable').append(
+                        '<tr>' +
+                        '<td><input name="shoesSize" type="number" min="38" max="45" required/></td>' +
+                        '<td><input name="shoesNumber" type="number" min="1" max="2147483647" required/></td>' +
+                        '</tr>'
+                );
+            }
+        </script>
+    </div>
+{{/block}}

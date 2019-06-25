@@ -25,11 +25,13 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.BallsDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ShoesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
@@ -118,6 +120,11 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .active(true)
                 .alley(alley)
                 .build();
+
+        List<ReservationItem> items = this.getReservationItemsFromDto(newReservationDto, newReservation);
+        checkIfItemsAreAvailable(items, sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startTime, endTime));
+
+        newReservation.setReservationItems(items);
         try {
             reservationRepositoryLocal.create(newReservation);
         } catch (DataAccessException e) {
@@ -291,6 +298,37 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .map(Alley::getNumber)
                 .collect(Collectors.toList());
     }
+
+    private List<ReservationItem> getReservationItemsFromDto(ClientNewReservationDto dto, Reservation reservation) throws DataAccessException {
+        List<ShoesDto> shoesDtos = dto.getShoes();
+        List<BallsDto> ballsDtos = dto.getBalls();
+
+        List<ReservationItem> result = new ArrayList<>();
+
+        for(ShoesDto shoe : shoesDtos) {
+            result.add(
+                    ReservationItem.builder()
+                            .reservation(reservation)
+                            .count(shoe.getNumber())
+                            .item(itemRepositoryLocal.findBySize(shoe.getSize()).orElseThrow(ReservationItemDoesNotExistException::new))
+                            .version(0L)
+                            .build()
+            );
+        }
+
+        for (BallsDto ballsDto : ballsDtos) {
+            result.add(
+                    ReservationItem.builder()
+                            .reservation(reservation)
+                            .count(ballsDto.getNumber())
+                            .item(itemRepositoryLocal.findBySize(ballsDto.getSize()).orElseThrow(ReservationItemDoesNotExistException::new))
+                            .version(0L)
+                            .build()
+            );
+        }
+
+        return result;
+    }
     
     private List<ReservationItem> getReservationItemsFromDto(DetailedReservationDto dto, Reservation reservation) throws DataAccessException, ListSizesMismatchException {
         if (dto.getCounts().size() != dto.getSizes().size()) {
@@ -355,7 +393,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         List<ReservationItem> toCreate = newItems.stream()
                 .filter(ri -> !idsToUpdate.contains(ri.getItem().getId()))
                 .collect(Collectors.toList());
-        
+
         for (ReservationItem item : toDelete) {
             reservationItemRepositoryLocal.delete(item);
             reservation.getReservationItems().remove(item);
