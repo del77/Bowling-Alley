@@ -1,9 +1,10 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto;
+package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
 
 @Data
 @NoArgsConstructor

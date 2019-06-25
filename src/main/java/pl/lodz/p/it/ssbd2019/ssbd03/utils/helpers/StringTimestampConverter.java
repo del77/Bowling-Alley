@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.javatuples.Pair;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class StringTimestampConverter {
 
     private static Logger logger = Logger.getLogger(StringTimestampConverter.class.getName());
-    private static SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
     public static Optional<Timestamp> getStartDate(ClientNewReservationDto newReservationDto){
         return getDate(newReservationDto.getStartDay(), newReservationDto.getStartHour());

@@ -1,0 +1,41 @@
+{{#block "ballsTable"}}
+    <div style="max-width: 400px">
+        <h4 class="mb-3">
+            {{lang.chosenBalls}}:
+        </h4>
+        <table class="table table-light table-striped table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">{{lang.itemSize}}</th>
+                <th scope="col">{{lang.itemCount}}</th>
+            </tr>
+            </thead>
+            <tbody id="ballTable">
+            {{#each this.data.newReservationDto.balls}}
+                <tr>
+                    <td>
+                        <input aria-label="{{lang.itemSize}}" name="ballSize" type="number" value="{{this.size}}" min="6" max="16" required/>
+                    </td>
+                    <td>
+                        <input aria-label="{{lang.itemCount}}"  name="ballNumber" type="number" value="{{this.number}}" min="1" max="2147483647"
+                               required/>
+                    </td>
+                </tr>
+            {{/each}}
+
+            </tbody>
+        </table>
+        <input type="button" onClick="addBallRow()" class="btn btn-secondary" value="{{lang.addBalls}}"/>
+        <div class="row mt-3"></div>
+        <script>
+            function addBallRow() {
+                $('#ballTable').append(
+                        '<tr>' +
+                        '<td><input name="ballSize" type="number" min="6" max="16" required/></td>' +
+                        '<td><input name="ballNumber" type="number" min="1" max="2147483647" required/></td>' +
+                        '</tr>'
+                );
+            }
+        </script>
+    </div>
+{{/block}}

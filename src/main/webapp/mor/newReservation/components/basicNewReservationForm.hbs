@@ -4,18 +4,23 @@
     </h2>
     <div class="form-group justify-content-between">
         <label for="startDay">*{{lang.newReservationStartDay}}: </label>
-        <input name="startDay" type="text" class="datepicker" value="{{this.data.newReservationDto.startDay}}" required>
+        <input id="startDay" name="startDay" type="text" class="datepicker" value="{{this.data.newReservationDto.startDay}}" required readonly>
     </div>
     <div class="form-group justify-content-between">
         <label for="startHour">*{{lang.newReservationStartHour}}: </label>
-        <input name="startHour" type="text" class="starttimepicker" value="{{this.data.newReservationDto.startHour}}" required/>
+        <input id="startHour" name="startHour" type="text" class="starttimepicker" value="{{this.data.newReservationDto.startHour}}" required readonly/>
     </div>
     <div class="form-group justify-content-between">
         <label for="endHour">*{{lang.newReservationEndHour}}: </label>
-        <input name="endHour" type="text" class="endtimepicker" value="{{this.data.newReservationDto.endHour}}" required/>
+        <input id="endHour" name="endHour" type="text" class="endtimepicker" value="{{this.data.newReservationDto.endHour}}" required readonly/>
     </div>
     <div class="form-group justify-content-between">
-        <label for="numbeOfPlayers">*{{lang.newReservationNumberOfPlayers}}: </label>
-        <input name="numberOfPlayers" type="number" min="1" max="2147483647" class="form-input" value="{{this.data.newReservationDto.numberOfPlayers}}" required/>
+        <label for="numberOfPlayers">*{{lang.newReservationNumberOfPlayers}}: </label>
+        <input id="numberOfPlayers" name="numberOfPlayers" type="number" min="1" max="2147483647" class="form-input" value="{{this.data.newReservationDto.numberOfPlayers}}" required/>
     </div>
+    {{> mor/newReservation/components/shoesTable }}
+    {{> mor/newReservation/components/ballsTable }}
+    <div class="row mt-3"></div>
+    <div class="row mt-3"></div>
+    <div class="row mt-3"></div>
 {{/block}}

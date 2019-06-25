@@ -1,16 +1,21 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
+import pl.lodz.p.it.ssbd2019.ssbd03.entities.ReservationItem;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullItemDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Mapper {
     private static ModelMapper modelMapper = new ModelMapper();
 
@@ -27,6 +32,13 @@ public class Mapper {
         reservationFullTypeMap.addMappings(mapper -> {
             mapper.map(src -> src.getUserAccount().getLogin(), ReservationFullDto::setUserLogin);
             mapper.map(Reservation::getComments, ReservationFullDto::setComments);
+        });
+
+        //ReservationFullItemDto
+        TypeMap<ReservationItem, ReservationFullItemDto> reservationItemTypeMap = modelMapper.createTypeMap(ReservationItem.class, ReservationFullItemDto.class);
+        reservationItemTypeMap.addMappings(mapper -> {
+            mapper.map(src -> src.getItem().getSize(), ReservationFullItemDto::setSize);
+            mapper.map(src -> src.getItem().getItemType().getName(), ReservationFullItemDto::setName);
         });
     }
 

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto;
+package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.validators.StartDateAfterPresent;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.FormParam;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -32,4 +33,22 @@ public class ClientNewReservationDto {
     @Min(value = 1, message = "{validate.playersCountBelow1}")
     @FormParam("numberOfPlayers")
     protected int numberOfPlayers;
+
+    @FormParam("shoesSize")
+    protected List<Integer> shoesSize;
+
+    @FormParam("shoesNumber")
+    protected List<Integer> shoesNumber;
+
+    @FormParam("shoes")
+    protected List<ShoesDto> shoes;
+
+    @FormParam("ballSize")
+    protected List<Integer> ballSize;
+
+    @FormParam("ballNumber")
+    protected List<Integer> ballNumber;
+
+    @FormParam("balls")
+    protected List<BallsDto> balls;
 }

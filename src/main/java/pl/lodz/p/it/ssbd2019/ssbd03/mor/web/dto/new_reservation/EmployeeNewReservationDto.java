@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto;
+package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
