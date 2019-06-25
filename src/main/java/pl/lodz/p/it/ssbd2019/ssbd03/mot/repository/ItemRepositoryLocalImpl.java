@@ -40,8 +40,8 @@ public class ItemRepositoryLocalImpl extends AbstractCruRepository<Item, Long> i
         } catch (OptimisticLockException e) {
             throw new ItemOptimisticLockException("Item has been updated before these changes were made", e);
         } catch (ConstraintViolationException e) {
-            if(e.getMessage().contains("count")) {
-                throw new ItemCountConstraintViolationException("Given count: " + item.getCount() + " is invalid.");
+            if(e.getMessage().contains("counts")) {
+                throw new ItemCountConstraintViolationException("Given counts: " + item.getCount() + " is invalid.");
             }
             throw new DatabaseConstraintViolationException("Violated constraint during item editing", e);
         } catch (PersistenceException e) {

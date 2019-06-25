@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidReservationDates;
 
 import javax.persistence.*;
@@ -23,7 +24,16 @@ import java.util.List;
 @NamedQueries(
         value = {
                 @NamedQuery(name = "Reservation.findReservationsForUser", query = "select r from Reservation r where r.userAccount.id = :userId"),
-                @NamedQuery(name = "Reservation.findReservationsForAlley", query = "select r from Reservation r where r.alley.id = :alleyId")
+                @NamedQuery(name = "Reservation.findReservationsForAlley", query = "select r from Reservation r where r.alley.id = :alleyId"),
+                @NamedQuery(
+                        name = "Reservation.getReservationsWithinTimeRange",
+                        query = "SELECT DISTINCT r " +
+                                "FROM Reservation r " +
+                                "WHERE r.active = true and " +
+                                    "(r.startDate < :startTime and :startTime < r.endDate) or " +
+                                    "(r.startDate < :endTime and :endTime < r.endDate) or " +
+                                    "(:startTime < r.startDate and r.endDate < :endTime) "
+                )
         }
 )
 @ValidReservationDates
@@ -73,9 +83,14 @@ public class Reservation {
     @ToString.Exclude
     private Alley alley;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.MERGE)
     private List<Comment> comments;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "reservation", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private List<ReservationItem> reservationItems;
+    
     @Version
     @NotNull
     @Min(0)

@@ -32,8 +32,8 @@ public class ItemsController implements Serializable {
     private static final String EDIT_SHOES_COUNT_PATH = "items/shoes";
 
     // ================= VIEWS ========================
-    private static final String EDIT_BALLS_VIEW = "mot/edit-items-count/balls.hbs";
-    private static final String EDIT_SHOES_VIEW = "mot/edit-items-count/shoes.hbs";
+    private static final String EDIT_BALLS_VIEW = "mot/edit-items-counts/balls.hbs";
+    private static final String EDIT_SHOES_VIEW = "mot/edit-items-counts/shoes.hbs";
 
     @EJB
     private ItemService itemService;
@@ -65,6 +65,14 @@ public class ItemsController implements Serializable {
 
     /**
      * Aktualizuje liczbę wszystkich kul
+     *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. Użytkownik klika przycisk "Edytuj liczbę dostępnych kul".
+     * 3. System wyświetla aktualną liczbę kul w kręgielni.
+     * 4. System pyta o nową liczbę kul.
+     * 5. Użytkownik podaje nową liczbę kul.
+     * 6. System zapisuje zmiany.
+     *
      * @param sizes lista rozmiarów kul
      * @param counts lista liczebności kul
      * @param idCache identyfikator zapamiętanego stanu formularza w cache
@@ -74,7 +82,7 @@ public class ItemsController implements Serializable {
     @Path("balls")
     @RolesAllowed(MotRoles.EDIT_BALLS_COUNT)
     @Produces(MediaType.TEXT_HTML)
-    public String editBallsCount(@FormParam("size") List<Integer> sizes, @FormParam("count") List<Integer> counts, @QueryParam("idCache") Long idCache) {
+    public String editBallsCount(@FormParam("sizes") List<Integer> sizes, @FormParam("counts") List<Integer> counts, @QueryParam("idCache") Long idCache) {
         List<ItemDto> balls = getItemDtoListFromFormParams(sizes, counts);
 
         List<String> errorMessages = validator.validateAll(balls);
@@ -107,6 +115,14 @@ public class ItemsController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować liczbę par butów
+     *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. Użytkownik klika przycisk "Edytuj liczbę dostępnych par butów".
+     * 3. System wyświetla aktualną liczbę par butów w kręgielni.
+     * 4. System pyta o nową liczbę par butów.
+     * 5. Użytkownik podaje nową liczbę par butów.
+     * 6. System zapisuje zmiany.
+     *
      * @param idCache identyfikator zapamiętanego stanu formularza w cache
      * @return Widok z formularzem wypełnionym aktualnymi danymi
      */
@@ -132,7 +148,7 @@ public class ItemsController implements Serializable {
     @Path("shoes")
     @RolesAllowed(MotRoles.EDIT_SHOES_COUNT)
     @Produces(MediaType.TEXT_HTML)
-    public String editShoesCount(@FormParam("size") List<Integer> sizes, @FormParam("count") List<Integer> counts, @QueryParam("idCache") Long idCache) {
+    public String editShoesCount(@FormParam("sizes") List<Integer> sizes, @FormParam("counts") List<Integer> counts, @QueryParam("idCache") Long idCache) {
         List<ItemDto> shoes = getItemDtoListFromFormParams(sizes, counts);
 
         List<String> errorMessages = validator.validateAll(shoes);

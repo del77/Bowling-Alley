@@ -40,7 +40,7 @@ public class ItemServiceImpl extends TransactionTracker implements ItemService {
                     .orElse(null);
 
             if(item == null) {
-                throw new NotFoundException("There is no item with size: " + updatedItem.getSize());
+                throw new NotFoundException("There is no item with sizes: " + updatedItem.getSize());
             }
 
             item.setCount(updatedItem.getCount());

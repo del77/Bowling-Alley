@@ -1,25 +1,29 @@
 {{#block "alerts"}}
-  <aside class="my-3">
-    <div class="container">
-      {{#if errors}}
-        <div class="alert alert-danger font-weight-bold" role="alert">
-          {{#each errors}}
-            <div>
-              {{this}}
+    {{#if errors}}
+        <aside class="my-3">
+            <div class="container">
+                <div class="alert alert-danger font-weight-bold" role="alert">
+                    {{#each errors}}
+                        <div>
+                            {{this}}
+                        </div>
+                    {{/each}}
+                </div>
             </div>
-          {{/each}}
-        </div>
-      {{/if}}
+        </aside>
+    {{/if}}
 
-      {{#if infos}}
-        <div class="alert alert-success font-weight-bold" role="alert">
-          {{#each infos}}
-            <div>
-              {{this}}
+    {{#if infos}}
+        <aside class="my-3">
+            <div class="container">
+                <div class="alert alert-success font-weight-bold" role="alert">
+                    {{#each infos}}
+                        <div>
+                            {{this}}
+                        </div>
+                    {{/each}}
+                </div>
             </div>
-          {{/each}}
-        </div>
-      {{/if}}
-    </div>
-  </aside>
+        </aside>
+    {{/if}}
 {{/block}}

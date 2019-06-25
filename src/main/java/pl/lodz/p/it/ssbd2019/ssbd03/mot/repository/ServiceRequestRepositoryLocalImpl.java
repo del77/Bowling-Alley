@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -12,6 +13,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Stateless(name = "MOTServiceRequestRepository")
@@ -47,6 +51,14 @@ public class ServiceRequestRepositoryLocalImpl extends AbstractCruRepository<Ser
     @Override
     @RolesAllowed(MotRoles.GET_SERVICE_REQUESTS)
     public List<ServiceRequest> findAll() throws DataAccessException {
-        return super.findAll();
+        try {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<ServiceRequest> query = builder.createQuery(ServiceRequest.class);
+            Root<ServiceRequest> root = query.from(ServiceRequest.class);
+            query.orderBy(builder.asc(root.get("id")), builder.asc(root.get("resolved")));
+            return entityManager.createQuery(query).getResultList();
+        } catch (Exception e) {
+            throw new EntityRetrievalException(e);
+        }
     }
 }

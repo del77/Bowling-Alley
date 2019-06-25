@@ -6,14 +6,20 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
+                            <a href="{{webContextPath}}/{{reservationContext}}/edit/{{this.id}}"
+                               class="btn btn-primary btn-sm waves-effect float-right mx-2">
+                                <span>{{lang.edit}}</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
                             <a href="{{webContextPath}}/{{reservationContext}}/details/{{this.id}}"
-                               class="btn btn-primary">
+                               class="btn btn-success btn-sm waves-effect float-right mx-2">
                                 {{lang.seeDetails}}
                             </a>
-                            <a href="{{webContextPath}}/scores/new/{{this.id}}"
-                               class="btn btn-primary">
-                                {{lang.addNewScore}}
-                            </a>
+                            {{#if isEmployee}}
+                                <a href="{{webContextPath}}/scores/new/{{this.id}}" class="btn btn-info btn-sm waves-effect float-right mx-2">
+                                    {{lang.addNewScore}}
+                                </a>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -44,17 +50,17 @@
                             <h6 class="mb-1">{{lang.activeReservation}}: </h6>
                             {{#if this.active}}
                                 <img
-                                        src="{{webContextPath}}/static/img/tick.png"
-                                        alt="true"
-                                        width="20px"
-                                        height="20px"
+                                    src="{{webContextPath}}/static/img/tick.png"
+                                    alt="true"
+                                    width="20px"
+                                    height="20px"
                                 >
                             {{else}}
                                 <img
-                                        src="{{webContextPath}}/static/img/cross.png"
-                                        alt="false"
-                                        width="20px"
-                                        height="20px"
+                                    src="{{webContextPath}}/static/img/cross.png"
+                                    alt="false"
+                                    width="20px"
+                                    height="20px"
                                 >
                             {{/if}}
                         </div>

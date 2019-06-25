@@ -1,0 +1,65 @@
+{{#block "itemTable"}}
+    <div class="py-4 mt-6 mb-3">
+        <div class="row">
+            <div class="col-9">
+                <h2>{{header}}</h2>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-block btn-sm btn-success my-2" onclick="addItem{{tableId}}()">{{lang.addItem}}</button>
+            </div>
+        </div>
+        <div class="input-group mx-0">
+            <table class="table table-sm table-striped" id="itemTable{{tableId}}">
+                <thead class="bg-primary">
+                    <tr>
+                        <th scope="col">{{lang.itemSize}}*</th>
+                        <th scope="col">{{lang.itemCount}}*</th>
+                        <th scope="col">{{lang.delete}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.items}}
+                        {{#ifb (compare this.size '>=' min)}}
+                            {{#ifb (compare this.size '<=' max)}}
+                                <tr>
+                                    <td>{{this.size}}</td>
+                                    <td>
+                                        <input id="size" name="size" type="hidden" value="{{this.size}}">
+                                        <input class="form-control input-sm" type="number" aria-label="Quantity input"
+                                               aria-describedby="basic-addon1" name="count" id="count"
+                                               required autofocus min="0" max="2147483647" value="{{this.count}}"></td>
+                                    <td>
+                                        <button class="btn btn-block btn-sm btn-danger" onclick="deleteItem{{tableId}}(getRowIndex(this))">{{lang.delete}}</button>
+                                    </td>
+                                </tr>
+                            {{/ifb}}
+                        {{/ifb}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function addItem{{tableId}}() {
+            let table = document.getElementById("itemTable{{tableId}}");
+            let newRow = table.insertRow(table.rows.length);
+            newRow.insertCell(0).innerHTML = "<input class=\"form-control\" id=\"size\" name=\"size\" type=\"number\" min=\"{{min}}\" max=\"{{max}}\" required>";
+            newRow.insertCell(1).innerHTML = "<input class=\"form-control input-sm\" type=\"number\" aria-label=\"Quantity input\" aria-describedby=\"basic-addon1\" name=\"count\" id=\"count\" required autofocus min=\"0\" max=\"2147483647\">";
+            newRow.insertCell(2).innerHTML = "<button class=\"btn btn-block btn-sm btn-danger\" onclick=\"deleteItem{{tableId}}(getRowIndex(this))\">{{lang.delete}}</button>"
+        }
+
+        function deleteItem{{tableId}}(index) {
+            let table = document.getElementById("itemTable{{tableId}}");
+            table.deleteRow(index);
+        }
+
+        function getRowIndex(el) {
+            while (el.nodeName.toLowerCase() !== 'tr') {
+                el = el.parentNode;
+            }
+
+            if (el)
+                return el.rowIndex;
+        }
+    </script>
+{{/block}}

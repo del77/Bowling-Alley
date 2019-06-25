@@ -52,6 +52,12 @@ public class CommentController implements Serializable {
     /**
      * Widok pozwalający klientowi dodać komentarz do rezerwacji
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
+     * 2. Użytkownik klika przycisk "Dodaj komentarz" w szczegółach zakończonej rezerwacji.
+     * 3. System wyświetla formularz dodawania komentarza.
+     * 4. Użytkownik podaje treść komentarza i zatwierdza.
+     * 5. System zapisuje zmiany i wyświetla komunikat o dodaniu komentarza.
+     *
      * @param reservationId wybrana rezerwacja
      * @return Widok z formularzem.
      */

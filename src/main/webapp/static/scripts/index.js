@@ -28,6 +28,7 @@ $('.popover-dismiss').popover({
 });
 
 $('input.starttimepicker').timepicker({
+    zIndex: 10000,
     autoShow: false,
     timeFormat: 'HH:mm',
     interval: 60,
@@ -40,6 +41,7 @@ $('input.starttimepicker').timepicker({
 });
 
 $('input.endtimepicker').timepicker({
+    zIndex: 10000,
     autoShow: false,
     timeFormat: 'HH:mm',
     interval: 60,
