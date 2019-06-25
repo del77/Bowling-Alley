@@ -13,8 +13,8 @@ import javax.ws.rs.FormParam;
 @Data
 public class BallsDto {
 
-    @Min(6)
-    @Max(16)
+    @Min(value = 6, message = "{validate.itemSizeMin}")
+    @Max(value = 16, message = "{validate.itemSizeMax}")
     @FormParam("size")
     private int size;
 
