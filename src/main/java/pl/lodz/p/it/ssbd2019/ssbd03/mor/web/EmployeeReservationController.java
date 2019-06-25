@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
@@ -20,21 +19,18 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @SessionScoped
 @Controller
 @Path("reservations")
-public class EmployeeReservationController implements Serializable {
-
-    private static final String ERROR = "errors";
-    private static final String RESERVATION_VIEW = "mor/reservation.hbs";
-    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
-    private static final String RESERVATION_DETAILS_PATH = "reservations/details/";
-    private static final String NEW_RESERVATION_VIEW = "mor/newReservation/employeeNewReservation.hbs";
-    private static final String NEW_RESERVATION_URL = "/reservations/new";
+public class EmployeeReservationController extends AbstractReservationController implements Serializable {
+    
+    private static final String RESERVATION_LIST_URI = "/reservations";
+    private static final String RESERVATION_DETAILS_URI = "reservations/details/";
+    private static final String NEW_RESERVATION_URI = "/reservations/new";
+    private static final String EDIT_RESERVATION_URI = "/reservations/edit/";
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
@@ -52,6 +48,26 @@ public class EmployeeReservationController implements Serializable {
     private DtoValidator validator;
 
     private transient EmployeeNewReservationDto newReservationDto;
+    
+    protected ReservationService getReservationService() {
+        return reservationService;
+    }
+    
+    protected Models getModels() {
+        return models;
+    }
+    
+    protected RedirectUtil getRedirectUtil() {
+        return redirectUtil;
+    }
+    
+    protected LocalizedMessageProvider getLocalization() {
+        return localization;
+    }
+    
+    protected String getReservationContext() {
+        return RESERVATION_LIST_URI;
+    }
 
     /**
      * Pobiera widok pozwalający klientowi stworzyć rezerwację.
@@ -63,8 +79,7 @@ public class EmployeeReservationController implements Serializable {
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
-        redirectUtil.injectFormDataToModels(idCache, models);
-        return NEW_RESERVATION_VIEW;
+        return super.getAvailableAlleys(idCache, false);
     }
 
     /**
@@ -84,7 +99,7 @@ public class EmployeeReservationController implements Serializable {
         newReservationAllForm.setNewReservationDto(newReservationDto);
 
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, errorMessages);
         }
 
         try {
@@ -92,11 +107,11 @@ public class EmployeeReservationController implements Serializable {
             this.newReservationDto = newReservationDto;
 
             newReservationAllForm.setAvailableAlleys(availableAlleys);
-            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URL);
+            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URI);
             FormData formData = FormData.builder().data(newReservationAllForm).build();
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, Arrays.asList(localization.get(e.getCode())));
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, Collections.singletonList(localization.get(e.getCode())));
         }
     }
 
@@ -114,7 +129,7 @@ public class EmployeeReservationController implements Serializable {
      *     7) Użytkownik klika zatwierdź
      *     8) System przekierowuje na stronę rezerwacji
      *
-     * @param alleyId
+     * @param alleyId identyfikator toru
      * @return informacja o wyniku rezerwacji
      */
     @GET
@@ -123,7 +138,7 @@ public class EmployeeReservationController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String createReservation(@PathParam("alley_id") Long alleyId) {
         if (newReservationDto == null) {
-            return redirectUtil.redirect(NEW_RESERVATION_URL, new FormData());
+            return redirectUtil.redirect(NEW_RESERVATION_URI, new FormData());
         }
 
         List<String> errorMessages = validator.validate(newReservationDto);
@@ -131,7 +146,7 @@ public class EmployeeReservationController implements Serializable {
         NewReservationAllForm newReservationAllForm = new NewReservationAllForm();
         newReservationAllForm.setNewReservationDto(newReservationDto);
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, errorMessages);
         }
 
         FormData formData = new FormData();
@@ -139,10 +154,10 @@ public class EmployeeReservationController implements Serializable {
         try {
             reservationService.addReservation(newReservationDto, alleyId, newReservationDto.getUserLogin());
             formData.setInfos(Collections.singletonList(localization.get("newReservationCreated")));
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         } catch (SsbdApplicationException e) {
             formData.setErrors(Collections.singletonList(localization.get(e.getCode())));
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         }
     }
 
@@ -153,11 +168,46 @@ public class EmployeeReservationController implements Serializable {
      * @return Widok z formularzem.
      */
     @GET
-    @Path("{id}/edit")
+    @Path("/edit/{id}")
     @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
-    public String editReservation(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    public String editReservation(@PathParam("id") long id, @QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
+        return getEditView(id, null, false, false);
+    }
+    
+    /**
+     * Aktualizuje rezerwację
+     *
+     * @param dto dto zaktualizowanej rezerwacji
+     * @return rezultat operacji
+     */
+    @POST
+    @Path("edit/{id}")
+    @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
+    @Produces(MediaType.TEXT_HTML)
+    public String editReservation(
+            @PathParam("id") long id,
+            @BeanParam DetailedReservationDto dto) {
+        List<String> errorMessages = validator.validate(dto);
+    
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(
+                    EDIT_RESERVATION_URI + id,
+                    dto,
+                    errorMessages);
+        }
+    
+        try {
+            DetailedReservationDto resultDto = reservationService.updateReservation(dto);
+            FormData formData = FormData.builder()
+                    .data(resultDto)
+                    .infos(Collections.singletonList(localization.get("reservationUpdated")))
+                    .build();
+            return redirectUtil.redirect(RESERVATION_DETAILS_URI + id, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(RESERVATION_DETAILS_URI + id, null, Collections.singletonList(localization.get(e.getCode())));
+        }
     }
 
     /**
@@ -265,28 +315,14 @@ public class EmployeeReservationController implements Serializable {
             FormData formData = new FormData();
             String message = localization.get("reservationCancelSuccess");
             formData.setInfos(Collections.singletonList(message));
-            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+            return redirectUtil.redirect(RESERVATION_DETAILS_URI + reservationId, formData);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    RESERVATION_DETAILS_PATH + reservationId,
+                    RESERVATION_DETAILS_URI + reservationId,
                     null,
                     Collections.singletonList(localization.get(e.getCode()))
             );
         }
-    }
-
-    /**
-     * Aktualizuje rezerwację
-     *
-     * @param reservation obiekt zaktualizowanej rezerwacji
-     * @return rezultat operacji
-     */
-    @POST
-    @Path("{id}/edit")
-    @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
-    @Produces(MediaType.TEXT_HTML)
-    public String editReservation(Reservation reservation) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -325,14 +361,33 @@ public class EmployeeReservationController implements Serializable {
             FormData formData = new FormData();
             String message = localization.get("commentDisabled");
             formData.setInfos(Collections.singletonList(message));
-            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+            return redirectUtil.redirect(RESERVATION_DETAILS_URI + reservationId, formData);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    RESERVATION_DETAILS_PATH + reservationId,
+                    RESERVATION_DETAILS_URI + reservationId,
                     null,
                     Collections.singletonList(localization.get(e.getCode()))
             );
         }
+    }
+    
+    /**
+     * kontroler pośredniczący w edycji rezerwacji, odpowiada za odświeżenie dostępnych torów
+     *
+     * @param dto dto z wartościami z edycji
+     * @param redirectTo cel przekierowania, możliwe wartości `create` i `update`
+     * @param reservationId identyfikator rezerwacji, jeżeli jest edytowana
+     * @return odpowiedni widok z przekierowania
+     */
+    @POST
+    @Path("available-alleys")
+    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
+    @Produces(MediaType.TEXT_HTML)
+    public String injectAvailableAlleys(
+            @BeanParam DetailedReservationDto dto,
+            @QueryParam("redirectTo") String redirectTo,
+            @QueryParam("resId") Long reservationId) {
+        return super.injectAvailableAlleys(dto, redirectTo, reservationId, false);
     }
 
     private void displayError(String s) {

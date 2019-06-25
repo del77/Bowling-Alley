@@ -22,8 +22,6 @@ public interface ReservationService {
 
     List<AvailableAlleyDto> getAvailableAlleysInTimeRange(ClientNewReservationDto newReservationDto) throws SsbdApplicationException;
 
-    
-    
     /**
      * Zwraca tory, które nie są zarezerwowane dla zadanego przedziału czasu.
      *
@@ -42,6 +40,15 @@ public interface ReservationService {
      * @throws SsbdApplicationException w razie błędu
      */
     List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException;
+    
+    /**
+     * Zwraca tory, które nie są zarezerwowane w podanym okresie nie uwzględniając obecnie edytowanej rezerwacji innego użytkownika
+     * @param start początek okresu
+     * @param end koniec okresu
+     * @return lista torów
+     * @throws SsbdApplicationException w razie błędu
+     */
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingUserReservation(Timestamp start, Timestamp end) throws SsbdApplicationException;
 
     /**
      * Dokonuje rezerwacji.
@@ -54,14 +61,24 @@ public interface ReservationService {
     void addReservation(ClientNewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
 
     /**
-     * Wprowadza dane dotyczące zakończonej rozgrywki.
+     * Edytuje szczegóły wybranej rezerwacji należącej do podanego użytkownika
      *
      * @param reservationDto Obiekt rezerwacji przechowujący zaktualizowane dane.
      * @param userLogin login użytkownika
      * @return Dto edytowanej encji
      * @throws SsbdApplicationException w razie błędu
      */
-    DetailedReservationDto updateReservation(DetailedReservationDto reservationDto, String userLogin)  throws SsbdApplicationException;
+    DetailedReservationDto updateOwnReservation(DetailedReservationDto reservationDto, String userLogin)  throws SsbdApplicationException;
+    
+    
+    /**
+     * Edytuje szczegóły wybranej rezerwacji
+     *
+     * @param reservationDto Obiekt rezerwacji przechowujący zaktualizowane dane.
+     * @return Dto edytowanej encji
+     * @throws SsbdApplicationException w razie błędu
+     */
+    DetailedReservationDto updateReservation(DetailedReservationDto reservationDto) throws SsbdApplicationException;
 
     /**
      * Odwołuje wybraną rezerwację
@@ -102,6 +119,15 @@ public interface ReservationService {
      * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
      */
     ReservationFullDto getReservationById(Long id) throws SsbdApplicationException;
+    
+    /**
+     * Pobiera wybraną rezerwację
+     *
+     * @param id identyfikator rezerwacji
+     * @return dto wybranej rezerwacji
+     * @throws SsbdApplicationException rezerwacja nie istnieje lub nie udało się uzyskać dostępu do danych
+     */
+    DetailedReservationDto getReservationByIdForEdition(Long id) throws SsbdApplicationException;
 
     /**
      * Pobiera wybraną rezerwację dla użytkownika
