@@ -19,4 +19,5 @@ public class ReservationFullDto {
     private boolean active;
     private int alleyNumber;
     private List<CommentDto> comments;
+    private List<ReservationFullItemDto> items;
 }
