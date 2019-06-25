@@ -3,7 +3,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -19,6 +20,7 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +33,8 @@ public class EmployeeReservationController implements Serializable {
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
     private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
     private static final String RESERVATION_DETAILS_PATH = "reservations/details/";
+    private static final String NEW_RESERVATION_VIEW = "mor/newReservation/employeeNewReservation.hbs";
+    private static final String NEW_RESERVATION_URL = "/reservations/new";
 
     @EJB(beanName = "MORReservationService")
     private ReservationService reservationService;
@@ -44,8 +48,13 @@ public class EmployeeReservationController implements Serializable {
     @Inject
     private RedirectUtil redirectUtil;
 
+    @Inject
+    private DtoValidator validator;
+
+    private transient EmployeeNewReservationDto newReservationDto;
+
     /**
-     * Pobiera widok pozwalający pracownikowi dodać rezerwację
+     * Pobiera widok pozwalający klientowi stworzyć rezerwację.
      *
      * @return Widok z formularzem.
      */
@@ -53,22 +62,88 @@ public class EmployeeReservationController implements Serializable {
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
-    public String createReservation() {
-        throw new UnsupportedOperationException();
+    public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
+        redirectUtil.injectFormDataToModels(idCache, models);
+        return NEW_RESERVATION_VIEW;
     }
 
     /**
-     * Dodaje nową rezerwację
+     * Pobiera dostępne tory w zadanym przedziale czasowym.
      *
-     * @param reservation Dodawana rezerwacja
-     * @return rezultat operacji
+     * @param newReservationDto dane rezerwacji
+     * @return widok z dostępnymi torami
      */
     @POST
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
     @Produces(MediaType.TEXT_HTML)
-    public String createReservation(Reservation reservation) {
-        throw new UnsupportedOperationException();
+    public String getAvailableAlleys(@BeanParam EmployeeNewReservationDto newReservationDto) {
+        List<String> errorMessages = validator.validate(newReservationDto);
+
+        NewReservationAllForm newReservationAllForm = new NewReservationAllForm();
+        newReservationAllForm.setNewReservationDto(newReservationDto);
+
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+        }
+
+        try {
+            List<AvailableAlleyDto> availableAlleys = reservationService.getAvailableAlleysInTimeRange(newReservationDto);
+            this.newReservationDto = newReservationDto;
+
+            newReservationAllForm.setAvailableAlleys(availableAlleys);
+            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URL);
+            FormData formData = FormData.builder().data(newReservationAllForm).build();
+            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, Arrays.asList(localization.get(e.getCode())));
+        }
+    }
+
+    /**
+     * Tworzy rezerwacje
+     *
+     * Scenariusz:
+     *
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Employee".
+     *     2) Użytkownik podaje login użytkownika
+     *     3) System wyświetla wybór godziny
+     *     4) Użytkownik wybiera godzinę
+     *     5) System wyświetla dostępne tory
+     *     6) Użytkownik wybiera tor
+     *     7) Użytkownik klika zatwierdź
+     *     8) System przekierowuje na stronę rezerwacji
+     *
+     * @param alleyId
+     * @return informacja o wyniku rezerwacji
+     */
+    @GET
+    @Path("new/{alley_id}")
+    @RolesAllowed(MorRoles.CREATE_RESERVATION_FOR_USER)
+    @Produces(MediaType.TEXT_HTML)
+    public String createReservation(@PathParam("alley_id") Long alleyId) {
+        if (newReservationDto == null) {
+            return redirectUtil.redirect(NEW_RESERVATION_URL, new FormData());
+        }
+
+        List<String> errorMessages = validator.validate(newReservationDto);
+
+        NewReservationAllForm newReservationAllForm = new NewReservationAllForm();
+        newReservationAllForm.setNewReservationDto(newReservationDto);
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+        }
+
+        FormData formData = new FormData();
+        formData.setData(newReservationAllForm);
+        try {
+            reservationService.addReservation(newReservationDto, alleyId, newReservationDto.getUserLogin());
+            formData.setInfos(Collections.singletonList(localization.get("newReservationCreated")));
+            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+        } catch (SsbdApplicationException e) {
+            formData.setErrors(Collections.singletonList(localization.get(e.getCode())));
+            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+        }
     }
 
     /**

@@ -1,9 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.service;
 
+
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 
 import java.sql.Timestamp;
@@ -18,7 +19,9 @@ public interface ReservationService {
      * @return lista torów
      * @throws SsbdApplicationException w razie błędu
      */
-    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(NewReservationDto newReservationDto) throws SsbdApplicationException;
+
+    List<AvailableAlleyDto> getAvailableAlleysInTimeRange(ClientNewReservationDto newReservationDto) throws SsbdApplicationException;
+
     
     
     /**
@@ -39,7 +42,7 @@ public interface ReservationService {
      * @throws SsbdApplicationException w razie błędu
      */
     List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException;
-    
+
     /**
      * Dokonuje rezerwacji.
      *
@@ -48,7 +51,7 @@ public interface ReservationService {
      * @param userLogin         login użytkownika
      * @throws SsbdApplicationException w razię błędu
      */
-    void addReservation(NewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
+    void addReservation(ClientNewReservationDto newReservationDto, Long alleyId, String userLogin) throws SsbdApplicationException;
 
     /**
      * Wprowadza dane dotyczące zakończonej rozgrywki.

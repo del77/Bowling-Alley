@@ -3,6 +3,10 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.NewReservationAllForm;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
@@ -40,9 +44,7 @@ public class ReservationController implements Serializable {
     private static final String RESERVATION_LIST_URL = "/myreservations";
     
     private static final String RESERVATION_VIEW = "mor/reservation.hbs";
-    
-    private static final String NEW_RESERVATION_VIEW = "mor/newReservation.hbs";
-    
+    private static final String NEW_RESERVATION_VIEW = "mor/newReservation/clientNewReservation.hbs";
     private static final String NEW_RESERVATION_URL = "/myreservations/new";
     private static final String RESERVATION_DETAILS_PATH = "/myreservations/details/";
     
@@ -63,8 +65,8 @@ public class ReservationController implements Serializable {
 
     @Inject
     private DtoValidator validator;
-    
-    private transient NewReservationDto newReservationDto;
+
+    private transient ClientNewReservationDto newReservationDto;
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
@@ -116,7 +118,7 @@ public class ReservationController implements Serializable {
     @Path("new")
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String getAvailableAlleys(@BeanParam NewReservationDto newReservationDto) {
+    public String getAvailableAlleys(@BeanParam ClientNewReservationDto newReservationDto) {
         List<String> errorMessages = validator.validate(newReservationDto);
 
         NewReservationAllForm newReservationAllForm = new NewReservationAllForm();
@@ -131,6 +133,7 @@ public class ReservationController implements Serializable {
             this.newReservationDto = newReservationDto;
 
             newReservationAllForm.setAvailableAlleys(availableAlleys);
+            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URL);
             FormData formData = FormData.builder().data(newReservationAllForm).build();
             return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
         } catch (SsbdApplicationException e) {

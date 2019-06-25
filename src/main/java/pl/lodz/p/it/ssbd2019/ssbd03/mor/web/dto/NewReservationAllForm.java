@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewReservationAllForm {
-    private NewReservationDto newReservationDto;
+    private Object newReservationDto;
     private List<AvailableAlleyDto> availableAlleys;
+    private String selfUrl;
 }

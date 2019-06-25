@@ -1,0 +1,21 @@
+{{#block "basicNewReservationForm"}}
+    <h2 class="mb-3">
+        {{lang.newReservationQuestion}}
+    </h2>
+    <div class="form-group justify-content-between">
+        <label for="startDay">*{{lang.newReservationStartDay}}: </label>
+        <input name="startDay" type="text" class="datepicker" value="{{this.data.newReservationDto.startDay}}" required>
+    </div>
+    <div class="form-group justify-content-between">
+        <label for="startHour">*{{lang.newReservationStartHour}}: </label>
+        <input name="startHour" type="text" class="starttimepicker" value="{{this.data.newReservationDto.startHour}}" required/>
+    </div>
+    <div class="form-group justify-content-between">
+        <label for="endHour">*{{lang.newReservationEndHour}}: </label>
+        <input name="endHour" type="text" class="endtimepicker" value="{{this.data.newReservationDto.endHour}}" required/>
+    </div>
+    <div class="form-group justify-content-between">
+        <label for="numbeOfPlayers">*{{lang.newReservationNumberOfPlayers}}: </label>
+        <input name="numberOfPlayers" type="number" min="1" max="2147483647" class="form-input" value="{{this.data.newReservationDto.numberOfPlayers}}" required/>
+    </div>
+{{/block}}

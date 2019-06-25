@@ -1,0 +1,28 @@
+{{#block "availableAlleysList"}}
+    {{#if this.data.availableAlleys}}
+        <div style="max-width: 400px">
+            <table class="table table-light table-striped table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">{{lang.newReservationAlleyNumber}}</th>
+                    <th scope="col">{{lang.newReservationReserveButton}}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {{#each this.data.availableAlleys}}
+                    <tr>
+                        <td>
+                            {{this.alleyNumber}}
+                        </td>
+                        <td>
+                            <a href="{{webContextPath}}{{../data.selfUrl}}/{{this.id}}" class="btn btn-success btn-sm"
+                               role="button" data-button-confirm>{{lang.newReservationReserveButton}}</a>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    {{/if}}
+{{/block}}
