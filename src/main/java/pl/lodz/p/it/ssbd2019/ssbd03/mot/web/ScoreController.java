@@ -100,6 +100,12 @@ public class ScoreController implements Serializable {
     /**
      * Pobiera historię wyników wybranego uzytkownika
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. Użytkownik klika przycisk "Wyświetl wszystkich użytkowników"
+     * 3. System wyświetla listę użytkowników
+     * 4. Użytkownik klika przycisk "Pokaż wyniki" obok Clienta, którego historię chce wyświetlić
+     * 5. System wyświetla listę wyników posortowaną od najnowszego do najstarszego
+     *
      * @param userId identyfikator użytkownika
      * @return widok z listą wyników użytkownika
      */

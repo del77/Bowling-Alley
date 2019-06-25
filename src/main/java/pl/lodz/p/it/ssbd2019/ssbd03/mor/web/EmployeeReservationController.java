@@ -231,6 +231,12 @@ public class EmployeeReservationController implements Serializable {
     /**
      * Blokuje wybrany komentarz do rezerwacji
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Admin" lub "Employee".
+     * 2. Użytkownik przechodzi do szczegółów rezerwacji.
+     * 3. System wyświetla szczegóły wybranej rezerwacji.
+     * 4. Użytkownik klika "zablokuj" na pozycji komentarza.
+     * 5. System zapisuje stan komentarza jako zablokowany.
+     *
      * @param id wybrana komentarza
      * @return Widok z rezultatem.
      */
