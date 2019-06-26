@@ -18,9 +18,9 @@ public interface CommentService {
      * Edytuje komentarz
      *
      * @param commentDto Obiekt zawierający komentarz
-     * @throws SsbdApplicationException
+     * @throws SsbdApplicationException wyjatek aplikacyjny
      */
-    void addComment(Long reservationId, CommentDto commentDto) throws SsbdApplicationException;
+    void addComment(Long reservationId, CommentDto commentDto, String userLogin) throws SsbdApplicationException;
 
     /**
      * Dodaje komentarz

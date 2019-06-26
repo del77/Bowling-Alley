@@ -83,11 +83,6 @@ public class UserAccount {
     @JoinColumn(name="user_id", referencedColumnName = "id", nullable = false)
     private List<PreviousUserPassword> previousUserPasswords;
 
-    /**
-     * Ta lista tworzy rekurencyjną relację - w przypadku odczytywaniu z bazy nie ma problemu,
-     * ale adnotacja @NotNull nie pozwala utworzyć AccountAccessLevels bez UserAccount i odwrotnie,
-     * co skutecznie uniemożliwia tworzenie nowych encji.
-     */
     @OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @ToString.Exclude
     private List<AccountAccessLevel> accountAccessLevels;
