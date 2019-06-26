@@ -376,7 +376,7 @@
     <web-resource-collection>
       <web-resource-name>GetAlleyGamesHistory</web-resource-name>
       <description/>
-      <url-pattern>/alleys/*/history</url-pattern>
+      <url-pattern>/alleys/history/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>

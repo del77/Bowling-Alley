@@ -1,7 +1,8 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ReservationFullDto;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface ReservationService {
      * @param alleyId identyfikator toru
      * @return Lista rezerwacji dla danego toru
      */
-    List<Reservation> getFinishedReservationsForAlley(Long alleyId);
+    List<ReservationFullDto> getFinishedReservationsForAlley(Long alleyId) throws SsbdApplicationException;
 
     /**
      * Wprowadza dane dotyczące zakończonej rozgrywki
