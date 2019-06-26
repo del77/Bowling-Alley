@@ -59,6 +59,11 @@ public class ServiceRequestController implements Serializable {
     /**
      * Zwraca widok pozwalający dodać nowe zgłoszenie serwisowe
      *
+     *  1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     *  2. Wyświetla listę torów.
+     *  3. Naciska przycisk "Menu" i otwiera menu kontekstowe dla danego toru.
+     *  4. Klika w "Dodaj zgłoszenie serwisowe".
+     *
      * @param alleyId Identyfikator toru, dla którego dodać chcemy zgłoszenie.
      * @return Widok z formularzem pozwalającym dodać zgłoszenie-
      */
@@ -85,10 +90,17 @@ public class ServiceRequestController implements Serializable {
 
 
     /**
+     * Dodaje zgłsozenie serwisowe na bazie danych dostarczonych z widoku.
+     *
+     *  1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     *  2. Wyświetla listę torów.
+     *  3. Naciska przycisk "Menu" i otwiera menu kontekstowe dla danego toru.
+     *  4. Klika w "Dodaj zgłoszenie serwisowe".
+     *
      * @param serviceRequest Obiekt DTO z informacjami dotyczącymi zgłoszenia serwisowego.
      * @param alleyId Identyfikator toru.
      * @return Widok dodawania nowego zgłoszenia serwisowego dla toru.
-     * @throws NotFoundException w przypadku, gyd tor nie zostanie znaleziony.
+     * @throws NotFoundException w przypadku, gdy tor nie zostanie znaleziony.
      * @return Widok zgłoszenia z informacją na temat statusu.
      */
     @POST
@@ -129,11 +141,6 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Zwraca widok pozwalający edytować zgłoszenie serwisowe
-     *
-     *  1. Użytkownik jest zalogowany na koncie z rolą "Employee".
-     *  2. System wyświetla listę zgłoszeń serwisowych.
-     *  3. Użytkownik klika przycisk klika opcję w menu dla pracownika, "Zgłoszenia serwisowe".
-     *  4. Wyświetlona zostaje lista ze zgłoszeniami.
      *
      * @param id Identyfikator zgłoszenia serwisowego.
      * @return Widok z formularzem wypełnionym aktualnymi danymi.
@@ -215,6 +222,11 @@ public class ServiceRequestController implements Serializable {
 
     /**
      * Pobiera zgłoszenia serwisowe oraz wyświetla je użytkownikowi. W przypadku braku, zostanie zwrócona pusta lista.
+     *
+     *  1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     *  2. Wyświetla listę zgłoszeń serwisowych.
+     *  3. Użytkownik klika przycisk klika opcję w menu dla pracownika, "Zgłoszenia serwisowe".
+     *  4. Wyświetlona zostaje lista ze zgłoszeniami.
      *
      * @return Widok ze zgłoszeniami serwisowymi
      */
