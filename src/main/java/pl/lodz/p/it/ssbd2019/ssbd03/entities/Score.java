@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @NamedQueries(
         value = {
                 @NamedQuery(name = "Score.findScoresForReservation", query = "select s from Score s where s.reservation.id = :reservationId"),
-                @NamedQuery(name = "Score.findScoresForAlley", query = "select s from Score s where s.reservation.alley.id = :alleyId AND s.reservation.endDate  < :endDate")
+                @NamedQuery(name = "Score.findScoresForAlley", query = "select s from Score s where s.reservation.alley.id = :alleyId AND s.reservation.endDate  < :endDate ORDER BY s.reservation.endDate DESC")
         }
 )
 public class Score {
