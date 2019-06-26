@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mok.service;
 
 import org.hibernate.Hibernate;
-import org.modelmapper.ModelMapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.AccountAlreadyConfirmedException;
@@ -85,11 +84,9 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     public AccountDetailsDto getUserById(Long id) throws SsbdApplicationException {
         this.userAccount = userAccountRepositoryLocal.findById(id).orElseThrow(
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
-        Hibernate.initialize(this.userAccount.getAccountAccessLevels());
 
         AccountDetailsDto accountDetailsDto = Mapper.map(this.userAccount, AccountDetailsDto.class);
         retrieveRolesFromUserAccount(userAccount, accountDetailsDto);
-
         return accountDetailsDto;
     }
 
@@ -117,7 +114,6 @@ public class UserAccountServiceImpl extends TransactionTracker implements UserAc
     public AccountDetailsDto getByLogin(String login) throws SsbdApplicationException {
         this.userAccount = userAccountRepositoryLocal.findByLogin(login).orElseThrow(
                 () -> new LoginDoesNotExistException("Account with login '" + login + "' does not exist."));
-        Hibernate.initialize(this.userAccount.getAccountAccessLevels());
         AccountDetailsDto account = Mapper.map(this.userAccount, AccountDetailsDto.class);
         retrieveRolesFromUserAccount(userAccount, account);
 
