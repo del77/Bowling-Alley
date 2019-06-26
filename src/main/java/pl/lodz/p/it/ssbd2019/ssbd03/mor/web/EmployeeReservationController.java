@@ -168,6 +168,16 @@ public class EmployeeReservationController extends AbstractReservationController
     /**
      * Pobiera widok pozwalający pracownikowi edytować własną rezerwację
      *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2) System wyświetla listę użytkowników lub torów.
+     * 3) Użytkownik wybiera klika przycisk "wyświetl rezerwacje" przy odpowiedniej pozycji z listy.
+     * 4) System wyświetla listę rezerwacji.
+     * 5) Użytkownik klika na przycisk "edytuj" przy odpowiedniej pozycji z listy
+     * 6) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 7) Użytkownik edytuje pola rezerwacji
+     * 8) Użytkownik klika zatwierdź
+     * 9) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
+     *
      * @param id identyfikator edytowanej rezerwacji
      * @return Widok z formularzem.
      */
@@ -182,6 +192,16 @@ public class EmployeeReservationController extends AbstractReservationController
     
     /**
      * Aktualizuje rezerwację
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2) System wyświetla listę użytkowników lub torów.
+     * 3) Użytkownik wybiera klika przycisk "wyświetl rezerwacje" przy odpowiedniej pozycji z listy.
+     * 4) System wyświetla listę rezerwacji.
+     * 5) Użytkownik klika na przycisk "edytuj" przy odpowiedniej pozycji z listy
+     * 6) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 7) Użytkownik edytuje pola rezerwacji
+     * 8) Użytkownik klika zatwierdź
+     * 9) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
      *
      * @param dto dto zaktualizowanej rezerwacji
      * @return rezultat operacji
