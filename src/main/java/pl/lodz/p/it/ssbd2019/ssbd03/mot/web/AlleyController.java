@@ -161,6 +161,13 @@ public class AlleyController implements Serializable {
     /**
      * Pobiera wszystkie tory
      *
+     * Scenariusz:
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Client".
+     * 2) Użytkownik klika przycisk "Wyświetl listę torów".
+     * 3) System wyświetla listę torów posortowanych rosnąco po numerach.
+     *
+     * @param id identyfikator cache
      * @return Widok ze wszystkimi torami
      */
     @GET
@@ -171,7 +178,7 @@ public class AlleyController implements Serializable {
         try {
             models.put("alleys", alleyService.getAllAlleys());
         } catch (SsbdApplicationException e) {
-            displayError(localization.get("alleysListError"));
+            displayError(localization.get(e.getCode()));
         }
         return ALLEY_LIST_VIEW;
     }
