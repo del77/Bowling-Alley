@@ -12,7 +12,8 @@
                         </button>
                         <div class="dropdown-menu">
                             {{#if isEmployee}}
-                                <a href="{{webContextPath}}/alleys/history/{{this.id}}" class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
+                                <a href="{{webContextPath}}/alleys/history/{{this.id}}"
+                                   class="dropdown-item btn-primary">{{lang.showGamesHistory}}</a>
                                 <a title="{{lang.maxScore}}"
                                    onclick="getMaxScore({{this.id}}, {{this.number}})"
                                    href="#" class="dropdown-item btn-success">{{lang.showMaxScore}}</a>
@@ -21,7 +22,8 @@
                                 <a href="{{webContextPath}}/employee/servicerequests/new/{{this.id}}"
                                    class="dropdown-item btn-danger">{{lang.addServiceRequest}}</a>
                             {{else}}
-                                <a href="{{webContextPath}}/alleys/history/{{this.id}}" class="dropdown-item btn-secondary">{{lang.showGamesHistory}}</a>
+                                <a href="{{webContextPath}}/alleys/history/{{this.id}}"
+                                   class="dropdown-item btn-secondary">{{lang.showGamesHistory}}</a>
                                 <a href="#"
                                    onclick="getMaxScore({{this.id}}, {{this.number}})"
                                    class="dropdown-item btn-primary">{{lang.showMaxScore}}</a>
@@ -82,19 +84,13 @@
         </div>
         <script>
             function getMaxScore(alleyId, alleyNumber) {
-                fetch('{{webContextPath}}/alleys/' + alleyId + '/best-score')
-                        .then(resp = > resp.json(), e =
-            >
-                {
+                fetch('{{webContextPath}}/alleys/' + alleyId + '/best-score').then(resp => resp.json(), e => {
                     console.log(e);
-                }
-            )
-            .
-                then(resp = > {
+                }).then(resp => {
                     const mp = document.getElementById('modal_body_p');
-                mp.innerHTML = '{{lang.bestScoreForAlley}} ' + alleyNumber + ' {{lang.is}} ' + resp.score;
-                $('#myModal').modal();
-            })
+                    mp.innerHTML = '{{lang.bestScoreForAlley}} ' + alleyNumber + ' {{lang.is}} ' + resp.score;
+                    $('#myModal').modal();
+                })
             }
         </script>
     </ul>

@@ -24,6 +24,12 @@ public class MaxScoreController {
     /**
      * Zwraca najlepszy wynik dla tory w postaci obektu JSON.
      *
+     *   1. Użytkownik jest zalogowany na koncie o roli "Employee" lub "Client".
+     *   2. Wyświetla listę torów.
+     *   3. Z poziomu listy torów klika na przycisk "Menu" rozwijając menu kontekstowe.
+     *   4. Wybiera opcję "Najlepszy wynik".
+     *   5. Otwiera się okno typu modal z wynikiem.
+     *
      * @param id Identyfikator toru
      * @return JSON String z informacjami dotyczącymi najlepszego wyniku dla toru.
      */
