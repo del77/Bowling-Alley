@@ -1,27 +1,39 @@
 {{#partial "content"}}
     {{#if reservation}}
-        <div class="d-flex justify-content-between">
-            <h2 class="mb-3">
-                {{lang.reservationDetails}}
-                {{#if isExpired}}
-                    <span class="badge badge-secondary ml-2 rounded">{{lang.reservationExpired}}</span>
-                {{else}}
-                    <span class="badge badge-success ml-2 rounded">{{lang.reservationPending}}</span>
-                {{/if}}
-            </h2>
-            <form class="form-inline" role="form" method="post" data-form-confirm>
-                <div class="form-group">
-                    {{#if isCancelable}}
-                        <button class="form-control btn btn-warning" type="submit">{{lang.cancelReservation}}</button>
-                    {{else}}
-                        <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus"
-                              data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <h2 class="mb-3">
+                        {{lang.reservationDetails}}
+                        {{#if isExpired}}
+                            <span class="badge badge-secondary ml-2 rounded">{{lang.reservationExpired}}</span>
+                        {{else}}
+                            <span class="badge badge-success ml-2 rounded">{{lang.reservationPending}}</span>
+                        {{/if}}
+                    </h2>
+                </div>
+                <div class="col-6">
+                    <a href="{{webContextPath}}/{{reservationContext}}/edit/{{reservation.id}}"
+                       class="btn btn-primary waves-effect float-right ml-4 my-2">
+                        <span>{{lang.edit}}</span>
+                        <i class="far fa-edit ml-1"></i>
+                    </a>
+
+                    <form class="float-right ml-4 my-2" role="form" method="post" data-form-confirm>
+                        <div class="form-group">
+                            {{#if isCancelable}}
+                                <button class="form-control btn btn-warning" type="submit">{{lang.cancelReservation}}</button>
+                            {{else}}
+                                <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus"
+                                      data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
                              <button class="btn btn-secondary" style="pointer-events: none;" type="button"
                                      disabled>{{lang.cancelReservation}}</button>
                         </span>
-                    {{/if}}
+                            {{/if}}
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
         <ul class="list-group">
             <li class="list-group-item list-group-item-action">

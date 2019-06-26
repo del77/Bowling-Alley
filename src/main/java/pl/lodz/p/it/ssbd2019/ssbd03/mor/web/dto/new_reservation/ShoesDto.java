@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation;
+package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,10 +11,10 @@ import javax.ws.rs.FormParam;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class BallsDto {
+public class ShoesDto {
 
-    @Min(value = 6, message = "{validate.itemSizeMin}")
-    @Max(value = 16, message = "{validate.itemSizeMax}")
+    @Min(value = 38, message = "{validate.itemSizeMin}")
+    @Max(value = 45, message = "{validate.itemSizeMax}")
     @FormParam("size")
     private int size;
 

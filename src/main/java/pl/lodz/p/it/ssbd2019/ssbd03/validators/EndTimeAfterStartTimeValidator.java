@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.validators;
 
 
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 
 import javax.validation.ConstraintValidator;

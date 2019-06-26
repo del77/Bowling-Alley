@@ -14,11 +14,11 @@ import javax.ws.rs.FormParam;
 @NoArgsConstructor
 @ToString
 public class ItemDto {
-    @FormParam("sizes")
+    @FormParam("size")
     @Min(value = 0, message = "{validate.itemSizeMin}")
     private int size;
 
-    @FormParam("counts")
+    @FormParam("count")
     @Min(value = 0, message = "{validate.itemCountMin}")
     private int count;
 }
