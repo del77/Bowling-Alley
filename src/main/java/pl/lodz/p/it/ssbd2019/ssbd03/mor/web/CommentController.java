@@ -54,7 +54,7 @@ public class CommentController implements Serializable {
 
     /**
      * Widok pozwalający klientowi dodać komentarz do rezerwacji
-     *
+     * <p>
      * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
      * 2. Użytkownik klika przycisk "Dodaj komentarz" w szczegółach zakończonej rezerwacji.
      * 3. System wyświetla formularz dodawania komentarza.
@@ -105,7 +105,8 @@ public class CommentController implements Serializable {
         }
 
         try {
-            commentService.addComment(reservationId, comment);
+            String userLogin = models.get("userName", String.class);
+            commentService.addComment(reservationId, comment, userLogin);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirect(ADD_COMMENT_PATH + reservationId,
                     new FormData(

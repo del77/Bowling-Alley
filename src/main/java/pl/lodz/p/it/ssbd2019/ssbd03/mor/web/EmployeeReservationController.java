@@ -256,6 +256,7 @@ public class EmployeeReservationController extends AbstractReservationController
     public String getReservationsForUser(@PathParam("id") Long id) {
         try {
             List<ReservationFullDto> reservations = reservationService.getReservationsForUser(id);
+            reservations.forEach(r -> r.setExpired(ReservationValidator.isExpired(r.getStartDate())));
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("userReservationList"));
             models.put("reservationContext", "reservations");
@@ -283,6 +284,7 @@ public class EmployeeReservationController extends AbstractReservationController
     public String getReservationsForAlley(@PathParam("id") Long id) {
         try {
             List<ReservationFullDto> reservations = reservationService.getReservationsForAlley(id);
+            reservations.forEach(r -> r.setExpired(ReservationValidator.isExpired(r.getStartDate())));
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("alleyReservationList"));
             models.put("reservationContext", "reservations");

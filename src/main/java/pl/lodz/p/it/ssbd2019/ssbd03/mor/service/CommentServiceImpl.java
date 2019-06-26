@@ -4,10 +4,14 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Comment;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.conflict.CommentNotOwnedReservationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.ReservationDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.CommentAddingException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.ReservationMustBeCompletedException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.CommentRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.CommentDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.CommentEditDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
@@ -38,6 +42,9 @@ public class CommentServiceImpl extends TransactionTracker implements CommentSer
     @EJB(beanName = "MORCommentRepository")
     CommentRepositoryLocal commentRepositoryLocal;
 
+    @EJB(beanName = "MORUserAccountRepository")
+    UserAccountRepositoryLocal userAccountRepositoryLocal;
+
     private Comment comment;
 
     @Override
@@ -64,12 +71,11 @@ public class CommentServiceImpl extends TransactionTracker implements CommentSer
 
     @Override
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
-    public void addComment(Long reservationId, CommentDto commentDto) throws SsbdApplicationException {
+    public void addComment(Long reservationId, CommentDto commentDto, String userLogin) throws SsbdApplicationException {
         Optional<Reservation> reservationById = reservationRepositoryLocal.findById(reservationId);
-        Reservation reservation = reservationById.orElseThrow(NotFoundException::new);
-        if (!ReservationValidator.isExpired(reservation.getStartDate())) {
-            throw new ReservationMustBeCompletedException("Ones can only add comments to completed reservations");
-        }
+        Reservation reservation = reservationById.orElseThrow(ReservationDoesNotExistException::new);
+        checkIfUserOwnsReservation(reservation, userLogin);
+        checkReservationExpired(reservation);
         Comment serviceRequest = Comment
                 .builder()
                 .active(true)
@@ -78,6 +84,18 @@ public class CommentServiceImpl extends TransactionTracker implements CommentSer
                 .reservation(reservation)
                 .build();
         commentRepositoryLocal.create(serviceRequest);
+    }
+
+    private void checkIfUserOwnsReservation(Reservation reservation, String userLogin) throws CommentAddingException {
+        if (!reservation.getUserAccount().getLogin().equals(userLogin)) {
+            throw new CommentNotOwnedReservationException();
+        }
+    }
+
+    private void checkReservationExpired(Reservation reservation) throws ReservationMustBeCompletedException {
+        if (!ReservationValidator.isExpired(reservation.getStartDate())) {
+            throw new ReservationMustBeCompletedException("Ones can only add comments to completed reservations");
+        }
     }
 
     /**

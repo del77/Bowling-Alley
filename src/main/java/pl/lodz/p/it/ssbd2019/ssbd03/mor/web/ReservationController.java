@@ -31,11 +31,11 @@ import java.util.List;
 @Controller
 @Path("myreservations")
 public class ReservationController extends AbstractReservationController implements Serializable {
-    
+
     private static final String NEW_RESERVATION_URI = "/myreservations/new";
     private static final String RESERVATION_DETAILS_URI = "/myreservations/details/";
     private static final String EDIT_OWN_RESERVATION_URI = "myreservations/edit/";
-    
+
     @Inject
     private Models models;
 
@@ -52,30 +52,30 @@ public class ReservationController extends AbstractReservationController impleme
     private DtoValidator validator;
 
     private transient ClientNewReservationDto newReservationDto;
-    
+
     protected ReservationService getReservationService() {
         return reservationService;
     }
-    
+
     protected Models getModels() {
         return models;
     }
-    
+
     protected RedirectUtil getRedirectUtil() {
         return redirectUtil;
     }
-    
+
     protected LocalizedMessageProvider getLocalization() {
         return localization;
     }
-    
+
     protected String getReservationContext() {
         return "myreservations";
     }
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
-     *
+     * <p>
      * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
      * 2. Użytkownik przechodzi na listę "Moje rezerwacje"
      * 3. System wyświetla listę rezerwacji przypisanych do konta zalogowanego użytkownika, lista może być pusta.
@@ -91,6 +91,7 @@ public class ReservationController extends AbstractReservationController impleme
             redirectUtil.injectFormDataToModels(idCache, models);
             String login = (String) models.get(USERNAME);
             List<ReservationFullDto> reservations = reservationService.getReservationsByUserLogin(login);
+            reservations.forEach(r -> r.setExpired(ReservationValidator.isExpired(r.getStartDate())));
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("ownReservationList"));
         } catch (SsbdApplicationException e) {
@@ -109,7 +110,7 @@ public class ReservationController extends AbstractReservationController impleme
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
-        return super.getAvailableAlleys(idCache,true);
+        return super.getAvailableAlleys(idCache, true);
     }
 
     /**
@@ -148,15 +149,15 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Tworzy rezerwacje
-     *
+     * <p>
      * Scenariusz:
-     *     1) Użytkownik jest zalogowany na koncie z rolą "Client".
-     *     2) System wyświetla wybór godziny
-     *     3) Użytkownik wybiera przedział czasu, przedmioty oraz liczbę zawodników.
-     *     4) System wyświetla dostępne tory
-     *     5) Użytkownik wybiera tor
-     *     6) Użytkownik klika zatwierdź
-     *     7) System przekierowuje na stronę rezerwacji
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2) System wyświetla wybór godziny
+     * 3) Użytkownik wybiera przedział czasu, przedmioty oraz liczbę zawodników.
+     * 4) System wyświetla dostępne tory
+     * 5) Użytkownik wybiera tor
+     * 6) Użytkownik klika zatwierdź
+     * 7) System przekierowuje na stronę rezerwacji
      *
      * @param alleyId identyfikator toru, na którym użytkownik chce utworzyć rezerwację
      * @return informacja o wyniku rezerwacji
@@ -194,7 +195,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
-     *
+     * <p>
      * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
      * 2) System wyświetla listę "Moje rezerwacje"
      * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
@@ -203,7 +204,7 @@ public class ReservationController extends AbstractReservationController impleme
      * 6) Użytkownik klika zatwierdź
      * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
      *
-     * @param id identyfikator rezerwacji
+     * @param id      identyfikator rezerwacji
      * @param idCache identyfikator cache
      * @return Widok z formularzem edycji lub widok listy własnej rezerwacji, gdy nie udało się znaleźć rezerwacji o podanym id
      */
@@ -215,10 +216,10 @@ public class ReservationController extends AbstractReservationController impleme
         redirectUtil.injectFormDataToModels(idCache, models);
         return getEditView(id, null, false, true);
     }
-    
+
     /**
      * Edytuje rezerwację o podanym id
-     *
+     * <p>
      * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
      * 2) System wyświetla listę "Moje rezerwacje"
      * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
@@ -227,8 +228,7 @@ public class ReservationController extends AbstractReservationController impleme
      * 6) Użytkownik klika zatwierdź
      * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
      *
-     *
-     * @param id identyfikator rezerwacji
+     * @param id          identyfikator rezerwacji
      * @param reservation dto reprezentujące rezerwację
      * @return widok ukończenia operacji lub widok listy własnej rezerwacji, gdy nie udało się znaleźć rezerwacji o podanym id
      */
@@ -240,14 +240,14 @@ public class ReservationController extends AbstractReservationController impleme
             @PathParam("id") long id,
             @BeanParam DetailedReservationDto reservation) {
         List<String> errorMessages = validator.validate(reservation);
-    
+
         if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
                     EDIT_OWN_RESERVATION_URI + id,
                     reservation,
                     errorMessages);
         }
-        
+
         try {
             DetailedReservationDto resultDto = reservationService.updateOwnReservation(reservation, (String) models.get(USERNAME));
             FormData formData = FormData.builder()
@@ -262,7 +262,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
-     *
+     * <p>
      * 1. Użytkownik jest zalogowany na koncie z rolą "Client"
      * 2. Użytkownik przechodzi na listę swoich rezerwacji
      * 3. Użytkownik klika "Pokaż szczegóły"
@@ -319,12 +319,12 @@ public class ReservationController extends AbstractReservationController impleme
             );
         }
     }
-    
+
     /**
      * kontroler pośredniczący w edycji rezerwacji, odpowiada za odświeżenie dostępnych torów
      *
-     * @param dto dto z wartościami z edycji
-     * @param redirectTo cel przekierowania, możliwe wartości `create` i `update`
+     * @param dto           dto z wartościami z edycji
+     * @param redirectTo    cel przekierowania, możliwe wartości `create` i `update`
      * @param reservationId identyfikator rezerwacji, jeżeli jest edytowana
      * @return odpowiedni widok z przekierowania
      */
@@ -338,7 +338,7 @@ public class ReservationController extends AbstractReservationController impleme
             @QueryParam("resId") Long reservationId) {
         return super.injectAvailableAlleys(dto, redirectTo, reservationId, true);
     }
-    
+
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }

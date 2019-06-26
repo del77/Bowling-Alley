@@ -24,6 +24,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ShoesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
@@ -48,16 +49,16 @@ import java.util.stream.Collectors;
 @Interceptors(InterceptorTracker.class)
 @DenyAll
 public class ReservationServiceImpl extends TransactionTracker implements ReservationService {
-    
+
     private Reservation ownEditedReservation;
     private Reservation userEditedReservation;
 
     @EJB(beanName = "MORReservationRepository")
     private ReservationRepositoryLocal reservationRepositoryLocal;
-    
+
     @EJB(beanName = "MORReservationItemRepository")
     private ReservationItemRepositoryLocal reservationItemRepositoryLocal;
-    
+
     @EJB(beanName = "MORItemRepository")
     private ItemRepositoryLocal itemRepositoryLocal;
 
@@ -68,7 +69,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
 
     private Reservation reservation;
-    
+
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(ClientNewReservationDto newReservationDto) throws SsbdApplicationException {
@@ -77,21 +78,21 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(startTime, endTime);
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
-    
+
     @Override
     @RolesAllowed({MorRoles.CREATE_RESERVATION, MorRoles.CREATE_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRange(Timestamp start, Timestamp end) throws SsbdApplicationException {
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRange(start, end);
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
-    
+
     @Override
     @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException {
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRangeExcludingReservation(start, end, this.ownEditedReservation.getId());
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
-    
+
     @Override
     @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingUserReservation(Timestamp start, Timestamp end) throws SsbdApplicationException {
@@ -138,20 +139,24 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         if (!doesReservationBelongToUser(this.ownEditedReservation, userLogin)) {
             throw new NotYourReservationException();
         }
+        throwIfReservationExpired();
+        throwIfReservationCancelled();
+
         return updateReservation(reservationDto, this.ownEditedReservation);
     }
-    
+
     @Override
     @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     public DetailedReservationDto updateReservation(DetailedReservationDto reservationDto) throws SsbdApplicationException {
+        throwIfReservationExpired();
+        throwIfReservationCancelled();
         return updateReservation(reservationDto, this.userEditedReservation);
     }
-    
-    
+
     @Override
     @RolesAllowed({MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER})
     public void cancelReservation(Long id) throws DataAccessException, StateConflictedException {
-        if(!reservation.isActive()){
+        if (!reservation.isActive()) {
             throw new ReservationAlreadyInactiveException();
         }
         reservation.setActive(false);
@@ -191,16 +196,16 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .orElseThrow(ReservationDoesNotExistException::new);
         return Mapper.map(reservation, ReservationFullDto.class);
     }
-    
+
     @Override
     @RolesAllowed({MorRoles.EDIT_RESERVATION_FOR_USER})
     public DetailedReservationDto getReservationByIdForEdition(Long id) throws SsbdApplicationException {
         this.userEditedReservation = reservationRepositoryLocal.findById(id)
                 .orElseThrow(ReservationDoesNotExistException::new);
-        
+
         return getDetailedReservationDtoFromEntity(this.userEditedReservation);
     }
-    
+
     @Override
     @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS, MorRoles.EDIT_OWN_RESERVATION})
     public DetailedReservationDto getOwnReservationById(Long reservationId, String userLogin) throws SsbdApplicationException {
@@ -210,18 +215,18 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         } else {
             throw new NotYourReservationException();
         }
-    
+
         return getDetailedReservationDtoFromEntity(this.ownEditedReservation);
     }
 
 
     @Override
     @RolesAllowed({MorRoles.GET_OWN_RESERVATION_DETAILS})
-    public ReservationFullDto getUserReservationById(Long id, String login) throws DataAccessException {
+    public ReservationFullDto getUserReservationById(Long id, String login) throws SsbdApplicationException {
         Reservation res = reservationRepositoryLocal.findById(id).orElseThrow(ReservationDoesNotExistException::new);
 
         if (!res.getUserAccount().getLogin().equals(login)) {
-            throw new ReservationDoesNotExistException();
+            throw new NotYourReservationException();
         }
 
         this.reservation = res;
@@ -236,13 +241,13 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .findFirst()
                 .orElse(null);
 
-        if(comment == null) {
+        if (comment == null) {
             throw new NotFoundException("There is no comment with id: " + id);
         }
         comment.setActive(false);
         reservationRepositoryLocal.edit(reservation);
     }
-    
+
     private DetailedReservationDto updateReservation(DetailedReservationDto dto, Reservation reservation) throws SsbdApplicationException {
         Timestamp startDate = StringTimestampConverter.getTimestamp(
                 dto.getDay(),
@@ -255,14 +260,14 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         Alley alley = alleyRepositoryLocal.findByNumber(
                 dto.getAlleyNumber())
                 .orElseThrow(AlleyNotFoundException::new);
-        
+
         if (!isAlleyAvailable(alley.getNumber(), startDate, endDate, reservation)) {
             throw new AlleyAlreadyReservedException();
         }
-    
+
         List<ReservationItem> items = this.getReservationItemsFromDto(dto, reservation);
         checkIfItemsAreAvailable(items, sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(startDate, endDate));
-    
+
         reservation.setAlley(alley);
         reservation.setStartDate(startDate);
         reservation.setEndDate(endDate);
@@ -271,7 +276,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         reservationRepositoryLocal.edit(reservation);
         return dto;
     }
-    
+
     private boolean doesReservationBelongToUser(Reservation reservation, String userLogin) {
         try {
             return reservation.getUserAccount().getLogin().equals(userLogin);
@@ -279,7 +284,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
             return false;
         }
     }
-    
+
     private boolean isAlleyAvailable(int number, Timestamp startDate, Timestamp endDate, Reservation reservation) throws DataAccessException {
         return !reservationRepositoryLocal.getReservationsWithinTimeRange(startDate, endDate)
                 .stream()
@@ -288,7 +293,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .collect(Collectors.toList())
                 .contains(number);
     }
-    
+
     private List<Integer> getAvailableAlleyNumbersInTimeRangeForReservation(
             Timestamp start,
             Timestamp end,
@@ -305,7 +310,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
         List<ReservationItem> result = new ArrayList<>();
 
-        for(ShoesDto shoe : shoesDtos) {
+        for (ShoesDto shoe : shoesDtos) {
             result.add(
                     ReservationItem.builder()
                             .reservation(reservation)
@@ -329,14 +334,14 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
         return result;
     }
-    
+
     private List<ReservationItem> getReservationItemsFromDto(DetailedReservationDto dto, Reservation reservation) throws DataAccessException, ListSizesMismatchException {
         if (dto.getCounts().size() != dto.getSizes().size()) {
             throw new ListSizesMismatchException();
         }
-    
+
         List<ReservationItem> result = new ArrayList<>();
-        
+
         for (int i = 0; i < dto.getCounts().size(); ++i) {
             result.add(
                     ReservationItem.builder()
@@ -349,12 +354,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         }
         return result;
     }
-    
+
     private Map<Integer, Integer> sumUpAllItemQuantitiesFromReservationsWithinGivenTimeFrame(Timestamp startDate, Timestamp endDate) throws DataAccessException {
         // get all reservations within time frame
         List<ReservationItem> alreadyReserved =
                 reservationItemRepositoryLocal.getReservationItemsFromReservationsWithinTimeFrame(startDate, endDate);
-        
+
         // sum up all possible items
         return alreadyReserved.stream()
                 .collect(Collectors.groupingBy(ri -> ri.getItem().getSize()))
@@ -365,7 +370,7 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                         (Map.Entry<Integer, List<ReservationItem>> entry) -> entry.getValue().stream().mapToInt(ReservationItem::getCount).sum()
                 ));
     }
-    
+
     private void checkIfItemsAreAvailable(List<ReservationItem> newItems, Map<Integer, Integer> reservedItems) throws ReservationItemCountLimitExceededException {
         for (ReservationItem item : newItems) {
             Integer integer = reservedItems.get(item.getItem().getSize());
@@ -375,12 +380,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
             }
         }
     }
-    
+
     private void updateItems(List<ReservationItem> newItems, Reservation reservation) throws DataAccessException {
         List<Long> newIds = newItems.stream()
-                .map(ri ->ri.getItem().getId())
+                .map(ri -> ri.getItem().getId())
                 .collect(Collectors.toList());
-        
+
         List<ReservationItem> toUpdate = reservation.getReservationItems().stream()
                 .filter(ri -> newIds.contains(ri.getItem().getId()))
                 .collect(Collectors.toList());
@@ -407,12 +412,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
             item.setCount(newItems.get(index).getCount());
         }
     }
-    
+
     private DetailedReservationDto getDetailedReservationDtoFromEntity(Reservation entity) throws SsbdApplicationException {
-    
+
         Pair<Optional<String>, Optional<String>> startDateTime = StringTimestampConverter.getDateAndTimeStrings(entity.getStartDate());
         Pair<Optional<String>, Optional<String>> endDateTime = StringTimestampConverter.getDateAndTimeStrings(entity.getEndDate());
-    
+
         return DetailedReservationDto.builder()
                 .day(startDateTime.getValue0().orElse(""))
                 .startHour(startDateTime.getValue1().orElse(""))
@@ -430,5 +435,17 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                         .collect(Collectors.toList())
                 )
                 .build();
+    }
+
+    private void throwIfReservationCancelled() throws UpdateInactiveReservationException {
+        if (!this.ownEditedReservation.isActive()) {
+            throw new UpdateInactiveReservationException();
+        }
+    }
+
+    private void throwIfReservationExpired() throws UpdateExpiredReservationExcetpion {
+        if (ReservationValidator.isExpired(this.ownEditedReservation.getStartDate())) {
+            throw new UpdateExpiredReservationExcetpion();
+        }
     }
 }
