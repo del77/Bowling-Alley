@@ -130,6 +130,11 @@ public class ServiceRequestController implements Serializable {
     /**
      * Zwraca widok pozwalający edytować zgłoszenie serwisowe
      *
+     *  1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     *  2. System wyświetla listę zgłoszeń serwisowych.
+     *  3. Użytkownik klika przycisk klika opcję w menu dla pracownika, "Zgłoszenia serwisowe".
+     *  4. Wyświetlona zostaje lista ze zgłoszeniami.
+     *
      * @param id Identyfikator zgłoszenia serwisowego.
      * @return Widok z formularzem wypełnionym aktualnymi danymi.
      */
