@@ -38,7 +38,7 @@ public class Score {
     @ToString.Exclude
     private Reservation reservation;
 
-    @ManyToOne(cascade=CascadeType.REFRESH)
+    @ManyToOne
     @NotNull
     @JoinColumn(name = "user_id",
             updatable = false,

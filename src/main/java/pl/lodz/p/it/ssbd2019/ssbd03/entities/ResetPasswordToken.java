@@ -30,7 +30,7 @@ public class ResetPasswordToken {
     @Column(name = "token", nullable = false)
     private String token;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne
     @JoinColumn(
             name = "user_id",
             nullable = false,

@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.entities;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 import pl.lodz.p.it.ssbd2019.ssbd03.validators.ValidReservationDates;
 
 import javax.persistence.*;
@@ -44,7 +43,7 @@ public class Reservation {
     @EqualsAndHashCode.Exclude
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne
     @NotNull
     @JoinColumn(name = "user_id",
             nullable = false,
@@ -88,7 +87,7 @@ public class Reservation {
     private List<Comment> comments;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "reservation", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reservation", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private List<ReservationItem> reservationItems;
     
     @Version

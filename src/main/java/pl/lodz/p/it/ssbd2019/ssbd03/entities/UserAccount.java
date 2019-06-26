@@ -88,7 +88,7 @@ public class UserAccount {
      * ale adnotacja @NotNull nie pozwala utworzyć AccountAccessLevels bez UserAccount i odwrotnie,
      * co skutecznie uniemożliwia tworzenie nowych encji.
      */
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @ToString.Exclude
     private List<AccountAccessLevel> accountAccessLevels;
 
