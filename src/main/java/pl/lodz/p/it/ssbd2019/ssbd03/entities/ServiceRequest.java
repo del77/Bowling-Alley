@@ -50,7 +50,7 @@ public class ServiceRequest {
     
     @NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, cascade=CascadeType.REFRESH)
+    @ManyToOne(optional = false)
     @ToString.Exclude
     private UserAccount userAccount;
     
