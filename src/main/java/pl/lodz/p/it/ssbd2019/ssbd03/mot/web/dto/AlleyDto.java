@@ -18,8 +18,7 @@ public class AlleyDto {
     @Min(value = 0, message = "{validate.alleyNumberConstraint}")
     @FormParam("number")
     private int number;
-    
-    @FormParam("active")
+
     private boolean active;
     
     @NotNull(message = "{validate.bestScoreIsNull}")

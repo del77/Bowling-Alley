@@ -56,6 +56,7 @@ public class AccountDetailsDto {
     boolean adminRoleSelected;
 
     boolean accountActive;
+
     boolean confirmed = true;
 
     @FormParam("g-recaptcha-response")
