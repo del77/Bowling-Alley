@@ -125,6 +125,9 @@ public class BreadcrumbsFilter extends HttpFilter {
         } else if (relativePath.matches("/comments/add/\\d+")) {
             addBreadcrumbToModel(model, "reservationDetails", "/myreservations/details" + getLastUriSection(relativePath), false);
             addBreadcrumbToModel(model, "addComment", "#", true);
+        } else if (relativePath.matches("/comments/edit/\\d+/\\d+")) {
+            addBreadcrumbToModel(model, "reservationDetails", "/myreservations/details" + getLastUriSection(removeLastUriSection(relativePath)), false);
+            addBreadcrumbToModel(model, "editComment", "#", true);
         } else if (relativePath.matches("/reservations/new")) {
             addBreadcrumbToModel(model, "newReservation", "#", true);
         } else if (relativePath.matches("/myreservations/edit/\\d+")) {

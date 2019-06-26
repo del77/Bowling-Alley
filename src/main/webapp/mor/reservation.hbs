@@ -131,6 +131,16 @@
                                         </form>
                                     </div>
                                 {{/ifb}}
+                                {{#if ownReservation}}
+                                    <div class="col-2">
+                                        <a
+                                            class="btn btn-info"
+                                            href="{{webContextPath}}/comments/edit/{{reservation.id}}/{{this.id}}"
+                                        >
+                                            {{lang.editComment}}
+                                        </a>
+                                    </div>
+                                {{/if}}
                             </div>
                         </li>
                     {{/if}}
