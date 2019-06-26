@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.UserAccount;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ServiceRequestRepositoryLocal;
@@ -43,6 +44,9 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
     @Inject
     private SecurityContext securityContext;
 
+    //BETWEEN EDITS
+    private ServiceRequest editedRequest;
+
     @Override
     @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     public void addServiceRequest(Long alleyId, String content) throws SsbdApplicationException {
@@ -65,11 +69,12 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     public void updateServiceRequest(ServiceRequestEditDto serviceRequest) throws SsbdApplicationException {
-        Optional<ServiceRequest> byId = this.serviceRequestRepositoryLocal.findById(serviceRequest.getId());
-        ServiceRequest sr = byId.orElseThrow(NotFoundException::new);
-        sr.setResolved(serviceRequest.getResolved());
-        sr.setContent(serviceRequest.getContent());
-        this.serviceRequestRepositoryLocal.edit(sr);
+        if (this.editedRequest == null) {
+            throw new DataAccessException("No loaded service request");
+        }
+        this.editedRequest.setResolved(serviceRequest.getResolved());
+        this.editedRequest.setContent(serviceRequest.getContent());
+        this.serviceRequestRepositoryLocal.edit(this.editedRequest);
     }
 
     @Override
@@ -81,7 +86,8 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     public ServiceRequestViewDto getById(Long id) throws SsbdApplicationException {
-        return this.mapSingle(this.serviceRequestRepositoryLocal.findById(id).orElseThrow(NotFoundException::new));
+        this.editedRequest = this.serviceRequestRepositoryLocal.findById(id).orElseThrow(NotFoundException::new);
+        return this.mapSingle(editedRequest);
     }
 
     private List<ServiceRequestViewDto> mapToViewDto(List<ServiceRequest> serviceRequests) {
