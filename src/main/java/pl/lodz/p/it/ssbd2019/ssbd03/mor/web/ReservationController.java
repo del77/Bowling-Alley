@@ -195,6 +195,14 @@ public class ReservationController extends AbstractReservationController impleme
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
      *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2) System wyświetla listę "Moje rezerwacje"
+     * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
+     * 4) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 5) Użytkownik edytuje pola rezerwacji
+     * 6) Użytkownik klika zatwierdź
+     * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
+     *
      * @param id identyfikator rezerwacji
      * @param idCache identyfikator cache
      * @return Widok z formularzem edycji lub widok listy własnej rezerwacji, gdy nie udało się znaleźć rezerwacji o podanym id
@@ -205,11 +213,20 @@ public class ReservationController extends AbstractReservationController impleme
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(@PathParam("id") long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
-        return getEditView(id, null, false, false);
+        return getEditView(id, null, false, true);
     }
     
     /**
      * Edytuje rezerwację o podanym id
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2) System wyświetla listę "Moje rezerwacje"
+     * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
+     * 4) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 5) Użytkownik edytuje pola rezerwacji
+     * 6) Użytkownik klika zatwierdź
+     * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
+     *
      *
      * @param id identyfikator rezerwacji
      * @param reservation dto reprezentujące rezerwację
