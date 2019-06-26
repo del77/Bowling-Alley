@@ -34,10 +34,7 @@ public class ConfirmationToken {
     private String token;
 
     @NotNull
-    @OneToOne(
-            cascade = CascadeType.MERGE,
-            fetch = FetchType.EAGER
-    )
+    @OneToOne
     @JoinColumn(name = "user_id",
             updatable = false,
             nullable = false,
