@@ -1,7 +1,10 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker;
 
 
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.SsbdTransactionRolledbackException;
+
 import javax.annotation.Resource;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.SessionContext;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -71,6 +74,16 @@ public class InterceptorTracker {
 
         try {
             result = context.proceed();
+        } catch (EJBTransactionRolledbackException e) {
+            String causes = concatenateCauses(e);
+    
+            logger.severe( () ->
+                    String.format("%s.%s(%s) was called by the user %s and threw the exception %s: %s. Causes: [%s]",
+                            className, methodName, parameters, user, e, e.getLocalizedMessage(), causes)
+            );
+    
+            throw new SsbdTransactionRolledbackException(e);
+            
         } catch (Exception e) {
             String causes = concatenateCauses(e);
 
