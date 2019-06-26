@@ -76,6 +76,7 @@ public class AlleyController implements Serializable {
 
 
     /**
+     * Dodaje nowy tor
      * 1. Użytkownik jest zalogowany na koncie z rolą "Employee"
      * 2. Użytkownik klika przycisk "dodaj tor"
      * 3. System pyta o numer nowego toru
@@ -116,6 +117,7 @@ public class AlleyController implements Serializable {
     }
 
     /**
+     * Zmienia status zablokowania toru z podanym identyfikatorem
      * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
      * 2. Użytkownik klika przycisk "Wyświetl wszystkie tory".
      * 3. System wyświetla listę torów posortowanych rosnąco po numerach.
@@ -149,6 +151,7 @@ public class AlleyController implements Serializable {
     }
 
     /**
+     * Wyświetla historię rozgrywek na torze
      * 1. Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Client".
      * 2. Użytkownik klika przycisk "Wyświetl wszystkie tory".
      * 3. System wyświetla listę torów posortowanych rosnąco po numerach.
