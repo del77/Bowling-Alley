@@ -354,19 +354,6 @@
   </security-constraint>
 
   <security-constraint>
-    <display-name>EnableDisableAlleyConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EnableDisableAlley</web-resource-name>
-      <description/>
-      <url-pattern>/alleys/state</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
     <display-name>GetAlleyGamesHistoryConstr</display-name>
     <web-resource-collection>
       <web-resource-name>GetAlleyGamesHistory</web-resource-name>
@@ -381,68 +368,15 @@
   </security-constraint>
 
   <security-constraint>
-    <display-name>AddServiceRequestConstr</display-name>
+    <display-name>ServiceRequestsConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>AddServiceRequest</web-resource-name>
+      <web-resource-name>ServiceRequests</web-resource-name>
       <description/>
-      <url-pattern>/service-requests/new</url-pattern>
+      <url-pattern>/service-requests/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>EditServiceRequestConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EditServiceRequest</web-resource-name>
-      <description/>
-      <url-pattern>/service-requests/*/edit</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetServiceRequestsConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetServiceRequests</web-resource-name>
-      <description/>
-      <url-pattern>/service-requests</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>EnterGameResultConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EnterGameResult</web-resource-name>
-      <description/>
-      <url-pattern>/reservations/enter-result/</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetBestScoreForAlleyConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetBestScoreForAlley</web-resource-name>
-      <description/>
-      <url-pattern>/alleys/*/best-result</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>EMPLOYEE</role-name>
-      <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -486,12 +420,11 @@
   </security-constraint>
 
   <security-constraint>
-    <display-name>CreateReservationConstr</display-name>
+    <display-name>MyReservationConstr</display-name>
     <web-resource-collection>
-      <web-resource-name>CreateReservation</web-resource-name>
+      <web-resource-name>MyReservation</web-resource-name>
       <description/>
-      <url-pattern>/myreservations/new</url-pattern>
-      <url-pattern>/myreservations/new/*</url-pattern>
+      <url-pattern>/myreservations/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
@@ -504,25 +437,11 @@
     <web-resource-collection>
       <web-resource-name>CreateReservationForUser</web-resource-name>
       <description/>
-      <url-pattern>/reservations/new</url-pattern>
       <url-pattern>/reservations/new/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>EditOwnReservationConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EditOwnReservation</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations/edit/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -536,19 +455,6 @@
     <auth-constraint>
       <description/>
       <role-name>EMPLOYEE</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>CancelOwnReservationConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>CancelOwnReservation</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations/cancel</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -594,45 +500,6 @@
   </security-constraint>
 
   <security-constraint>
-    <display-name>CancelOwnReservationConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>CancelOwnReservation</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations/details/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetOwnReservationsConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetOwnReservations</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>GetOwnReservationDetailsConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>GetOwnReservationDetails</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations/details/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
     <display-name>GetReservationDetailsConstr</display-name>
     <web-resource-collection>
       <web-resource-name>GetReservationDetails</web-resource-name>
@@ -652,19 +519,6 @@
       <web-resource-name>AddCommentForReservation</web-resource-name>
       <description/>
       <url-pattern>/comments/add/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <description/>
-      <role-name>CLIENT</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <display-name>EditCommentForOwnReservationConstr</display-name>
-    <web-resource-collection>
-      <web-resource-name>EditCommentForOwnReservation</web-resource-name>
-      <description/>
-      <url-pattern>/myreservations/edit-comment/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description/>
