@@ -77,6 +77,11 @@ public class AlleyController implements Serializable {
 
     /**
      * Dodaje nowy tor
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee"
+     * 2. Użytkownik klika przycisk "dodaj tor"
+     * 3. System pyta o numer nowego toru
+     * 4. Użytkownik podaje numer i zatwierdza
+     * 5. System tworzy obiekt toru z domyślną wartością "active: true"
      *
      * @param alleyDto obiekt zawierający informacje o torze
      * @return rezultat operacji
@@ -113,6 +118,14 @@ public class AlleyController implements Serializable {
 
     /**
      * Zmienia status zablokowania toru z podanym identyfikatorem
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2. Użytkownik klika przycisk "Wyświetl wszystkie tory".
+     * 3. System wyświetla listę torów posortowanych rosnąco po numerach.
+     * (zablokuj/wyłącz) 4. Użytkownik klika przycisk "Zablokuj/Wyłącz tor" obok toru, który go interesuje.
+     * (zablokuj/wyłącz) 5. System zmienia pole "active" odpowiedniego obiektu reprezentującego tor o podanym numerze na "false"
+     * (odblokuj) 4. Użytkownik klika przycisk "Odblokuj tor" obok toru, który go interesuje.
+     * (odblokuj) 5. System zmienia pole "active" odpowiedniego obiektu reprezentującego tor o podanym numerze na "true"
+     *
      * @param dto     dto z id toru, któremu należy zmienić flagę aktywności
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z listą torów oraz komunikatem o powodzeniu lub błędzie
@@ -138,7 +151,12 @@ public class AlleyController implements Serializable {
     }
 
     /**
-     * Wyświetla historię rozgrywek na torze.
+     * Wyświetla historię rozgrywek na torze
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Client".
+     * 2. Użytkownik klika przycisk "Wyświetl wszystkie tory".
+     * 3. System wyświetla listę torów posortowanych rosnąco po numerach.
+     * 4. Użytkownik klika przycisk "Pokaż historię rozgrywek" obok toru, który go interesuje.
+     * 5. System wyświetla listę rozgrywek na danym torze.
      *
      * @return Widok z historią rozgrywek dla toru.
      */
