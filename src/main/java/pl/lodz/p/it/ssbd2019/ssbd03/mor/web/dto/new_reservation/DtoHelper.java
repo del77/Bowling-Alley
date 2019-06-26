@@ -1,8 +1,12 @@
-package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation;
+package pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DtoHelper {
     public static void postProcess(ClientNewReservationDto dto) {
         List<Integer> shoesSize = dto.getShoesSize();

@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.AlleyDoesNotExistException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.AlleyRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
@@ -12,6 +14,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
 
 import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
@@ -63,8 +66,11 @@ public class AlleyServiceImpl extends TransactionTracker implements AlleyService
 
     @Override
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    public void updateLockStatusOnAlleyById(Long id, boolean isActive) {
-        throw new UnsupportedOperationException();
+    public void updateLockStatusOnAlleyById(Long id, boolean isActive) throws SsbdApplicationException{
+        Alley alley = alleyRepositoryLocal.findById(id).orElseThrow(
+                () -> new AlleyDoesNotExistException("Alley with id '" + id + "' does not exist."));
+        alley.setActive(isActive);
+        alleyRepositoryLocal.editWithoutMerge(alley);
     }
 
 }

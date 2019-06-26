@@ -245,6 +245,12 @@
         <group-name>EMPLOYEE</group-name>
     </security-role-mapping>
 
+    <security-role-mapping>
+        <role-name>GetAlleyGamesHistory</role-name>
+        <group-name>EMPLOYEE</group-name>
+        <group-name>CLIENT</group-name>
+    </security-role-mapping>
+
     <class-loader delegate="true"/>
     
 </glassfish-web-app>

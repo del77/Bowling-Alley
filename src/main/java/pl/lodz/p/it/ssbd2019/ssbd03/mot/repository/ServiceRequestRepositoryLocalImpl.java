@@ -1,8 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.ServiceRequest;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
@@ -12,10 +11,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @Stateless(name = "MOTServiceRequestRepository")
@@ -39,13 +41,28 @@ public class ServiceRequestRepositoryLocalImpl extends AbstractCruRepository<Ser
     @Override
     @RolesAllowed(MotRoles.ADD_SERVICE_REQUEST)
     public ServiceRequest create(ServiceRequest serviceRequest) throws DataAccessException {
-        return super.create(serviceRequest);
+        try {
+            super.create(serviceRequest);
+            return serviceRequest;
+        } catch (ConstraintViolationException e) {
+            throw new DatabaseConstraintViolationException(e);
+        } catch (PersistenceException e) {
+            throw new EntityUpdateException(e);
+        }
     }
 
     @Override
     @RolesAllowed(MotRoles.EDIT_SERVICE_REQUEST)
     public void edit(ServiceRequest serviceRequest) throws DataAccessException {
-        super.edit(serviceRequest);
+        try {
+            super.edit(serviceRequest);
+        } catch (OptimisticLockException e) {
+            throw new ServiceRequestOptimisticLockException(e);
+        } catch (ConstraintViolationException e) {
+            throw new DatabaseConstraintViolationException(e);
+        } catch (PersistenceException e) {
+            throw new EntityUpdateException(e);
+        }
     }
 
     @Override

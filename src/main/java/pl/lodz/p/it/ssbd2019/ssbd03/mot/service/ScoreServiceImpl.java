@@ -29,7 +29,7 @@ import java.util.List;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors(InterceptorTracker.class)
-@Stateful
+@Stateful(name = "MOTScoreService")
 @DenyAll
 public class ScoreServiceImpl implements ScoreService {
 
@@ -52,6 +52,21 @@ public class ScoreServiceImpl implements ScoreService {
                 () -> new UserIdDoesNotExistException("Account with id '" + id + "' does not exist."));
         return Mapper.mapAll(userAccount.getScores(), ScoreDto.class);
     }
+
+    @Override
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY})
+    public List<ScoreDto> getScoresForReservation(Long id) throws SsbdApplicationException {
+        List<Score> scores = scoreRepositoryLocal.getScoresByReservation(id);
+        return Mapper.mapAll(scores, ScoreDto.class);
+    }
+
+    @Override
+    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY})
+    public List<ScoreDto> getScoresForAlley(Long id) throws SsbdApplicationException {
+        List<Score> scores = scoreRepositoryLocal.getScoresByAlley(id);
+        return Mapper.mapAll(scores, ScoreDto.class);
+    }
+
 
     @Override
     @RolesAllowed(MotRoles.GET_BEST_SCORE_FOR_ALLEY)

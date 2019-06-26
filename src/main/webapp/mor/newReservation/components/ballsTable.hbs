@@ -14,10 +14,10 @@
             {{#each this.data.newReservationDto.balls}}
                 <tr>
                     <td>
-                        <input name="ballSize" type="number" value="{{this.size}}" min="6" max="16" required/>
+                        <input aria-label="{{lang.itemSize}}" name="ballSize" type="number" value="{{this.size}}" min="6" max="16" required/>
                     </td>
                     <td>
-                        <input name="ballNumber" type="number" value="{{this.number}}" min="1" max="2147483647"
+                        <input aria-label="{{lang.itemCount}}"  name="ballNumber" type="number" value="{{this.number}}" min="1" max="2147483647"
                                required/>
                     </td>
                 </tr>

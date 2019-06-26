@@ -1,9 +1,12 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.web;
 
+
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.AlleyService;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.service.ScoreService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyCreationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyMaxScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyLockDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -43,13 +46,20 @@ public class AlleyController implements Serializable {
     @EJB(beanName = "MOTAlleyService")
     private AlleyService alleyService;
 
+    @EJB(beanName = "MOTScoreService")
+    private ScoreService scoreService;
+
+    private static final String BASE_PATH = "alleys";
     private static final String NEW_ALLEY_URL = "alleys/new";
     private static final String ADD_ALLEY_VIEW_URL = "alleys/new/newAlley.hbs";
+
+    private static final String ALLEY_HISTORY_VIEW = "mot/history/history.hbs";
 
     private List<String> errorMessages = new ArrayList<>();
 
     private static final String ERROR = "errors";
     private static final String ALLEY_LIST_VIEW = "mot/alleysList.hbs";
+
     /**
      * Pobiera widok dodawania toru.
      *
@@ -102,62 +112,78 @@ public class AlleyController implements Serializable {
     }
 
     /**
-     * Wyświetla widok pozwalający odblokowac lub zablokowac tor
-     *
-     * @return Widok z listą torow oraz ich statusem zablokowania
-     */
-    @GET
-    @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    @Path("state")
-    @Produces(MediaType.TEXT_HTML)
-    public String updateLockStatusOnAlley() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Zmienia status zablokowania toru z podanym identyfikatorem
-     *
-     * @return Widok z listą torow oraz komunikatem o powodzeniu lub błędzie
+     * @param dto     dto z id toru, któremu należy zmienić flagę aktywności
+     * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
+     * @return Widok z listą torów oraz komunikatem o powodzeniu lub błędzie
      */
     @POST
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
-    @Path("state")
     @Produces(MediaType.TEXT_HTML)
-    public String updateLockStatusOnAlley(@BeanParam Long id, boolean state) {
-        throw new UnsupportedOperationException();
+    public String updateLockStatusOnAlley(@BeanParam AlleyLockDto dto, @QueryParam("idCache") Long idCache) {
+        boolean active = dto.getActive() != null; // workaround - checkbox returns null when unchecked
+        try {
+            alleyService.updateLockStatusOnAlleyById(dto.getId(), active);
+            FormData formData = new FormData();
+            String message = active ? localization.get("unlockedAlleySuccess") : localization.get("lockedAlleySuccess");
+            formData.setInfos(Collections.singletonList(message));
+            return redirectUtil.redirect(BASE_PATH, formData);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(
+                    BASE_PATH,
+                    null,
+                    Collections.singletonList(localization.get(e.getCode()) + "\n" + localization.get("couldntLockAlley"))
+            );
+        }
     }
 
     /**
      * Wyświetla historię rozgrywek na torze.
      *
-     * @return Widok z hustorią rozgrywek dla toru.
+     * @return Widok z historią rozgrywek dla toru.
      */
     @GET
     @RolesAllowed(MotRoles.GET_ALLEY_GAMES_HISTORY)
-    @Path("{id}/history")
+    @Path("history/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public String showGamesHistoryForAlley() {
-        throw new UnsupportedOperationException();
+    public String showGamesHistoryForAlley(@PathParam("id") Long id) {
+        List<ScoreDto> scoreDtos = new ArrayList<>();
+        try {
+            scoreDtos.addAll(scoreService.getScoresForAlley(id));
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+        }
+        models.put("scores", scoreDtos);
+        return ALLEY_HISTORY_VIEW;
+
     }
 
     /**
      * Pobiera wszystkie tory
      *
+     * Scenariusz:
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Client".
+     * 2) Użytkownik klika przycisk "Wyświetl listę torów".
+     * 3) System wyświetla listę torów posortowanych rosnąco po numerach.
+     *
+     * @param id identyfikator cache
      * @return Widok ze wszystkimi torami
      */
     @GET
     @RolesAllowed(MotRoles.GET_ALLEYS_LIST)
     @Produces(MediaType.TEXT_HTML)
-    public String getAllAlleys() {
+    public String getAllAlleys(@QueryParam("idCache") Long id) {
+        redirectUtil.injectFormDataToModels(id, models);
         try {
             models.put("alleys", alleyService.getAllAlleys());
         } catch (SsbdApplicationException e) {
-            displayError(localization.get("alleysListError"));
+            displayError(localization.get(e.getCode()));
         }
         return ALLEY_LIST_VIEW;
     }
-    
-    
+
+
     private void displayError(String s) {
         models.put(ERROR, Collections.singletonList(s));
     }

@@ -1,17 +1,15 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.DtoHelper;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.NewReservationAllForm;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.newReservation.ClientNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.DtoHelper;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.NewReservationAllForm;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
-import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.RedirectUtil;
@@ -26,31 +24,17 @@ import javax.mvc.Models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @SessionScoped
 @Controller
 @Path("myreservations")
-public class ReservationController implements Serializable {
-
-    private static final String ERROR = "errors";
-    private static final String DATA = "data";
-    private static final String USERNAME = "userName";
+public class ReservationController extends AbstractReservationController implements Serializable {
     
-    private static final String RESERVATION_LIST_VIEW = "mor/reservationList.hbs";
-    private static final String RESERVATION_LIST_URL = "/myreservations";
-    
-    private static final String RESERVATION_VIEW = "mor/reservation.hbs";
-    private static final String NEW_RESERVATION_VIEW = "mor/newReservation/clientNewReservation.hbs";
-    private static final String NEW_RESERVATION_URL = "/myreservations/new";
-    private static final String RESERVATION_DETAILS_PATH = "/myreservations/details/";
-    
-    private static final String EDIT_RESERVATION_VIEW = "mor/editReservationForm.hbs";
-    private static final String EDIT_OWN_RESERVATION_URL = "myreservations/edit/";
+    private static final String NEW_RESERVATION_URI = "/myreservations/new";
+    private static final String RESERVATION_DETAILS_URI = "/myreservations/details/";
+    private static final String EDIT_OWN_RESERVATION_URI = "myreservations/edit/";
     
     @Inject
     private Models models;
@@ -68,6 +52,26 @@ public class ReservationController implements Serializable {
     private DtoValidator validator;
 
     private transient ClientNewReservationDto newReservationDto;
+    
+    protected ReservationService getReservationService() {
+        return reservationService;
+    }
+    
+    protected Models getModels() {
+        return models;
+    }
+    
+    protected RedirectUtil getRedirectUtil() {
+        return redirectUtil;
+    }
+    
+    protected LocalizedMessageProvider getLocalization() {
+        return localization;
+    }
+    
+    protected String getReservationContext() {
+        return "myreservations";
+    }
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
@@ -105,8 +109,7 @@ public class ReservationController implements Serializable {
     @RolesAllowed(MorRoles.CREATE_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String getAvailableAlleys(@QueryParam("idCache") Long idCache) {
-        redirectUtil.injectFormDataToModels(idCache, models);
-        return NEW_RESERVATION_VIEW;
+        return super.getAvailableAlleys(idCache,true);
     }
 
     /**
@@ -127,7 +130,7 @@ public class ReservationController implements Serializable {
         newReservationAllForm.setNewReservationDto(newReservationDto);
 
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, errorMessages);
         }
 
         try {
@@ -135,11 +138,11 @@ public class ReservationController implements Serializable {
             this.newReservationDto = newReservationDto;
 
             newReservationAllForm.setAvailableAlleys(availableAlleys);
-            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URL);
+            newReservationAllForm.setSelfUrl(NEW_RESERVATION_URI);
             FormData formData = FormData.builder().data(newReservationAllForm).build();
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, Collections.singletonList(localization.get(e.getCode())));
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, Collections.singletonList(localization.get(e.getCode())));
         }
     }
 
@@ -149,7 +152,7 @@ public class ReservationController implements Serializable {
      * Scenariusz:
      *     1) Użytkownik jest zalogowany na koncie z rolą "Client".
      *     2) System wyświetla wybór godziny
-     *     3) Użytkownik wybiera godzinę
+     *     3) Użytkownik wybiera przedział czasu, przedmioty oraz liczbę zawodników.
      *     4) System wyświetla dostępne tory
      *     5) Użytkownik wybiera tor
      *     6) Użytkownik klika zatwierdź
@@ -164,7 +167,7 @@ public class ReservationController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String createReservation(@PathParam("alley_id") Long alleyId) {
         if (newReservationDto == null) {
-            return redirectUtil.redirect(NEW_RESERVATION_URL, new FormData());
+            return redirectUtil.redirect(NEW_RESERVATION_URI, new FormData());
         }
 
         List<String> errorMessages = validator.validate(newReservationDto);
@@ -172,7 +175,7 @@ public class ReservationController implements Serializable {
         NewReservationAllForm newReservationAllForm = new NewReservationAllForm();
         newReservationAllForm.setNewReservationDto(newReservationDto);
         if (!errorMessages.isEmpty()) {
-            return redirectUtil.redirectError(NEW_RESERVATION_URL, newReservationAllForm, errorMessages);
+            return redirectUtil.redirectError(NEW_RESERVATION_URI, newReservationAllForm, errorMessages);
         }
 
         FormData formData = new FormData();
@@ -181,16 +184,24 @@ public class ReservationController implements Serializable {
             String login = (String) models.get(USERNAME);
             reservationService.addReservation(newReservationDto, alleyId, login);
             formData.setInfos(Collections.singletonList(localization.get("newReservationCreated")));
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         } catch (SsbdApplicationException e) {
             formData.setErrors(Collections.singletonList(localization.get(e.getCode())));
-            return redirectUtil.redirect(NEW_RESERVATION_URL, formData);
+            return redirectUtil.redirect(NEW_RESERVATION_URI, formData);
         }
     }
 
 
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2) System wyświetla listę "Moje rezerwacje"
+     * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
+     * 4) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 5) Użytkownik edytuje pola rezerwacji
+     * 6) Użytkownik klika zatwierdź
+     * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
      *
      * @param id identyfikator rezerwacji
      * @param idCache identyfikator cache
@@ -202,11 +213,20 @@ public class ReservationController implements Serializable {
     @Produces(MediaType.TEXT_HTML)
     public String editReservation(@PathParam("id") long id, @QueryParam("idCache") Long idCache) {
         redirectUtil.injectFormDataToModels(idCache, models);
-        return getEditView(id, null, false);
+        return getEditView(id, null, false, true);
     }
     
     /**
      * Edytuje rezerwację o podanym id
+     *
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2) System wyświetla listę "Moje rezerwacje"
+     * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
+     * 4) System wyświetla szczegóły rezerwacji z możliwością edycji
+     * 5) Użytkownik edytuje pola rezerwacji
+     * 6) Użytkownik klika zatwierdź
+     * 7) System zapisuje nowe dane i przekierowuje na stronę szczegółów rezerwacji
+     *
      *
      * @param id identyfikator rezerwacji
      * @param reservation dto reprezentujące rezerwację
@@ -223,20 +243,20 @@ public class ReservationController implements Serializable {
     
         if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
-                    EDIT_OWN_RESERVATION_URL + id,
+                    EDIT_OWN_RESERVATION_URI + id,
                     reservation,
                     errorMessages);
         }
         
         try {
-            DetailedReservationDto resultDto = reservationService.updateReservation(reservation, (String) models.get(USERNAME));
+            DetailedReservationDto resultDto = reservationService.updateOwnReservation(reservation, (String) models.get(USERNAME));
             FormData formData = FormData.builder()
                     .data(resultDto)
                     .infos(Collections.singletonList(localization.get("reservationUpdated")))
                     .build();
-            return redirectUtil.redirect(RESERVATION_LIST_URL , formData);
+            return redirectUtil.redirect(RESERVATION_DETAILS_URI + id, formData);
         } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
+            return redirectUtil.redirectError(RESERVATION_DETAILS_URI + id, null, Collections.singletonList(localization.get(e.getCode())));
         }
     }
 
@@ -290,10 +310,10 @@ public class ReservationController implements Serializable {
             FormData formData = new FormData();
             String message = localization.get("reservationCancelSuccess");
             formData.setInfos(Collections.singletonList(message));
-            return redirectUtil.redirect(RESERVATION_DETAILS_PATH + reservationId, formData);
+            return redirectUtil.redirect(RESERVATION_DETAILS_URI + reservationId, formData);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirectError(
-                    RESERVATION_DETAILS_PATH + reservationId,
+                    RESERVATION_DETAILS_URI + reservationId,
                     null,
                     Collections.singletonList(localization.get(e.getCode()))
             );
@@ -316,60 +336,7 @@ public class ReservationController implements Serializable {
             @BeanParam DetailedReservationDto dto,
             @QueryParam("redirectTo") String redirectTo,
             @QueryParam("resId") Long reservationId) {
-        try {
-            Timestamp startTime = StringTimestampConverter.getTimestamp(dto.getDay(), dto.getStartHour()).orElseThrow(DataParseException::new);
-            Timestamp endTime = StringTimestampConverter.getTimestamp(dto.getDay(), dto.getEndHour()).orElseThrow(DataParseException::new);
-            dto.setAvailableAlleyNumbers(
-                    reservationService.getAvailableAlleysInTimeRangeExcludingOwnReservation(startTime, endTime)
-                            .stream()
-                            .map(AvailableAlleyDto::getAlleyNumber)
-                            .collect(Collectors.toList())
-            );
-            setItemsCollectionFromForm(dto);
-            switch (redirectTo) {
-                case "create":
-                    return getAvailableAlleys((Long) null); // unused yet
-                case "update":
-                    return getEditView(reservationId, dto, true);
-                default:
-                    return getOwnReservations(null);
-            }
-        } catch (SsbdApplicationException e) {
-            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
-        }
-    }
-    
-    private String getEditView(Long id, DetailedReservationDto dto, boolean isRedirected) {
-        try {
-            if (models.get(DATA) == null && !isRedirected) {
-                dto = reservationService.getOwnReservationById(id, (String) models.get(USERNAME));
-            }
-            if (dto != null) {
-                models.put(DATA, dto);
-            }
-        } catch(SsbdApplicationException e) {
-            return redirectUtil.redirectError(RESERVATION_LIST_URL, null, Collections.singletonList(localization.get(e.getCode())));
-        }
-        return isRedirected ?
-                redirectUtil.redirect(
-                        EDIT_OWN_RESERVATION_URL + id,
-                        FormData.builder()
-                                .data(dto)
-                                .build()
-                ) :
-                EDIT_RESERVATION_VIEW;
-    }
-    
-    private void setItemsCollectionFromForm(DetailedReservationDto dto) {
-        dto.setItems(
-                IntStream.range(0, dto.getSizes().size())
-                .boxed()
-                .map(i -> new ReservationItemDto(
-                        dto.getSizes().get(i),
-                        dto.getCounts().get(i)
-                ))
-                .collect(Collectors.toList())
-        );
+        return super.injectAvailableAlleys(dto, redirectTo, reservationId, true);
     }
     
     private void displayError(String s) {

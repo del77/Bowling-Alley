@@ -1,19 +1,23 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.repository;
 
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Alley;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.EntityRetrievalException;
+import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AlleyMaxScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.repository.AbstractCruRepository;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MotRoles;
 
 import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
@@ -59,6 +63,22 @@ public class AlleyRepositoryLocalImpl extends AbstractCruRepository<Alley, Long>
     @RolesAllowed(MotRoles.ENABLE_DISABLE_ALLEY)
     public void edit(Alley alley) throws DataAccessException {
         super.edit(alley);
+    }
+
+    @Override
+    @PermitAll
+    public Alley editWithoutMerge(Alley alley) throws DataAccessException {
+        try {
+            return super.editWithoutMerge(alley);
+        } catch (OptimisticLockException e) {
+            throw new AlleyOptimisticLockException("Alley has been updated before these changes were made", e);
+        } catch (PersistenceException e) {
+            throw new EntityUpdateException("Could not perform update operation.", e);
+        } catch (ConstraintViolationException e) {
+            if(e.getMessage().toLowerCase().contains("number"))
+                throw new AlleyNumberLessThanOneException("Number less than one", e);
+            else throw new AlleyScoreConstraintViolationException("Wrong alley score", e);
+        }
     }
 
     @Override

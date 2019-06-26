@@ -9,7 +9,7 @@
         {{> mor/inputs/playerCountInput isRequired=true value=data.numberOfPlayers}}
         {{> mor/inputs/alleyNumberInput isRequired=true value=data.alleyNumber formType="update"}}
         {{> mor/inputs/itemTable header=lang.balls min=6 max=16 tableId="Balls"}}
-        {{> mor/inputs/itemTable header=lang.shoes min=39 max=45 tableId="Shoes"}}
+        {{> mor/inputs/itemTable header=lang.shoes min=38 max=45 tableId="Shoes"}}
         <button type="submit" class="btn btn-primary btn-block" onclick="form.method='post'; form.action='{{webContextPath}}/{{reservationContext}}/edit/{{idFromUri}}';">
             {{lang.update}}
         </button>

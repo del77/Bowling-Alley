@@ -80,6 +80,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "resetPassword", "#", true);
         } else if (relativePath.matches("/alleys")) {
             addBreadcrumbToModel(model, "alleys", "#", true);
+        } else if (relativePath.matches("/alleys/history/\\d+")) {
+            addBreadcrumbToModel(model, "alleys", "/alleys", false);
+            addBreadcrumbToModel(model, "scoresHistory", "#", true);
         } else if (relativePath.matches("/myreservations")) {
             addBreadcrumbToModel(model, "ownReservationList", "#", true);
         } else if (relativePath.matches("/myreservations/details/\\d+")) {
@@ -126,6 +129,9 @@ public class BreadcrumbsFilter extends HttpFilter {
             addBreadcrumbToModel(model, "newReservation", "#", true);
         } else if (relativePath.matches("/myreservations/edit/\\d+")) {
             addBreadcrumbToModel(model, "myReservations", "/myreservations", false);
+            addBreadcrumbToModel(model, "editReservation", "#", true);
+        } else if (relativePath.matches("/reservations/edit/\\d+")) {
+            addBreadcrumbToModel(model, "reservations", "#", true);
             addBreadcrumbToModel(model, "editReservation", "#", true);
         }
         models.put("breadcrumbs", model);

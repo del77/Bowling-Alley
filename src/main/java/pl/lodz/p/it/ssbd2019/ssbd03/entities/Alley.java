@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
                         name = "Alley.findAlleysNotReservedBetweenTimes", 
                         query = "select a " +
                                 "from Alley a " +
-                                "where a.id not in (" +
+                                "where a.active = true and a.id not in (" +
                                     "select distinct a.id " +
                                     "from Alley a, Reservation r " +
                                     "where a.id = r.alley.id and (" +
@@ -35,7 +35,7 @@ import javax.validation.constraints.NotNull;
                         name = "Alley.findAlleysNotReservedBetweenTimesExcludingReservation",
                         query = "select distinct a " +
                                 "from Alley a, Reservation r " +
-                                "where a.id not in (" +
+                                "where a.active = true and a.id not in (" +
                                 "select distinct a.id " +
                                 "from Alley a, Reservation r " +
                                 "where a.id = r.alley.id and r.active = true and " +

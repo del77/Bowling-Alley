@@ -14,4 +14,5 @@ public class MotRoles {
     public static final String SHOW_USER_SCORE_HISTORY = "ShowUserScoreHistory";
     public static final String GET_ALLEYS_LIST = "GetAlleysList";
     public static final String ADD_SCORE = "AddScore";
+    public static final String GET_RESERVATIONS_FOR_ALLEY = "GetReservationsForAlley";
 }
