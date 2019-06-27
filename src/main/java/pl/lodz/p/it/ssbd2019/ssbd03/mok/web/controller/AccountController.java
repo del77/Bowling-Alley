@@ -86,6 +86,10 @@ public class AccountController implements Serializable {
 
     /**
      * Zwraca widok do edycji szczegółów konta zalogowanego użytkownika.
+     * 1.Użytkownik jest zalogowany na koncie rolą "Admin", "Client", lub "Employee"
+     * 2.Użytkownik przechodzi do panelu zarządzania kontem
+     * 3.Użytkownik wypełnia formularz
+     * 4.Użytkownik zatwierdza wysłanie formularza
      *
      * @return widok do edycji szczegółów konta zalogowanego użytkownika.
      */
@@ -178,6 +182,10 @@ public class AccountController implements Serializable {
 
     /**
      * Punkt wyjścia odpowiedzialny za zmianę hasła użytkownika oraz przekierowanie do strony o statusie.
+     * 1.Użytkownik jest zalogowany na koncie rolą "Admin", "Client", lub "Employee"
+     * 2.Użytkownik przechodzi do panelu zarządzania kontem
+     * 3.Użytkownik wypełnia formularz zmiany hasła
+     * 4.Użytkownik zatwierdza wysłanie formularza
      *
      * @param userData DTO przechowujące dane formularza edycji hasła.
      * @return Widok potwierdzający aktualizację hasła lub komunikat o błędzie
