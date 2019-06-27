@@ -44,7 +44,7 @@ public class ReservationItem {
 
     @Id
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "item_id",
             updatable = false,
             nullable = false,
