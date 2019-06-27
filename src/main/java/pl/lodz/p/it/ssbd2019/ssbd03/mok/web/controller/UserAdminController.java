@@ -105,6 +105,11 @@ public class UserAdminController implements Serializable {
     /**
      * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą 'Admin' lub 'Employee'
+     *     2) Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     *     3) Użytkownik zmienia status  na "aktywne" lub "zablokowane" danego konta na liście
+     *
      * @param dto     dto z id konta, któremu należy zmienić flagę aktywności
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
@@ -218,6 +223,12 @@ public class UserAdminController implements Serializable {
 
     /**
      * Odpowiada za edycję poziomów dostępu użytkownika.
+     *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Admin" lub 'Employee'
+     *     2) Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     *     3) Użytkownik wybiera konto z listy kont wyświetlonych w panelu administracyjnym
+     *     4) Użytkownik dodaje lub usuwa poziom dostępu do konta
      *
      * @param dto dto z danymi
      * @return Informacja o rezultacie edycji.
