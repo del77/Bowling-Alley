@@ -6,8 +6,9 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            {{#ifb (or this.expired (not this.active))}}
-                                <div class="float-right mx-2">
+                            {{#if isEmployee}}
+                                {{#ifb (or this.expired (not this.active))}}
+                                    <div class="float-right mx-2">
                         <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus"
                               data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
                             <a href="#" aria-disabled="true"
@@ -16,14 +17,15 @@
                                 <i class="far fa-edit ml-1"></i>
                             </a>
                         </span>
-                                </div>
-                            {{else}}
-                                <a href="{{webContextPath}}/{{reservationContext}}/edit/{{this.id}}"
-                                   class="btn btn-primary btn-sm waves-effect float-right mx-2">
-                                    <span>{{lang.edit}}</span>
-                                    <i class="far fa-edit ml-1"></i>
-                                </a>
-                            {{/ifb}}
+                                    </div>
+                                {{else}}
+                                    <a href="{{webContextPath}}/{{reservationContext}}/edit/{{this.id}}"
+                                       class="btn btn-primary btn-sm waves-effect float-right mx-2">
+                                        <span>{{lang.edit}}</span>
+                                        <i class="far fa-edit ml-1"></i>
+                                    </a>
+                                {{/ifb}}
+                            {{/if}}
                             <a href="{{webContextPath}}/{{reservationContext}}/details/{{this.id}}"
                                class="btn btn-success btn-sm waves-effect float-right mx-2">
                                 {{lang.seeDetails}}
