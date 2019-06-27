@@ -3,11 +3,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.DtoHelper;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.NewReservationAllForm;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
@@ -335,7 +335,7 @@ public class ReservationController extends AbstractReservationController impleme
      */
     @POST
     @Path("available-alleys")
-    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
+    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String injectAvailableAlleys(
             @BeanParam DetailedReservationDto dto,

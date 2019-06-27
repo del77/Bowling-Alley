@@ -92,14 +92,14 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     }
 
     @Override
-    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
+    @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingOwnReservation(Timestamp start, Timestamp end) throws SsbdApplicationException {
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRangeExcludingReservation(start, end, this.ownEditedReservation.getId());
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
     }
 
     @Override
-    @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
+    @RolesAllowed({MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER, MorRoles.EDIT_OWN_RESERVATION, MorRoles.EDIT_RESERVATION_FOR_USER})
     public List<AvailableAlleyDto> getAvailableAlleysInTimeRangeExcludingUserReservation(Timestamp start, Timestamp end) throws SsbdApplicationException {
         List<Alley> alleys = alleyRepositoryLocal.getAvailableAlleysInTimeRangeExcludingReservation(start, end, this.userEditedReservation.getId());
         return Mapper.mapAll(alleys, AvailableAlleyDto.class);
@@ -144,8 +144,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
         if (!doesReservationBelongToUser(this.ownEditedReservation, userLogin)) {
             throw new NotYourReservationException();
         }
-        throwIfReservationExpired();
-        throwIfReservationCancelled();
+        throwIfReservationExpired(this.ownEditedReservation);
+        throwIfReservationCancelled(this.ownEditedReservation);
 
         return updateReservation(reservationDto, this.ownEditedReservation);
     }
@@ -153,8 +153,8 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
     @Override
     @RolesAllowed(MorRoles.EDIT_RESERVATION_FOR_USER)
     public DetailedReservationDto updateReservation(DetailedReservationDto reservationDto) throws SsbdApplicationException {
-        throwIfReservationExpired();
-        throwIfReservationCancelled();
+        throwIfReservationExpired(this.userEditedReservation);
+        throwIfReservationCancelled(this.userEditedReservation);
         return updateReservation(reservationDto, this.userEditedReservation);
     }
 
@@ -445,14 +445,14 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
                 .build();
     }
 
-    private void throwIfReservationCancelled() throws UpdateInactiveReservationException {
-        if (!this.ownEditedReservation.isActive()) {
+    private void throwIfReservationCancelled(Reservation reservation) throws UpdateInactiveReservationException {
+        if (!reservation.isActive()) {
             throw new UpdateInactiveReservationException();
         }
     }
 
-    private void throwIfReservationExpired() throws UpdateExpiredReservationExcetpion {
-        if (ReservationValidator.isExpired(this.ownEditedReservation.getStartDate())) {
+    private void throwIfReservationExpired(Reservation reservation) throws UpdateExpiredReservationExcetpion {
+        if (ReservationValidator.isExpired(reservation.getStartDate())) {
             throw new UpdateExpiredReservationExcetpion();
         }
     }
