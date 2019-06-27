@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.entities.Reservation;
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
-import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.entity.DataAccessException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
@@ -30,11 +28,5 @@ public class ReservationServiceImpl implements ReservationService {
     public List<ReservationFullDto> getFinishedReservationsForAlley(Long alleyId) throws SsbdApplicationException {
         List<Reservation> reservations = reservationRepository.findFinishedReservationsForAlley(alleyId);
         return Mapper.mapAll(reservations,ReservationFullDto.class);
-    }
-
-    @Override
-    @RolesAllowed(MotRoles.ENTER_GAME_RESULT)
-    public void enterScoresForReservation(Long reservationId, List<Score> reservationScores) {
-        throw new UnsupportedOperationException();
     }
 }

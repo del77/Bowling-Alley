@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2019.ssbd03.mot.service;
 
-import pl.lodz.p.it.ssbd2019.ssbd03.entities.Score;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.AddScoreDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mot.web.dto.ScoreDto;
@@ -17,14 +16,6 @@ public interface ScoreService {
      */
     List<ScoreDto> getScoresForUser(Long id) throws SsbdApplicationException;
 
-    /**
-     * Pobiera wyniki osiągnięte podczas danej zarezerwowanej rozgrywki
-     *
-     * @param id identyfkator rezerwacji
-     * @throws SsbdApplicationException gdy nie uda się pobrać wyników dla rezerwacji
-     * @retun lista wyników dla rezerwacji
-     */
-    List<ScoreDto> getScoresForReservation(Long id) throws SsbdApplicationException;
 
     /**
      * Pobiera wyniki osiągnięte na torze o podanym ID
@@ -34,14 +25,6 @@ public interface ScoreService {
      * @retun lista wyników dla rezerwacji
      */
     List<ScoreDto> getScoresForAlley(Long id) throws SsbdApplicationException;
-
-    /**
-     * Wyświetla najlepszy wynik osiągnięty na wybranym torze
-     *
-     * @param id identyfikator toru
-     * @return Obiekt encji reprezentujący najlepszy wynik dla toru
-     */
-    Score getBestScoreForAlley(Long id);
 
 
     /**

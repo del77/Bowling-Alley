@@ -55,23 +55,9 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY})
-    public List<ScoreDto> getScoresForReservation(Long id) throws SsbdApplicationException {
-        List<Score> scores = scoreRepositoryLocal.getScoresByReservation(id);
-        return Mapper.mapAll(scores, ScoreDto.class);
-    }
-
-    @Override
-    @RolesAllowed({MotRoles.GET_ALLEY_GAMES_HISTORY})
     public List<ScoreDto> getScoresForAlley(Long id) throws SsbdApplicationException {
         List<Score> scores = scoreRepositoryLocal.getScoresByAlley(id);
         return Mapper.mapAll(scores, ScoreDto.class);
-    }
-
-
-    @Override
-    @RolesAllowed(MotRoles.GET_BEST_SCORE_FOR_ALLEY)
-    public Score getBestScoreForAlley(Long id) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
