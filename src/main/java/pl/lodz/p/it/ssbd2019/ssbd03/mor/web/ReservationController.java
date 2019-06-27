@@ -335,7 +335,7 @@ public class ReservationController extends AbstractReservationController impleme
      */
     @POST
     @Path("available-alleys")
-    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
+    @RolesAllowed(MorRoles.EDIT_OWN_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
     public String injectAvailableAlleys(
             @BeanParam DetailedReservationDto dto,
