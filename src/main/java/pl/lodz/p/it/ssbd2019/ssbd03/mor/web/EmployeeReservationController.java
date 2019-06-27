@@ -329,6 +329,12 @@ public class EmployeeReservationController extends AbstractReservationController
 
     /**
      * Pozwala pracownikowi anulować rezerwację
+     * 1.Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2.Użytkownik wyszukuje Clienta
+     * 3.Użytkownik przechodzi na listę rezerwacji Clienta
+     * 4.System wyświetla listę rezerwacji Clienta
+     * 5.Użytkownik klika na przycisk "Odwołaj" widoczny na pozycji listy rezerwacji
+     * 6.Rezerwacja zostaje odwołana
      *
      * @param reservationId identyfikator rezerwacji
      * @return rezulat operacji
