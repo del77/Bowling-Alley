@@ -75,7 +75,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć własne rezerwacje
-     * <p>
+     *
      * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
      * 2. Użytkownik przechodzi na listę "Moje rezerwacje"
      * 3. System wyświetla listę rezerwacji przypisanych do konta zalogowanego użytkownika, lista może być pusta.
@@ -149,7 +149,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Tworzy rezerwacje
-     * <p>
+     *
      * Scenariusz:
      * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
      * 2) System wyświetla wybór godziny
@@ -195,7 +195,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pobiera widok pozwalający klientowi edytować własną rezerwację
-     * <p>
+     *
      * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
      * 2) System wyświetla listę "Moje rezerwacje"
      * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
@@ -219,7 +219,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Edytuje rezerwację o podanym id
-     * <p>
+     *
      * 1) Użytkownik jest zalogowany na koncie z rolą "Client".
      * 2) System wyświetla listę "Moje rezerwacje"
      * 3) Użytkownik klika na przycisk "edytuj przy odpowiedniej pozycji z listy
@@ -262,7 +262,7 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pobiera widok pozwalający klientowi przejrzeć szegóły własnej rezerwacji
-     * <p>
+     *
      * 1. Użytkownik jest zalogowany na koncie z rolą "Client"
      * 2. Użytkownik przechodzi na listę swoich rezerwacji
      * 3. Użytkownik klika "Pokaż szczegóły"
@@ -296,6 +296,11 @@ public class ReservationController extends AbstractReservationController impleme
 
     /**
      * Pozwala klientowi anulować własną rezerwację
+     * 1.Użytkownik jest zalogowany na koncie z rolą "Client".
+     * 2.Użytkownik przechodzi na stronę własnych rezerwacji
+     * 3.System wyświetla listę rezerwacji użytkownika
+     * 4.Użytkownik klika na przycisk "Odwołaj" widoczny na pozycji listy rezerwacji
+     * 5.Rezerwacja zostaje odwołana
      *
      * @param reservationId identyfikator rezerwacji
      * @return rezulat operacji

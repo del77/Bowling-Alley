@@ -11,21 +11,19 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.DataParseException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.generalized.NotYourReservationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.AlleyNotFoundException;
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.notfound.NotFoundException;
-
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.AlleyRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.UserAccountRepositoryLocal;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationItemDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.BallsDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ClientNewReservationDto;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
-
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ShoesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -36,6 +34,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -67,6 +66,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @EJB(beanName = "MORUserAccountRepository")
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
+
+    @EJB
+    private Messenger messenger;
+
+    @Inject
+    private LocalizedMessageProvider localization;
 
     private Reservation reservation;
 
@@ -155,11 +160,16 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER})
-    public void cancelReservation(Long id) throws DataAccessException, StateConflictedException {
+    public void cancelReservation(Long id) throws SsbdApplicationException {
         if (!reservation.isActive()) {
             throw new ReservationAlreadyInactiveException();
         }
         reservation.setActive(false);
+        messenger.sendMessage(
+                reservation.getUserAccount().getEmail(),
+                localization.get("bowlingAlley") + " - " + localization.get("reservationCanceled"),
+                localization.get("yourReservationHasBeenCanceled") + reservation.getId()
+        );
         reservationRepositoryLocal.edit(reservation);
     }
 
@@ -175,11 +185,9 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed(MorRoles.GET_OWN_RESERVATIONS)
-    public List<ReservationFullDto> getReservationsByUserLogin(String login) throws DataAccessException {
-        List<Reservation> reservations = userAccountRepositoryLocal.findByLogin(login)
-                .orElseThrow(LoginDoesNotExistException::new)
-                .getReservations();
-        return Mapper.mapAll(reservations, ReservationFullDto.class);
+    public List<ReservationFullDto> getReservationsByUserLogin(String login) throws SsbdApplicationException {
+        UserAccount user = userAccountRepositoryLocal.findByLogin(login).orElseThrow(NotFoundException::new);
+        return getReservationsForUser(user.getId());
     }
 
     @Override
