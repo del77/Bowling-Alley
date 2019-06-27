@@ -26,6 +26,9 @@ import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.ShoesDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.Mapper;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.StringTimestampConverter;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.Messenger;
+import pl.lodz.p.it.ssbd2019.ssbd03.utils.messaging.mail.EmailMessenger;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.roles.MorRoles;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.InterceptorTracker;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.tracker.TransactionTracker;
@@ -36,6 +39,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -67,6 +71,12 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @EJB(beanName = "MORUserAccountRepository")
     private UserAccountRepositoryLocal userAccountRepositoryLocal;
+
+    @EJB
+    private Messenger messenger;
+
+    @Inject
+    private LocalizedMessageProvider localization;
 
     private Reservation reservation;
 
@@ -155,11 +165,16 @@ public class ReservationServiceImpl extends TransactionTracker implements Reserv
 
     @Override
     @RolesAllowed({MorRoles.CANCEL_OWN_RESERVATION, MorRoles.CANCEL_RESERVATION_FOR_USER})
-    public void cancelReservation(Long id) throws DataAccessException, StateConflictedException {
+    public void cancelReservation(Long id) throws SsbdApplicationException {
         if (!reservation.isActive()) {
             throw new ReservationAlreadyInactiveException();
         }
         reservation.setActive(false);
+        messenger.sendMessage(
+                reservation.getUserAccount().getEmail(),
+                localization.get("bowlingAlley") + " - " + localization.get("reservationCanceled"),
+                localization.get("yourReservationHasBeenCanceled") + reservation.getId()
+        );
         reservationRepositoryLocal.edit(reservation);
     }
 
