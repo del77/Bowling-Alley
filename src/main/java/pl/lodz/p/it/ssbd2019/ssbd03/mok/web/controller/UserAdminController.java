@@ -156,6 +156,11 @@ public class UserAdminController implements Serializable {
 
     /**
      * Odpowiada za edycję danych użytkownika.
+     * 1.Użytkownik jest zalogowany na koncie z rolą 'Admin' lub "Employee"
+     * 2.Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     * 3.Użytkownik wybiera konto z listy kont wyświetlonych w panelu administracyjnym
+     * 4.Użytkownik wypełnia formularz
+     * 5.Użytkownik zatwierdza wysłanie formularza
      *
      * @param dto dto z danymi
      * @return Informacja o rezultacie edycji.
