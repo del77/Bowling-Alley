@@ -61,6 +61,22 @@ public class ClientRegistrationController extends RegistrationController impleme
     /**
      * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
      *
+     * 1. Użytkownik nie jest zalogowany
+     * 2. Użytkownik  klika odnośnik 'zarejestruj' na stronie głównej
+     * 3. System wyświetla formularz rejestracji:
+     *  login
+     *  hasło
+     *  powtórz hasło
+     *  adres e-mail
+     *  imię
+     *  nazwisko
+     *  telefon
+     *  data urodzenia
+     * 4. Użytkownik wypełnia formularz
+     * 5. Użytkownik zatwierdza wypełnienie formularza
+     * 6. System wysyła wiadomość na podany adres e-mail zawierający link do aktywacji konta
+     * 7. Użytkownik aktywuje konto poprzez wejście na stronę podaną w wiadomości e-mail
+     *
      * @param basicAccountDto DTO przechowujące dane formularza rejestracji.
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      * @see BasicAccountDto

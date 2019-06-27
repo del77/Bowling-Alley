@@ -59,6 +59,22 @@ public class AdminRegistrationController extends RegistrationController implemen
     /**
      * Punkt wyjścia odpowiedzialny za rejestrację użytkownika oraz przekierowanie do strony o statusie.
      *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Admin"
+     * 2. Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     * 3. Użytkownik  klika odnośnik 'utwórz konto dla użytkownika'
+     * 4. System wyświetla formularz rejestracji:
+     *  login
+     *  hasło
+     *  powtórz hasło
+     *  adres e-mail
+     *  imię
+     *  nazwisko
+     *  telefon
+     *  data urodzenia
+     * 5. Użytkownik wypełnia formularz
+     * 6. Użytkownik zatwierdza wypełnienie formularza
+     * 7. System wysyła wiadomość na podany adres e-mail zawierający link do aktywacji konta
+     *
      * @param complexAccountDto DTO przechowujące dane formularza rejestracji.
      * @return Widok potwierdzający rejestrację bądź błąd rejestracji
      * @see ComplexAccountDto
