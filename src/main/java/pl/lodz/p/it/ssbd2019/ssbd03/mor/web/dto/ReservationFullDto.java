@@ -17,6 +17,7 @@ public class ReservationFullDto {
     private Timestamp endDate;
     private int playersCount;
     private boolean active;
+    private boolean expired;
     private int alleyNumber;
     private List<CommentDto> comments;
     private List<ReservationFullItemDto> items;

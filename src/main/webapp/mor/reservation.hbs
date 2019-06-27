@@ -13,22 +13,36 @@
                     </h2>
                 </div>
                 <div class="col-6">
-                    <a href="{{webContextPath}}/{{reservationContext}}/edit/{{reservation.id}}"
-                       class="btn btn-primary waves-effect float-right ml-4 my-2">
-                        <span>{{lang.edit}}</span>
-                        <i class="far fa-edit ml-1"></i>
-                    </a>
+                    {{#ifb (or isExpired (not reservation.active))}}
+                        <div class="float-right ml-4 my-2">
+                        <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus"
+                              data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
+                            <a href="#" aria-disabled="true"
+                               class="btn btn-secondary disabled">
+                                <span>{{lang.edit}}</span>
+                                <i class="far fa-edit ml-1"></i>
+                            </a>
+                        </span>
+                        </div>
+                    {{else}}
+                        <a href="{{webContextPath}}/{{reservationContext}}/edit/{{reservation.id}}"
+                           class="btn btn-primary waves-effect float-right ml-4 my-2">
+                            <span>{{lang.edit}}</span>
+                            <i class="far fa-edit ml-1"></i>
+                        </a>
+                    {{/ifb}}
 
                     <form class="float-right ml-4 my-2" role="form" method="post" data-form-confirm>
                         <div class="form-group">
                             {{#if isCancelable}}
-                                <button class="form-control btn btn-warning" type="submit">{{lang.cancelReservation}}</button>
+                                <button class="form-control btn btn-warning"
+                                        type="submit">{{lang.cancelReservation}}</button>
                             {{else}}
                                 <span class="d-inline-block" data-toggle="popover" tabindex="0" data-trigger="focus"
                                       data-placement="bottom" data-content="{{lang.reservationInactiveOrExpired}}">
-                             <button class="btn btn-secondary" style="pointer-events: none;" type="button"
-                                     disabled>{{lang.cancelReservation}}</button>
-                        </span>
+                                    <button class="btn btn-secondary" style="pointer-events: none;" type="button"
+                                            disabled>{{lang.cancelReservation}}</button>
+                                </span>
                             {{/if}}
                         </div>
                     </form>
@@ -73,27 +87,27 @@
         {{#if reservation.items}}
             <table class="table mt-5">
                 <thead>
-                    <tr>
-                        <th>{{lang.itemType}}</th>
-                        <th>{{lang.itemSize}}</th>
-                        <th>{{lang.itemCount}}</th>
-                    </tr>
+                <tr>
+                    <th>{{lang.itemType}}</th>
+                    <th>{{lang.itemSize}}</th>
+                    <th>{{lang.itemCount}}</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {{#each reservation.items}}
-                        <tr>
-                            <td>
-                                {{#ifb (compare this.name '==' "shoes")}}
-                                    {{lang.shoes}}
-                                {{/ifb}}
-                                {{#ifb (compare this.name '==' "ball")}}
-                                    {{lang.ball}}
-                                {{/ifb}}
-                            </td>
-                            <td>{{this.size}}</td>
-                            <td>{{this.count}}</td>
-                        </tr>
-                    {{/each}}
+                {{#each reservation.items}}
+                    <tr>
+                        <td>
+                            {{#ifb (compare this.name '==' "shoes")}}
+                                {{lang.shoes}}
+                            {{/ifb}}
+                            {{#ifb (compare this.name '==' "ball")}}
+                                {{lang.ball}}
+                            {{/ifb}}
+                        </td>
+                        <td>{{this.size}}</td>
+                        <td>{{this.count}}</td>
+                    </tr>
+                {{/each}}
                 </tbody>
             </table>
         {{/if}}
@@ -131,6 +145,16 @@
                                         </form>
                                     </div>
                                 {{/ifb}}
+                                {{#if ownReservation}}
+                                    <div class="col-2">
+                                        <a
+                                            class="btn btn-info"
+                                            href="{{webContextPath}}/comments/edit/{{reservation.id}}/{{this.id}}"
+                                        >
+                                            {{lang.editComment}}
+                                        </a>
+                                    </div>
+                                {{/if}}
                             </div>
                         </li>
                     {{/if}}

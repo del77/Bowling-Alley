@@ -105,6 +105,11 @@ public class UserAdminController implements Serializable {
     /**
      * Zmienia status zablokowania konta użytkownika z podanym identyfikatorem
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą 'Admin' lub 'Employee'
+     *     2) Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     *     3) Użytkownik zmienia status  na "aktywne" lub "zablokowane" danego konta na liście
+     *
      * @param dto     dto z id konta, któremu należy zmienić flagę aktywności
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z listą użytkowników oraz komunikatem o powodzeniu lub błędzie
@@ -156,6 +161,11 @@ public class UserAdminController implements Serializable {
 
     /**
      * Odpowiada za edycję danych użytkownika.
+     * 1.Użytkownik jest zalogowany na koncie z rolą 'Admin' lub "Employee"
+     * 2.Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     * 3.Użytkownik wybiera konto z listy kont wyświetlonych w panelu administracyjnym
+     * 4.Użytkownik wypełnia formularz
+     * 5.Użytkownik zatwierdza wysłanie formularza
      *
      * @param dto dto z danymi
      * @return Informacja o rezultacie edycji.
@@ -219,6 +229,12 @@ public class UserAdminController implements Serializable {
     /**
      * Odpowiada za edycję poziomów dostępu użytkownika.
      *
+     * Scenariusz:
+     *     1) Użytkownik jest zalogowany na koncie z rolą "Admin" lub 'Employee'
+     *     2) Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     *     3) Użytkownik wybiera konto z listy kont wyświetlonych w panelu administracyjnym
+     *     4) Użytkownik dodaje lub usuwa poziom dostępu do konta
+     *
      * @param dto dto z danymi
      * @return Informacja o rezultacie edycji.
      */
@@ -280,6 +296,11 @@ public class UserAdminController implements Serializable {
 
     /**
      * Punkt wyjścia odpowiedzialny za przekierowanie do widoku z formularzem edycji hasła dla użytkownika.
+     * 1.Użytkownik jest zalogowany na koncie z rolą 'Admin' lub 'Employee'
+     * 2.Użytkownik przechodzi do zakładki panelu administracyjnego do zarządzania kontami
+     * 3.Użytkownik wybiera do edycji konto z listy kont wyświetlonych w panelu administracyjnym
+     * 4.Użytkownik wypełnia formularz zmiany hasła
+     * 5.Użytkownik zatwierdza wysłanie formularza
      *
      * @param idCache opcjonalny, identyfikator cache z danymi po przekierowaniu
      * @return Widok z formularzem zmiany hasła dla użytkownika

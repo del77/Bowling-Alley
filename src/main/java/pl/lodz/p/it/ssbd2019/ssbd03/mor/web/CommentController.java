@@ -4,6 +4,7 @@ import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.repository.ReservationRepositoryLocal;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.CommentService;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.CommentDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.CommentEditDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.localization.LocalizedMessageProvider;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.redirect.FormData;
@@ -29,7 +30,9 @@ public class CommentController implements Serializable {
 
     private static final String ERROR = "errors";
     private static final String ADD_COMMENT_VIEW = "mor/addCommentForm.hbs";
+    private static final String EDIT_COMMENT_VIEW = "mor/editCommentForm.hbs";
     private static final String ADD_COMMENT_PATH = "/comments/add/";
+    private static final String EDIT_COMMENT_PATH = "/comments/edit";
 
     @EJB(beanName = "MORCommentService")
     private CommentService commentService;
@@ -51,7 +54,7 @@ public class CommentController implements Serializable {
 
     /**
      * Widok pozwalający klientowi dodać komentarz do rezerwacji
-     *
+     * <p>
      * 1. Użytkownik jest zalogowany na koncie z rolą "CLIENT"
      * 2. Użytkownik klika przycisk "Dodaj komentarz" w szczegółach zakończonej rezerwacji.
      * 3. System wyświetla formularz dodawania komentarza.
@@ -90,8 +93,7 @@ public class CommentController implements Serializable {
     @Path("add/{id}")
     @RolesAllowed(MorRoles.ADD_COMMENT_FOR_RESERVATION)
     @Produces(MediaType.TEXT_HTML)
-    public String addCommentForReservation(@PathParam("id") Long reservationId, @BeanParam CommentDto comment) throws
-            NotFoundException {
+    public String addCommentForReservation(@PathParam("id") Long reservationId, @BeanParam CommentDto comment) throws NotFoundException {
 
         List<String> validateResult = validator.validate(comment);
         if (validateResult != null && !validateResult.isEmpty()) {
@@ -103,7 +105,8 @@ public class CommentController implements Serializable {
         }
 
         try {
-            commentService.addComment(reservationId, comment);
+            String userLogin = models.get("userName", String.class);
+            commentService.addComment(reservationId, comment, userLogin);
         } catch (SsbdApplicationException e) {
             return redirectUtil.redirect(ADD_COMMENT_PATH + reservationId,
                     new FormData(
@@ -115,6 +118,76 @@ public class CommentController implements Serializable {
         FormData formData = new FormData();
         formData.setInfos(Collections.singletonList(localization.get("addCommentSuccess")));
         return redirectUtil.redirect(ADD_COMMENT_PATH + reservationId, formData);
+    }
+
+
+    /**
+     * Widok pozwalający klientowi edytować komentarz
+     *
+     * 1. Użytkownik jest zalogowany na koncie z rolą "Client"
+     * 2. Użytkownik przechodzi na stronę rezerwacji
+     * 3. System wyświetla listę rezerwacji
+     * 4. Użytkownik wybiera pozycję z listy rezerwacji
+     * 5. System wyświetla szczegóły wybranej rezerwacji
+     * 6. Użytkownik klika edytuj komentarz jeśli taki istnieje
+     * 7. System wyświetla formularz edycji komentarza
+     * 8. Użytkownik wprowadza zmienioną treść komentarza
+     * 9. Użytkownik klika "Wyślij"
+     * 10. System zapisuje komentarz
+     *
+     * @param reservationId id rezerwacji
+     * @param commentId     id komentarza
+     * @param idCache       opcjonalny, identyfikator cache z danymi po przekierowaniu
+     * @return widok z formularzem
+     */
+    @GET
+    @Path("edit/{reservationId}/{commentId}")
+    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
+    @Produces(MediaType.TEXT_HTML)
+    public String editCommentForReservationGet(@PathParam("reservationId") Long reservationId, @PathParam("commentId") Long commentId, @QueryParam("idCache") Long idCache) {
+        String login = (String) models.get("userName");
+
+        try {
+            CommentDto comment = commentService.getActiveCommentForUserById(commentId, login);
+            models.put("comment", comment);
+        } catch (SsbdApplicationException e) {
+            displayError(localization.get(e.getCode()));
+        }
+
+        redirectUtil.injectFormDataToModels(idCache, models);
+        return EDIT_COMMENT_VIEW;
+    }
+
+    /**
+     * Edytuje komentarz
+     *
+     * @param reservationId id rezerwacji
+     * @param commentId     id komentarza
+     * @param comment       komentarz
+     * @return widok z potwierdzeniem
+     */
+    @POST
+    @Path("edit/{reservationId}/{commentId}")
+    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_OWN_RESERVATION)
+    @Produces(MediaType.TEXT_HTML)
+    public String editCommentForReservationPost(@PathParam("reservationId") Long reservationId, @PathParam("commentId") Long commentId, @BeanParam CommentEditDto comment) {
+        List<String> errorMessages = validator.validate(comment);
+        String path = EDIT_COMMENT_PATH + "/" + reservationId + "/" + commentId;
+        String login = (String) models.get("userName");
+
+        if (!errorMessages.isEmpty()) {
+            return redirectUtil.redirectError(path, null, errorMessages);
+        }
+
+        try {
+            commentService.editComment(comment, login);
+        } catch (SsbdApplicationException e) {
+            return redirectUtil.redirectError(path, null, Collections.singletonList(localization.get(e.getCode())));
+        }
+
+        FormData formData = new FormData();
+        formData.setInfos(Collections.singletonList(localization.get("editCommentSuccess")));
+        return redirectUtil.redirect(path, formData);
     }
 
     private void displayError(String s) {

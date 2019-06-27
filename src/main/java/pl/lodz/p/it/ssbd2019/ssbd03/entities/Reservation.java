@@ -22,8 +22,8 @@ import java.util.List;
 @Builder
 @NamedQueries(
         value = {
-                @NamedQuery(name = "Reservation.findReservationsForUser", query = "select r from Reservation r where r.userAccount.id = :userId"),
-                @NamedQuery(name = "Reservation.findReservationsForAlley", query = "select r from Reservation r where r.alley.id = :alleyId"),
+                @NamedQuery(name = "Reservation.findReservationsForUser", query = "select r from Reservation r where r.userAccount.id = :userId order by r.startDate desc"),
+                @NamedQuery(name = "Reservation.findReservationsForAlley", query = "select r from Reservation r where r.alley.id = :alleyId order by r.startDate desc" ),
                 @NamedQuery(
                         name = "Reservation.getReservationsWithinTimeRange",
                         query = "SELECT DISTINCT r " +

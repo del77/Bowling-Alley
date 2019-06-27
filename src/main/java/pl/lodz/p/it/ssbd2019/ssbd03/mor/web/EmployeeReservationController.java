@@ -2,9 +2,11 @@ package pl.lodz.p.it.ssbd2019.ssbd03.mor.web;
 
 import pl.lodz.p.it.ssbd2019.ssbd03.exceptions.SsbdApplicationException;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.service.ReservationService;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.*;
-import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.EmployeeNewReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.AvailableAlleyDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.DetailedReservationDto;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.ReservationFullDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.DtoHelper;
+import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.EmployeeNewReservationDto;
 import pl.lodz.p.it.ssbd2019.ssbd03.mor.web.dto.new_reservation.NewReservationAllForm;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.DtoValidator;
 import pl.lodz.p.it.ssbd2019.ssbd03.utils.helpers.ReservationValidator;
@@ -29,7 +31,7 @@ import java.util.List;
 @Controller
 @Path("reservations")
 public class EmployeeReservationController extends AbstractReservationController implements Serializable {
-    
+
     private static final String RESERVATION_LIST_URI = "/reservations";
     private static final String RESERVATION_DETAILS_URI = "reservations/details/";
     private static final String NEW_RESERVATION_URI = "/reservations/new";
@@ -51,23 +53,23 @@ public class EmployeeReservationController extends AbstractReservationController
     private DtoValidator validator;
 
     private transient EmployeeNewReservationDto newReservationDto;
-    
+
     protected ReservationService getReservationService() {
         return reservationService;
     }
-    
+
     protected Models getModels() {
         return models;
     }
-    
+
     protected RedirectUtil getRedirectUtil() {
         return redirectUtil;
     }
-    
+
     protected LocalizedMessageProvider getLocalization() {
         return localization;
     }
-    
+
     protected String getReservationContext() {
         return RESERVATION_LIST_URI;
     }
@@ -124,14 +126,14 @@ public class EmployeeReservationController extends AbstractReservationController
      *
      * Scenariusz:
      *
-     *     1) Użytkownik jest zalogowany na koncie z rolą "Employee".
-     *     2) Użytkownik podaje login użytkownika
-     *     3) System wyświetla wybór godziny
-     *     4) Użytkownik wybiera przedział czasu, przedmioty oraz liczbę zawodników.
-     *     5) System wyświetla dostępne tory
-     *     6) Użytkownik wybiera tor
-     *     7) Użytkownik klika zatwierdź
-     *     8) System przekierowuje na stronę rezerwacji
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2) Użytkownik podaje login użytkownika
+     * 3) System wyświetla wybór godziny
+     * 4) Użytkownik wybiera przedział czasu, przedmioty oraz liczbę zawodników.
+     * 5) System wyświetla dostępne tory
+     * 6) Użytkownik wybiera tor
+     * 7) Użytkownik klika zatwierdź
+     * 8) System przekierowuje na stronę rezerwacji
      *
      * @param alleyId identyfikator toru
      * @return informacja o wyniku rezerwacji
@@ -189,7 +191,7 @@ public class EmployeeReservationController extends AbstractReservationController
         redirectUtil.injectFormDataToModels(idCache, models);
         return getEditView(id, null, false, false);
     }
-    
+
     /**
      * Aktualizuje rezerwację
      *
@@ -214,14 +216,14 @@ public class EmployeeReservationController extends AbstractReservationController
             @PathParam("id") long id,
             @BeanParam DetailedReservationDto dto) {
         List<String> errorMessages = validator.validate(dto);
-    
+
         if (!errorMessages.isEmpty()) {
             return redirectUtil.redirectError(
                     EDIT_RESERVATION_URI + id,
                     dto,
                     errorMessages);
         }
-    
+
         try {
             DetailedReservationDto resultDto = reservationService.updateReservation(dto);
             FormData formData = FormData.builder()
@@ -238,11 +240,11 @@ public class EmployeeReservationController extends AbstractReservationController
      * Pobiera rezerwacje wybranego klienta
      *
      * Scenariusz:
-     *     1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Admin".
-     *     2) System wyświetla listę Clientów
-     *     3) Użytkownik wyszukuje Clienta na liście
-     *     4) Użytkownik przechodzi na listę rezerwacji Clienta klikając przycisk "Rezerwacje" na pozycji listy
-     *     5) System wyświetla listę rezerwacji Clienta, lista może być pusta.
+     * 1) Użytkownik jest zalogowany na koncie z rolą "Employee" lub "Admin".
+     * 2) System wyświetla listę Clientów
+     * 3) Użytkownik wyszukuje Clienta na liście
+     * 4) Użytkownik przechodzi na listę rezerwacji Clienta klikając przycisk "Rezerwacje" na pozycji listy
+     * 5) System wyświetla listę rezerwacji Clienta, lista może być pusta.
      *
      * @param id identyfikator klienta
      * @return Widok z rezultatem.
@@ -254,6 +256,7 @@ public class EmployeeReservationController extends AbstractReservationController
     public String getReservationsForUser(@PathParam("id") Long id) {
         try {
             List<ReservationFullDto> reservations = reservationService.getReservationsForUser(id);
+            reservations.forEach(r -> r.setExpired(ReservationValidator.isExpired(r.getStartDate())));
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("userReservationList"));
             models.put("reservationContext", "reservations");
@@ -281,6 +284,7 @@ public class EmployeeReservationController extends AbstractReservationController
     public String getReservationsForAlley(@PathParam("id") Long id) {
         try {
             List<ReservationFullDto> reservations = reservationService.getReservationsForAlley(id);
+            reservations.forEach(r -> r.setExpired(ReservationValidator.isExpired(r.getStartDate())));
             models.put("reservationsList", reservations);
             models.put("reservationListHeading", localization.get("alleyReservationList"));
             models.put("reservationContext", "reservations");
@@ -325,6 +329,12 @@ public class EmployeeReservationController extends AbstractReservationController
 
     /**
      * Pozwala pracownikowi anulować rezerwację
+     * 1.Użytkownik jest zalogowany na koncie z rolą "Employee".
+     * 2.Użytkownik wyszukuje Clienta
+     * 3.Użytkownik przechodzi na listę rezerwacji Clienta
+     * 4.System wyświetla listę rezerwacji Clienta
+     * 5.Użytkownik klika na przycisk "Odwołaj" widoczny na pozycji listy rezerwacji
+     * 6.Rezerwacja zostaje odwołana
      *
      * @param reservationId identyfikator rezerwacji
      * @return rezulat operacji
@@ -347,20 +357,6 @@ public class EmployeeReservationController extends AbstractReservationController
                     Collections.singletonList(localization.get(e.getCode()))
             );
         }
-    }
-
-    /**
-     * edytuje wybrany komentarz do rezerwacji
-     *
-     * @param id wybrana komentarza
-     * @return Widok z rezultatem.
-     */
-    @POST
-    @Path("{id}/details/edit")
-    @RolesAllowed(MorRoles.EDIT_COMMENT_FOR_RESERVATION)
-    @Produces(MediaType.TEXT_HTML)
-    public String editCommentForReservation(Long id) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -394,12 +390,12 @@ public class EmployeeReservationController extends AbstractReservationController
             );
         }
     }
-    
+
     /**
      * kontroler pośredniczący w edycji rezerwacji, odpowiada za odświeżenie dostępnych torów
      *
-     * @param dto dto z wartościami z edycji
-     * @param redirectTo cel przekierowania, możliwe wartości `create` i `update`
+     * @param dto           dto z wartościami z edycji
+     * @param redirectTo    cel przekierowania, możliwe wartości `create` i `update`
      * @param reservationId identyfikator rezerwacji, jeżeli jest edytowana
      * @return odpowiedni widok z przekierowania
      */
